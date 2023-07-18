@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">得闲赚</string>
+    <string name="advertising_words">一元可提现一起赚赏金</string>
+
+
+    <string name="title_login">登录</string>
+    <string name="title_phone_login">手机号码登录</string>
+    <string name="title_phone_yz">验证手机号码</string>
+    <string name="bto_use_phone_login">使用手机号登录</string>
+    <string name="text_set_sms">输入验证码</string>
+    <string name="text_get_sms">获取验证码</string>
+
+
+    <string name="text_agreement">《聚赚隐私政策与用户协议》</string>
+    <string name="text_agreement2">聚赚隐私政策与用户协议</string>
+
+    <string name="agreement_content">协议内容</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">悬赏大厅</string>
+    <string name="title_notifications">收徒赚钱</string>
+    <string name="title_my">我的</string>
+
+
+</resources>
