@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,7 +11,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.ui.viewmodels.LaunchViewModel
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 
 
 /**  APP启动屏
@@ -24,6 +25,7 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.LaunchViewModel
 
 5.广告页：需要在对应的时间内加载首页的数据；*/
 
+@SuppressLint("CustomSplashScreen")
 class LaunchActivity : AppCompatActivity() {
 
     private val permissions = arrayOf(
@@ -39,9 +41,8 @@ class LaunchActivity : AppCompatActivity() {
 
         //权限判断
 //        checkPermissionsAndStartActivity()
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+        //登录判断
+        preloadContent()
 
     }
 
@@ -59,11 +60,13 @@ class LaunchActivity : AppCompatActivity() {
     }
 
     private fun preloadContent() {
+        //判断是否已登录APP
         val isLoggedIn = checkUserLoginStatus()
         if (isLoggedIn) {
             // 用户已登录，执行登录接口验证
-            val viewModel = ViewModelProvider(this).get(LaunchViewModel::class.java)
-            viewModel.verifyUserAccount()
+//            val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+//            viewModel.verifyUserAccount()
+
         } else {
             // 用户未登录，执行其他操作或跳转到登录页面
             performOtherActionOrNavigateToLogin()
@@ -72,8 +75,11 @@ class LaunchActivity : AppCompatActivity() {
 
     private fun checkUserLoginStatus(): Boolean {
         // 从本地存储中获取登录状态，例如使用SharedPreferences
-        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean("is_logged_in", false)
+        val sharedPreferences = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("LoginStatus", false)
+
+
+//        sharedPreferences.getString("wechat_code", false)
     }
 
     private fun performOtherActionOrNavigateToLogin() {
@@ -87,9 +93,7 @@ class LaunchActivity : AppCompatActivity() {
 
     //处理权限请求的结果
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -105,7 +109,7 @@ class LaunchActivity : AppCompatActivity() {
 
                 //权限授权完成后进行
                 //登录判断
-                preloadContent()
+//                preloadContent()
 
             }
         }

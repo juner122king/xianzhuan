@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+#网易网盾sdk
+ -keep class com.netease.htprotect.**{*;}
+ -keep class com.netease.mobsec.**{*;}

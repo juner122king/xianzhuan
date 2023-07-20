@@ -1,115 +1,104 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.animation.Animator
-import android.animation.AnimatorInflater
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.ApiConstants
+import com.lelezu.app.xianzhuan.data.repository.LoginRepository
+import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.receiver.CountdownReceiver
 import com.lelezu.app.xianzhuan.ui.viewmodels.SharedCountdownViewModel
-import com.lelezu.app.xianzhuan.wxapi.WXEntryActivity
-import com.tencent.mm.opensdk.constants.ConstantsAPI
-import com.tencent.mm.opensdk.modelmsg.SendAuth
-import com.tencent.mm.opensdk.openapi.IWXAPI
-import com.tencent.mm.opensdk.openapi.WXAPIFactory
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import com.netease.htprotect.HTProtect
+import com.netease.htprotect.callback.GetTokenCallback
+import com.netease.htprotect.result.AntiCheatResult
+import kotlinx.coroutines.launch
 
 
 //登录页面
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var sharedViewModel: SharedCountdownViewModel
-    private lateinit var buttonGetCode: Button
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹窗
-    private lateinit var countdownReceiver: CountdownReceiver
-
-    private var countdownTimer: CountDownTimer? = null
-
-    private var iwxapi: IWXAPI? = null
-
+    private lateinit var loginRepository: LoginRepository//
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        loginRepository = LoginRepository()
 
         val btoPhoneLogin = findViewById<TextView>(R.id.bto_phome_login)//‘使用手机登录’按钮
         val btoWxLogin = findViewById<ImageView>(R.id.bto_wx_login)//微信登录按钮
-        val viewPhoneCode = findViewById<View>(R.id.view_phone_code)//手机输入框与获取验证码按钮 的组合View
-        val WxLogin = findViewById<View>(R.id.bto_wx_login)//微信登录按钮
         val tvAgreement = findViewById<TextView>(R.id.tv_agreement)//打开协议按钮
 
-        buttonGetCode = findViewById<Button>(R.id.buttonGetCode)//获取验证码按钮
         cbAgree = findViewById<CheckBox>(R.id.cb_agree_agreement)//是否同意思协议按钮
 
 
         //点击 ‘使用手机登录’的动作
         btoPhoneLogin.setOnClickListener {
-            btoWxLogin.visibility = View.GONE
-            btoPhoneLogin.visibility = View.GONE
-            viewPhoneCode.visibility = View.VISIBLE
 
-            //点击动画
-            val animSet = AnimatorSet()
-            // 显示 anotherView 动画（从右到左出现）
-            val showAnimator =
-                AnimatorInflater.loadAnimator(this, R.animator.slide_in_right) as Animator
-            showAnimator.setTarget(viewPhoneCode)
-            animSet.playTogether(showAnimator)
-            animSet.interpolator = AccelerateInterpolator()
-            animSet.duration = 300
-            animSet.start()
-        }
-
-        //获取验证码按钮的动作
-        buttonGetCode.setOnClickListener {
-            startCountdown(60000, 1000)
-            //页面跳转到验证手机号码页面
-            val intent = Intent(this, SetSMSCodeActivity::class.java)
-            startActivity(intent)
-
+            startActivity(Intent(this, PhoneLoginActivity::class.java))
         }
         //打开协议
         tvAgreement.setOnClickListener {
-
             // 显示弹窗
             showAgreementDialog()
 
         }
 
 
-        //微信登录
-        iwxapi = WXAPIFactory.createWXAPI(this, "wx1bdc5e2f8be515eb", true)
-        // 将应用的appId注册到微信
-        iwxapi?.registerApp("wx1bdc5e2f8be515eb")
-        // 动态监听微信启动广播进行注册到微信
-        registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                // 将该app注册到微信
-                iwxapi?.registerApp("wx1bdc5e2f8be515eb")
-            }
-        }, IntentFilter(ConstantsAPI.ACTION_REFRESH_WXAPP))
-        WxLogin.setOnClickListener {
+        //微信Api初始化
+        WxLogin.initWx(this)
+        btoWxLogin.setOnClickListener {
             WxLoginInit()
         }
 
 
+    }
+
+    private fun getLogin() {
+        //SharedPreferences中有保存登录成功的wxCode
+        val sharedPreferences = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+        val wechatCode = sharedPreferences.getString("wechat_code", null)
+        val deviceToken = sharedPreferences.getString("易盾token", null)
+        if (wechatCode != null && deviceToken != null) {
+            ToastUtils.showToast(this, "微信授权成功！")
+            // 用户进行登录，执行登录接口
+            lifecycleScope.launch {
+                val loginReP = loginRepository.getGetLogin(
+                    ApiConstants.LOGIN_METHOD_WX, wechatCode, deviceToken
+                )
+                //每次登录完都清空易盾token
+                val sp = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+                val editor = sp.edit()
+                editor.remove("易盾token")
+                editor.apply()
+
+                if (loginReP != null) {
+                    // 处理登录成功逻辑
+                } else {
+                    // 处理登录失败逻辑
+                }
+            }
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        getLogin()
     }
 
     // 显示用户协议弹窗
@@ -152,19 +141,7 @@ class LoginActivity : AppCompatActivity() {
 
         when (cbAgree.isChecked) {
             true -> {
-
-             //等待签名处理完
-//                val req = SendAuth.Req()
-//                req.scope = "snsapi_userinfo"
-//                req.state = "wechat_sdk_demo_test"
-//                iwxapi?.sendReq(req)
-
-                //直接进入主页
-                ToastUtils.showToast(this, "登录成功")
-
-                startActivity(Intent(this, HomeActivity::class.java))
-
-
+                WxLogin.longWx();
             }
 
             else -> {
@@ -173,50 +150,5 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(countdownReceiver)
-        countdownTimer?.cancel() // 取消倒计时计时器
-    }
-
-
-    //注册倒计时广播
-    private fun registerReceiver() {
-        //初始化ViewMode
-        sharedViewModel = ViewModelProvider(this)[SharedCountdownViewModel::class.java]
-        sharedViewModel.countdownTime.observe(this) { countdownTime ->
-            buttonGetCode.text = (countdownTime / 1000).toString()
-        }
-        countdownReceiver = CountdownReceiver()
-        countdownReceiver.addListener(object : CountdownReceiver.CountdownListener {
-            override fun onTick(countdownTime: Long) {
-                sharedViewModel.setCountdownTime(countdownTime)
-            }
-        })
-        registerReceiver(countdownReceiver, IntentFilter(CountdownReceiver.ACTION_TICK))
-
-    }
-
-
-    //验证码获取倒计
-    private fun startCountdown(millisInFuture: Long, countDownInterval: Long) {
-        countdownTimer?.cancel() // 取消之前的计时器
-        countdownTimer = object : CountDownTimer(millisInFuture, countDownInterval) {
-            override fun onTick(millisUntilFinished: Long) {
-                sharedViewModel.setCountdownTime(millisUntilFinished)
-
-                //发送广播消息
-                val intent = Intent(CountdownReceiver.ACTION_TICK)
-                intent.putExtra(CountdownReceiver.EXTRA_COUNTDOWN_TIME, millisUntilFinished)
-                sendBroadcast(intent)
-            }
-
-            override fun onFinish() {
-                sharedViewModel.setCountdownTime(0)
-            }
-        }.start()
     }
 }

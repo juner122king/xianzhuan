@@ -1,9 +1,15 @@
 package com.lelezu.app.xianzhuan.wxapi
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.lelezu.app.xianzhuan.ui.views.HomeActivity
+import com.lelezu.app.xianzhuan.ui.views.LoginActivity
+import com.netease.htprotect.HTProtect
+import com.netease.htprotect.callback.GetTokenCallback
+import com.netease.htprotect.result.AntiCheatResult
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
@@ -19,8 +25,7 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        wxApi = WXAPIFactory.createWXAPI(this, "wx1bdc5e2f8be515eb", true)
-        wxApi.registerApp("wx1bdc5e2f8be515eb")
+        wxApi = WXAPIFactory.createWXAPI(this, WxData.WEIXIN_APP_ID, true)
         wxApi.handleIntent(intent, this)
     }
 
@@ -41,8 +46,31 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                 when (baseResp.errCode) {
                     BaseResp.ErrCode.ERR_OK -> {
                         Log.e("TAG_WECHAT_CODE", r.code)
-                        // 登陆成功的结果，可以跳转到某个页面
-                        finish()
+                        // 登陆成功的结果，可以跳转到某个页面 ，拿到了微信返回的code保存到SharedPreferences
+                        val sharedPreferences =
+                            getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("wechat_code", r.code)
+                        editor.apply()
+
+                        //易盾获取token
+                        val myGetTokenCallback = GetTokenCallback { antiCheatResult ->
+                            if (antiCheatResult.code == AntiCheatResult.OK) {
+                                // 调用成功
+                                Log.d("易盾token", "async token:${antiCheatResult.token}")
+                                val sharedPreferences =
+                                    getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("易盾token", antiCheatResult.token)
+                                editor.apply()
+                                finish()
+
+                            }
+                        }
+                        HTProtect.getTokenAsync(3000, "e377b3fedaec37da3be3a08a8c202e71", myGetTokenCallback)
+
+
+
                     }
 
                     BaseResp.ErrCode.ERR_AUTH_DENIED -> {
@@ -64,12 +92,15 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                     }
                 }
             }
+
             ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX -> {
                 when (baseResp.errCode) {
                     BaseResp.ErrCode.ERR_OK -> {
                     }
+
                     BaseResp.ErrCode.ERR_USER_CANCEL -> {
                     }
+
                     else -> {
                     }
                 }

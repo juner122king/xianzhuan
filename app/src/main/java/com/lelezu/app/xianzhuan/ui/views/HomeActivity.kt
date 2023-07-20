@@ -66,8 +66,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initData() {
-        val homeFragment = MainFragment.newInstance(getString(R.string.title_home), "")
-        fragmentList.add(homeFragment)
+        val mainFragment = MainFragment.newInstance(getString(R.string.title_home), "")
+        fragmentList.add(mainFragment)
 
         val dashFragment = DashFragment.newInstance(getString(R.string.title_dashboard), "")
         fragmentList.add(dashFragment)
