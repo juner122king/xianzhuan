@@ -39,79 +39,36 @@ class LaunchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
 
-        //权限判断
-//        checkPermissionsAndStartActivity()
         //登录判断
         preloadContent()
 
-    }
-
-    private fun checkPermissionsAndStartActivity() {
-        val missingPermissions = permissions.filter {
-            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
-        }
-
-        if (missingPermissions.isNotEmpty()) {
-            //全部授权
-            requestPermissions(missingPermissions.toTypedArray(), permissionRequestCode)
-        } else {
-
-        }
     }
 
     private fun preloadContent() {
         //判断是否已登录APP
         val isLoggedIn = checkUserLoginStatus()
         if (isLoggedIn) {
-            // 用户已登录，执行登录接口验证
-//            val viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-//            viewModel.verifyUserAccount()
-
+            // 用户已登录， 跳转到主页登录页面
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
         } else {
             // 用户未登录，执行其他操作或跳转到登录页面
             performOtherActionOrNavigateToLogin()
         }
     }
-
     private fun checkUserLoginStatus(): Boolean {
         // 从本地存储中获取登录状态，例如使用SharedPreferences
         val sharedPreferences = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("LoginStatus", false)
 
 
-//        sharedPreferences.getString("wechat_code", false)
     }
-
     private fun performOtherActionOrNavigateToLogin() {
         // 用户未登录时的处理逻辑，例如执行其他操作或跳转到登录页面
         // 跳转到登录页面
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-
-    //处理权限请求的结果
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            permissionRequestCode -> {
-                val grantedPermissions =
-                    grantResults.filter { it == PackageManager.PERMISSION_GRANTED }
-                if (grantedPermissions.size == grantResults.size) {
-//                    Toast.makeText(this, "全部授权", Toast.LENGTH_LONG).show()
-                } else {
-//                    Toast.makeText(this, "权限不全", Toast.LENGTH_LONG).show()
-                }
-
-
-                //权限授权完成后进行
-                //登录判断
-//                preloadContent()
-
-            }
-        }
     }
 }

@@ -1,29 +1,22 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import ToastUtils
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.repository.LoginRepository
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
-import com.lelezu.app.xianzhuan.receiver.CountdownReceiver
-import com.lelezu.app.xianzhuan.ui.viewmodels.SharedCountdownViewModel
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
-import com.netease.htprotect.HTProtect
-import com.netease.htprotect.callback.GetTokenCallback
 import com.netease.htprotect.result.AntiCheatResult
 import kotlinx.coroutines.launch
 
@@ -36,6 +29,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginRepository: LoginRepository//
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.i("LoginActivity", "方法onCreate()")
         setContentView(R.layout.activity_login)
         loginRepository = LoginRepository()
 
@@ -45,10 +40,8 @@ class LoginActivity : AppCompatActivity() {
 
         cbAgree = findViewById<CheckBox>(R.id.cb_agree_agreement)//是否同意思协议按钮
 
-
         //点击 ‘使用手机登录’的动作
         btoPhoneLogin.setOnClickListener {
-
             startActivity(Intent(this, PhoneLoginActivity::class.java))
         }
         //打开协议
@@ -62,43 +55,65 @@ class LoginActivity : AppCompatActivity() {
         //微信Api初始化
         WxLogin.initWx(this)
         btoWxLogin.setOnClickListener {
-            WxLoginInit()
+            wxLoginInit()
         }
-
 
     }
 
-    private fun getLogin() {
-        //SharedPreferences中有保存登录成功的wxCode
-        val sharedPreferences = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-        val wechatCode = sharedPreferences.getString("wechat_code", null)
-        val deviceToken = sharedPreferences.getString("易盾token", null)
-        if (wechatCode != null && deviceToken != null) {
-            ToastUtils.showToast(this, "微信授权成功！")
-            // 用户进行登录，执行登录接口
-            lifecycleScope.launch {
-                val loginReP = loginRepository.getGetLogin(
-                    ApiConstants.LOGIN_METHOD_WX, wechatCode, deviceToken
-                )
-                //每次登录完都清空易盾token
-                val sp = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-                val editor = sp.edit()
-                editor.remove("易盾token")
+    private fun getLogin(wxCode: String) {
+        Log.i("LoginActivity", "开始执行登录请求方法getLogin")
+        // 用户进行登录，执行登录接口
+        lifecycleScope.launch {
+            val loginReP = loginRepository.wxLogin(wxCode)
+
+            if (loginReP != null) {
+                // 处理登录成功逻辑
+
+                //保存登录信息
+                val sharedPreferences = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putString("LoginToken", loginReP.accessToken)
+                editor.putString("LoginId", loginReP.userId)
+                editor.putBoolean("LoginStatus", true)
                 editor.apply()
 
-                if (loginReP != null) {
-                    // 处理登录成功逻辑
-                } else {
-                    // 处理登录失败逻辑
-                }
+
+                context?.let { ToastUtils.showToast(it, "微信登录成功！") }
+                finish()
+                val intent = Intent(context, HomeActivity::class.java)
+                startActivity(intent)
+            } else {
+                // 处理登录失败逻辑
             }
         }
+
+
     }
 
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.i("LoginActivity", "方法onRestart()")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("LoginActivity", "方法onStart()")
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.i("LoginActivity", "方法onNewIntent()")
+        //从微信授权页面返回
+        if (intent != null) {
+            intent.getStringExtra("wx_code")?.let { getLogin(it) }
+        };
+
+    }
 
     override fun onResume() {
         super.onResume()
-        getLogin()
+        Log.i("LoginActivity", "方法onResume()")
     }
 
     // 显示用户协议弹窗
@@ -135,9 +150,8 @@ class LoginActivity : AppCompatActivity() {
         cbAgree.isChecked = true
     }
 
-
     //微信登录
-    private fun WxLoginInit() {
+    private fun wxLoginInit() {
 
         when (cbAgree.isChecked) {
             true -> {

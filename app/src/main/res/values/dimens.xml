@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="font_small">12sp</dimen>
+    <dimen name="font_small">11sp</dimen>
     <dimen name="font_medium">16sp</dimen>
     <dimen name="font_large">20sp</dimen>
+    <dimen name="font_large2">25sp</dimen>
 
     <dimen name="font_title">38sp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->

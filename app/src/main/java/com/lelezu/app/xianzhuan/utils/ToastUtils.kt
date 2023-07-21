@@ -6,7 +6,7 @@ object ToastUtils {
 
     fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_SHORT) {
         toast?.cancel() // 取消上一个Toast
-        toast = Toast.makeText(context.applicationContext, message, duration)
+        toast = Toast.makeText(context, message, duration)
         toast?.show()
     }
 }

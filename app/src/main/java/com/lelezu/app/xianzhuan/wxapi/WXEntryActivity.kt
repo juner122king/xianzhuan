@@ -45,30 +45,29 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                 val r = baseResp as SendAuth.Resp
                 when (baseResp.errCode) {
                     BaseResp.ErrCode.ERR_OK -> {
-                        Log.e("TAG_WECHAT_CODE", r.code)
-                        // 登陆成功的结果，可以跳转到某个页面 ，拿到了微信返回的code保存到SharedPreferences
-                        val sharedPreferences =
-                            getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
-                        editor.putString("wechat_code", r.code)
-                        editor.apply()
+                        Log.e("TAG_WECHAT_CODE", "微信授权成功！ code：" + r.code)
 
-                        //易盾获取token
-                        val myGetTokenCallback = GetTokenCallback { antiCheatResult ->
-                            if (antiCheatResult.code == AntiCheatResult.OK) {
-                                // 调用成功
-                                Log.d("易盾token", "async token:${antiCheatResult.token}")
-                                val sharedPreferences =
-                                    getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-                                val editor = sharedPreferences.edit()
-                                editor.putString("易盾token", antiCheatResult.token)
-                                editor.apply()
-                                finish()
+                        finish()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.putExtra("wx_code", r.code)
+                        startActivity(intent)
 
-                            }
-                        }
-                        HTProtect.getTokenAsync(3000, "e377b3fedaec37da3be3a08a8c202e71", myGetTokenCallback)
 
+//                        finish()
+//                        //易盾获取token
+//                        val myGetTokenCallback = GetTokenCallback { antiCheatResult ->
+//                            if (antiCheatResult.code == AntiCheatResult.OK) {
+//                                // 调用成功
+//                                Log.d("易盾token", "async token:${antiCheatResult.token}")
+//                                val sharedPreferences =
+//                                    getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
+//                                val editor = sharedPreferences.edit()
+//                                editor.putString("易盾token", antiCheatResult.token)
+//                                editor.apply()
+//
+//                            }
+//                        }
+//                        HTProtect.getTokenAsync(3000, "e377b3fedaec37da3be3a08a8c202e71", myGetTokenCallback)
 
 
                     }
@@ -93,18 +92,6 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                 }
             }
 
-            ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX -> {
-                when (baseResp.errCode) {
-                    BaseResp.ErrCode.ERR_OK -> {
-                    }
-
-                    BaseResp.ErrCode.ERR_USER_CANCEL -> {
-                    }
-
-                    else -> {
-                    }
-                }
-            }
         }
     }
 

@@ -1,19 +1,13 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiService
-import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -27,9 +21,10 @@ class LoginViewModel : ViewModel() {
         apiService = retrofit.create(ApiService::class.java)
     }
 
-    suspend fun userGetLogin(loginInfo: LoginInfo): LoginReP? = withContext(Dispatchers.IO) {
+    suspend fun apiLogin(loginInfo: LoginInfo): LoginReP? = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getLogin(loginInfo).execute()
+
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {

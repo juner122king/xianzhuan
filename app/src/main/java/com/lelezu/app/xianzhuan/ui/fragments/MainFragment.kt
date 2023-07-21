@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ViewFlipper
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -52,12 +53,15 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView = view.findViewById(R.id.recyclerView)
+        //Banner图初始化
+        var viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
+        viewFlipper.startFlipping()
 
+
+        recyclerView = view.findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
         adapter = TaskItemAdapter(emptyList())
         recyclerView.adapter = adapter
-
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.addItemDecoration(
@@ -65,7 +69,6 @@ class MainFragment : Fragment() {
                 requireContext(), LinearLayoutManager.VERTICAL
             )
         )
-
         // 观察 ViewModel 中的任务列表数据变化
         viewModel.taskList.observe(viewLifecycleOwner, { itemList ->
             // 数据变化时更新 RecyclerView
@@ -73,7 +76,6 @@ class MainFragment : Fragment() {
         })
 
         // 异步获取数据并更新 RecyclerView
-//        viewModel.fetchDataFromApi()
         viewModel.getTaskList()
     }
 

@@ -29,7 +29,6 @@ class HomeActivity : AppCompatActivity() {
 
 
 
-
         //  页面更改监听
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
