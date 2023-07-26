@@ -21,6 +21,22 @@
 #-renamesourcefileattribute SourceFile
 
 
-#网易网盾sdk
+#网易网盾sdk开始
  -keep class com.netease.htprotect.**{*;}
  -keep class com.netease.mobsec.**{*;}
+#网易网盾sdk结束
+
+
+
+#友盟开始
+-keep class com.umeng.** {*;}
+-keep class org.repackage.** {*;}
+-keep class com.uyumao.** { *; }
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+#友盟结束

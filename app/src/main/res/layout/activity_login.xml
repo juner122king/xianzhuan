@@ -20,7 +20,7 @@
         android:textStyle="bold" />
 
 
-    <com.lelezu.app.xianzhuan.ui.views.CustomImageTextView
+    <com.lelezu.app.xianzhuan.ui.views.CustomLogoView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

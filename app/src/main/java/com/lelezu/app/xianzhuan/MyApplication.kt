@@ -5,10 +5,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.text.TextUtils
 import android.util.Log
+import com.lelezu.app.xianzhuan.data.ApiFactory
+import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
+import com.lelezu.app.xianzhuan.data.repository.TaskRepository
+import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
-import com.netease.htprotect.callback.GetTokenCallback
 import com.netease.htprotect.callback.HTPCallback
+import com.umeng.commonsdk.UMConfigure
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import java.io.BufferedReader
 import java.io.FileReader
 
@@ -19,6 +25,16 @@ import java.io.FileReader
  *
  */
 class MyApplication : Application() {
+
+
+    private val apiService by lazy { ApiFactory.create(this) }
+
+    val userRepository by lazy { UserRepository(apiService) }
+
+    val taskRepository by lazy { TaskRepository(apiService) }
+
+    val sysInformRepository by lazy { SysInformRepository(apiService) }
+
 
     //声明公共变量
     companion object {
@@ -35,13 +51,15 @@ class MyApplication : Application() {
         //获取版本名称
         var versionName = getVersionName()
 
+
+
         Log.i("MyApplication", packageName + "========" + processName + "=========" + versionName)
 
         //进行第三方sdk初始化
 
+
         //易盾
         val config = HTProtectConfig().apply {
-
             var serverType = 2
             var channel = "testchannel"
         }
@@ -49,9 +67,16 @@ class MyApplication : Application() {
             Log.d("Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
         }
-
         HTProtect.init(context, "YD00525369360953", callback, config)
+        //易盾结束
 
+
+        //友盟开始
+        //调用预初始化函数
+        UMConfigure.preInit(this, "648282fba1a164591b2e9331", "测试");
+        //正式初始化函数
+        UMConfigure.init(this,"648282fba1a164591b2e9331",getString(R.string.app_name),UMConfigure.DEVICE_TYPE_PHONE,"")
+        UMConfigure.setLogEnabled(true)
 
     }
 

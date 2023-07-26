@@ -4,14 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 
 
 /**  APP启动屏

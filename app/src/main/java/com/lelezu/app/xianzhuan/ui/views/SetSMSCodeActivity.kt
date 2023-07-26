@@ -4,10 +4,8 @@ import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.receiver.CountdownReceiver
-import com.lelezu.app.xianzhuan.ui.viewmodels.SharedCountdownViewModel
 
 
 //手机验证码输入页面

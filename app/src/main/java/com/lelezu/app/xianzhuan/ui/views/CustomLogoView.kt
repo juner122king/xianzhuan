@@ -10,7 +10,7 @@ import com.lelezu.app.xianzhuan.R
 
 
 //自定义View  logo与广告词的组合UI
-class CustomImageTextView @JvmOverloads constructor(
+class CustomLogoView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0

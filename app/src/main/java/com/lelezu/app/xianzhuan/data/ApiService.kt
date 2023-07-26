@@ -1,10 +1,14 @@
 package com.lelezu.app.xianzhuan.data
 
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
+import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.data.model.TaskType
+import com.lelezu.app.xianzhuan.data.model.UserInfo
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -18,6 +22,9 @@ interface ApiService {
 
     @POST("/dxz/app/user/login")  //用户登录
     fun getLogin(@Body loginInfo: LoginInfo): Call<ApiResponse<LoginReP>>
+
+    @GET("/dxz/app/user/info")  //用户信息
+    fun getUserInfo(): Call<ApiResponse<UserInfo>>
 
     @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
     fun getTaskInfo(@Path("taskId") id: String): Call<ApiResponse<Task>>
@@ -36,18 +43,32 @@ interface ApiService {
     @GET("/dxz/app/task/page")
     fun getTaskList(
         @Query("queryCond") queryCond: String,
-        @Query("current") current: Int,
-        @Query("highPrice") highPrice: Float,
-        @Query("lowPrice") lowPrice: Float,
-        @Query("size") size: Int,
-        @Query("taskStatus") taskStatus: Int,
-        @Query("taskTypeId") taskTypeId: String
-    ): Call<ApiResponse<ListData>>
+        @Query("current") current: Int?,
+        @Query("highPrice") highPrice: Float?,
+        @Query("lowPrice") lowPrice: Float?,
+        @Query("size") size: Int?,
+        @Query("taskStatus") taskStatus: Int?,
+        @Query("taskTypeId") taskTypeId: String?
+    ): Call<ApiResponse<ListData<Task>>>
 
-    @GET("/dxz/app/task/page")//获取任务列表
-    fun getTaskList(
-        @Query("queryCond") queryCond: String
-    ): Call<ApiResponse<ListData>>
+    @GET("/dxz/app/task/type/options")//获取任务类型列表
+    fun getTaskTypeList(): Call<ApiResponse<List<TaskType>>>
+
+
+    @GET("/dxz/app/task/shuffle")//随机为用户推荐3个任务
+    fun shuffle(): Call<ApiResponse<List<Task>>>
+
+
+    @GET("/dxz/app/sys/inform/page")//获取系统消息
+    fun getSysMessageList(
+        @Query("current") current: Int, @Query("size") size: Int
+    ): Call<ApiResponse<ListData<Message>>>
+
+
+    @GET("/dxz/app/sys/config")//获取系统配置信息
+    fun getConfig(
+        @Path("confType") confType: String, @Path("configKey") configKey: String
+    ): Call<ApiResponse<Config>>
 
 
 }

@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -12,12 +11,12 @@ import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+
 
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
@@ -26,7 +25,6 @@ class HomeActivity : AppCompatActivity() {
 
         val adapter = HomeActivityAdapter(supportFragmentManager, lifecycle, fragmentList)
         viewPager.adapter = adapter
-
 
 
         //  页面更改监听
@@ -54,15 +52,38 @@ class HomeActivity : AppCompatActivity() {
 
         //  图标选择监听
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            hideRightText()
+            showView()
             when (item.itemId) {
-                R.id.navigation_home -> viewPager.currentItem = 0
-                R.id.navigation_dashboard -> viewPager.currentItem = 1
-                R.id.navigation_notifications -> viewPager.currentItem = 2
-                R.id.navigation_my -> viewPager.currentItem = 3
+                R.id.navigation_home -> {
+                    viewPager.currentItem = 0
+                    setTitleText(getString(R.string.title_home))
+
+                }
+
+                R.id.navigation_dashboard -> {
+                    viewPager.currentItem = 1
+                    showRightText(getString(R.string.dashboard_tab5_text))
+                    setTitleText(getString(R.string.title_dashboard))
+                }
+
+                R.id.navigation_notifications -> {
+                    viewPager.currentItem = 2
+                    setTitleText(getString(R.string.title_notifications))
+
+                }
+
+                R.id.navigation_my -> {
+                    viewPager.currentItem = 3
+                    setTitleText(getString(R.string.title_my))
+                    hideView()
+
+                }
             }
             true
         }
     }
+
 
     private fun initData() {
         val mainFragment = MainFragment.newInstance(getString(R.string.title_home), "")
@@ -77,5 +98,18 @@ class HomeActivity : AppCompatActivity() {
 
         val myFragment = MyFragment.newInstance(getString(R.string.title_my), "")
         fragmentList.add(myFragment)
+    }
+
+    override fun getLayoutId(): Int {
+        return R.layout.activity_home
+    }
+
+    override fun getContentTitle(): String? {
+        return getString(R.string.title_activity_home)
+    }
+
+    //是否显示返回键
+    override fun isShowBack(): Boolean {
+        return false
     }
 }

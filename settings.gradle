@@ -6,7 +6,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-
+        maven { url 'https://repo1.maven.org/maven2/' }
     }
 }
 dependencyResolutionManagement {
@@ -17,7 +17,7 @@ dependencyResolutionManagement {
         }
         google()
         mavenCentral()
-
+        maven { url 'https://repo1.maven.org/maven2/' }
 
     }
 }

@@ -16,12 +16,22 @@
 
     <string name="agreement_content">协议内容</string>
     <string name="title_activity_home">得闲帮</string>
+    <string name="title_activity_out">关于我们</string>
+    <string name="title_activity_message">消息</string>
+    <string name="title_activity_search_result">搜索结果</string>
+    <string name="title_task_cs">条件选择</string>
 
 
-    <string name="title_home">首页</string>
+    <string name="title_home">得闲帮</string>
     <string name="title_dashboard">悬赏大厅</string>
     <string name="title_notifications">收徒赚钱</string>
-    <string name="title_my">我的</string>
+    <string name="title_my">个人中心</string>
+
+    <string name="dashboard_tab1_text">置顶</string>
+    <string name="dashboard_tab2_text">简单</string>
+    <string name="dashboard_tab3_text">高价</string>
+    <string name="dashboard_tab4_text">最新</string>
+    <string name="dashboard_tab5_text">筛选</string>
 
 
 </resources>

@@ -71,7 +71,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
-    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.core:core-ktx:+'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -97,8 +96,15 @@ dependencies {
 
     implementation 'io.github.yidun:quicklogin:3.3.1'//网易号码认证
 
-
     implementation files('libs/HTProtectLib-5.4.1.aar')//"智能风控” SDK
+
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    // 下面各SDK根据宿主App是否使用相关业务按需引入。
+    // 友盟统计SDK
+    implementation 'com.umeng.umsdk:common:9.6.3'// 必选
+    implementation 'com.umeng.umsdk:asms:1.8.0'// 必选
 
 
 }
