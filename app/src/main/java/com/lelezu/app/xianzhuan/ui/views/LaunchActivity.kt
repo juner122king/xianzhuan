@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 
 /**  APP启动屏
@@ -52,13 +53,13 @@ class LaunchActivity : AppCompatActivity() {
             performOtherActionOrNavigateToLogin()
         }
     }
+
     private fun checkUserLoginStatus(): Boolean {
-        // 从本地存储中获取登录状态，例如使用SharedPreferences
-        val sharedPreferences = getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean("LoginStatus", false)
+        return ShareUtil.getBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS)
 
 
     }
+
     private fun performOtherActionOrNavigateToLogin() {
         // 用户未登录时的处理逻辑，例如执行其他操作或跳转到登录页面
         // 跳转到登录页面

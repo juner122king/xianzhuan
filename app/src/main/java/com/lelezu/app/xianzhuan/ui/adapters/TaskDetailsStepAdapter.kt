@@ -1,59 +1,53 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Task
-import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
+import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.TaskStep
+import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 
 /**
  * @author:Administrator
- * @date:2023/7/20 0020
- * @description:主页任务列表适配器
+ * @date:2023/7/27 0027
+ * @description:
  *
  */
-class TaskItemAdapter(private var items: List<Task>, var activity: FragmentActivity) :
-    RecyclerView.Adapter<TaskItemAdapter.ItemViewHolder>() {
+class TaskDetailsStepAdapter(private var items: List<TaskStep>) :
+    RecyclerView.Adapter<TaskDetailsStepAdapter.ItemViewHolder>() {
 
     // 更新数据方法
-    fun updateData(newItems: List<Task>) {
+    fun updateData(newItems: List<TaskStep>) {
         items = newItems
         notifyDataSetChanged()
     }
 
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
-        val clickVIew: View = itemView.findViewById(R.id.click_view)
+        val title: TextView = itemView.findViewById(R.id.tv_step_text)
+        val ivPic: ImageView = itemView.findViewById(R.id.iv_pic)
     }
 
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.home_task_list_item_layout, parent, false)
-
-
+            .inflate(R.layout.item__task_details_step, parent, false)
         return ItemViewHolder(view)
     }
 
     // 绑定数据到 ItemViewHolder
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
-        holder.nameTextView.text = item.taskTitle
+        holder.title.text = item.stepDesc
+//        ImageViewUtil.load(holder.ivPic, item.useCaseImages)
 
-
-        //整个itemView能点击
-        holder.clickVIew.setOnClickListener {
-            val intent = Intent(activity, TaskDetailsActivity::class.java)
-            intent.putExtra("taskId", items[position].taskId)
-            activity.startActivity(intent)
-        }
-
+//        holder.ivPic.load(R.drawable.logo)
+        holder.ivPic.load("https://t7.baidu.com/it/u=4036010509,3445021118&fm=193&f=GIF")
     }
 
     // 返回数据项数量

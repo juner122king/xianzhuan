@@ -27,7 +27,7 @@ import java.io.FileReader
 class MyApplication : Application() {
 
 
-    private val apiService by lazy { ApiFactory.create(this) }
+    private val apiService by lazy { ApiFactory.create() }
 
     val userRepository by lazy { UserRepository(apiService) }
 
@@ -75,7 +75,13 @@ class MyApplication : Application() {
         //调用预初始化函数
         UMConfigure.preInit(this, "648282fba1a164591b2e9331", "测试");
         //正式初始化函数
-        UMConfigure.init(this,"648282fba1a164591b2e9331",getString(R.string.app_name),UMConfigure.DEVICE_TYPE_PHONE,"")
+        UMConfigure.init(
+            this,
+            "648282fba1a164591b2e9331",
+            getString(R.string.app_name),
+            UMConfigure.DEVICE_TYPE_PHONE,
+            ""
+        )
         UMConfigure.setLogEnabled(true)
 
     }

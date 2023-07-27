@@ -26,6 +26,9 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
 
     val taskTypeList: MutableLiveData<List<TaskType>> = MutableLiveData()
 
+
+    val task: MutableLiveData<Task> = MutableLiveData() //任务详情类
+
     // 获取任务列表数据 简单查询条件
     fun getTaskList(query: TaskQuery) = viewModelScope.launch {
         val taskList = taskRepository.apiGetTaskList(query)
@@ -43,6 +46,13 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     fun getShuffle() = viewModelScope.launch {
         val list = taskRepository.apiShuffle()
         shuffleList.postValue(list!!)
+    }
+
+
+    // 获取任务详情
+    fun getTaskDetails(taskId: String) = viewModelScope.launch {
+        val r = taskRepository.apiTaskDetails(taskId)
+        task.postValue(r!!)
     }
 
 

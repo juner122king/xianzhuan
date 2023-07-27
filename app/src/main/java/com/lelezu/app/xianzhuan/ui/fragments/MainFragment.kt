@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskItemAdapter(emptyList())
+        adapter = TaskItemAdapter(emptyList(), requireActivity())
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

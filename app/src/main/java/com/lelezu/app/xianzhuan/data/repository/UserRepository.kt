@@ -7,6 +7,7 @@ import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.UserInfo
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -86,13 +87,10 @@ class UserRepository(private var apiService: ApiService) {
     //保存登录信息
     private fun saveInfo(loginReP: LoginReP) {
         //保存登录信息
-        val sharedPreferences =
-            MyApplication.context!!.getSharedPreferences("ApiPrefs", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("LoginToken", loginReP.accessToken)
-        editor.putString("LoginId", loginReP.userId)
-        editor.putBoolean("LoginStatus", true)
-        editor.apply()
+        ShareUtil.putString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN,loginReP.accessToken) //保存登录TOKEN
+        ShareUtil.putString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID,loginReP.userId) //保存用户id
+        ShareUtil.putBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS,true) //保存登录状态
+
 
     }
 

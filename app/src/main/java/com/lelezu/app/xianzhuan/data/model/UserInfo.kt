@@ -6,6 +6,20 @@ package com.lelezu.app.xianzhuan.data.model
  * @description:
  *
  */
+
+/**
+ * @property wxAccount String 微信账号
+ * @property vipLevel Int 会员等级
+ * @property userId String 用户ID
+ * @property rechargeAmount Float 充值金额
+ * @property nickname String 用户昵称
+ * @property mobilePhone String 手机号
+ * @property lastLoginDt String 最后一次登录时间
+ * @property headImageUrl String 	头像
+ * @property createdDt String 注册时间
+ * @property balanceAmount Float 	可用金额
+ * @constructor
+ */
 data class UserInfo(
 
     val wxAccount: String,

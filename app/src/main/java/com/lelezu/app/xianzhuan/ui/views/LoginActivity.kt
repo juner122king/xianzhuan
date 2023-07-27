@@ -1,6 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import ToastUtils
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

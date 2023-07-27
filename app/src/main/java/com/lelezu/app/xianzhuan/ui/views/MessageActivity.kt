@@ -22,7 +22,6 @@ class MessageActivity : BaseActivity() {
     private lateinit var adapter: MessageItemAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_message)
 
         val recyclerView = findViewById<RecyclerView>(R.id.rv_message)
         // 创建适配器，并将其绑定到 RecyclerView 上
@@ -30,18 +29,6 @@ class MessageActivity : BaseActivity() {
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        val itemList = listOf(
-
-            Message("每日奖励", "还差一个任务，0.38元资金到手", false, "1", "今天10:00"),
-            Message("每日奖励", "还差一个任务，0.38元资金到手", false, "1", "今天17:00"),
-            Message("每日奖励", "还差一个任务，0.38元资金到手", false, "1", "今天18:00"),
-            Message("每日奖励", "还差一个任务，0.38元资金到手", false, "1", "今天19:00"),
-            Message("每日奖励", "还差一个任务，0.38元资金到手", false, "1", "今天20:00"),
-            Message("每日奖励", "还差一个任务，0.38元资金到手", false, "1", "今天10:00"),
-
-            )
-        adapter.updateData(itemList)
 
 
         sysMessageViewModel.liveData.observe(this) { itemList ->

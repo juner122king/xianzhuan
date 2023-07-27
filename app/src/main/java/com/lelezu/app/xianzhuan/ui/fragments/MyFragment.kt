@@ -7,9 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
@@ -62,14 +65,23 @@ class MyFragment : Fragment(), View.OnClickListener {
 
 
         //执行获取用户信息接口
-        loginViewModel2.getUserInfo()
-
-        loginViewModel2.userInfo.observe(requireActivity()) {
-            view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
-
+//        loginViewModel2.getUserInfo()
+//
+//        loginViewModel2.userInfo.observe(requireActivity()) {
+//            view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
+//            view.findViewById<TextView>(R.id.tv_user_id).text = it!!.userId
+//            view.findViewById<TextView>(R.id.tv_my_text1).text = it!!.rechargeAmount.toString()
+//            view.findViewById<TextView>(R.id.tv_my_text2).text = it!!.balanceAmount.toString()
+//            imageViewUserPic = view.findViewById(R.id.iv_user_pic)
+//            imageViewUserPic.load(it.headImageUrl) { crossfade(true) }
+//
+//
+//        }
+        val imageViewUserPic = view.findViewById<ImageView>(R.id.iv_user_pic)
+        imageViewUserPic.load("https://profile-avatar.csdnimg.cn/26922ef5d403474f917c8e68afeeca42_qq_25749749.jpg!1") {
+            crossfade(1000)
+            transformations(CircleCropTransformation())
         }
-
-
     }
 
     companion object {

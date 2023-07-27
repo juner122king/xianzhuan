@@ -33,5 +33,7 @@
     <string name="dashboard_tab4_text">最新</string>
     <string name="dashboard_tab5_text">筛选</string>
 
+    <string name="title_task_details">悬赏任务详情</string>
+
 
 </resources>

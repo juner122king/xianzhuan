@@ -53,8 +53,6 @@ interface ApiService {
 
     @GET("/dxz/app/task/type/options")//获取任务类型列表
     fun getTaskTypeList(): Call<ApiResponse<List<TaskType>>>
-
-
     @GET("/dxz/app/task/shuffle")//随机为用户推荐3个任务
     fun shuffle(): Call<ApiResponse<List<Task>>>
 

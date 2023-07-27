@@ -10,6 +10,7 @@ import com.lelezu.app.xianzhuan.ui.fragments.DashFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
@@ -82,6 +83,8 @@ class HomeActivity : BaseActivity() {
             }
             true
         }
+
+
     }
 
 

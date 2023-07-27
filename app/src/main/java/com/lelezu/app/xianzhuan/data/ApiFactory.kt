@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.data
 
 import android.content.Context
 import com.lelezu.app.xianzhuan.MyApplication
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,9 +19,8 @@ public abstract class ApiFactory {
 
     companion object {
 
-        fun create(context: Context): ApiService {
-            val token = context.getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-                ?.getString("LoginToken", "")
+        fun create(): ApiService {
+            val token = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
 
             //Log查看过滤器，上线版去掉
             val logInterceptor = HttpLoggingInterceptor()
@@ -39,7 +39,6 @@ public abstract class ApiFactory {
             val retrofit = Retrofit.Builder().baseUrl(ApiConstants.HOST)
                 .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
             return retrofit.create(ApiService::class.java)
-
 
         }
 

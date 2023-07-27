@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".ui.views.TaskDetailsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_user_pic"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:hint="隔壁老王"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/iv_user_pic"
+                    app:layout_constraintTop_toTopOf="@id/iv_user_pic" />
+
+                <TextView
+                    android:id="@+id/tv_fan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="888粉丝"
+                    app:layout_constraintStart_toStartOf="@id/tv_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+                <TextView
+                    android:id="@+id/tv_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    android:hint="好评100%"
+                    app:layout_constraintStart_toEndOf="@id/tv_fan"
+                    app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+                <TextView
+                    android:id="@+id/tv_user_vip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radius_border_corners15"
+                    android:hint="分享赚0.88元"
+                    android:paddingStart="15dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/colorControlActivated"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radius_border">
+
+                <ImageView
+                    android:id="@+id/iv_task_pic"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_task_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:hint="看视频就拿钱"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/iv_task_pic"
+                    app:layout_constraintTop_toTopOf="@id/iv_task_pic" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="限时1小时完成"
+                    app:layout_constraintStart_toStartOf="@id/tv_task_title"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_title" />
+
+                <TextView
+                    android:id="@+id/tv_nub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:hint="好评100%"
+                    app:layout_constraintStart_toEndOf="@id/tv_time"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_title" />
+
+                <TextView
+                    android:id="@+id/tv_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="好评100%"
+                    app:layout_constraintStart_toStartOf="@id/tv_task_title"
+                    app:layout_constraintTop_toBottomOf="@id/tv_time" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/radius_border">
+
+
+                <TextView
+                    android:id="@+id/tv_task_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="任务说明"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_t1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="支持设备"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_task_des_c"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="新老用户不限，每月一次，请勿退款，毕竟看视频能获得88.88元的收入"
+                    android:textColor="@color/black2"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@id/tv_task_des"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_des" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_task_step"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/radius_border"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_des_c" />
+
+
+                <LinearLayout
+                    android:id="@+id/llhide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/tv_task_des_c">
+
+                    <View
+                        android:id="@+id/line1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/line"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_des_c" />
+
+                    <TextView
+                        android:id="@+id/tv_task_step"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="任务步骤"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/line1" />
+
+                    <TextView
+                        android:id="@+id/tv_step2_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="20dp"
+                        android:text="进去页面后右上角三条杠，分享二维码点进去。"
+                        android:textColor="@color/black2"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="@id/tv_task_step"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_step" />
+
+                    <ImageView
+                        android:id="@+id/iv_illustration"
+                        android:layout_width="100dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="15dp"
+                        app:layout_constraintStart_toStartOf="@id/tv_step2_text"
+                        app:layout_constraintTop_toBottomOf="@id/tv_step2_text" />
+
+
+                    <View
+                        android:id="@+id/line2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/line"
+                        app:layout_constraintTop_toBottomOf="@id/iv_illustration" />
+
+                    <TextView
+                        android:id="@+id/tv_deon_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="完成任务验证"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+                    <TextView
+                        android:id="@+id/tv_deon1_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="20dp"
+                        android:text="进去页面后右上角三条杠，分享二维码点进去。"
+                        android:textColor="@color/black2"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="@id/tv_deon_text"
+                        app:layout_constraintTop_toBottomOf="@id/tv_deon_text" />
+
+                    <ImageView
+                        android:id="@+id/iv_done1_pic"
+                        android:layout_width="100dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="15dp"
+                        app:layout_constraintStart_toStartOf="@id/iv_illustration"
+                        app:layout_constraintTop_toBottomOf="@id/tv_deon1_text" />
+
+                    <ImageView
+                        android:id="@+id/iv_up_pic"
+                        android:layout_width="100dp"
+                        android:layout_height="200dp"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintStart_toEndOf="@id/iv_done1_pic"
+                        app:layout_constraintTop_toTopOf="@id/iv_done1_pic" />
+
+
+                    <TextView
+                        android:id="@+id/tv_up_pic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/radius_border_button"
+                        android:paddingStart="15dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="15dp"
+                        android:paddingBottom="8dp"
+                        android:text="任务完成上传验证图"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="@id/iv_done1_pic"
+                        app:layout_constraintTop_toBottomOf="@id/iv_up_pic"
+
+                        />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -30,13 +30,7 @@ class TaskRepository(private var apiService: ApiService) {
         val taskTypeId = query.taskTypeId
         try {
             val response = apiService.getTaskList(
-                queryCond,
-                current,
-                highPrice,
-                lowPrice,
-                size,
-                taskStatus,
-                taskTypeId
+                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId
             ).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
@@ -51,7 +45,7 @@ class TaskRepository(private var apiService: ApiService) {
                     else -> {
                         Log.d(
                             "APP接口TaskList",
-                            "登录失败${response.body()?.code}:${response.body()?.message}"
+                            "失败${response.body()?.code}:${response.body()?.message}"
                         )
                         null
                     }
@@ -66,67 +60,98 @@ class TaskRepository(private var apiService: ApiService) {
     }
 
     //获取任务类型列表
-    suspend fun apiGetTaskTypeList(): List<TaskType>? =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getTaskTypeList().execute()
-                if (response.isSuccessful) {
-                    when (response.body()?.code) {
-                        "000000" -> {
-                            Log.d(
-                                "APP接口/type/options",
-                                "获取成功 : ToString: ${response.body()?.data?.toString()}"
-                            )
-                            response.body()?.data
-                        }
-
-                        else -> {
-                            Log.d(
-                                "APP接口/type/options",
-                                "登录失败${response.body()?.code}:${response.body()?.message}"
-                            )
-                            null
-                        }
+    suspend fun apiGetTaskTypeList(): List<TaskType>? = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getTaskTypeList().execute()
+            if (response.isSuccessful) {
+                when (response.body()?.code) {
+                    "000000" -> {
+                        Log.d(
+                            "APP接口/type/options",
+                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
+                        )
+                        response.body()?.data
                     }
-                } else {
-                    null
+
+                    else -> {
+                        Log.d(
+                            "APP接口/type/options",
+                            "失败${response.body()?.code}:${response.body()?.message}"
+                        )
+                        null
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } else {
                 null
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
+    }
 
     //随机为用户推荐3个任务
-    suspend fun apiShuffle(): List<Task>? =
-        withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.shuffle().execute()
-                if (response.isSuccessful) {
-                    when (response.body()?.code) {
-                        "000000" -> {
-                            Log.d(
-                                "APP接口/type/Shuffle",
-                                "获取成功 : ToString: ${response.body()?.data?.toString()}"
-                            )
-                            response.body()?.data
-                        }
-
-                        else -> {
-                            Log.d(
-                                "APP接口/type/Shuffle",
-                                "登录失败${response.body()?.code}:${response.body()?.message}"
-                            )
-                            null
-                        }
+    suspend fun apiShuffle(): List<Task>? = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.shuffle().execute()
+            if (response.isSuccessful) {
+                when (response.body()?.code) {
+                    "000000" -> {
+                        Log.d(
+                            "APP接口/type/Shuffle",
+                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
+                        )
+                        response.body()?.data
                     }
-                } else {
-                    null
+
+                    else -> {
+                        Log.d(
+                            "APP接口/type/Shuffle",
+                            "失败${response.body()?.code}:${response.body()?.message}"
+                        )
+                        null
+                    }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } else {
                 null
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
+    }
+
+
+    //任务详情
+    suspend fun apiTaskDetails(taskId: String): Task? = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getTaskInfo(taskId).execute()
+            if (response.isSuccessful) {
+                when (response.body()?.code) {
+                    "000000" -> {
+                        Log.d(
+                            "APP接口 任务详情",
+                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
+                        )
+                        response.body()?.data
+                    }
+
+                    else -> {
+                        Log.d(
+                            "APP接口任务详情",
+                            "失败${response.body()?.code}:${response.body()?.message}"
+                        )
+                        null
+                    }
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 
 }

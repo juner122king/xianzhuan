@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.lelezu.app.xianzhuan.MyApplication
 
 /**
  * @author:Administrator
@@ -10,30 +11,55 @@ import android.content.SharedPreferences
  *
  */
 object ShareUtil {
+
     private var sps: SharedPreferences? = null
 
+    private const val APP_SHARED_PREFERENCES_KEY: String = "ApiPrefs"
 
-    private fun getSps(context: Context): SharedPreferences {
+    const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
+    const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
+    const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
+
+    private val applicationContext by lazy { MyApplication.context }
+
+    private fun getSps(): SharedPreferences {
         if (sps == null) {
-            sps = context.getSharedPreferences("default", Context.MODE_PRIVATE)
+            sps = applicationContext?.getSharedPreferences(
+                APP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE
+            )
         }
         return sps!!
     }
 
-    fun putString(key: String, value: String?, context: Context) {
+    fun putString(key: String, value: String?) {
         if (!value.isNullOrBlank()) {
-            var editor: SharedPreferences.Editor = getSps(context).edit()
+            val editor: SharedPreferences.Editor = getSps().edit()
             editor.putString(key, value)
-            editor.commit()
+            editor.apply()
         }
     }
 
-    fun getString(key: String, context: Context): String? {
-        if (!key.isNullOrBlank()) {
-            var sps: SharedPreferences = getSps(context)
+    fun getString(key: String): String? {
+        if (key.isNotBlank()) {
+            val sps: SharedPreferences = getSps()
             return sps.getString(key, null)
         }
         return null
+    }
+
+    fun putBoolean(key: String, value: Boolean) {
+
+        val editor: SharedPreferences.Editor = getSps().edit()
+        editor.putBoolean(key, value)
+        editor.apply()
+
+    }
+
+    fun getBoolean(key: String): Boolean {
+
+        val sps: SharedPreferences = getSps()
+        return sps.getBoolean(key, false)
+
     }
 
 }

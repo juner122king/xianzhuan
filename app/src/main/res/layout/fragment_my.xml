@@ -64,9 +64,10 @@
 
                 <ImageView
                     android:id="@+id/iv_user_pic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
                     android:src="@drawable/my_user_head"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,7 +80,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@id/iv_user_pic"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@id/iv_user_pic" />
 
                 <TextView
                     android:id="@+id/tv_user_id"

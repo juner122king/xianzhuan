@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
-import ToastUtils
-import android.annotation.SuppressLint
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -50,9 +49,7 @@ class TaskCondAdapter(var context: Context, var datas: List<TaskType>) : BaseAda
 
 
         if (selectposition == position) {
-//            myHolder.textView.setTextColor(Integer.parseUnsignedInt("ffff0000", 16))
-//            myHolder.textView.setBackgroundResource(R.drawable.radius_border_stroke_selected)
-//            myHolder.textView.setPadding(5, 5, 5, 5)
+
 
             myHolder.textView.setTextColor(context.getColor(R.color.colorControlActivated))
             myHolder.textView.setBackgroundResource(R.drawable.radius_border_stroke_selected)
@@ -61,9 +58,7 @@ class TaskCondAdapter(var context: Context, var datas: List<TaskType>) : BaseAda
 
 
         } else {
-//            myHolder.textView.setTextColor(Integer.parseUnsignedInt("ff444444", 16))
-//            myHolder.textView.setBackgroundResource(R.drawable.radius_border_stroke)
-//            myHolder.textView.setPadding(5, 5, 5, 5)
+
 
             myHolder.textView.setTextColor(context.getColor(R.color.text_999))
             myHolder.textView.setBackgroundResource(R.drawable.radius_border_stroke)

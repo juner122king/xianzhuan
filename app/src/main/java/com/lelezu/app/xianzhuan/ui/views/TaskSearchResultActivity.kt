@@ -1,12 +1,9 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.MyApplication
@@ -37,7 +34,7 @@ class TaskSearchResultActivity : BaseActivity() {
 
 
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskItemAdapter(emptyList())
+        adapter = TaskItemAdapter(emptyList(), this)
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
