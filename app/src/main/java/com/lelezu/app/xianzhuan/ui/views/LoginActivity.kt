@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,12 +15,14 @@ import androidx.appcompat.app.AlertDialog
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 //登录页面
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹
@@ -31,68 +34,81 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.i("LoginActivity", "方法onCreate()")
-        setContentView(R.layout.activity_login)
-
-        val btoPhoneLogin = findViewById<TextView>(R.id.bto_phome_login)//‘使用手机登录’按钮
-        val btoWxLogin = findViewById<ImageView>(R.id.bto_wx_login)//微信登录按钮
-        val tvAgreement = findViewById<TextView>(R.id.tv_agreement)//打开协议按钮
-
-        cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
-
-        //点击 ‘使用手机登录’的动作
-        btoPhoneLogin.setOnClickListener {
-            startActivity(Intent(this, PhoneLoginActivity::class.java))
-        }
-        //打开协议
-        tvAgreement.setOnClickListener {
-            // 显示弹窗
-            showAgreementDialog()
-
-        }
-
         //微信Api初始化
         WxLogin.initWx(this)
-        btoWxLogin.setOnClickListener {
-            wxLoginInit()
-        }
 
+        setContentView(R.layout.activity_login)
+        cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
+        findViewById<TextView>(R.id.bto_phome_login).setOnClickListener(this)//‘使用手机登录’按钮
+        findViewById<ImageView>(R.id.bto_wx_login).setOnClickListener(this)//微信登录按钮
+        findViewById<TextView>(R.id.tv_agreement).setOnClickListener(this) //打开协议按钮
+
+    }
+
+    private fun wxLoginInit() {
+
+        when (cbAgree.isChecked) {
+            true -> {
+                WxLogin.longWx();    //微信登录
+            }
+
+            else -> {
+                ToastUtils.showToast(this, "请同意隐私政策")
+            }
+        }
     }
 
     private fun getLogin(wxCode: String) {
         Log.i("LoginActivity", "开始执行登录请求方法getLogin")
-
         // 用户进行登录，执行登录接口
-
         loginViewModel2.getLoginInfo(wxCode)
         loginViewModel2.loginRePLiveData.observe(this) {
             if (it != null) {
-                Log.i("LoginActivity","loginRePLiveData数有变化：${it}")
-                goToHomeActivity()
+                if (it.isNewer) {
+                    Log.i("LoginActivity", "新用户  登录成功：$it")
+
+                    val intent = Intent(context, PhoneLoginActivity::class.java)
+                    startActivity(intent)
+
+                } else {
+                    Log.i("LoginActivity", "旧用户  登录成功：$it")
+                    goToHomeActivity()
+                }
 
             } else {
-                Log.i("LoginActivity", "开始执行登录请求方法getLogin")
+                Log.i("LoginActivity", "登录失败")
             }
         }
 
     }
 
-    private fun goToHomeActivity(){
+    private fun goToRegister(register: Register) {
+
+        loginViewModel2.getRegister(register)
+        loginViewModel2.registerLoginRePLiveData.observe(this) {
+
+            Log.i("LoginActivity", "注册返回信息：：$it")
+            if (it != null) {
+                if (it.isNewer) {
+                    Log.i("LoginActivity", "新用户  注册成功：$it")
+
+                } else {
+                    Log.i("LoginActivity", "旧用户  注册成功：$it")
+                    goToHomeActivity()
+                }
+            } else {
+                Log.i("LoginActivity", "登录失败")
+            }
+
+        }
+
+
+    }
+
+    private fun goToHomeActivity() {
         finish()
         val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
-    }
-
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.i("LoginActivity", "方法onRestart()")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("LoginActivity", "方法onStart()")
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -100,15 +116,26 @@ class LoginActivity : AppCompatActivity() {
         Log.i("LoginActivity", "方法onNewIntent()")
         //从微信授权页面返回
         if (intent != null) {
-            intent.getStringExtra("wx_code")?.let { getLogin(it) }
-        };
+            if (intent.getStringExtra("type").equals("WX")) intent.getStringExtra("wx_code")?.let {
+                getLogin(it)
+            }
+            if (intent.getStringExtra("type").equals("163")) {
+                ToastUtils.showToast(this, "一键登录成功", 0)
 
+
+                val deviceToken = ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN)
+                val mobileAccessToken =
+                    ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
+                val mobileToken = ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_TOKEN)
+                val userId = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)
+
+
+                //请求注册接口
+                goToRegister(Register(deviceToken, mobileAccessToken, mobileToken, null, userId))
+            }
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.i("LoginActivity", "方法onResume()")
-    }
 
     // 显示用户协议弹窗
     private fun showAgreementDialog() {
@@ -144,18 +171,12 @@ class LoginActivity : AppCompatActivity() {
         cbAgree.isChecked = true
     }
 
-    //微信登录
-    private fun wxLoginInit() {
 
-        when (cbAgree.isChecked) {
-            true -> {
-                WxLogin.longWx();
-            }
-
-            else -> {
-                ToastUtils.showToast(this, "请同意隐私政策")
-
-            }
+    override fun onClick(p0: View?) {
+        when (p0?.id) {
+            R.id.tv_agreement -> showAgreementDialog() // 显示协议弹窗
+            R.id.bto_wx_login -> wxLoginInit() // 微信登录按钮
+            R.id.bto_phome_login -> wxLoginInit() // 使用手机登录
         }
 
     }

@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,9 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
+import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.wxapi.WxData
+import com.netease.htprotect.HTProtect
+import com.netease.htprotect.result.AntiCheatResult
+import com.netease.nis.quicklogin.QuickLogin
+import com.netease.nis.quicklogin.listener.QuickLoginPreMobileListener
+import com.netease.nis.quicklogin.listener.QuickLoginTokenListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -24,13 +32,15 @@ import kotlinx.coroutines.launch
 class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() {
 
     val loginRePLiveData: MutableLiveData<LoginReP?> = MutableLiveData()
+    val registerLoginRePLiveData: MutableLiveData<LoginReP?> = MutableLiveData()
 
 
     val userInfo: MutableLiveData<UserInfo?> = MutableLiveData()
-    fun getLoginInfo(wxCode: String) = viewModelScope.launch {
+
+
+    fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
         val loginReP =
             userRepository.apiLogin(loginInfo(ApiConstants.LOGIN_METHOD_WX, wxCode, "", ""))
-
         loginRePLiveData.postValue(loginReP)
     }
 
@@ -47,11 +57,19 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
 
     }
 
-
     fun getUserInfo() = viewModelScope.launch {
         val rep = userRepository.apiUserInfo()
 
         userInfo.postValue(rep)
+    }
+
+
+    //注册
+    fun getRegister(register: Register) = viewModelScope.launch {
+
+        var registerLoginReP = userRepository.apiRegister(register)
+        registerLoginRePLiveData.postValue(registerLoginReP)
+
     }
 
 

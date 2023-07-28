@@ -56,15 +56,13 @@ class MyApplication : Application() {
         Log.i("MyApplication", packageName + "========" + processName + "=========" + versionName)
 
         //进行第三方sdk初始化
-
-
         //易盾
         val config = HTProtectConfig().apply {
             var serverType = 2
             var channel = "testchannel"
         }
         val callback = HTPCallback { paramInt, paramString ->
-            Log.d("Test", "code is: $paramInt String is: $paramString")
+            Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
         }
         HTProtect.init(context, "YD00525369360953", callback, config)
@@ -83,7 +81,7 @@ class MyApplication : Application() {
             ""
         )
         UMConfigure.setLogEnabled(true)
-
+        //友盟结束
     }
 
     fun getVersionName(): String {

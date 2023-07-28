@@ -29,7 +29,6 @@ class LaunchActivity : AppCompatActivity() {
         Manifest.permission.READ_SMS,
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-    private val permissionRequestCode = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +55,6 @@ class LaunchActivity : AppCompatActivity() {
 
     private fun checkUserLoginStatus(): Boolean {
         return ShareUtil.getBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS)
-
-
     }
 
     private fun performOtherActionOrNavigateToLogin() {

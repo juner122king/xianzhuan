@@ -12,6 +12,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 获取MAC地址 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 获取网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 若targetSdkVersion>=30，则需要增加以下权限，否则会影响SDK功能 -->
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许改变网络连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许改变WiFi网络连接状态 -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -76,15 +79,19 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".dun163api.PhoneLoginActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.lelezu.app.xianzhuan"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <activity
             android:name=".ui.views.LaunchActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

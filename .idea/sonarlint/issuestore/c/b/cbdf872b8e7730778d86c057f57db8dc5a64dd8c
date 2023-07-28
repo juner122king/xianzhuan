@@ -1,9 +1,0 @@
-
-j
-java:S1104"OMake api a static final constant or non-public and provide accessors if needed.(úñûÿÿÿÿ
-D
-java:S1444")Make this "public static api" field final(úñûÿÿÿÿ
-I
-java:S1444".Make this "public static mContext" field final(Ê®âÿÿÿÿÿ
-U
-java:S1118":Add a private constructor to hide the implicit public one.(Ú»¶úÿÿÿÿ

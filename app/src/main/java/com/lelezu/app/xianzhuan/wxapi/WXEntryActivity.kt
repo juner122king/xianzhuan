@@ -50,24 +50,8 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                         finish()
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.putExtra("wx_code", r.code)
+                        intent.putExtra("type","WX")
                         startActivity(intent)
-
-
-//                        finish()
-//                        //易盾获取token
-//                        val myGetTokenCallback = GetTokenCallback { antiCheatResult ->
-//                            if (antiCheatResult.code == AntiCheatResult.OK) {
-//                                // 调用成功
-//                                Log.d("易盾token", "async token:${antiCheatResult.token}")
-//                                val sharedPreferences =
-//                                    getSharedPreferences("ApiPrefs", Context.MODE_PRIVATE)
-//                                val editor = sharedPreferences.edit()
-//                                editor.putString("易盾token", antiCheatResult.token)
-//                                editor.apply()
-//
-//                            }
-//                        }
-//                        HTProtect.getTokenAsync(3000, "e377b3fedaec37da3be3a08a8c202e71", myGetTokenCallback)
 
 
                     }

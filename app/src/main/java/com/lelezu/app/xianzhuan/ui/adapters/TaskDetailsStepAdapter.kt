@@ -44,10 +44,7 @@ class TaskDetailsStepAdapter(private var items: List<TaskStep>) :
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
         holder.title.text = item.stepDesc
-//        ImageViewUtil.load(holder.ivPic, item.useCaseImages)
-
-//        holder.ivPic.load(R.drawable.logo)
-        holder.ivPic.load("https://t7.baidu.com/it/u=4036010509,3445021118&fm=193&f=GIF")
+        holder.ivPic.load(item.useCaseImages[0]) //注意 ！！useCaseImages是集合
     }
 
     // 返回数据项数量

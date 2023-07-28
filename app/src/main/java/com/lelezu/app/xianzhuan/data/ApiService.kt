@@ -6,6 +6,7 @@ import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.UserInfo
@@ -19,6 +20,9 @@ import retrofit2.http.Query
 //API 接口
 interface ApiService {
 
+
+    @POST("/dxz/app/user/register")  //用户注册
+    fun register(@Body register: Register): Call<ApiResponse<LoginReP>>
 
     @POST("/dxz/app/user/login")  //用户登录
     fun getLogin(@Body loginInfo: LoginInfo): Call<ApiResponse<LoginReP>>
