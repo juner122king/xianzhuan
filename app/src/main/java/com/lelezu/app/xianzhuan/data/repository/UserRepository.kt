@@ -106,9 +106,9 @@ class UserRepository(private var apiService: ApiService) {
 
 
     //获取用户信息
-    suspend fun apiUserInfo(): UserInfo? = withContext(Dispatchers.IO) {
+    suspend fun apiUserInfo(userId:String): UserInfo? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getUserInfo().execute()
+            val response = apiService.getUserInfo(userId).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {

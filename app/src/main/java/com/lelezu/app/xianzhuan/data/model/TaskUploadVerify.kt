@@ -9,15 +9,15 @@ package com.lelezu.app.xianzhuan.data.model
 
 /**
  *
- * @property uploadImage String?    	用户上传图片
- * @property useCaseImages List<String> 例图集合
+ * @property verifyType Int?
+ * @property useCaseImage 例图
  * @property verifyDesc String? 验证说明
  * @property verifyId String?   验证项ID
  * @constructor
  */
 data class TaskUploadVerify(
-    val uploadImage: String?,
-    val useCaseImages: List<String>,
+    val verifyType: Int?,
+    val useCaseImage: String,
     val verifyDesc: String?,
     val verifyId: String?
 )

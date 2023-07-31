@@ -50,7 +50,7 @@ data class Task(
     val rest: Int,
     val supportDevices: List<String>,
     val taskDesc: String?,
-    val taskId: String?,
+    val taskId: String,
     val taskStatus: Int,
     val taskStepList: List<TaskStep>,
     val taskTitle: String?,
@@ -60,6 +60,6 @@ data class Task(
     val taskUploadVerifyList: List<TaskUploadVerify>,
     val unitPrice: Float,
     val updatedDt: String?,
-    val userId: String?
+    val userId: String
 
 )

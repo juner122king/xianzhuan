@@ -3,6 +3,7 @@ package com.lelezu.app.xianzhuan.data.repository
 import android.util.Log
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.ListData
+import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskType
@@ -139,6 +140,37 @@ class TaskRepository(private var apiService: ApiService) {
                     else -> {
                         Log.d(
                             "APP接口任务详情",
+                            "失败${response.body()?.code}:${response.body()?.message}"
+                        )
+                        null
+                    }
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    //任务报名
+    suspend fun apiTaskApply(taskId: String): Boolean? = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.taskApply(Req(taskId)).execute()
+            if (response.isSuccessful) {
+                when (response.body()?.code) {
+                    "000000" -> {
+                        Log.d(
+                            "APP接口 任务报名",
+                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
+                        )
+                        response.body()?.data
+                    }
+
+                    else -> {
+                        Log.d(
+                            "APP接口任务报名",
                             "失败${response.body()?.code}:${response.body()?.message}"
                         )
                         null

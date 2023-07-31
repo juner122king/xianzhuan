@@ -57,8 +57,8 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
 
     }
 
-    fun getUserInfo() = viewModelScope.launch {
-        val rep = userRepository.apiUserInfo()
+    fun getUserInfo(userId:String) = viewModelScope.launch {
+        val rep = userRepository.apiUserInfo(userId)
 
         userInfo.postValue(rep)
     }

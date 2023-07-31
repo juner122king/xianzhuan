@@ -58,7 +58,14 @@
             android:exported="true"
             android:label="@string/title_activity_home"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.views.TaskCondSelectActivity"
             android:exported="true"
@@ -92,11 +99,7 @@
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"

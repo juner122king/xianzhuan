@@ -10,15 +10,15 @@ package com.lelezu.app.xianzhuan.data.model
  *
  * @property stepDesc String?   	步骤说明
  * @property stepId String? 步骤ID
- * @property uploadImage String?    用户上传图片
- * @property useCaseImages List<String> 例图集合
+ * @property useCaseImage 例图
  * @property webUrl String? 	网址
+ * @property stepType Int? 	步骤类型
  * @constructor
  */
 data class TaskStep(
     val stepDesc: String?,
     val stepId: String?,
-    val uploadImage: String?,
-    val useCaseImages: List<String>,
-    val webUrl: String?
+    val useCaseImage: String,
+    val webUrl: String,
+    val stepType: Int?
 )

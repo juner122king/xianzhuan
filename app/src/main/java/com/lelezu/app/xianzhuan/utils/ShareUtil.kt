@@ -16,6 +16,8 @@ object ShareUtil {
 
     private const val APP_SHARED_PREFERENCES_KEY: String = "ApiPrefs"
 
+
+    //用户登录
     const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
@@ -25,6 +27,12 @@ object ShareUtil {
     const val APP_163_PHONE_LOGIN_DEVICE_TOKEN: String = "deviceToken"
     const val APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN: String = "mobileAccessToken"
     const val APP_163_PHONE_LOGIN_MOBILE_TOKEN: String = "mobileToken"
+
+
+    //图片下载
+    const val APP_TASK_PIC_DOWN_URL: String = "PIC_DOWN_URL"
+
+
 
 
     private val applicationContext by lazy { MyApplication.context }

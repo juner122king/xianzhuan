@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="15dp">
 
 
     <TextView
@@ -13,12 +14,22 @@
         android:layout_marginTop="20dp"
         android:text="进去页面后右上角三条杠，分享二维码点进去。"
         android:textColor="@color/black2"
-        android:textSize="12sp"/>
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_web_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/iv_pic"
+        android:id="@+id/iv_case_pic"
         android:layout_width="100dp"
         android:layout_height="200dp"
-        android:layout_marginTop="15dp" />
+        android:visibility="gone" />
+
 
 </LinearLayout>

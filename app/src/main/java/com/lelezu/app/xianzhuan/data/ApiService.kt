@@ -7,6 +7,7 @@ import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.Register
+import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.UserInfo
@@ -28,10 +29,13 @@ interface ApiService {
     fun getLogin(@Body loginInfo: LoginInfo): Call<ApiResponse<LoginReP>>
 
     @GET("/dxz/app/user/info")  //用户信息
-    fun getUserInfo(): Call<ApiResponse<UserInfo>>
+    fun getUserInfo( @Query("userId") userId: String): Call<ApiResponse<UserInfo>>
 
     @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
     fun getTaskInfo(@Path("taskId") id: String): Call<ApiResponse<Task>>
+
+    @GET("/dxz/app/task/user/apply")//任务报名
+    fun taskApply(@Body req: Req): Call<ApiResponse<Boolean>>
 
     /**
      * //获取任务列表

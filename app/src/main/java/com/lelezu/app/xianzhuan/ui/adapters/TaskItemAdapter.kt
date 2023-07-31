@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +30,9 @@ class TaskItemAdapter(private var items: List<Task>, var activity: FragmentActiv
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
+        val shangJiTv: TextView = itemView.findViewById(R.id.tv_shang_ji)
+        val tvEarnedCount: TextView = itemView.findViewById(R.id.tv_task_earnedCount)
+        val tvTR: TextView = itemView.findViewById(R.id.tv_task_rest)
         val clickVIew: View = itemView.findViewById(R.id.click_view)
     }
 
@@ -42,9 +46,13 @@ class TaskItemAdapter(private var items: List<Task>, var activity: FragmentActiv
     }
 
     // 绑定数据到 ItemViewHolder
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
         holder.nameTextView.text = item.taskTitle
+        holder.shangJiTv.text = "${item.unitPrice}元"
+        holder.tvEarnedCount.text = "${item.earnedCount}人已赚"
+        holder.tvTR.text = "剩余${item.rest}个"
 
 
         //整个itemView能点击

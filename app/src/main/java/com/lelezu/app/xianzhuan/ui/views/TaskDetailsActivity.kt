@@ -2,61 +2,56 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.transform.RoundedCornersTransformation
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
-import com.lelezu.app.xianzhuan.ui.adapters.MessageItemAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
+import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
+import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
-
-    private lateinit var iv1: ImageView//步骤图1
-    private lateinit var iv2: ImageView//完成图1
-    private lateinit var iv3: ImageView//上传图1
     private lateinit var ivDialog: Dialog
+
+    private lateinit var taskDetailsRV: RecyclerView //步骤列表
+    private lateinit var taskVerifyRV: RecyclerView //验证列表
 
 
     private val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
     }
 
+    private val lvModel: LoginViewModel2 by viewModels {
+        LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
+    }
 
-    private lateinit var adapter: TaskDetailsStepAdapter
+    private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
+    private lateinit var adapterVerify: TaskVerifyStepAdapter//步骤列表
 
 
+    private lateinit var taskId: String//任务ID
+
+    private var aStatus = 0 //任务状态
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.rv_task_step)
+        taskId = intent.getStringExtra("taskId")!!
 
-        // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskDetailsStepAdapter(emptyList())
-        recyclerView.adapter = adapter
-        // 可以在这里设置 RecyclerView 的布局管理器，例如：
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-
-        //选择图片按钮
-        findViewById<View>(R.id.tv_up_pic).setOnClickListener(this)
         //开始--示例图打开功能
         ivDialog = Dialog(this, R.style.FullActivity)
         val attributes = window.attributes
@@ -65,31 +60,22 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         ivDialog.window?.attributes = attributes
 
 
-        iv1 = findViewById(R.id.iv_illustration)
 
-        //示例图
-        iv1.setOnClickListener {
-            ivDialog.setContentView(getImageView())
-            ivDialog.show()
-        }
-        //结束--示例图打开功能
+        taskDetailsRV = findViewById(R.id.rv_task_step)
+        // 创建适配器，并将其绑定到 RecyclerView 上
+        adapterDetails = TaskDetailsStepAdapter(emptyList(), ivDialog, this)
+        taskDetailsRV.adapter = adapterDetails
+        // 可以在这里设置 RecyclerView 的布局管理器，例如：
+        taskDetailsRV.layoutManager = LinearLayoutManager(this)
 
 
-        //开始--上传图片功能
-        iv2 = findViewById(R.id.iv_done1_pic)
-        //示例图
-        iv2.setOnClickListener {
-            ivDialog.setContentView(getImageView())
-            ivDialog.show()
-        }
 
-        iv3 = findViewById(R.id.iv_up_pic)
-
-        //示例图
-        iv3.setOnClickListener {
-            ivDialog.setContentView(getImageView())
-            ivDialog.show()
-        }
+        taskVerifyRV = findViewById(R.id.rv_task_verify)
+        // 创建适配器，并将其绑定到 RecyclerView 上
+        adapterVerify = TaskVerifyStepAdapter(emptyList(), ivDialog, this)
+        taskVerifyRV.adapter = adapterVerify
+        // 可以在这里设置 RecyclerView 的布局管理器，例如：
+        taskVerifyRV.layoutManager = LinearLayoutManager(this)
 
 
         //监听任务信息变化
@@ -99,52 +85,67 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         }
 
-        val string = intent.getStringExtra("taskId")
-        homeViewModel.getTaskDetails(string!!)
+        homeViewModel.getTaskDetails(getTaskDId()!!)
 
+        homeViewModel.isApply.observe(this) {
+            ToastUtils.showToast(this, if (it) "报名成功" else "报名失败", 0)
+        }
 
+        //换任务 监听
+        homeViewModel.shuffleList.observe(this) {
+
+            homeViewModel.getTaskDetails(it[0].taskId)
+        }
     }
+
 
     @SuppressLint("SetTextI18n")
     private fun setData(task: Task) {
+        putTaskDId(task.taskId)
+        val string = "${task.earnedCount}人已完成任务，任务可报名${task.limitTimes}次"
+        aStatus = task.auditStatus//
+        var tvBtm1 = ""
+        var tvBtm2 = "换个任务"
+        when (aStatus) {
+            0 -> {
+                tvBtm1 = "立即报名"
+                findViewById<TextView>(R.id.tv_btm2).setOnClickListener(this)
+                findViewById<TextView>(R.id.tv_btm1).setOnClickListener(this)
+            }
+
+            1 -> {
+                tvBtm1 = "提交"
+            }
+
+            2 -> {
+                tvBtm1 = "审核中"
+            }
+        }
+        findViewById<TextView>(R.id.tv_btm2).text = tvBtm1
 
         findViewById<TextView>(R.id.tv_task_title).text = task.taskTitle //任务标题
         findViewById<TextView>(R.id.tv_task_des_c).text = task.taskDesc //任务说明
         findViewById<TextView>(R.id.tv_time).text = "限时${task.operateTime}小时完成" //
         findViewById<TextView>(R.id.tv_nub).text = "剩余${task.rest}单" //
+        findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}元" //
 
-        val string = "${task.earnedCount}人已完成任务，任务可报名${task.limitTimes}次"
         findViewById<TextView>(R.id.tv_info).text = string
 
 
-        adapter.updateData(task.taskStepList)
-    }
 
 
-    //获取一个ImageView对象放到Dialog上
-    private fun getImageView(): ImageView {
-        val imageView = ImageView(this)
-        imageView.layoutParams = RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        imageView.load("https://t7.baidu.com/it/u=4036010509,3445021118&fm=193&f=GIF") {
-            crossfade(true)
-            transformations(RoundedCornersTransformation(10f, 10f, 10f, 10f))
-        }
+        adapterDetails.updateData(task.taskStepList)
+        adapterVerify.updateData(task.taskUploadVerifyList)
 
-        imageView.setOnClickListener {
-            ivDialog.dismiss()
-        }
+//        lvModel.getUserInfo(task.userId)//获取商家信息
+//        lvModel.userInfo.observe(this) {
+//
+//            ImageViewUtil.load(
+//                findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
+//            )
+//            findViewById<TextView>(R.id.tv_name).text = it!!.nickname
+//        }
 
-        //1.注册菜单
-        registerForContextMenu(imageView)
-        imageView.setOnLongClickListener {
-            //显示选项  保存图
-            //2.打开菜单
-            openContextMenu(imageView);
-            true
-        }
-        return imageView
 
     }
 
@@ -155,11 +156,14 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         super.onCreateContextMenu(menu, v, menuInfo)
         menu?.add(0, 1, 0, "保存")
         menu?.add(0, 2, 1, "取消")
-
+        0
         menu!!.getItem(0).setOnMenuItemClickListener {
-            Toast.makeText(this, "保存", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}",
+                Toast.LENGTH_SHORT
+            ).show()
             //进行保存图片操作
-
             true
         }
 
@@ -186,39 +190,47 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
-            R.id.tv_up_pic -> selectPic()
+            R.id.tv_btm1 -> homeViewModel.getShuffle()//换个任务
+            R.id.tv_btm2 -> homeViewModel.apiTaskApply(getTaskDId()!!)//报名
         }
-
-
     }
 
-    private fun selectPic() {
-        //打开系统图片
-        // 打开相机相册
-        // 在Activity Action里面有一个“ACTION_GET_CONTENT”字符串常量，
-        // 该常量让用户选择特定类型的数据，并返回该数据的URI.我们利用该常量，
-        // 然后设置类型为“image/*”，就可获得Android手机内的所有image。*/
-        // 打开相机相册
-        // 在Activity Action里面有一个“ACTION_GET_CONTENT”字符串常量，
-        // 该常量让用户选择特定类型的数据，并返回该数据的URI.我们利用该常量，
-        // 然后设置类型为“image/*”，就可获得Android手机内的所有image。*/
-        val intent = Intent()/* 开启Pictures画面Type设定为image *//* 开启Pictures画面Type设定为image */
-        intent.type =
-            "image/*"/* 使用Intent.ACTION_GET_CONTENT这个Action *//* 使用Intent.ACTION_GET_CONTENT这个Action */
-        intent.action = Intent.ACTION_GET_CONTENT/* 取得相片后返回本画面 *//* 取得相片后返回本画面 */
-        startActivityForResult(intent, 1)
+    private fun getTaskDId(): String? {
+        return taskId
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK) {
-            val uri: Uri? = data?.data
-            iv3.load(uri) {
-                crossfade(true)
-                transformations(RoundedCornersTransformation(10f, 10f, 10f, 10f))
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-
+    private fun putTaskDId(id: String) {
+        taskId = id
     }
 
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        if (resultCode == RESULT_OK) {
+//            val uri: Uri? = data?.data
+//            adapter.notifyItemChanged(data!!.getIntExtra("position", -1))//刷新对应项
+//        }
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//    }
+
+//    private fun selectPic(position: Int) {
+//        //打开系统图片
+//        // 打开相机相册
+//        // 在Activity Action里面有一个“ACTION_GET_CONTENT”字符串常量，
+//        // 该常量让用户选择特定类型的数据，并返回该数据的URI.我们利用该常量，
+//        // 然后设置类型为“image/*”，就可获得Android手机内的所有image。*/
+//        // 打开相机相册
+//        // 在Activity Action里面有一个“ACTION_GET_CONTENT”字符串常量，
+//        // 该常量让用户选择特定类型的数据，并返回该数据的URI.我们利用该常量，
+//        // 然后设置类型为“image/*”，就可获得Android手机内的所有image。*/
+//        val intent = Intent()/* 开启Pictures画面Type设定为image *//* 开启Pictures画面Type设定为image */
+//
+//        intent.type =
+//            "image/*"/* 使用Intent.ACTION_GET_CONTENT这个Action *//* 使用Intent.ACTION_GET_CONTENT这个Action */
+//        intent.action = Intent.ACTION_GET_CONTENT/* 取得相片后返回本画面 *//* 取得相片后返回本画面 */
+//
+//        intent.putExtra("position",position)//位置
+//
+//        activity.startActivityForResult(intent, 1)
+//    }
 }
