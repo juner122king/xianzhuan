@@ -20,6 +20,7 @@ import retrofit2.Response
  */
 class TaskRepository(private var apiService: ApiService) {
 
+
     //获取任务列表
     suspend fun apiGetTaskList(query: TaskQuery): ListData<Task>? = withContext(Dispatchers.IO) {
         val queryCond = query.queryCond
@@ -31,6 +32,45 @@ class TaskRepository(private var apiService: ApiService) {
         val taskTypeId = query.taskTypeId
         try {
             val response = apiService.getTaskList(
+                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId
+            ).execute()
+            if (response.isSuccessful) {
+                when (response.body()?.code) {
+                    "000000" -> {
+                        Log.d(
+                            "APP接口TaskList",
+                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
+                        )
+                        response.body()?.data
+                    }
+
+                    else -> {
+                        Log.d(
+                            "APP接口TaskList",
+                            "失败${response.body()?.code}:${response.body()?.message}"
+                        )
+                        null
+                    }
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+    //获取我的任务列表
+    suspend fun apiGetMyTaskList(query: TaskQuery): ListData<Task>? = withContext(Dispatchers.IO) {
+        val queryCond = query.queryCond
+        val current = query.current
+        val highPrice = query.highPrice
+        val lowPrice = query.lowPrice
+        val size = query.size
+        val taskStatus = query.taskStatus
+        val taskTypeId = query.taskTypeId
+        try {
+            val response = apiService.getMyTaskList(
                 queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId
             ).execute()
             if (response.isSuccessful) {
@@ -92,7 +132,7 @@ class TaskRepository(private var apiService: ApiService) {
     }
 
     //随机为用户推荐3个任务
-    suspend fun apiShuffle(): List<Task>? = withContext(Dispatchers.IO) {
+    suspend fun apiShuffle(): MutableList<Task>? = withContext(Dispatchers.IO) {
         try {
             val response = apiService.shuffle().execute()
             if (response.isSuccessful) {
@@ -183,6 +223,25 @@ class TaskRepository(private var apiService: ApiService) {
             e.printStackTrace()
             null
         }
+    }
+
+    companion object {
+        //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
+        const val auditStatus0 = 0
+        const val auditStatus1 = 1
+        const val auditStatus2 = 2
+        const val auditStatus3 = 3
+        const val auditStatus4 = 4
+        const val auditStatus5 = 5
+
+
+        //	任务查询条件(随机任务接口不传是返回 3 条数据),说明:TOP-置顶, SIMPLE-简单, HIGHER-高价, LATEST-最新, COMBO-组合(lowPrice、highPrice 和 taskTypeId 必传),可用值:TOP,SIMPLE,HIGHER,LATEST,COMBO
+        const val queryCondTOP = "TOP"
+        const val queryCondSIMPLE = "SIMPLE"
+        const val queryCondHIGHER = "HIGHER"
+        const val queryCondLATEST = "LATEST"
+        const val queryCondCOMBO = "COMBO"
+
     }
 
 

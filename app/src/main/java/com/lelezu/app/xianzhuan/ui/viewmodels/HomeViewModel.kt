@@ -19,10 +19,13 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
 
     // 定义一个 MutableLiveData 来保存任务列表
-    val _taskList: MutableLiveData<List<Task>> = MutableLiveData()
+    val _taskList: MutableLiveData<MutableList<Task>> = MutableLiveData()
+
+    // 我的任务列表
+    val myTaskList: MutableLiveData<MutableList<Task>> = MutableLiveData()
 
 
-    val shuffleList: MutableLiveData<List<Task>> = MutableLiveData()
+    val shuffleList: MutableLiveData<MutableList<Task>> = MutableLiveData()
 
     val taskTypeList: MutableLiveData<List<TaskType>> = MutableLiveData()
 
@@ -39,6 +42,21 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
         _taskList.postValue(taskList!!.records)
     }
 
+    // 获取《我的》任务列表数据 简单查询条件
+    fun getMyTaskList(taskStatus: Int) = viewModelScope.launch {
+        val taskList = taskRepository.apiGetMyTaskList(
+            TaskQuery(
+                TaskRepository.queryCondLATEST,
+                null,
+                null,
+                null,
+                null,
+                taskStatus,
+                null
+            )
+        )
+        myTaskList.postValue(taskList!!.records)
+    }
 
     // 获取任务类型数据
     fun getTaskTypeList() = viewModelScope.launch {

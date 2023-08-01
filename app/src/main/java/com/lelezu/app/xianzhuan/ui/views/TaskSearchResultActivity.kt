@@ -27,14 +27,13 @@ class TaskSearchResultActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        setContentView(R.layout.activity_task_search_result)
         recyclerView = findViewById(R.id.rv_search_result)
         amountTextView = findViewById(R.id.tv_result_amount)
         notResulView = findViewById(R.id.ll_not_result)
 
 
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskItemAdapter(emptyList(), this)
+        adapter = TaskItemAdapter(mutableListOf(), this)
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -45,7 +44,7 @@ class TaskSearchResultActivity : BaseActivity() {
 
 
             if (itemList.isNotEmpty()) {
-                adapter.updateData(itemList)
+                adapter.upData(itemList)
                 var num = itemList.size
                 amountTextView.text = "共有${num}个结果"
 
@@ -55,7 +54,7 @@ class TaskSearchResultActivity : BaseActivity() {
         homeViewModel.shuffleList.observe(this) { itemList ->
             // 数据变化时更新 RecyclerView
 
-            adapter.updateData(itemList)
+            adapter.upData(itemList)
 
         }
 

@@ -9,7 +9,7 @@ package com.lelezu.app.xianzhuan.data.model
 data class ListData<T>(
     val current: Int,
     val pages: Int,
-    val records: List<T>, // records 字段可以是任意类型的列表
+    val records: ArrayList<T>, // records 字段可以是任意类型的列表
     val size: Int,
     val total: Int
 )

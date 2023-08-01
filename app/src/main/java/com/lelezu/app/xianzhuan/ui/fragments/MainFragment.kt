@@ -14,6 +14,8 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
+import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -23,11 +25,14 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MainFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RefreshRecycleView
     private lateinit var adapter: TaskItemAdapter
+
+    private var current: Int = 1;//推荐任务当前加载页
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +51,6 @@ class MainFragment : Fragment() {
     }
 
 
-
     private val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((activity?.application as MyApplication).taskRepository)
     }
@@ -61,33 +65,44 @@ class MainFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskItemAdapter(emptyList(), requireActivity())
+        adapter = TaskItemAdapter(mutableListOf(), requireActivity())
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        recyclerView.setListener(this)
+        recyclerView.setRefreshEnable(true)
+        recyclerView.setLoadMoreEnable(true)
+
 
         // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel._taskList.observe(viewLifecycleOwner) { itemList ->
+        homeViewModel._taskList.observe(viewLifecycleOwner) {
             // 数据变化时更新 RecyclerView
-            adapter.updateData(itemList)
+
+
+            if (recyclerView.isLoadMore()) {
+                if (it.isEmpty()) {
+                    ToastUtils.showToast(requireContext(), "没有更多了！", 0)
+                } else {
+                    adapter.addData(it)
+                }
+            } else {
+                adapter.upData(it)
+            }
         }
 
-        // 异步获取数据并更新 RecyclerView
-        homeViewModel.getTaskList(TaskQuery("TOP"))
+
+        // 初始加载
+        loadData()
+
     }
 
+    private fun loadData() {
+        homeViewModel.getTaskList(TaskQuery("TOP", current, null, null, null, null, null))
+    }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) = MainFragment().apply {
             arguments = Bundle().apply {
@@ -95,6 +110,20 @@ class MainFragment : Fragment() {
                 putString(ARG_PARAM2, param2)
             }
         }
+    }
+
+    override fun onRefresh() {
+        current = 1
+        loadData()
+    }
+
+    override fun onLoadMore() {
+        current = current.inc()//页数+1
+        loadData()
+    }
+
+    override fun onLoaded() {
+
     }
 
 

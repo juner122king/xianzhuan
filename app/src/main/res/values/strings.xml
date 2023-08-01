@@ -36,4 +36,13 @@
     <string name="title_task_details">悬赏任务详情</string>
 
 
+
+    <string name="title_task_my">我的任务</string>
+
+    <string name="title_task_my1">待提交</string>
+    <string name="title_task_my2">审核中</string>
+    <string name="title_task_my3">已通过</string>
+    <string name="title_task_my4">未通过</string>
+
+
 </resources>

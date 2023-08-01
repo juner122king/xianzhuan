@@ -21,6 +21,7 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
+import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -62,6 +63,8 @@ class MyFragment : Fragment(), View.OnClickListener {
 
         view.findViewById<View>(R.id.ll_l1).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l9).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_my_task).setOnClickListener(this)
+
 
 
         //执行获取用户信息接口
@@ -85,15 +88,7 @@ class MyFragment : Fragment(), View.OnClickListener {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) = MyFragment().apply {
             arguments = Bundle().apply {
@@ -107,6 +102,7 @@ class MyFragment : Fragment(), View.OnClickListener {
         when (p0?.id) {
             R.id.ll_l1 -> startActivity(Intent(requireContext(), MessageActivity::class.java))
             R.id.ll_l9 -> startActivity(Intent(requireContext(), AutoOutActivity::class.java))
+            R.id.ll_my_task -> startActivity(Intent(requireContext(), MyTaskActivity::class.java))
 
 //            R.id.iv_op -> startActivity(Intent(requireContext(), MessageActivity::class.java))
             R.id.iv_message -> startActivity(Intent(requireContext(), MessageActivity::class.java))

@@ -24,9 +24,10 @@ abstract class BaseActivity : AppCompatActivity() {
     var mTvTitle: TextView? = null
     var mTvRight: TextView? = null
     var mRltBase: RelativeLayout? = null
-
-
     private var rootView: View? = null
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

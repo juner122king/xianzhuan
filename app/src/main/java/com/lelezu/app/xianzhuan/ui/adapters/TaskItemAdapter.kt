@@ -18,12 +18,18 @@ import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
  * @description:主页任务列表适配器
  *
  */
-class TaskItemAdapter(private var items: List<Task>, var activity: FragmentActivity) :
+class TaskItemAdapter(private var items: MutableList<Task>, var activity: FragmentActivity) :
     RecyclerView.Adapter<TaskItemAdapter.ItemViewHolder>() {
 
     // 更新数据方法
-    fun updateData(newItems: List<Task>) {
+    fun upData(newItems: MutableList<Task>) {
         items = newItems
+        notifyDataSetChanged()
+
+    }
+
+    fun addData(newItems: MutableList<Task>) {
+        items.addAll(newItems)
         notifyDataSetChanged()
     }
 

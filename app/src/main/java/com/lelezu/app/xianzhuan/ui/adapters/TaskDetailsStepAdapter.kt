@@ -52,7 +52,7 @@ class TaskDetailsStepAdapter(
 
         if (item.stepType == 0) {
             holder.ivCasePic.visibility = View.VISIBLE
-            holder.ivCasePic.load(item.useCaseImage) //
+            ImageViewUtil.load(holder.ivCasePic,item.useCaseImage)
             holder.ivCasePic.setOnClickListener {//图片全屏显示
                 ivDialog.setContentView(getImageView(item.useCaseImage))
                 ivDialog.show()
