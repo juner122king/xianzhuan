@@ -13,7 +13,12 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
     private lateinit var recyclerView: RefreshRecycleView //下拉刷新RecycleView
-    private lateinit var adapter: TaskItemAdapter
+
+
+    private lateinit var adapter1: TaskItemAdapter
+    private lateinit var adapter2: TaskItemAdapter
+    private lateinit var adapter3: TaskItemAdapter
+    private lateinit var adapter4: TaskItemAdapter
 
     private val mEFRESHLoad = 0 //下拉刷新
     private val mORELoad = 1 //加载更多
@@ -32,8 +37,8 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         val tabLayout = findViewById<TabLayout>(R.id.tab_task_list)
         recyclerView = findViewById(R.id.rv_task)
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskItemAdapter(mutableListOf(), this)
-        recyclerView.adapter = adapter
+        adapter1 = TaskItemAdapter(mutableListOf(), this)
+        recyclerView.adapter = adapter1
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -71,8 +76,8 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         homeViewModel.myTaskList.observe(this) {
             // 数据变化时更新 RecyclerView
 
-            if (nowAction == mEFRESHLoad) adapter.upData(it)
-            else adapter.addData(it)
+            if (nowAction == mEFRESHLoad) adapter1.upData(it)
+            else adapter1.addData(it)
         }
 
         // 异步获取数据并更新 RecyclerView

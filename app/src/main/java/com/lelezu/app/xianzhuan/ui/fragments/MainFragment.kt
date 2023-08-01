@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
@@ -31,7 +32,7 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
     private lateinit var recyclerView: RefreshRecycleView
     private lateinit var adapter: TaskItemAdapter
 
-    private var current: Int = 1;//推荐任务当前加载页
+    private var current: Int = 1;//当前加载页
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,24 +79,24 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         // 观察 ViewModel 中的任务列表数据变化
         homeViewModel._taskList.observe(viewLifecycleOwner) {
             // 数据变化时更新 RecyclerView
-
-
-            if (recyclerView.isLoadMore()) {
-                if (it.isEmpty()) {
-                    ToastUtils.showToast(requireContext(), "没有更多了！", 0)
-                } else {
-                    adapter.addData(it)
-                }
-            } else {
-                adapter.upData(it)
-            }
+            loadDone(it)
         }
-
 
         // 初始加载
         loadData()
 
     }
+
+    private fun loadDone(it: MutableList<Task>) {
+        if (it.isEmpty()) {
+            ToastUtils.showToast(requireContext(), "没有更多了！", 0)
+            recyclerView.setLoadMoreEnable(false)//关闭下拉加载更多
+        } else {
+            if (recyclerView.isLoadMore()) adapter.addData(it)
+            else adapter.upData(it)
+        }
+    }
+
 
     private fun loadData() {
         homeViewModel.getTaskList(TaskQuery("TOP", current, null, null, null, null, null))

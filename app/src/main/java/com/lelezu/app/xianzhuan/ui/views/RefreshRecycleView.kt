@@ -33,7 +33,7 @@ class RefreshRecycleView @JvmOverloads constructor(
     private val mEFRESHLoad = 0 //下拉刷新
     private val mORELoad = 1 //加载更多
 
-    private var nowAction = mEFRESHLoad//当前动作
+    private var nowAction = -1//当前动作
 
     init {
         init()
@@ -87,6 +87,7 @@ class RefreshRecycleView @JvmOverloads constructor(
             } else { //加载完了所有的数据
                 if (getListener() != null) {
                     getListener()!!.onLoaded()
+                    nowAction = mORELoad
                 }
             }
             isLoadEnd = false
@@ -162,7 +163,10 @@ class RefreshRecycleView @JvmOverloads constructor(
         isRefresh = refresh
     }
 
-    fun isLoadMore(): Boolean {
+    fun isLoadMore(): Boolean { //是否是加载动作
         return nowAction == mORELoad
+    }
+    fun isRefresh(): Boolean {//是否是刷新动作
+        return nowAction == mEFRESHLoad
     }
 }

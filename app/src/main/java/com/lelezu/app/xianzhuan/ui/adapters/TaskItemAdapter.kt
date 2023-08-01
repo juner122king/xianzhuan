@@ -1,12 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -18,11 +18,13 @@ import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
  * @description:主页任务列表适配器
  *
  */
-class TaskItemAdapter(private var items: MutableList<Task>, var activity: FragmentActivity) :
+class TaskItemAdapter(private var items: MutableList<Task>, var activity: Context) :
     RecyclerView.Adapter<TaskItemAdapter.ItemViewHolder>() {
+
 
     // 更新数据方法
     fun upData(newItems: MutableList<Task>) {
+
         items = newItems
         notifyDataSetChanged()
 
@@ -74,4 +76,5 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Fragme
     override fun getItemCount(): Int {
         return items.size
     }
+
 }
