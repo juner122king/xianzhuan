@@ -82,11 +82,7 @@ class UserRepository(private var apiService: ApiService) {
                             "AP接口Register",
                             "失败${response.body()?.code}:${response.body()?.message}"
                         )
-                        MyApplication.context?.let {
-                            ToastUtils.showToast(
-                                it, "登录失败：${response.body()?.message}", 0
-                            )
-                        }
+
 
                         cleanInfo()
 
@@ -106,7 +102,7 @@ class UserRepository(private var apiService: ApiService) {
 
 
     //获取用户信息
-    suspend fun apiUserInfo(userId:String): UserInfo? = withContext(Dispatchers.IO) {
+    suspend fun apiUserInfo(userId: String): UserInfo? = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getUserInfo(userId).execute()
             if (response.isSuccessful) {

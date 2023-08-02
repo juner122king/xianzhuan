@@ -126,6 +126,7 @@
             android:padding="8dp">
 
             <LinearLayout
+                android:id="@+id/ll_top_btm1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -157,6 +158,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_top_btm2"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -188,6 +191,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_top_btm3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -248,11 +252,11 @@
         android:padding="10dp">
 
         <ImageView
-            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:src="@drawable/home_icon4" />
 
         <com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView

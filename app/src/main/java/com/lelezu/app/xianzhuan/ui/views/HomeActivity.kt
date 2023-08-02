@@ -1,6 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.app.DownloadManager
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -11,6 +16,7 @@ import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
@@ -20,6 +26,9 @@ class HomeActivity : BaseActivity() {
 
 
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
+        viewPager.isUserInputEnabled = false//禁止滑动
+
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
 
         initData()
@@ -115,4 +124,18 @@ class HomeActivity : BaseActivity() {
     override fun isShowBack(): Boolean {
         return false
     }
+
+
+    //保存图片方法
+    fun saveImageToSystem(imageUrl: String) {
+        Log.i("H5保存图片", "成功")
+        ToastUtils.showToast(this, "H5保存图片", 0)
+        val request = DownloadManager.Request(Uri.parse(imageUrl))
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "image.jpg")
+
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)
+    }
+
 }

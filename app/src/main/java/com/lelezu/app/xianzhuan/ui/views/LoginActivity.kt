@@ -128,6 +128,13 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
                     ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
                 val mobileToken = ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_TOKEN)
                 val userId = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)
+                val loginToken = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+
+
+                Log.i(
+                    "登录信息",
+                    "loginToken:${loginToken},deviceToken:${deviceToken},mobileAccessToken:${mobileAccessToken},mobileToken:${mobileToken},userId:${userId}"
+                )
 
 
                 //请求注册接口

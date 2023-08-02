@@ -1,9 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ViewFlipper
 import androidx.fragment.app.viewModels
@@ -14,8 +16,16 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
+import com.lelezu.app.xianzhuan.ui.views.HomeActivity
 import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
+import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 private const val ARG_PARAM1 = "param1"
@@ -26,7 +36,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MainFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
+class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickListener {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var recyclerView: RefreshRecycleView
@@ -58,6 +68,10 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<View>(R.id.ll_top_btm1).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_top_btm2).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
 
         //Banner图初始化
         var viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
@@ -124,6 +138,28 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     override fun onLoaded() {
+
+    }
+
+    override fun onClick(p0: View?) {
+
+        // 用户已登录， 跳转到主页登录页面
+        val intent = Intent(requireContext(), WebViewActivity::class.java)
+        when (p0?.id) {
+            R.id.ll_top_btm1 -> {
+                intent.putExtra(LINK_KEY, link1)
+                intent.putExtra(URL_TITLE, getString(R.string.btm_mrjl))
+            }
+            R.id.ll_top_btm2 -> {
+                intent.putExtra(LINK_KEY, link2)
+                intent.putExtra(URL_TITLE, getString(R.string.btm_xrjl))
+            }
+            R.id.ll_top_btm3 -> {
+                intent.putExtra(LINK_KEY, link3)
+                intent.putExtra(URL_TITLE, getString(R.string.btm_zq))
+            }
+        }
+        startActivity(intent)
 
     }
 

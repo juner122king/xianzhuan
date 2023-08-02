@@ -15,6 +15,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
@@ -22,6 +23,8 @@ import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
+import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
+import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -62,9 +65,16 @@ class MyFragment : Fragment(), View.OnClickListener {
         view.findViewById<View>(R.id.iv_message).setOnClickListener(this)
 
         view.findViewById<View>(R.id.ll_l1).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l2).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l3).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l4).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l5).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l6).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l7).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l8).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l9).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_my_task).setOnClickListener(this)
-
+        view.findViewById<View>(R.id.btm_vip).setOnClickListener(this)
 
 
         //执行获取用户信息接口
@@ -99,13 +109,66 @@ class MyFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        when (p0?.id) {
-            R.id.ll_l1 -> startActivity(Intent(requireContext(), MessageActivity::class.java))
-            R.id.ll_l9 -> startActivity(Intent(requireContext(), AutoOutActivity::class.java))
-            R.id.ll_my_task -> startActivity(Intent(requireContext(), MyTaskActivity::class.java))
 
-//            R.id.iv_op -> startActivity(Intent(requireContext(), MessageActivity::class.java))
-            R.id.iv_message -> startActivity(Intent(requireContext(), MessageActivity::class.java))
+
+        if (p0?.id == R.id.ll_l9) {
+            startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
+
+        } else if (p0?.id == R.id.iv_message) {
+            startActivity(Intent(activity, MessageActivity::class.java))//关于我们
+        }  else if (p0?.id == R.id.ll_my_task) {
+            startActivity(Intent(activity, MyTaskActivity::class.java))//关于我们
+        }
+
+        else {
+            val intent = Intent(requireContext(), WebViewActivity::class.java)
+            when (p0?.id) {
+                R.id.ll_l1 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "发布任务")
+                }
+
+                R.id.ll_l2 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link4)
+                    intent.putExtra(WebViewSettings.URL_TITLE, getString(R.string.btm_zq))
+                }
+
+                R.id.ll_l4 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link8)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "充值")
+                }
+
+                R.id.ll_l5 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link9)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "提现")
+                }
+
+                R.id.ll_l6 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link7)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "流水报表")
+                }
+
+                R.id.ll_l7 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link10)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "举报维权")
+                }
+
+                R.id.ll_l8 -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link11)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "客服与反馈")
+                }
+
+                R.id.iv_op -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link12)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "设置个人资料")
+                }
+
+                R.id.btm_vip -> {
+                    intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link13)
+                    intent.putExtra(WebViewSettings.URL_TITLE, "开通会员")
+                }
+            }
+            startActivity(intent)
         }
     }
 

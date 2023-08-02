@@ -22,7 +22,6 @@
         android:id="@+id/iv_case_pic"
         android:layout_width="100dp"
         android:layout_height="200dp"
-        android:visibility="gone"
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
         app:layout_constraintTop_toBottomOf="@id/tv_step_text" />
@@ -31,7 +30,7 @@
         android:id="@+id/iv_user_up_pic"
         android:layout_width="100dp"
         android:layout_height="200dp"
-        android:visibility="gone"
+        android:background="@drawable/radius_border_bg_f0f0f0"
         android:layout_marginStart="15dp"
         app:layout_constraintStart_toEndOf="@id/iv_case_pic"
         app:layout_constraintTop_toTopOf="@id/iv_case_pic" />

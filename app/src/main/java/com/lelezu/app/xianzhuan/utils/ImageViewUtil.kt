@@ -12,10 +12,13 @@ import coil.transform.RoundedCornersTransformation
  */
 object ImageViewUtil {
 
-    fun load(imageView: ImageView,any: Any) {
-        imageView.load(any) {
-            crossfade(true)
-            transformations(RoundedCornersTransformation(10f, 10f, 10f, 10f))
+    fun load(imageView: ImageView, any: Any?) {
+
+        if (any != null) {
+            imageView.load(any) {
+                crossfade(true)
+                transformations(RoundedCornersTransformation(10f, 10f, 10f, 10f))
+            }
         }
     }
 }

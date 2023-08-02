@@ -36,13 +36,24 @@
     <string name="title_task_details">悬赏任务详情</string>
 
 
-
     <string name="title_task_my">我的任务</string>
 
     <string name="title_task_my1">待提交</string>
     <string name="title_task_my2">审核中</string>
     <string name="title_task_my3">已通过</string>
     <string name="title_task_my4">未通过</string>
+
+
+
+    <string name="btm_hgrw">换个任务</string>
+    <string name="btm_lxgz">联系雇主</string>
+    <string name="btm_ljtj">立即提交</string>
+    <string name="btm_xgtj">修改提交</string>
+    <string name="btm_zctj">再次提交</string>
+
+    <string name="btm_mrjl">每日奖励</string>
+    <string name="btm_xrjl">新人奖励</string>
+    <string name="btm_zq">收徒赚钱</string>
 
 
 </resources>

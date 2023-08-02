@@ -34,7 +34,7 @@ interface ApiService {
     @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
     fun getTaskInfo(@Path("taskId") id: String): Call<ApiResponse<Task>>
 
-    @GET("/dxz/app/task/user/apply")//任务报名
+    @POST("/dxz/app/task/user/apply")//任务报名
     fun taskApply(@Body req: Req): Call<ApiResponse<Boolean>>
 
     /**
