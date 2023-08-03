@@ -259,10 +259,9 @@
             android:layout_marginBottom="5dp"
             android:src="@drawable/home_icon4" />
 
-        <com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
+        <include
+            layout="@layout/rv_layout"/>
     </LinearLayout>
 
 

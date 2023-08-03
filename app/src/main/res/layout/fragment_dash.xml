@@ -45,13 +45,6 @@
 
     </com.google.android.material.tabs.TabLayout>
 
-    <com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
-        android:id="@+id/rv_task"
-        android:padding="10dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/radius_border"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+    <include layout="@layout/rv_layout" />
 
 </LinearLayout>

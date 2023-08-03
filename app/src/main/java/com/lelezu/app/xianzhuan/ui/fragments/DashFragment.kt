@@ -68,7 +68,22 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         super.onViewCreated(view, savedInstanceState)
         val context = requireContext()
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_task_list)
-        recyclerView = view.findViewById(R.id.rv_task)
+        recyclerView = view.findViewById(R.id.recyclerView)
+
+
+        // 创建适配器，并将其绑定到 RecyclerView 上
+        adapter1 = TaskItemAdapter(mutableListOf(), context)
+        adapter2 = TaskItemAdapter(mutableListOf(), context)
+        adapter3 = TaskItemAdapter(mutableListOf(), context)
+        adapter4 = TaskItemAdapter(mutableListOf(), context)
+
+        adapter1.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
+        adapter2.setEmptyView(view.findViewById(R.id.recycler_layout))
+        adapter3.setEmptyView(view.findViewById(R.id.recycler_layout))
+        adapter4.setEmptyView(view.findViewById(R.id.recycler_layout))
+
+
+        recyclerView.adapter = adapter1
 
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -76,12 +91,6 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
 
-        // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter1 = TaskItemAdapter(mutableListOf(), context)
-        adapter2 = TaskItemAdapter(mutableListOf(), context)
-        adapter3 = TaskItemAdapter(mutableListOf(), context)
-        adapter4 = TaskItemAdapter(mutableListOf(), context)
-        recyclerView.adapter = adapter1
 
 
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -121,7 +130,7 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
 
     private fun loadDone(it: MutableList<Task>) {
 
-        if (it.isEmpty()) {
+        if (it.isEmpty() && recyclerView.isLoadMore()) {
             ToastUtils.showToast(requireContext(), "没有更多了！", 0)
         } else {
             when (page) {

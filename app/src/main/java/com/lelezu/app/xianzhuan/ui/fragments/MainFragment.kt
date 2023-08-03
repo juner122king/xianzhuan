@@ -29,6 +29,8 @@ import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 private const val ARG_PARAM1 = "param1"
+
+
 private const val ARG_PARAM2 = "param2"
 
 /**
@@ -40,6 +42,8 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var recyclerView: RefreshRecycleView
+
+
     private lateinit var adapter: TaskItemAdapter
 
     private var current: Int = 1;//当前加载页
@@ -81,6 +85,9 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
         recyclerView = view.findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
         adapter = TaskItemAdapter(mutableListOf(), requireActivity())
+
+        adapter.setEmptyView(view.findViewById(R.id.recycler_layout))
+
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -102,9 +109,9 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
     }
 
     private fun loadDone(it: MutableList<Task>) {
-        if (it.isEmpty()) {
+        if (it.isEmpty() && recyclerView.isLoadMore()) {
             ToastUtils.showToast(requireContext(), "没有更多了！", 0)
-            recyclerView.setLoadMoreEnable(false)//关闭下拉加载更多
+//            recyclerView.setLoadMoreEnable(false)//关闭上拉加载更多
         } else {
             if (recyclerView.isLoadMore()) adapter.addData(it)
             else adapter.upData(it)
@@ -134,6 +141,8 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
 
     override fun onLoadMore() {
         current = current.inc()//页数+1
+
+//        current = 1
         loadData()
     }
 
@@ -150,10 +159,12 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
                 intent.putExtra(LINK_KEY, link1)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_mrjl))
             }
+
             R.id.ll_top_btm2 -> {
                 intent.putExtra(LINK_KEY, link2)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_xrjl))
             }
+
             R.id.ll_top_btm3 -> {
                 intent.putExtra(LINK_KEY, link3)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_zq))

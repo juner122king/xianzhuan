@@ -19,7 +19,7 @@ import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
  *
  */
 class TaskItemAdapter(private var items: MutableList<Task>, var activity: Context) :
-    RecyclerView.Adapter<TaskItemAdapter.ItemViewHolder>() {
+    EmptyAdapter<TaskItemAdapter.ItemViewHolder>() {
 
 
     // 更新数据方法

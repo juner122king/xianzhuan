@@ -39,7 +39,10 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     // 获取任务列表数据 简单查询条件
     fun getTaskList(query: TaskQuery) = viewModelScope.launch {
         val taskList = taskRepository.apiGetTaskList(query)
-        _taskList.postValue(taskList!!.records)
+        if (taskList != null)
+            _taskList.postValue(taskList.records)
+        else
+            _taskList.postValue(mutableListOf())
     }
 
     // 获取《我的》任务列表数据 简单查询条件
@@ -75,6 +78,8 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     fun getTaskDetails(taskId: String) = viewModelScope.launch {
         val r = taskRepository.apiTaskDetails(taskId)
         task.postValue(r!!)
+
+
     }
 
 

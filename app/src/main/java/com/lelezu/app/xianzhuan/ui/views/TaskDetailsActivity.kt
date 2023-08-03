@@ -243,7 +243,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun putTaskStatus(auditStatus: Int) {
         aStatus = auditStatus//
-        aStatus = 3//
+//        aStatus = 0//
     }
 
 
