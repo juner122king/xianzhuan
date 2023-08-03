@@ -16,16 +16,36 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 import java.io.File
 
 class WebViewActivity : BaseActivity() {
 
 
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
-        if (it != null) {
-            // 可以根据需要更新对应的数据项或刷新整个列表
-            wv.loadUrl("javascript:showSelectedImage('$it')")
+
+        Log.i("H5调原生:", "图片uri:$it")
+        // 获取内容URI对应的文件路径
+        val filePath = getImagePath(it!!)
+        if (filePath != null) {
+            val imageFile = File(filePath)
+            val thread = Thread {
+                val imageBytes = imageFile.readBytes()
+                val imageData = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+                wv.post {
+                    //将图片通过showSelectedImage返回给H5
+
+                    Log.i("H5调原生:", "图片字节码:$imageData")
+//                    wv.evaluateJavascript("javascript:showSelectedImage('$imageData')", null)//可以添加回调
+                    wv.loadUrl("javascript:showSelectedImage('$imageData')")//直接传
+                }
+            }
+            thread.start()
+        } else {
+            ToastUtils.showToast(this,"图片无效，请重新选择！")
         }
+
+
     }
 
 
@@ -40,6 +60,7 @@ class WebViewActivity : BaseActivity() {
 
         wv.addJavascriptInterface(JavaScriptInterface(), "Android")//注入方法
 
+
         wv.loadUrl(WebViewSettings.host + link)
         Log.i("H5调原生：", WebViewSettings.host + link)
 
@@ -52,14 +73,6 @@ class WebViewActivity : BaseActivity() {
             //上传图片，打开相册
             Log.i("H5调原生", "打开相册成功")
             pickImageContract.launch(Unit)
-        }
-
-        @JavascriptInterface
-        fun getImageData(imagePath: String) {
-            val imageFile = File(imagePath)
-            val imageBytes = imageFile.readBytes()
-            val imageData = Base64.encodeToString(imageBytes, Base64.DEFAULT)
-            wv.loadUrl("javascript:showSelectedImage('$imageData')")
         }
     }
 
