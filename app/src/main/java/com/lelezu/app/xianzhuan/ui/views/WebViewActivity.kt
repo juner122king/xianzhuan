@@ -10,14 +10,19 @@ import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.webkit.JavascriptInterface
-import android.webkit.WebView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.github.lzyzsd.jsbridge.CallBackFunction
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+
 
 class WebViewActivity : BaseActivity() {
 
@@ -34,15 +39,32 @@ class WebViewActivity : BaseActivity() {
                 val imageData = Base64.encodeToString(imageBytes, Base64.DEFAULT)
                 wv.post {
                     //将图片通过showSelectedImage返回给H5
-
                     Log.i("H5调原生:", "图片字节码:$imageData")
 //                    wv.evaluateJavascript("javascript:showSelectedImage('$imageData')", null)//可以添加回调
-                    wv.loadUrl("javascript:showSelectedImage('$imageData')")//直接传
+//                    wv.loadUrl("javascript:showSelectedImage('$imageData')")//直接传
+
+
+
+
+                    //调用 H5 端普通事件函数
+//                    wv.send("安卓传递给 JS 的消息") { data ->
+//                        Toast.makeText(
+//                            this, data, Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+
+                    wv.callHandler("showSelectedImage", "imageData") { data ->
+                        Toast.makeText(
+                            this, data, Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+
                 }
             }
             thread.start()
         } else {
-            ToastUtils.showToast(this,"图片无效，请重新选择！")
+            ToastUtils.showToast(this, "图片无效，请重新选择！")
         }
 
 
@@ -50,7 +72,7 @@ class WebViewActivity : BaseActivity() {
 
 
     private lateinit var link: String
-    private lateinit var wv: WebView
+    private lateinit var wv: BridgeWebView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         link = intent.getStringExtra(LINK_KEY)!!
@@ -58,11 +80,22 @@ class WebViewActivity : BaseActivity() {
         wv = findViewById(R.id.webView)
         WebViewSettings.setDefaultWebSettings(wv)
 
-        wv.addJavascriptInterface(JavaScriptInterface(), "Android")//注入方法
+//        wv.addJavascriptInterface(JavaScriptInterface(), "Android")//注入方法
 
 
         wv.loadUrl(WebViewSettings.host + link)
         Log.i("H5调原生：", WebViewSettings.host + link)
+
+
+        wv.registerHandler("chooseImage") { data, function ->
+
+            //上传图片，打开相册
+//            Log.i("H5返回的数据 ：", data)
+            pickImageContract.launch(Unit)
+
+
+            function.onCallBack("")
+        }
 
 
     }
