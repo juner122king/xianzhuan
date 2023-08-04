@@ -7,12 +7,17 @@
     android:layout_marginTop="10dp"
     tools:ignore="MissingDefaultResource">
 
-    <com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
-        android:id="@+id/recyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <include layout="@layout/empty_layout" />
+        <com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
+        <include layout="@layout/empty_layout" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
 

@@ -18,4 +18,11 @@ class MyJavaScriptInterface(private val context: Context) {
         (context as HomeActivity).saveImageToSystem(imageUrl)
     }
 
+    @JavascriptInterface
+    public fun shareFriends(imageUrl: String) {
+        // 调用保存图片的方法
+        (context as HomeActivity).shareFriends(imageUrl)
+    }
+
+
 }

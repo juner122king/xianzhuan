@@ -15,8 +15,8 @@ import com.lelezu.app.xianzhuan.ui.fragments.DashFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
@@ -67,7 +67,7 @@ class HomeActivity : BaseActivity() {
             when (item.itemId) {
                 R.id.navigation_home -> {
                     viewPager.currentItem = 0
-                    setTitleText(getString(R.string.title_home))
+                    setTitleText(getString(R.string.title_activity_home))
 
                 }
 
@@ -128,14 +128,26 @@ class HomeActivity : BaseActivity() {
 
     //保存图片方法
     fun saveImageToSystem(imageUrl: String) {
-        Log.i("H5保存图片", "成功")
-        ToastUtils.showToast(this, "H5保存图片", 0)
+        Log.i("H5保存图片", "成功  imageUrl：${imageUrl}")
+
+        val imageName = getString(R.string.app_name) + "_" + System.currentTimeMillis()
+
+        ToastUtils.showToast(this, "图片已保存:${Environment.DIRECTORY_DOWNLOADS}$imageName", 0)
+
         val request = DownloadManager.Request(Uri.parse(imageUrl))
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "image.jpg")
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$imageName.jpg")
 
         val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadManager.enqueue(request)
+    }
+
+    //分享微信
+    fun shareFriends(imageUrl: String) {
+        Log.i("H5分享图片", "成功")
+        WxLogin.webWx(imageUrl)
+//        WxLogin.shareWx(imageUrl)
+
     }
 
 }

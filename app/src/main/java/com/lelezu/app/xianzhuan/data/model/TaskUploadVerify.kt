@@ -21,5 +21,5 @@ data class TaskUploadVerify(
     val useCaseImage: String,
     val verifyDesc: String?,
     val verifyId: String?,
-    var uploadImage: String = " "
+    var uploadImage: String = ""
 )

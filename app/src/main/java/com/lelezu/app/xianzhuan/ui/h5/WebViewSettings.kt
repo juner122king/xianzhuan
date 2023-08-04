@@ -32,12 +32,12 @@ object WebViewSettings {
 
     var link4 = "pages/apprentice/apprenticeIncome/index" //我的-收徒收益
 
-    var link5 = "" //我的-发布任务
+    var link5 = "pages/publishTask/selectTaskClassification/index" //我的-发布任务
 
     var link6 = "pages/member/index" //我的-开通会员
 
     var link7 = "pages/reportForms/index" //我的-流水报表
-    var link8 = "" //充值
+    var link8 = "pages/balance/index?pageType=recharge" //充值
     var link9 = "" //提现
     var link10 = "pages/feedback/opinion/index?pageType=report" //举报维权
 
@@ -92,7 +92,7 @@ object WebViewSettings {
         // 跨域cookie读取
         cookieManager.setAcceptThirdPartyCookies(webView, true)
         cookieManager.setCookie(
-            host, "token=${ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)}"
+            host, "${ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)}"
         )
         cookieManager.flush()
 

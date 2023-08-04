@@ -8,7 +8,7 @@ package com.lelezu.app.xianzhuan.data.model
  */
 data class TaskQuery(
 
-    val queryCond: String,
+    val queryCond: String?,
     val current: Int? = null,
     val highPrice: Float? = null,
     val lowPrice: Float? = null,

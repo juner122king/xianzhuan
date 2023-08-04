@@ -10,7 +10,7 @@ package com.lelezu.app.xianzhuan.data.model
 /**
  *
  * @property applyLogId String? 任务报名申请ID
- * @property auditStatus Int 任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
+ * @property auditStatus Int 用户查看的任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
  * @property createdDt String? 	发布时间
  * @property earnedCount Int 	多少人已赚
  * @property isTop Boolean 是否置顶
@@ -37,7 +37,7 @@ package com.lelezu.app.xianzhuan.data.model
  */
 
 data class Task(
-    val applyLogId: String?,
+    val applyLogId: String,
     val auditStatus: Int,
     val createdDt: String?,
     val earnedCount: Int,

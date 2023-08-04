@@ -5,10 +5,13 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
@@ -44,6 +47,10 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
+
+
+        //微信Api初始化
+        WxLogin.initWx(this)
         //获取包名
         var packageName = this.packageName
         //获取进程名

@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
@@ -56,7 +57,7 @@ class NotificaFragment : Fragment() {
 
         WebViewSettings.setDefaultWebSettings(webView)
         webView.addJavascriptInterface(MyJavaScriptInterface(requireContext()), "Android")//注入方法
-        webView.loadUrl("http://192.168.3.7:8000/#/pages/apprentice/index")//最后才load
+        webView.loadUrl(WebViewSettings.host + link3)//最后才load
 
     }
 

@@ -34,8 +34,7 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //微信Api初始化
-        WxLogin.initWx(this)
+
 
         setContentView(R.layout.activity_login)
         cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
@@ -49,7 +48,7 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
         when (cbAgree.isChecked) {
             true -> {
-                WxLogin.longWx();    //微信登录
+                WxLogin.longWx()  //微信登录
             }
 
             else -> {

@@ -11,10 +11,13 @@ import android.widget.ViewFlipper
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
+import com.lelezu.app.xianzhuan.data.repository.TaskRepository
+import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondHIGHER
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
@@ -42,6 +45,7 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var recyclerView: RefreshRecycleView
+    private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
 
     private lateinit var adapter: TaskItemAdapter
@@ -81,6 +85,13 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
         var viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
         viewFlipper.startFlipping()
 
+        swiper = view.findViewById(R.id.swiper)
+        swiper.setColorSchemeResources(R.color.colorControlActivated)
+        swiper.setOnRefreshListener {
+            // 执行刷新操作
+            refresh()
+        }
+
 
         recyclerView = view.findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
@@ -99,16 +110,20 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
 
         // 观察 ViewModel 中的任务列表数据变化
         homeViewModel._taskList.observe(viewLifecycleOwner) {
+
             // 数据变化时更新 RecyclerView
             loadDone(it)
         }
 
         // 初始加载
-        loadData()
+        refresh()
 
     }
 
     private fun loadDone(it: MutableList<Task>) {
+        // 停止刷新动画
+        swiper.isRefreshing = false
+
         if (it.isEmpty() && recyclerView.isLoadMore()) {
             ToastUtils.showToast(requireContext(), "没有更多了！", 0)
 //            recyclerView.setLoadMoreEnable(false)//关闭上拉加载更多
@@ -120,7 +135,7 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
 
 
     private fun loadData() {
-        homeViewModel.getTaskList(TaskQuery("TOP", current, null, null, null, null, null))
+        homeViewModel.getTaskList(TaskRepository.queryCondLATEST,current)
     }
 
     companion object {
@@ -135,14 +150,17 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
     }
 
     override fun onRefresh() {
+//        refresh()
+    }
+
+    private fun refresh() {
         current = 1
         loadData()
     }
 
+
     override fun onLoadMore() {
         current = current.inc()//页数+1
-
-//        current = 1
         loadData()
     }
 

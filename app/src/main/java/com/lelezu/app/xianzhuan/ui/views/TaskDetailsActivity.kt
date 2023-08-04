@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextMenu
 import android.view.View
 import android.view.View.OnClickListener
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
@@ -45,14 +47,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
     private lateinit var adapterVerify: TaskVerifyStepAdapter//验证列表
 
-
-    private lateinit var taskId: String//任务ID
-
-    private var aStatus = 0 //任务状态
+    private lateinit var task: Task
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        taskId = intent.getStringExtra("taskId")!!
-
         //开始--示例图打开功能
         ivDialog = Dialog(this, R.style.FullActivity)
         val attributes = window.attributes
@@ -70,7 +67,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         taskDetailsRV.layoutManager = LinearLayoutManager(this)
 
 
-
         taskVerifyRV = findViewById(R.id.rv_task_verify)
         // 创建适配器，并将其绑定到 RecyclerView 上
         adapterVerify = TaskVerifyStepAdapter(emptyList(), ivDialog, this)
@@ -78,37 +74,44 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         taskVerifyRV.layoutManager = LinearLayoutManager(this)
 
-
-        //监听任务信息变化
-        homeViewModel.task.observe(this) {
-            //初始化页面数据
-            setData(it)
-
-        }
-
-        homeViewModel.getTaskDetails(getTaskDId()!!)
-
-        homeViewModel.isApply.observe(this) {
-            ToastUtils.showToast(this, if (it) "报名成功" else "报名失败", 0)
-        }
-
-        //换任务 监听
-        homeViewModel.shuffleList.observe(this) {
-            homeViewModel.getTaskDetails(it[0].taskId)
-        }
-
         //底部两个按键
         findViewById<TextView>(R.id.tv_btm1).setOnClickListener(this)
         findViewById<TextView>(R.id.tv_btm2).setOnClickListener(this)
 
 
+
+
+
+
+
+        taskDetails(intent.getStringExtra("taskId")!!)
+        //监听任务信息变化
+        homeViewModel.task.observe(this) {
+            //初始化页面数据
+            setData(it)
+        }
+        //换任务 监听
+        homeViewModel.shuffleList.observe(this) {
+
+            taskDetails(it[0].taskId)
+        }
+
+
+        homeViewModel.isApply.observe(this) {
+            ToastUtils.showToast(this, if (it) "报名成功" else "报名失败", 0)
+        }
+    }
+
+    private fun taskDetails(taskId: String) {
+
+        homeViewModel.getTaskDetails(taskId)
     }
 
 
     @SuppressLint("SetTextI18n")
     private fun setData(task: Task) {
-        putTaskDId(task.taskId)
-        putTaskStatus(task.auditStatus)
+        putTask(task)
+
         changeView(task)//根据任务状态id改变页面
 
 
@@ -126,16 +129,16 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
         adapterDetails.updateData(task.taskStepList)
-        adapterVerify.updateData(task.taskUploadVerifyList, aStatus)
+        adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
 
-//        lvModel.getUserInfo(task.userId)//获取商家信息
-//        lvModel.userInfo.observe(this) {
-//
-//            ImageViewUtil.load(
-//                findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
-//            )
-//            findViewById<TextView>(R.id.tv_name).text = it!!.nickname
-//        }
+        lvModel.getUserInfo(task.userId)//获取商家信息
+        lvModel.userInfo.observe(this) {
+
+            ImageViewUtil.load(
+                findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
+            )
+            findViewById<TextView>(R.id.tv_name).text = it!!.nickname
+        }
 
     }
 
@@ -146,7 +149,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         super.onCreateContextMenu(menu, v, menuInfo)
         menu?.add(0, 1, 0, "保存")
         menu?.add(0, 2, 1, "取消")
-        0
+
         menu!!.getItem(0).setOnMenuItemClickListener {
             Toast.makeText(
                 this,
@@ -166,13 +169,13 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
     private fun changeView(task: Task) {
-
-        when (aStatus) {
+        setTitleText("状态：${task.auditStatus} TID：${task.taskId}")
+        when (task.auditStatus) {
             //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
             0 -> {
                 findViewById<View>(R.id.ll_status).visibility = View.GONE
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-                setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljtj))
+                setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
             }
 
             1 -> {
@@ -228,22 +231,59 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
-            R.id.tv_btm1 -> homeViewModel.getShuffle()//换个任务
-            R.id.tv_btm2 -> homeViewModel.apiTaskApply(getTaskDId()!!)//报名
+            R.id.tv_btm1 -> {
+
+
+                when (getTask().auditStatus) {
+                    0 -> homeViewModel.getShuffle()//换个任务
+
+                    else -> Toast.makeText(
+                        this,
+                        "保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}",
+                        Toast.LENGTH_SHORT
+                    ).show() //取系雇主
+                }
+
+            }
+
+            R.id.tv_btm2 -> {
+                when (getTask().auditStatus) {
+                    0 -> homeViewModel.apiTaskApply(getTask().taskId!!)//报名
+                    else -> getTaskSubmit()//提交
+                }
+
+
+            }
         }
     }
 
-    private fun getTaskDId(): String? {
-        return taskId
+
+    //判断用户是否填数据完数据
+    private fun getTaskSubmit() {
+
+        val verifys = adapterVerify.getItems()
+
+        Log.i("任务验证信息", verifys.toString())
+//
+//        TaskSubmit(getTask().applyLogId, adapterVerify.getItems())
+//        val taskSubmit : TaskSubmit? = null
+//
+//
+//
+//
+//
+//
+//        homeViewModel.apiTaskSubmit(taskSubmit)
+
+
     }
 
-    private fun putTaskDId(id: String) {
-        taskId = id
+    private fun putTask(t: Task) {
+        task = t//
     }
 
-    private fun putTaskStatus(auditStatus: Int) {
-        aStatus = auditStatus//
-//        aStatus = 0//
+    private fun getTask(): Task {
+        return task
     }
 
 

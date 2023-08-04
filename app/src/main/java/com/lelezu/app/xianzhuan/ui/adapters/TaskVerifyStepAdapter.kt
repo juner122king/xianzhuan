@@ -33,7 +33,7 @@ class TaskVerifyStepAdapter(
     private var activity: BaseActivity
 ) : RecyclerView.Adapter<TaskVerifyStepAdapter.ItemViewHolder>() {
 
-    private var taskStatus = 0//任务状态，用改变UI
+    private var auditStatus = 0//任务状态，用改变UI
 
     private var mPosition: Int = -0 //当前选中的
 
@@ -41,7 +41,7 @@ class TaskVerifyStepAdapter(
     // 更新数据方法
     fun updateData(newItems: List<TaskUploadVerify>, status: Int) {
         items = newItems  //任务步骤集合
-        this.taskStatus = status
+        this.auditStatus = status
         notifyDataSetChanged()
     }
 
@@ -74,7 +74,7 @@ class TaskVerifyStepAdapter(
             holder.idEt.visibility = View.GONE
 
 
-            if (this.taskStatus == 0) {//未报名
+            if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
                 holder.btmUpPic.visibility = View.GONE
                 holder.ivUserPic.visibility = View.GONE
             } else {
@@ -92,7 +92,6 @@ class TaskVerifyStepAdapter(
                 ivDialog.setContentView(getImageView(item.useCaseImage))
                 ivDialog.show()
             }
-
 
 
         } else {
@@ -153,5 +152,9 @@ class TaskVerifyStepAdapter(
             }
             return null
         }
+    }
+
+    public fun getItems(): List<TaskUploadVerify> {
+        return items
     }
 }

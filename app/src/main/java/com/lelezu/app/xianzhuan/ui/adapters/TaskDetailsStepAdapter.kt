@@ -50,7 +50,7 @@ class TaskDetailsStepAdapter(
         val item = items[position]
         holder.title.text = item.stepDesc
 
-        if (item.stepType == 0) {
+        if (item.stepType == 2) {
             holder.ivCasePic.visibility = View.VISIBLE
             ImageViewUtil.load(holder.ivCasePic,item.useCaseImage)
             holder.ivCasePic.setOnClickListener {//图片全屏显示

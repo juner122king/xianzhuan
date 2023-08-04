@@ -259,7 +259,6 @@
             android:layout_marginBottom="5dp"
             android:src="@drawable/home_icon4" />
 
-
         <include
             layout="@layout/rv_layout"/>
     </LinearLayout>

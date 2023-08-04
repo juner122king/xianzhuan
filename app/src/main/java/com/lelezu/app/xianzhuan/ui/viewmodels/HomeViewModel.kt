@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
+import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import kotlinx.coroutines.launch
@@ -36,26 +37,33 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
 
 //    val randomTaskLD: MutableLiveData<Task> = MutableLiveData() //随机任务
 
+
     // 获取任务列表数据 简单查询条件
-    fun getTaskList(query: TaskQuery) = viewModelScope.launch {
-        val taskList = taskRepository.apiGetTaskList(query)
-        if (taskList != null)
-            _taskList.postValue(taskList.records)
-        else
-            _taskList.postValue(mutableListOf())
+    fun getTaskList(queryCond: String, current: Int) = viewModelScope.launch {
+        val taskList = taskRepository.apiGetTaskList(
+            TaskQuery(
+                queryCond, current, null, null, null, null, null
+            )
+        )
+        if (taskList != null) _taskList.postValue(taskList.records)
+        else _taskList.postValue(mutableListOf())
     }
 
+    // 获取任务列表数据 简单查询条件
+    fun getTaskList(taskQuery: TaskQuery) = viewModelScope.launch {
+        val taskList = taskRepository.apiGetTaskList(
+            taskQuery
+        )
+        if (taskList != null) _taskList.postValue(taskList.records)
+        else _taskList.postValue(mutableListOf())
+    }
+
+
     // 获取《我的》任务列表数据 简单查询条件
-    fun getMyTaskList(taskStatus: Int) = viewModelScope.launch {
+    fun getMyTaskList(auditStatus: Int, current: Int) = viewModelScope.launch {
         val taskList = taskRepository.apiGetMyTaskList(
             TaskQuery(
-                TaskRepository.queryCondLATEST,
-                null,
-                null,
-                null,
-                null,
-                taskStatus,
-                null
+                null, current, null, null, null, auditStatus, null
             )
         )
         myTaskList.postValue(taskList!!.records)
@@ -86,6 +94,13 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     // 任务报名
     fun apiTaskApply(taskId: String) = viewModelScope.launch {
         val r = taskRepository.apiTaskApply(taskId)
+        isApply.postValue(r!!)
+    }
+
+
+    // 任务提交
+    fun apiTaskSubmit(taskSubmit: TaskSubmit) = viewModelScope.launch {
+        val r = taskRepository.apiTaskSubmit(taskSubmit)
         isApply.postValue(r!!)
     }
 

@@ -22,7 +22,7 @@
     <string name="title_task_cs">条件选择</string>
 
 
-    <string name="title_home">得闲帮</string>
+    <string name="title_home">首页</string>
     <string name="title_dashboard">悬赏大厅</string>
     <string name="title_notifications">收徒赚钱</string>
     <string name="title_my">个人中心</string>
@@ -33,7 +33,7 @@
     <string name="dashboard_tab4_text">最新</string>
     <string name="dashboard_tab5_text">筛选</string>
 
-    <string name="title_task_details">悬赏任务详情</string>
+    <string name="title_task_details">任务详情</string>
 
 
     <string name="title_task_my">我的任务</string>
@@ -48,6 +48,7 @@
     <string name="btm_hgrw">换个任务</string>
     <string name="btm_lxgz">联系雇主</string>
     <string name="btm_ljtj">立即提交</string>
+    <string name="btm_ljbm">立即报名</string>
     <string name="btm_xgtj">修改提交</string>
     <string name="btm_zctj">再次提交</string>
 

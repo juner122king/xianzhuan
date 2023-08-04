@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
+import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondCOMBO
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 
@@ -86,7 +87,7 @@ class TaskSearchResultActivity : BaseActivity() {
         val lowPrice = bundle?.getFloat("lowPrice")
         val taskTypeId = bundle?.getString("taskTypeId")
 
-        return TaskQuery("COMBO", null, highPrice, lowPrice, 9999, null, taskTypeId)
+        return TaskQuery(queryCondCOMBO, null, highPrice, lowPrice, 9999, null, taskTypeId)
     }
 
 

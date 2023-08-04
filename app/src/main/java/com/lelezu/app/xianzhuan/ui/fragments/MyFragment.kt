@@ -25,6 +25,8 @@ import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
+import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -76,25 +78,38 @@ class MyFragment : Fragment(), View.OnClickListener {
         view.findViewById<View>(R.id.ll_my_task).setOnClickListener(this)
         view.findViewById<View>(R.id.btm_vip).setOnClickListener(this)
 
+        val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
+
 
         //执行获取用户信息接口
-//        loginViewModel2.getUserInfo()
-//
-//        loginViewModel2.userInfo.observe(requireActivity()) {
-//            view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
-//            view.findViewById<TextView>(R.id.tv_user_id).text = it!!.userId
-//            view.findViewById<TextView>(R.id.tv_my_text1).text = it!!.rechargeAmount.toString()
-//            view.findViewById<TextView>(R.id.tv_my_text2).text = it!!.balanceAmount.toString()
-//            imageViewUserPic = view.findViewById(R.id.iv_user_pic)
-//            imageViewUserPic.load(it.headImageUrl) { crossfade(true) }
-//
-//
-//        }
-        val imageViewUserPic = view.findViewById<ImageView>(R.id.iv_user_pic)
-        imageViewUserPic.load("https://profile-avatar.csdnimg.cn/26922ef5d403474f917c8e68afeeca42_qq_25749749.jpg!1") {
-            crossfade(1000)
-            transformations(CircleCropTransformation())
+        loginViewModel2.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)!!)
+
+        loginViewModel2.userInfo.observe(requireActivity()) {
+            view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
+            view.findViewById<TextView>(R.id.tv_user_id).text = it!!.userId
+            view.findViewById<TextView>(R.id.tv_my_text1).text = it!!.rechargeAmount.toString()
+            view.findViewById<TextView>(R.id.tv_my_text2).text = it!!.balanceAmount.toString()
+            ImageViewUtil.load(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
+
+
+            when (it.vipLevel) {
+                0 -> {
+                }   //普通
+                1 -> {
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)
+                }   //白银
+                2 -> {
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)
+                }   //黄金
+                3 -> {
+                }   //忽略
+                4 -> {
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)
+                }   //钻
+            }
+
         }
+
     }
 
     companion object {
@@ -116,11 +131,9 @@ class MyFragment : Fragment(), View.OnClickListener {
 
         } else if (p0?.id == R.id.iv_message) {
             startActivity(Intent(activity, MessageActivity::class.java))//关于我们
-        }  else if (p0?.id == R.id.ll_my_task) {
+        } else if (p0?.id == R.id.ll_my_task) {
             startActivity(Intent(activity, MyTaskActivity::class.java))//关于我们
-        }
-
-        else {
+        } else {
             val intent = Intent(requireContext(), WebViewActivity::class.java)
             when (p0?.id) {
                 R.id.ll_l1 -> {

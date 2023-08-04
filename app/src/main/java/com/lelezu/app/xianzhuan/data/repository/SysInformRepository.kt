@@ -32,14 +32,14 @@ class SysInformRepository(private var apiService: ApiService) {
                 when (response.body()?.code) {
                     "000000" -> {
                         Log.d(
-                            "APP登录接口inform/page",
+                            "APP接口inform/page",
                             "获取成功 : ToString: ${response.body()?.data?.toString()}"
                         )
                         response.body()?.data
                     }
                     else -> {
                         Log.d(
-                            "APP登录接口inform/page",
+                            "APP接口inform/page",
                             "请求失败${response.body()?.code}:${response.body()?.message}"
                         )
                         null

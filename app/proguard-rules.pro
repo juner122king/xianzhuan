@@ -40,3 +40,18 @@
     public static ** valueOf(java.lang.String);
 }
 #友盟结束
+
+#web 开始
+
+#自己的包名即可
+-keep class com.github.lzyzsd.jsbridge.**{*;}
+-keep interface com.github.lzyzsd.jsbridge.** { *; }
+
+-keepattributes *Annotation*
+-keepattributes *JavascriptInterface*
+-keep class android.webkit.JavascriptInterface {*;}
+
+##保持JavascriptInterface这个不能别调用 //
+#-keepclassmembers class com.lelezu.app.xianzhuan.ui.views.WebViewActivity{
+#  public *;
+#}
