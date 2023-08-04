@@ -1,74 +1,28 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
-import android.webkit.JavascriptInterface
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.github.lzyzsd.jsbridge.CallBackFunction
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
+import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ToastUtils
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
 
 
 class WebViewActivity : BaseActivity() {
-
-
-    private val pickImageContract = registerForActivityResult(PickImageContract()) {
-
-        Log.i("H5调原生:", "图片uri:$it")
-        // 获取内容URI对应的文件路径
-        val filePath = getImagePath(it!!)
-        if (filePath != null) {
-            val imageFile = File(filePath)
-            val thread = Thread {
-                val imageBytes = imageFile.readBytes()
-                val imageData = Base64.encodeToString(imageBytes, Base64.DEFAULT)
-                wv.post {
-                    //将图片通过showSelectedImage返回给H5
-                    Log.i("H5调原生:", "图片字节码:$imageData")
-//                    wv.evaluateJavascript("javascript:showSelectedImage('$imageData')", null)//可以添加回调
-//                    wv.loadUrl("javascript:showSelectedImage('$imageData')")//直接传
-
-
-
-
-                    //调用 H5 端普通事件函数
-//                    wv.send("安卓传递给 JS 的消息") { data ->
-//                        Toast.makeText(
-//                            this, data, Toast.LENGTH_LONG
-//                        ).show()
-//                    }
-
-                    wv.callHandler("showSelectedImage", "imageData") { data ->
-                        Toast.makeText(
-                            this, data, Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-
-                }
-            }
-            thread.start()
-        } else {
-            ToastUtils.showToast(this, "图片无效，请重新选择！")
-        }
-
-
-    }
 
 
     private lateinit var link: String
@@ -79,49 +33,64 @@ class WebViewActivity : BaseActivity() {
 
         wv = findViewById(R.id.webView)
         WebViewSettings.setDefaultWebSettings(wv)
-
-//        wv.addJavascriptInterface(JavaScriptInterface(), "Android")//注入方法
-
-
         wv.loadUrl(WebViewSettings.host + link)
         Log.i("H5调原生：", WebViewSettings.host + link)
 
 
+        //向H5注入方法
         wv.registerHandler("chooseImage") { data, function ->
-
-            //上传图片，打开相册
-//            Log.i("H5返回的数据 ：", data)
-            pickImageContract.launch(Unit)
-
-
-            function.onCallBack("")
-        }
-
-
-    }
-
-    inner class JavaScriptInterface {
-        @JavascriptInterface
-        fun chooseImage() {
-            //上传图片，打开相册
-            Log.i("H5调原生", "打开相册成功")
-            pickImageContract.launch(Unit)
+            openPhoto()
         }
     }
 
 
-    private fun getImagePath(uri: Uri): String? {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
-        cursor?.let {
-            if (it.moveToFirst()) {
-                val columnIndex: Int = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                val imagePath: String = it.getString(columnIndex)
-                it.close()
-                return imagePath
+    private val rc: Int = 123
+    private fun openPhoto() {
+        // 检查图片权限
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 请求权限
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
+            )
+        } else {
+            //上传图片，打开相册
+            pickImageContract.launch(Unit)
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == rc) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 用户授予了权限，继续进行文件操作
+                //上传图片，打开相册
+                pickImageContract.launch(Unit)
+            } else {
+                // 用户拒绝了权限，处理拒绝权限的情况
             }
         }
-        return null
+    }
+
+    private val pickImageContract = registerForActivityResult(PickImageContract()) {
+        if (it != null) {
+            // 获取内容URI对应的文件路径
+            val thread = Thread {
+                val imageData = Base64Utils.zipPic(it)
+                wv.post {
+                    Log.i("H5调原生:", "图片字节码长度:${imageData?.length}")
+                    wv.callHandler("showSelectedImage", imageData) {
+                        //可以在这里弹出提示
+                    }
+                }
+            }
+            thread.start()
+        }
     }
 
     //处理选择图片的请求和结果
@@ -150,4 +119,5 @@ class WebViewActivity : BaseActivity() {
     override fun isShowBack(): Boolean {
         return true
     }
+
 }
