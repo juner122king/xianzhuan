@@ -1,8 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,24 +10,34 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.ApiConstants
+import com.lelezu.app.xianzhuan.data.ApiService
+import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.LoginInfo
+import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ToastUtils
+import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 
 //登录页面
 class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹
-
-    private val loginViewModel2: LoginViewModel2 by viewModels {
-        LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,29 +67,66 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private fun getLogin(wxCode: String) {
         Log.i("LoginActivity", "开始执行登录请求方法getLogin")
-        // 用户进行登录，执行登录接口
-        loginViewModel2.getLoginInfo(wxCode)
-        loginViewModel2.loginRePLiveData.observe(this) {
-            if (it != null) {
-                if (it.isNewer) {
-                    Log.i("LoginActivity", "新用户  登录成功：$it")
 
-                    val intent = Intent(context, PhoneLoginActivity::class.java)
-                    startActivity(intent)
+        getService().getLogin(
+            LoginInfo(
+                WxData.WEIXIN_APP_ID, ApiConstants.LOGIN_METHOD_WX, null, null, wxCode
+            )
+        ).enqueue(object : Callback<ApiResponse<LoginReP>> {
+            override fun onResponse(
+                call: Call<ApiResponse<LoginReP>>, response: Response<ApiResponse<LoginReP>>
+            ) {
+                if (response.isSuccessful) {
+                    when (response.body()?.code) {
+                        "000000" -> {
+                            response.body()?.data?.let {
+                                saveInfo(it)
+                                if (it.isNewer) {
+                                    Log.i("LoginActivity", "新用户  登录成功：$it")
 
-                } else {
-                    Log.i("LoginActivity", "旧用户  登录成功：$it")
-                    goToHomeActivity()
+                                    val intent = Intent(context, PhoneLoginActivity::class.java)
+                                    startActivity(intent)
+                                } else {
+                                    Log.i("LoginActivity", "旧用户  登录成功：$it")
+                                    goToHomeActivity()
+                                }
+                            }
+                        }
+
+                        else -> {
+                            Log.d(
+                                "APP登录接口login",
+                                "登录失败${response.body()?.code}:${response.body()?.message}"
+                            )
+                        }
+                    }
                 }
-
-            } else {
-                Log.i("LoginActivity", "登录失败")
             }
-        }
+
+            override fun onFailure(call: Call<ApiResponse<LoginReP>>, t: Throwable) {
+            }
+
+
+        })
+
 
     }
 
+    private fun getService(): ApiService {
+        val retrofit = Retrofit.Builder().baseUrl(ApiConstants.HOST)
+            .addConverterFactory(GsonConverterFactory.create()).build()
+
+
+        return retrofit.create(ApiService::class.java)
+//        logservice.getLogin(LoginInfo(WxData.WEIXIN_APP_ID, ApiConstants.LOGIN_METHOD_WX, null, null, wxCode))
+
+    }
+
+
     private fun goToRegister(register: Register) {
+        val loginViewModel2: LoginViewModel2 by viewModels {
+            LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
+        }
 
         loginViewModel2.getRegister(register)
         loginViewModel2.registerLoginRePLiveData.observe(this) {
@@ -90,7 +135,9 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
             if (it != null) {
                 if (it.isNewer) {
                     Log.i("LoginActivity", "新用户  注册成功：$it")
-
+                    saveInfo(it)
+                    val intent = Intent(context, PhoneLoginActivity::class.java)
+                    startActivity(intent)
                 } else {
                     Log.i("LoginActivity", "旧用户  注册成功：$it")
                     goToHomeActivity()
@@ -186,4 +233,29 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
         }
 
     }
+
+
+    //保存登录信息
+    private fun saveInfo(loginReP: LoginReP) {
+
+        //保存登录信息
+        ShareUtil.putString(
+            ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN, loginReP.accessToken
+        ) //保存登录TOKEN
+        ShareUtil.putString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID, loginReP.userId) //保存用户id
+
+        if (loginReP.isNewer) ShareUtil.putBoolean(
+            ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS, false
+        ) //保存登录状态
+        else ShareUtil.putBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
+    }
+
+    //清除登录信息
+    private fun cleanInfo() {
+        ShareUtil.clean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN) //清空登录TOKEN
+        ShareUtil.clean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID) //清空用户id
+        ShareUtil.putBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS, false) //保存登录状态
+    }
+
+
 }
