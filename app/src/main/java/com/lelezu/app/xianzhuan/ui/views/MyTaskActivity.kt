@@ -24,15 +24,15 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     private lateinit var adapter3: TaskItemAdapter
     private lateinit var adapter4: TaskItemAdapter
 
-    private var page: Int = 0;//当前选择page  0为第一项：置顶
+    private var page: Int = 0//当前选择page  0为第一项：置顶
 
-    private var current1: Int = 1;//当前选择page1加载页
-    private var current2: Int = 1;//当前选择page2加载页
-    private var current3: Int = 1;//当前选择page3加载页
-    private var current4: Int = 1;//当前选择page4加载页
-
+    private var current1: Int = 1//当前选择page1加载页
+    private var current2: Int = 1//当前选择page2加载页
+    private var current3: Int = 1//当前选择page3加载页
+    private var current4: Int = 1//当前选择page4加载页
 
     private var auditStatus = 1//当前选择的子项状态 默认加载待提交
+
     private val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
     }
@@ -40,6 +40,10 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initView()
+    }
+
+    private fun initView() {
         val tabLayout = findViewById<TabLayout>(R.id.tab_task_list)
         recyclerView = findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
@@ -62,7 +66,6 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
 
-
         swiper = findViewById(R.id.swiper)
         swiper.setColorSchemeResources(R.color.colorControlActivated)
         swiper.setOnRefreshListener {
@@ -77,21 +80,26 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
                 when (page) {
                     0 -> {
                         recyclerView.adapter = adapter1
+                        adapter1.notifyDataSetChanged()
+
                         auditStatus = 1
                     }
 
                     1 -> {
                         recyclerView.adapter = adapter2
+                        adapter2.notifyDataSetChanged()
                         auditStatus = 2
                     }
 
                     2 -> {
                         recyclerView.adapter = adapter3
+                        adapter3.notifyDataSetChanged()
                         auditStatus = 3
                     }
 
                     3 -> {
                         recyclerView.adapter = adapter4
+                        adapter4.notifyDataSetChanged()
                         auditStatus = 4
                     }
                 }
@@ -113,10 +121,27 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
             loadDone(it)
         }
 
+    }
+
+    private fun initData() {
+
+        page = 0;//当前选择page  0为第一项：置顶
+        current1 = 1;//当前选择page1加载页
+        current2 = 1;//当前选择page2加载页
+        current3 = 1;//当前选择page3加载页
+        current4 = 1;//当前选择page4加载页
+        auditStatus = 1//当前选择的子项状态 默认加载待提交
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initData()
         // 执行刷新操作
         refresh()
 
     }
+
     private fun loadDone(it: MutableList<Task>) {
         // 停止刷新动画
         swiper.isRefreshing = false
@@ -138,6 +163,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
             }
         }
     }
+
     fun loadData(isLoad: Boolean) {
         when (page) {
             0 -> if (adapter1.itemCount == 0 || isLoad) {
@@ -156,7 +182,6 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
                 homeViewModel.getMyTaskList(auditStatus, current4)
             }
         }
-        ToastUtils.showToast(this, "auditStatus:${auditStatus}", 0)
 
     }
 

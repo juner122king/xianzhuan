@@ -51,6 +51,7 @@ data class Task(
     val supportDevices: List<String>,
     val taskDesc: String?,
     val taskId: String,
+    val taskLabel: String,
     val taskStatus: Int,
     val taskStepList: List<TaskStep>,
     val taskTitle: String?,

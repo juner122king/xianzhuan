@@ -74,9 +74,7 @@ class PhoneLoginActivity : Activity() {
 
         QuickLogin.getInstance().onePass(object : QuickLoginTokenListener() {
             override fun onGetTokenSuccess(token: String?, accessCode: String?) {
-                Log.d(
-                    "易盾号码认证Api", "一键登录成功: 易盾token${token}运营商token${accessCode}"
-                )
+
 
                 //保存token
                 ShareUtil.putString(
@@ -95,7 +93,7 @@ class PhoneLoginActivity : Activity() {
                     "易盾号码认证Api", "一键登录失败：${msg}"
                 )
                 finish()
-                ToastUtils.showToast(baseContext, "一键登录失败：${msg}", 0)
+
             }
 
             // 取消登录包括按物理返回键返回

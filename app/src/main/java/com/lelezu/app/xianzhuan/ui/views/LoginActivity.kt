@@ -14,23 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.ApiConstants
-import com.lelezu.app.xianzhuan.data.ApiService
-import com.lelezu.app.xianzhuan.data.model.ApiResponse
-import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
-import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
-import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 //登录页面
@@ -38,7 +26,9 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹
-
+    private val loginViewModel2: LoginViewModel2 by viewModels {
+        LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,124 +57,53 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private fun getLogin(wxCode: String) {
         Log.i("LoginActivity", "开始执行登录请求方法getLogin")
-
-        getService().getLogin(
-            LoginInfo(
-                WxData.WEIXIN_APP_ID, ApiConstants.LOGIN_METHOD_WX, null, null, wxCode
-            )
-        ).enqueue(object : Callback<ApiResponse<LoginReP>> {
-            override fun onResponse(
-                call: Call<ApiResponse<LoginReP>>, response: Response<ApiResponse<LoginReP>>
-            ) {
-                if (response.isSuccessful) {
-                    when (response.body()?.code) {
-                        "000000" -> {
-                            response.body()?.data?.let {
-                                saveInfo(it)
-                                if (it.isNewer) {
-                                    Log.i("LoginActivity", "新用户  登录成功：$it")
-
-                                    val intent = Intent(context, PhoneLoginActivity::class.java)
-                                    startActivity(intent)
-                                } else {
-                                    Log.i("LoginActivity", "旧用户  登录成功：$it")
-                                    goToHomeActivity()
-                                }
-                            }
-                        }
-
-                        else -> {
-                            Log.d(
-                                "APP登录接口login",
-                                "登录失败${response.body()?.code}:${response.body()?.message}"
-                            )
-                        }
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<ApiResponse<LoginReP>>, t: Throwable) {
-            }
-
-
-        })
-
-
-    }
-
-    private fun getService(): ApiService {
-        val retrofit = Retrofit.Builder().baseUrl(ApiConstants.HOST)
-            .addConverterFactory(GsonConverterFactory.create()).build()
-
-
-        return retrofit.create(ApiService::class.java)
-//        logservice.getLogin(LoginInfo(WxData.WEIXIN_APP_ID, ApiConstants.LOGIN_METHOD_WX, null, null, wxCode))
-
-    }
-
-
-    private fun goToRegister(register: Register) {
-        val loginViewModel2: LoginViewModel2 by viewModels {
-            LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
+        loginViewModel2.getLoginInfo(wxCode)
+        loginViewModel2.loginRePLiveData.observe(this) {
+            onLogin(it)
         }
 
-        loginViewModel2.getRegister(register)
+    }
+
+    private fun goToRegister() {
+        loginViewModel2.getRegister()
         loginViewModel2.registerLoginRePLiveData.observe(this) {
-
-            Log.i("LoginActivity", "注册返回信息：：$it")
-            if (it != null) {
-                if (it.isNewer) {
-                    Log.i("LoginActivity", "新用户  注册成功：$it")
-                    saveInfo(it)
-                    val intent = Intent(context, PhoneLoginActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Log.i("LoginActivity", "旧用户  注册成功：$it")
-                    goToHomeActivity()
-                }
-            } else {
-                Log.i("LoginActivity", "登录失败")
-            }
-
+            onLogin(it)
         }
-
-
     }
+
+    private fun onLogin(it: LoginReP?) {
+        if (it != null) {
+            Log.i(
+                "LoginActivity登录与注册",
+                "用户ID:${it.userId},token：${it.accessToken},新用户？：${it.isNewer}"
+            )
+            if (it.isNewer) {
+
+                startActivity(Intent(context, PhoneLoginActivity::class.java))
+            } else {
+                goToHomeActivity()
+            }
+        }
+    }
+
 
     private fun goToHomeActivity() {
         finish()
-        val intent = Intent(context, HomeActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(context, HomeActivity::class.java))
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        Log.i("LoginActivity", "方法onNewIntent()")
-        //从微信授权页面返回
+
         if (intent != null) {
+            Log.i("LoginActivity上级页面：", "${intent.getStringExtra("type")}")
+            //从微信授权页面返回
             if (intent.getStringExtra("type").equals("WX")) intent.getStringExtra("wx_code")?.let {
                 getLogin(it)
             }
             if (intent.getStringExtra("type").equals("163")) {
-                ToastUtils.showToast(this, "一键登录成功", 0)
-
-
-                val deviceToken = ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN)
-                val mobileAccessToken =
-                    ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
-                val mobileToken = ShareUtil.getString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_TOKEN)
-                val userId = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)
-                val loginToken = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
-
-
-                Log.i(
-                    "登录信息",
-                    "loginToken:${loginToken},deviceToken:${deviceToken},mobileAccessToken:${mobileAccessToken},mobileToken:${mobileToken},userId:${userId}"
-                )
-
-
                 //请求注册接口
-                goToRegister(Register(deviceToken, mobileAccessToken, mobileToken, null, userId))
+                goToRegister()
             }
         }
     }
@@ -232,29 +151,6 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
             R.id.bto_phome_login -> wxLoginInit() // 使用手机登录
         }
 
-    }
-
-
-    //保存登录信息
-    private fun saveInfo(loginReP: LoginReP) {
-
-        //保存登录信息
-        ShareUtil.putString(
-            ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN, loginReP.accessToken
-        ) //保存登录TOKEN
-        ShareUtil.putString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID, loginReP.userId) //保存用户id
-
-        if (loginReP.isNewer) ShareUtil.putBoolean(
-            ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS, false
-        ) //保存登录状态
-        else ShareUtil.putBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
-    }
-
-    //清除登录信息
-    private fun cleanInfo() {
-        ShareUtil.clean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN) //清空登录TOKEN
-        ShareUtil.clean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID) //清空用户id
-        ShareUtil.putBoolean(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS, false) //保存登录状态
     }
 
 

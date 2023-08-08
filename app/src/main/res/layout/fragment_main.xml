@@ -24,7 +24,7 @@
             <ImageView
                 android:layout_width="20sp"
                 android:layout_height="20sp"
-                android:src="@drawable/logo" />
+                android:src="@mipmap/round_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -239,7 +239,7 @@
 
         <include layout="@layout/view_banner_item1" />
 
-        <include layout="@layout/view_banner_item2" />
+        <include layout="@layout/view_banner_item1" />
 
     </ViewFlipper>
 
@@ -249,7 +249,10 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/radius_border"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingStart="2dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="2dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -259,8 +262,7 @@
             android:layout_marginBottom="5dp"
             android:src="@drawable/home_icon4" />
 
-        <include
-            layout="@layout/rv_layout"/>
+        <include layout="@layout/rv_layout" />
     </LinearLayout>
 
 

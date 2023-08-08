@@ -2,16 +2,22 @@ package com.lelezu.app.xianzhuan.data.repository
 
 import android.util.Log
 import com.lelezu.app.xianzhuan.data.ApiService
+import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 /**
  * @author:Administrator
@@ -33,7 +39,7 @@ class TaskRepository(private var apiService: ApiService) {
         val taskTypeId = query.taskTypeId
         try {
             val response = apiService.getTaskList(
-                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId
+                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
             ).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
@@ -72,7 +78,7 @@ class TaskRepository(private var apiService: ApiService) {
         val taskTypeId = query.taskTypeId
         try {
             val response = apiService.getMyTaskList(
-                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId
+                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
             ).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
@@ -104,7 +110,7 @@ class TaskRepository(private var apiService: ApiService) {
     //获取任务类型列表
     suspend fun apiGetTaskTypeList(): List<TaskType>? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getTaskTypeList().execute()
+            val response = apiService.getTaskTypeList(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {
@@ -135,7 +141,7 @@ class TaskRepository(private var apiService: ApiService) {
     //随机为用户推荐3个任务
     suspend fun apiShuffle(): MutableList<Task>? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.shuffle().execute()
+            val response = apiService.shuffle(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {
@@ -167,7 +173,7 @@ class TaskRepository(private var apiService: ApiService) {
     //任务详情
     suspend fun apiTaskDetails(taskId: String): Task? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getTaskInfo(taskId).execute()
+            val response = apiService.getTaskInfo(taskId,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {
@@ -196,27 +202,13 @@ class TaskRepository(private var apiService: ApiService) {
     }
 
     //任务报名
-    suspend fun apiTaskApply(taskId: String): Boolean? = withContext(Dispatchers.IO) {
+    suspend fun apiTaskApply(taskId: String): ApiResponse<Boolean>? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.taskApply(Req(taskId)).execute()
+            val response = apiService.taskApply(Req(taskId),ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
             if (response.isSuccessful) {
-                when (response.body()?.code) {
-                    "000000" -> {
-                        Log.d(
-                            "APP接口 任务报名",
-                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
-                        )
-                        response.body()?.data
-                    }
 
-                    else -> {
-                        Log.d(
-                            "APP接口任务报名",
-                            "失败${response.body()?.code}:${response.body()?.message}"
-                        )
-                        null
-                    }
-                }
+                response.body()
+
             } else {
                 null
             }
@@ -229,7 +221,7 @@ class TaskRepository(private var apiService: ApiService) {
     //任务提交
     suspend fun apiTaskSubmit(taskSubmit: TaskSubmit): Boolean? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.taskSubmit(taskSubmit).execute()
+            val response = apiService.taskSubmit(taskSubmit,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {
@@ -255,6 +247,50 @@ class TaskRepository(private var apiService: ApiService) {
             e.printStackTrace()
             null
         }
+    }
+
+    //任务提交
+    suspend fun apiUpload(imagePath: String): String? = withContext(Dispatchers.IO) {
+        val imagePart = createImagePart(imagePath)
+        try {
+            val response = apiService.upload(imagePart,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
+            if (response.isSuccessful) {
+                when (response.body()?.code) {
+                    "000000" -> {
+                        Log.d(
+                            "APP接口 任务提交",
+                            "获取成功 : ToString: ${response.body()?.data?.toString()}"
+                        )
+                        response.body()?.data
+                    }
+
+                    else -> {
+                        Log.d(
+                            "APP接口任务提交",
+                            "失败${response.body()?.code}:${response.body()?.message}"
+                        )
+                        null
+                    }
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+    private fun createImagePart(imagePath: String): MultipartBody.Part {
+        val file = File(imagePath)
+
+        val mediaType = when {
+            imagePath.endsWith(".png", true) -> "image/png".toMediaTypeOrNull()
+            imagePath.endsWith(".jpg", true) -> "image/jpeg".toMediaTypeOrNull()
+            else -> throw IllegalArgumentException("Unsupported file format")
+        }
+        val requestBody = file.asRequestBody(mediaType)
+
+        return MultipartBody.Part.createFormData("file", file.name, requestBody)
     }
 
     companion object {
