@@ -6,17 +6,25 @@
     android:orientation="vertical"
     android:padding="15dp">
 
+    <TextView
+        android:id="@+id/tv_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_step_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
         android:text="进去页面后右上角三条杠，分享二维码点进去。"
         android:textColor="@color/black2"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_step"
+        app:layout_constraintStart_toEndOf="@id/tv_step" />
 
     <ImageView
         android:id="@+id/iv_case_pic"

@@ -5,19 +5,19 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.text.TextUtils
 import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import cn.jiguang.api.utils.JCollectionAuth
+import cn.jpush.android.api.JPushInterface
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
+import com.lelezu.app.xianzhuan.utils.DeviceUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.umeng.commonsdk.UMConfigure
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import java.io.BufferedReader
 import java.io.FileReader
 
@@ -28,7 +28,6 @@ import java.io.FileReader
  *
  */
 class MyApplication : Application() {
-
 
     private val apiService by lazy { ApiFactory.create() }
 
@@ -89,6 +88,26 @@ class MyApplication : Application() {
         )
         UMConfigure.setLogEnabled(true)
         //友盟结束
+
+
+        //极光SDK开始
+        JPushInterface.setDebugMode(true);
+        // 调整点一：初始化代码前增加setAuth调用
+//        val isPrivacyReady// app根据是否已弹窗获取隐私授权来赋值
+//        if(!isPrivacyReady){
+//            JCollectionAuth.setAuth(context, false); // 后续初始化过程将被拦截
+//        }
+        JPushInterface.init(this)
+        // 调整点二：隐私政策授权获取成功后调用
+        JCollectionAuth.setAuth(context, true); //如初始化被拦截过，将重试初始化过程
+        //极光SDK结束
+
+
+
+        //获取Android ID
+        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,DeviceUtils.getAndroidId(this))
+
+
     }
 
     fun getVersionName(): String {
@@ -107,7 +126,6 @@ class MyApplication : Application() {
         bufferReader.close()
         return processName
     }
-
 
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">得闲赚</string>
+    <string name="app_name">众手帮</string>
     <string name="advertising_words">一元可提现一起赚赏金</string>
 
 
@@ -15,7 +15,7 @@
     <string name="text_agreement2">聚赚隐私政策与用户协议</string>
 
     <string name="agreement_content">协议内容</string>
-    <string name="title_activity_home">得闲帮</string>
+    <string name="title_activity_home">众手帮</string>
     <string name="title_activity_out">关于我们</string>
     <string name="title_activity_message">消息</string>
     <string name="title_activity_search_result">搜索结果</string>

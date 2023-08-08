@@ -35,10 +35,12 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
         notifyDataSetChanged()
     }
 
+
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
         val shangJiTv: TextView = itemView.findViewById(R.id.tv_shang_ji)
+        val tvTaskLabel: TextView = itemView.findViewById(R.id.tv_taskLabel)
         val tvEarnedCount: TextView = itemView.findViewById(R.id.tv_task_earnedCount)
         val tvTR: TextView = itemView.findViewById(R.id.tv_task_rest)
         val clickVIew: View = itemView.findViewById(R.id.click_view)
@@ -61,6 +63,13 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
         holder.shangJiTv.text = "${item.unitPrice}元"
         holder.tvEarnedCount.text = "${item.earnedCount}人已赚"
         holder.tvTR.text = "剩余${item.rest}个"
+
+        if(item.taskLabel==null){
+            holder.tvTaskLabel.visibility = View.GONE
+        }else{
+            holder.tvTaskLabel.text = item.taskLabel
+            holder.tvTaskLabel.visibility = View.VISIBLE
+        }
 
 
         //整个itemView能点击

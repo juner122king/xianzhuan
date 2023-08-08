@@ -10,12 +10,12 @@ package com.lelezu.app.xianzhuan.data.model
 /**
  *
  * @property applyLogId String? 任务报名申请ID
- * @property taskUploadVerifyList List<TaskUploadVerify>    任务上传验证
+ * @property uploadVerifyBody List<TaskUploadVerify>    任务上传验证
  * @constructor
  */
 
 data class TaskSubmit(
     val applyLogId: String?,
-    val taskUploadVerifyList: List<TaskUploadVerify>
+    val uploadVerifyBody: List<TaskUploadVerify>
 
 )
