@@ -44,6 +44,8 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
 
     val userInfo: MutableLiveData<UserInfo?> = MutableLiveData()
 
+    val errInfo: MutableLiveData<String?> = MutableLiveData()
+
 
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
         val loginReP =
@@ -67,7 +69,11 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
     fun getUserInfo(userId: String) = viewModelScope.launch {
         val rep = userRepository.apiUserInfo(userId)
 
-        userInfo.postValue(rep)
+        if (rep != null) {
+            userInfo.postValue(rep)
+        } else {
+            errInfo.postValue("用户信息获取失败！")
+        }
     }
 
 

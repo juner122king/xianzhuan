@@ -1,6 +1,4 @@
 
-x
-Happ/src/main/java/com/lelezu/app/xianzhuan/receiver/CountdownReceiver.kt,4\d\4d02de75f7040088a25d67fd10f6b5eecd7e7d17
 l
 <app/src/main/java/com/lelezu/app/xianzhuan/wxapi/WxData.java,7\3\731e71d36993e1d98be08865d8187ff5d2701033
 ]
@@ -23,16 +21,8 @@ Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/AutoOutActivity.kt,5\d\5da
 Lapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/MessageItemAdapter.kt,a\1\a12a108f0437b044dd1ff2da41f6804a6c3d37b5
 y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/TaskCondAdapter.kt,0\7\0798c1b961be47c1f338b3b96a2f18dd79ffc355
-v
-Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/MessageActivity.kt,c\6\c6d158a8913d046d7930f02ba0877a8fb85a08d3
 y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/SetSMSCodeActivity.kt,d\4\d4c73f112ed3dcae961fec04eed83616879de1ec
-y
-Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/viewmodels/BaseViewModel.kt,f\d\fd8401c5c335bdfc195d37d01a6ee64e92c068d7
-
-Oapp/src/main/java/com/lelezu/app/xianzhuan/ui/viewmodels/SysMessageViewModel.kt,c\d\cd7aecb87709a4ac0c708997b06131957177986e
-z
-Japp/src/main/java/com/lelezu/app/xianzhuan/dun163api/PhoneLoginActivity.kt,7\c\7c61794e1cdb31570eb134ed429f0f041ad4357b
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/Register.kt,8\e\8e61b966afd7f46a9acab74490928b1fa26196b0
 ;
@@ -57,8 +47,6 @@ l
 <app/src/main/java/com/lelezu/app/xianzhuan/data/model/Req.kt,c\a\ca20891223c8ba1ec0d33e9e8103f4dad61d9bd6
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/LoginReP.kt,1\9\195f9f08877339d93bc8a972079cc0e398461cdc
-u
-Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/LaunchActivity.kt,5\f\5fb84bcebd317cdb77735d4dd8a17ce92e2b5372
 
 Q.idea/sonarlint/securityhotspotstore/d/d/ddae46633f118c83ab2319dcd083757fddc16c12,4\2\4285b51f8b7685f2b025dbd2af30ee0ef62ac874
 
@@ -73,8 +61,6 @@ w
 G.idea/sonarlint/issuestore/8/d/8df2c748b4066985f17762b1b1f8274b7deeed53,a\a\aa1daee224be1ee52e91f2b1a9f279a7b3be1dde
 
 Q.idea/sonarlint/securityhotspotstore/8/e/8e61b966afd7f46a9acab74490928b1fa26196b0,e\8\e8b1419b66ea62c7e3f8ec5c2feeac709c070270
-w
-G.idea/sonarlint/issuestore/0/1/0108e3391273249c745e4ddb2bcd85a13f1dbc9b,e\6\e64adfa67535b999075b31f0908e3fff829624f2
 
 Q.idea/sonarlint/securityhotspotstore/5/1/516e730a14e71f02fa73f3acd6dc7cea9a9fe002,1\5\15ff8ba7ba8aa142a4d5588fa03db65ddf2b4f45
 
@@ -102,11 +88,7 @@ Q.idea/sonarlint/securityhotspotstore/c/a/ca20891223c8ba1ec0d33e9e8103f4dad61d9b
 
 Q.idea/sonarlint/securityhotspotstore/e/d/edcb57e2fa43944a620b14c47ec58ac275667eef,4\7\472aa41c7b79d89e873b5123a33afcd7d18f3afe
 
-Q.idea/sonarlint/securityhotspotstore/7/c/7c61794e1cdb31570eb134ed429f0f041ad4357b,e\4\e494c66eefd330d6837221fa51c74b161b7d1291
-
 Q.idea/sonarlint/securityhotspotstore/b/0/b0bd2b24957bcc501782ce9bd1bcaa2e0e9dcd6a,0\b\0b1793eb492855f1c359bd20fb612baf1551f0ff
-
-Q.idea/sonarlint/securityhotspotstore/c/d/cd7aecb87709a4ac0c708997b06131957177986e,a\a\aab185703838ecfbccdc399c537a507c229600ea
 
 Q.idea/sonarlint/securityhotspotstore/5/2/52a47f2ab1bf84842f132bf33c971f2b6dbc8066,6\8\6882625635913d8425b105d377cf743dda2e0833
 
@@ -136,8 +118,6 @@ G.idea/sonarlint/issuestore/d/d/ddae46633f118c83ab2319dcd083757fddc16c12,a\6\a6
 w
 G.idea/sonarlint/issuestore/f/0/f07866736216be0ee2aba49e392191aeae700a35,b\f\bfb9453d49af9bc40f5f7a5f034be3c7ef8fa6bf
 
-Q.idea/sonarlint/securityhotspotstore/f/d/fd8401c5c335bdfc195d37d01a6ee64e92c068d7,f\5\f5b3053d194bb0670c9af1618210fbf8e44f83df
-
 Q.idea/sonarlint/securityhotspotstore/5/b/5bbfa66edb4db3c7c33c5181f43510990d3307f9,1\e\1e45613b6060de813dc92caeb118e08a2124bc35
 
 Q.idea/sonarlint/securityhotspotstore/e/f/ef8d23b6adceee28dc64a792ce45b94bbc458b61,0\a\0ab478c1fda154253eae346601010b242d50bb9e
@@ -145,8 +125,6 @@ Q.idea/sonarlint/securityhotspotstore/e/f/ef8d23b6adceee28dc64a792ce45b94bbc458b
 Q.idea/sonarlint/securityhotspotstore/a/1/a12a108f0437b044dd1ff2da41f6804a6c3d37b5,9\c\9c3e237b797af0ac0b4b4e2a6e45ab322ec248bb
 
 Q.idea/sonarlint/securityhotspotstore/5/f/5fb84bcebd317cdb77735d4dd8a17ce92e2b5372,9\6\96b33d25260bd0fec4bcbb0f4270e8e22938559f
-w
-G.idea/sonarlint/issuestore/c/d/cd7aecb87709a4ac0c708997b06131957177986e,0\c\0c9e21b989edf924de412c0d17123ad3a8db9f52
 
 Q.idea/sonarlint/securityhotspotstore/9/f/9fe84ebb15faf917b7def6236dba604453cc61e0,b\b\bbf202272a96de5cd6b6828ffdc55fb3ce45289c
 
@@ -155,8 +133,6 @@ w
 G.idea/sonarlint/issuestore/9/f/9fe84ebb15faf917b7def6236dba604453cc61e0,f\0\f0e0f9cec86fe4b939ae22be5264c758801eb28f
 
 Q.idea/sonarlint/securityhotspotstore/f/0/f07866736216be0ee2aba49e392191aeae700a35,2\5\25f6469773b9f3ebb994178c1114a60412389f58
-w
-G.idea/sonarlint/issuestore/f/d/fd8401c5c335bdfc195d37d01a6ee64e92c068d7,1\3\133a45dc79be890057896fb4d681882da4630ea4
 
 Q.idea/sonarlint/securityhotspotstore/7/6/7649fa2efe2873a5efd110185edb6d3e61bff5ee,1\6\1676e80771063353baabe27f371be950327e1306
 
@@ -185,8 +161,6 @@ w
 G.idea/sonarlint/issuestore/e/d/edcb57e2fa43944a620b14c47ec58ac275667eef,a\e\ae3248a83cd5403c34009c073d0fd552e5536ba0
 
 Q.idea/sonarlint/securityhotspotstore/0/7/0798c1b961be47c1f338b3b96a2f18dd79ffc355,b\3\b3c376492f6beb07404ebc1c9592d080ba1b8a7c
-
-Q.idea/sonarlint/securityhotspotstore/0/1/0108e3391273249c745e4ddb2bcd85a13f1dbc9b,8\0\8031c9013ff8d0d40041cc316778a9cdd0fde5a3
 w
 G.idea/sonarlint/issuestore/4/8/48aa3a3d48180e9818f9ab3f44ddb61f57563dd9,f\d\fd71708ffb89644febcead4ca0d3fabc34268632
 w
@@ -237,10 +211,19 @@ v
 Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/EmptyAdapter.kt,5\0\50c641cdee1da37b2d7432803477af34edccd085
 s
 Capp/src/main/java/com/lelezu/app/xianzhuan/wxapi/WXEntryActivity.kt,6\f\6f614c78ed06e58cdee7c4f6fcd7ac6d5a00f7c7
-:
-
-.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 @
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
+y
+Iapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskUploadVerify.kt,c\3\c3505fe5441dcd789b6da9ad70cd1fb46d7651ed
+z
+Japp/src/main/java/com/lelezu/app/xianzhuan/ui/views/TaskDetailsActivity.kt,6\8\6807d6cbf2a43fc2a3cf4d5fba360c32a939fd76
+m
+=app/src/main/java/com/lelezu/app/xianzhuan/data/model/Task.kt,0\d\0d0fa110d7e4a55584d95ae3e7569caa2bf6c518
+x
+Happ/src/main/java/com/lelezu/app/xianzhuan/receiver/CountdownReceiver.kt,4\d\4d02de75f7040088a25d67fd10f6b5eecd7e7d17
+z
+Japp/src/main/java/com/lelezu/app/xianzhuan/dun163api/PhoneLoginActivity.kt,7\c\7c61794e1cdb31570eb134ed429f0f041ad4357b
+t
+Dapp/src/main/java/com/lelezu/app/xianzhuan/jiguang/JGuangReceiver.kt,f\8\f861891c5ff59b1a6d4493267d8c733008333115

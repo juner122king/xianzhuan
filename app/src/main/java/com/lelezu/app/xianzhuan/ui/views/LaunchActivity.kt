@@ -8,16 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import cn.hutool.core.codec.Base64
-import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.utils.AesTool
-import com.lelezu.app.xianzhuan.utils.DeviceUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import okio.Utf8
-import java.util.concurrent.TimeUnit
-
 
 /**  APP启动屏
 1.登录/注册判断：在启动app时，直接通过本地存储判断用户是否已登录，处于已登录时调用登录接口判断账号是否正常状态，正常则直接到启动屏后跳转到首页；

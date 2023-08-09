@@ -20,7 +20,7 @@ public abstract class ApiFactory {
     companion object {
 
         fun create(): ApiService {
-            val token = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+//            val token = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
 
             //Log查看过滤器，上线版去掉
             val logInterceptor = HttpLoggingInterceptor()
@@ -29,12 +29,16 @@ public abstract class ApiFactory {
 
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(logInterceptor)
-                .addInterceptor { chain ->
-                    val originalRequest = chain.request()
-                    val newRequest =
-                        originalRequest.newBuilder().header("Authorization", token!!).build()
-                    chain.proceed(newRequest)
-                }.build()
+//                .addInterceptor { chain ->
+//                    val originalRequest = chain.request()
+//
+//                    val newRequest =
+//                        originalRequest.newBuilder().header("Authorization", token!!)
+//                            .build()
+//                    chain.proceed(newRequest)
+//                }
+
+                .build()
 
             val retrofit = Retrofit.Builder().baseUrl(ApiConstants.HOST)
                 .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()

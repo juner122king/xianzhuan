@@ -9,12 +9,17 @@ import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.UserInfo
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -23,19 +28,25 @@ interface ApiService {
 
 
     @POST("/dxz/app/user/register")  //用户注册
-    fun register(@Body register: Register): Call<ApiResponse<LoginReP>>
+    fun register(@Query("encryptStr") encryptStr: String): Call<ApiResponse<LoginReP>>
 
     @POST("/dxz/app/user/login")  //用户登录
     fun getLogin(@Body loginInfo: LoginInfo): Call<ApiResponse<LoginReP>>
 
     @GET("/dxz/app/user/info")  //用户信息
-    fun getUserInfo(@Query("userId") userId: String): Call<ApiResponse<UserInfo>>
+    fun getUserInfo(
+        @Query("userId") userId: String, @Header("Authorization") token: String
+    ): Call<ApiResponse<UserInfo>>
 
     @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
-    fun getTaskInfo(@Path("taskId") id: String): Call<ApiResponse<Task>>
+    fun getTaskInfo(
+        @Path("taskId") id: String, @Header("Authorization") token: String
+    ): Call<ApiResponse<Task>>
 
     @POST("/dxz/app/task/user/apply")//任务报名
-    fun taskApply(@Body req: Req): Call<ApiResponse<Boolean>>
+    fun taskApply(
+        @Body req: Req, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
 
     /**
      * //获取任务列表
@@ -50,13 +61,14 @@ interface ApiService {
      */
     @GET("/dxz/app/task/page")
     fun getTaskList(
-        @Query("queryCond") queryCond: String,
+        @Query("queryCond") queryCond: String?,
         @Query("current") current: Int?,
         @Query("highPrice") highPrice: Float?,
         @Query("lowPrice") lowPrice: Float?,
         @Query("size") size: Int?,
         @Query("taskStatus") taskStatus: Int?,
-        @Query("taskTypeId") taskTypeId: String?
+        @Query("taskTypeId") taskTypeId: String?,
+        @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<Task>>>
 
     /**
@@ -72,32 +84,49 @@ interface ApiService {
      */
     @GET("/dxz/app/task/mine/apply/page")
     fun getMyTaskList(
-        @Query("queryCond") queryCond: String,
+        @Query("queryCond") queryCond: String?,
         @Query("current") current: Int?,
         @Query("highPrice") highPrice: Float?,
         @Query("lowPrice") lowPrice: Float?,
         @Query("size") size: Int?,
         @Query("taskStatus") taskStatus: Int?,
-        @Query("taskTypeId") taskTypeId: String?
+        @Query("taskTypeId") taskTypeId: String?,
+        @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<Task>>>
 
     @GET("/dxz/app/task/type/options")//获取任务类型列表
-    fun getTaskTypeList(): Call<ApiResponse<List<TaskType>>>
+    fun getTaskTypeList(@Header("Authorization") token: String): Call<ApiResponse<List<TaskType>>>
 
     @GET("/dxz/app/task/shuffle")//随机为用户推荐3个任务
-    fun shuffle(): Call<ApiResponse<MutableList<Task>>>
+    fun shuffle(@Header("Authorization") token: String): Call<ApiResponse<MutableList<Task>>>
 
 
     @GET("/dxz/app/sys/inform/page")//获取系统消息
     fun getSysMessageList(
-        @Query("current") current: Int, @Query("size") size: Int
+        @Query("current") current: Int,
+        @Query("size") size: Int,
+        @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<Message>>>
 
 
     @GET("/dxz/app/sys/config")//获取系统配置信息
     fun getConfig(
-        @Path("confType") confType: String, @Path("configKey") configKey: String
+        @Path("confType") confType: String,
+        @Path("configKey") configKey: String,
+        @Header("Authorization") token: String
     ): Call<ApiResponse<Config>>
+
+
+    @POST("/dxz/app/task/submit")//用户提交任务
+    fun taskSubmit(
+        @Body taskSubmit: TaskSubmit, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
+
+    @Multipart
+    @POST("/dxz/app/sys/file/image/upload")//上传图片
+    fun upload(
+        @Part image: MultipartBody.Part, @Header("Authorization") token: String
+    ): Call<ApiResponse<String>>
 
 
 }

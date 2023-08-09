@@ -77,7 +77,7 @@
             android:id="@+id/cb_agree_agreement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
+            android:checked="false"
             android:text="我已阅读并同意"
             android:textColor="@color/text_s"
             android:textSize="@dimen/font_small" />

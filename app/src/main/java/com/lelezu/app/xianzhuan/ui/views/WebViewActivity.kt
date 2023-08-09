@@ -13,13 +13,11 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.utils.Base64Utils
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
 class WebViewActivity : BaseActivity() {
@@ -62,6 +60,7 @@ class WebViewActivity : BaseActivity() {
             pickImageContract.launch(Unit)
         }
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
@@ -81,7 +80,7 @@ class WebViewActivity : BaseActivity() {
         if (it != null) {
             // 获取内容URI对应的文件路径
             val thread = Thread {
-                val imageData = Base64Utils.zipPic(it)
+                val imageData = "image/png;base64," + Base64Utils.zipPic(it)
                 wv.post {
                     Log.i("H5调原生:", "图片字节码长度:${imageData?.length}")
                     wv.callHandler("showSelectedImage", imageData) {

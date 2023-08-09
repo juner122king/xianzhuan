@@ -11,7 +11,6 @@ import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
-import com.lelezu.app.xianzhuan.utils.DeviceUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.netease.htprotect.HTProtect
@@ -105,7 +104,8 @@ class MyApplication : Application() {
 
 
         //获取Android ID
-        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,DeviceUtils.getAndroidId(this))
+//        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,DeviceUtils.getAndroidId(this))
+        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,"ANDROIDID123")
 
 
     }
