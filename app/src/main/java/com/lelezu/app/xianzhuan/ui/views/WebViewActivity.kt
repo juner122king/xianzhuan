@@ -45,8 +45,6 @@ class WebViewActivity : BaseActivity() {
 
 
     private val rc: Int = 123
-
-
     private fun openPhoto() {
         // 检查图片权限
         if (ContextCompat.checkSelfPermission(
@@ -62,6 +60,8 @@ class WebViewActivity : BaseActivity() {
             pickImageContract.launch(Unit)
         }
     }
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {

@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.view.LayoutInflater
@@ -35,7 +34,6 @@ class TaskDetailsStepAdapter(
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.tv_step_text)
-        val step: TextView = itemView.findViewById(R.id.tv_step)
         val ivCasePic: ImageView = itemView.findViewById(R.id.iv_case_pic)//示例图片
         val tvWebUrl: TextView = itemView.findViewById(R.id.tv_web_url)//链接
     }
@@ -48,15 +46,13 @@ class TaskDetailsStepAdapter(
     }
 
     // 绑定数据到 ItemViewHolder
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
         holder.title.text = item.stepDesc
-        holder.step.text = ("${position + 1}.").toString()
 
         if (item.stepType == 2) {
             holder.ivCasePic.visibility = View.VISIBLE
-            ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
+            ImageViewUtil.load(holder.ivCasePic,item.useCaseImage)
             holder.ivCasePic.setOnClickListener {//图片全屏显示
                 ivDialog.setContentView(getImageView(item.useCaseImage))
                 ivDialog.show()

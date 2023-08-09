@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +15,11 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.recyclerview.widget.RecyclerView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 /**
  * @author:Administrator
@@ -35,8 +30,7 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
 class TaskVerifyStepAdapter(
     private var items: List<TaskUploadVerify>,
     private var ivDialog: Dialog,
-    private var activity: BaseActivity,
-    private val homeViewModel: HomeViewModel
+    private var activity: BaseActivity
 ) : RecyclerView.Adapter<TaskVerifyStepAdapter.ItemViewHolder>() {
 
     private var auditStatus = 0//任务状态，用改变UI
@@ -54,7 +48,6 @@ class TaskVerifyStepAdapter(
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.tv_step_text)
-        val step: TextView = itemView.findViewById(R.id.tv_step)
         val idEt: EditText = itemView.findViewById(R.id.et_id)
         val ivCasePic: ImageView = itemView.findViewById(R.id.iv_case_pic)//示例图片
         val ivUserPic: ImageView = itemView.findViewById(R.id.iv_user_up_pic)//用户图片
@@ -72,23 +65,18 @@ class TaskVerifyStepAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
         holder.title.text = item.verifyDesc
-        holder.step.text = ("${position + 1}.").toString()
+
 
         if (item.verifyType == 1) {//验证步骤是否为图片类型
 
             holder.ivCasePic.visibility = View.VISIBLE
             holder.ivUserPic.visibility = View.VISIBLE
             holder.idEt.visibility = View.GONE
-            ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
-            ImageViewUtil.load(holder.ivUserPic, item.uploadImage)
-            holder.ivCasePic.setOnClickListener {//图片全屏显示
-                ivDialog.setContentView(getImageView(item.useCaseImage))
-                ivDialog.show()
-            }
+
+
             if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
                 holder.btmUpPic.visibility = View.GONE
                 holder.ivUserPic.visibility = View.GONE
-
             } else {
                 holder.ivUserPic.visibility = View.VISIBLE
                 holder.btmUpPic.visibility = View.VISIBLE
@@ -98,40 +86,18 @@ class TaskVerifyStepAdapter(
                     mPosition = holder.adapterPosition
                 }
             }
-        } else {
-            holder.idEt.visibility = View.VISIBLE
-            holder.idEt.setText(item.uploadImage)
-            holder.ivCasePic.visibility = View.GONE
-            holder.ivUserPic.visibility = View.GONE
-
-            if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
-                holder.idEt.isEnabled = false
-            } else {
-                holder.idEt.isEnabled = true
-                holder.idEt.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(
-                        s: CharSequence?, start: Int, count: Int, after: Int
-                    ) {
-                        // 在文本改变之前调用
-                    }
-
-                    override fun onTextChanged(
-                        s: CharSequence?, start: Int, before: Int, count: Int
-                    ) {
-                        // 在文本改变时调用
-                    }
-
-                    override fun afterTextChanged(s: Editable?) {
-                        // 在文本改变之后调用
-                        if (s != null) {
-                            val text = s.toString()
-                            item.uploadValue = text
-                        }
-                    }
-                })
+            ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
+            ImageViewUtil.load(holder.ivUserPic, item.uploadImage)
+            holder.ivCasePic.setOnClickListener {//图片全屏显示
+                ivDialog.setContentView(getImageView(item.useCaseImage))
+                ivDialog.show()
             }
 
 
+        } else {
+            holder.idEt.visibility = View.VISIBLE
+            holder.ivCasePic.visibility = View.GONE
+            holder.ivUserPic.visibility = View.GONE
         }
 
     }
@@ -167,13 +133,9 @@ class TaskVerifyStepAdapter(
 
     private val pickImageContract = activity.registerForActivityResult(PickImageContract()) {
         if (it != null) {
-            homeViewModel.apiUpload(it)
-            homeViewModel.upLink.observe(activity) { link ->
-                ToastUtils.showToast(activity, "图片上传成功", 0)
-                items[mPosition].uploadValue = link
-                items[mPosition].uploadImage = link
-                notifyItemChanged(mPosition)
-            }
+            // 可以根据需要更新对应的数据项或刷新整个列表
+            items[mPosition].uploadImage = it.toString()
+            notifyItemChanged(mPosition)
         }
     }
 
@@ -192,7 +154,7 @@ class TaskVerifyStepAdapter(
         }
     }
 
-    fun getItems(): List<TaskUploadVerify> {
+    public fun getItems(): List<TaskUploadVerify> {
         return items
     }
 }

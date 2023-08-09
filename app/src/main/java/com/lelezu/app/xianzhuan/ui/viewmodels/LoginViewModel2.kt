@@ -6,19 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import cn.hutool.Hutool
-import cn.hutool.core.codec.Base64
-import cn.hutool.json.JSONUtil
-import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Register
-import com.lelezu.app.xianzhuan.data.model.RegisterEncrypt
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
-import com.lelezu.app.xianzhuan.utils.AesTool
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.result.AntiCheatResult
@@ -60,11 +53,11 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
         )
         return LoginInfo(
             WxData.WEIXIN_APP_ID, loginMethod, mobileToken, mobileAccessToken, wxCode
-        )
+        );
 
     }
 
-    fun getUserInfo(userId: String) = viewModelScope.launch {
+    fun getUserInfo(userId:String) = viewModelScope.launch {
         val rep = userRepository.apiUserInfo(userId)
 
         userInfo.postValue(rep)
@@ -72,13 +65,9 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
 
 
     //注册
-    fun getRegister() = viewModelScope.launch {
+    fun getRegister(register: Register) = viewModelScope.launch {
 
-        val o = Gson().toJson(ShareUtil.getRegister())
-        val o64 = Base64.encode(o, "UTF-8")
-        val en64 = AesTool.encryptStr(o64)
-
-        val registerLoginReP = userRepository.apiRegister(en64)
+        var registerLoginReP = userRepository.apiRegister(register)
         registerLoginRePLiveData.postValue(registerLoginReP)
 
     }

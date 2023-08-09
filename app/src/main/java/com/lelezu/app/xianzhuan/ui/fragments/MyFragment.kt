@@ -76,7 +76,6 @@ class MyFragment : Fragment(), View.OnClickListener {
         view.findViewById<View>(R.id.ll_l8).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l9).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_my_task).setOnClickListener(this)
-        view.findViewById<View>(R.id.ll_my_task1).setOnClickListener(this)
         view.findViewById<View>(R.id.btm_vip).setOnClickListener(this)
 
         val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
@@ -97,16 +96,16 @@ class MyFragment : Fragment(), View.OnClickListener {
                 0 -> {
                 }   //普通
                 1 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv0)
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)
                 }   //白银
                 2 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)//黄金
-                }
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)
+                }   //黄金
                 3 -> {
                 }   //忽略
                 4 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv1)//钻
-                }
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)
+                }   //钻
             }
 
         }
@@ -131,9 +130,9 @@ class MyFragment : Fragment(), View.OnClickListener {
             startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
 
         } else if (p0?.id == R.id.iv_message) {
-            startActivity(Intent(activity, MessageActivity::class.java))//消息
-        } else if (p0?.id == R.id.ll_my_task || p0?.id == R.id.ll_my_task1) {
-            startActivity(Intent(activity, MyTaskActivity::class.java))//我的任务
+            startActivity(Intent(activity, MessageActivity::class.java))//关于我们
+        } else if (p0?.id == R.id.ll_my_task) {
+            startActivity(Intent(activity, MyTaskActivity::class.java))//关于我们
         } else {
             val intent = Intent(requireContext(), WebViewActivity::class.java)
             when (p0?.id) {

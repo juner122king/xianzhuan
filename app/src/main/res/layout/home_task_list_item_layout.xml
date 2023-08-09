@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/click_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:clickable="true"
-    android:padding="8dp">
+    android:padding="5dp"
+    >
 
     <LinearLayout
         android:id="@+id/iv_main_src"
@@ -43,8 +43,8 @@
         android:layout_marginStart="10dp"
         android:text="看视频就拿钱"
         android:textColor="@color/black2"
-        android:textSize="16dp"
         android:textStyle="bold"
+        android:textSize="16dp"
         app:layout_constraintStart_toEndOf="@id/iv_main_src"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -69,13 +69,14 @@
             android:id="@+id/tv_task_earnedCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:hint="9999多少人已赚"
             android:textSize="11sp" />
 
         <ImageView
             android:id="@+id/tv_task_rest_icon"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"
             android:src="@drawable/icon_task_item2" />
 
@@ -83,37 +84,9 @@
             android:id="@+id/tv_task_rest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:hint="剩余98个"
             android:textSize="11sp" />
     </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/tvv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/radius_border_button"
-        android:paddingStart="10dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="3dp"
-        android:text="去完成"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_taskLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/radius_border_stroke"
-        android:layout_marginTop="5dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:visibility="gone"
-        android:textColor="@color/text_999"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/tv_task_title"
-        app:layout_constraintTop_toBottomOf="@+id/ll_number" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,6 @@ package com.lelezu.app.xianzhuan.data.model
  * @property mobileToken String? 前端SDK获取的accessToken，手机号登录时必传
  * @property mobileAccessToken String? 	前端SDK获取的token，手机号登录时必传
  * @property wxCode String? 	微信授权code，微信一键登录时必传
- * @property
  * @constructor
  */
 data class LoginInfo(
@@ -17,6 +16,5 @@ data class LoginInfo(
     var loginMethod: String,
     var mobileToken: String?,
     var mobileAccessToken: String?,
-    var wxCode: String?,
-    var encryptStr: String? = ""
+    var wxCode: String?
 )

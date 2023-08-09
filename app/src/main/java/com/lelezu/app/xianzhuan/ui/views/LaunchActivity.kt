@@ -6,17 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import cn.hutool.core.codec.Base64
-import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.utils.AesTool
-import com.lelezu.app.xianzhuan.utils.DeviceUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import okio.Utf8
-import java.util.concurrent.TimeUnit
 
 
 /**  APP启动屏
@@ -43,16 +34,10 @@ class LaunchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
 
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            // 在这里执行你想要暂停的操作
-            //登录判断
-            preloadContent()
-        }, 2000) // 延迟 2000 毫秒（即 2 秒）
-
+        //登录判断
+        preloadContent()
 
     }
-
 
     private fun preloadContent() {
         //判断是否已登录APP

@@ -10,7 +10,6 @@ import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -28,7 +27,7 @@ class SysInformRepository(private var apiService: ApiService) {
     //获取系统消息列表
     suspend fun apiGetList(current:Int,size:Int): ListData<Message>? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getSysMessageList(current,size,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
+            val response = apiService.getSysMessageList(current,size).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {
@@ -59,7 +58,7 @@ class SysInformRepository(private var apiService: ApiService) {
     //获取系统配置信息
     suspend fun apiConfig(confType:String,configKey:String): Config? = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getConfig(confType,configKey,ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)).execute()
+            val response = apiService.getConfig(confType,configKey).execute()
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {

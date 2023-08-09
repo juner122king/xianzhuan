@@ -6,7 +6,6 @@ import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN
 import com.sdk.Unicorn.base.framework.utils.app.AppUtils
@@ -22,33 +21,31 @@ object WebViewSettings {
 
     //    var host = "http://192.168.3.7:8000/#/"
     var host = "http://192.168.3.35:8000/#/"
-//    var host = HOST
-
 
     var LINK_KEY = "URL_LINK"
     var URL_TITLE = "URL_TITLE"
 
 
-    var link1 = "/#/pages/index/dailyRewards/dailyRewards"
-    var link2 = "/#/pages/index/newcomerRewards/newcomerRewards"
-    var link3 = "/#/pages/apprentice/index"
+    var link1 = "pages/index/dailyRewards/dailyRewards"
+    var link2 = "pages/index/newcomerRewards/newcomerRewards"
+    var link3 = "pages/apprentice/index"
 
-    var link4 = "/#/pages/apprentice/apprenticeIncome/index" //我的-收徒收益
+    var link4 = "pages/apprentice/apprenticeIncome/index" //我的-收徒收益
 
-    var link5 = "/#/pages/publishTask/selectTaskClassification/index" //我的-发布任务
+    var link5 = "pages/publishTask/selectTaskClassification/index" //我的-发布任务
 
-    var link6 = "/#/pages/member/index" //我的-开通会员
+    var link6 = "pages/member/index" //我的-开通会员
 
-    var link7 = "/#/pages/reportForms/index" //我的-流水报表
-    var link8 = "/#/pages/balance/index?pageType=recharge" //充值
+    var link7 = "pages/reportForms/index" //我的-流水报表
+    var link8 = "pages/balance/index?pageType=recharge" //充值
     var link9 = "" //提现
-    var link10 = "/#/pages/feedback/opinion/index?pageType=report" //举报维权
+    var link10 = "pages/feedback/opinion/index?pageType=report" //举报维权
 
-    var link11 = "/#/pages/feedback/index" //客服与反馈
+    var link11 = "pages/feedback/index" //客服与反馈
 
-    var link12 = "/#/pages/personalData/index" //设置个人资料
+    var link12 = "pages/personalData/index" //设置个人资料
 
-    var link13 = "/#/pages/member/index" //开通会员
+    var link13 = "pages/member/index" //开通会员
 
 
     @SuppressLint("SetJavaScriptEnabled")
