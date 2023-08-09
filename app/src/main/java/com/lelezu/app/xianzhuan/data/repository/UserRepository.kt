@@ -104,17 +104,10 @@ class UserRepository(private var apiService: ApiService) {
             if (response.isSuccessful) {
                 when (response.body()?.code) {
                     "000000" -> {
-                        Log.d(
-                            "获取用户信息", "成功 :  ${response.body()?.data?.toString()} "
-                        )
+
                         response.body()?.data
                     }
-
                     else -> {
-                        Log.d(
-                            "获取用户信息",
-                            "失败${response.body()?.code}:${response.body()?.message}"
-                        )
                         null
                     }
                 }

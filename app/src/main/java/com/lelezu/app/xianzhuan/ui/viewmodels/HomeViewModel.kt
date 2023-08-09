@@ -15,7 +15,6 @@ import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 
 /**
  * @author:Administrator
@@ -127,10 +126,10 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     fun apiTaskSubmit(applyLogId: String, verifys: List<TaskUploadVerify>) = viewModelScope.launch {
 
         Log.i("验证信息", verifys.toString())
-        val isUploadValueEmpty = verifys.any {
-            it.uploadValue.isEmpty() ?: true
+        val isUploadValueEmpty = verifys.all { verify ->
+            verify.uploadValue?.isNotEmpty() ?: false
         }
-        if (!isUploadValueEmpty) {
+        if (isUploadValueEmpty) {
             val r = taskRepository.apiTaskSubmit(TaskSubmit(applyLogId, verifys))
             isUp.postValue(r!!)
         } else {

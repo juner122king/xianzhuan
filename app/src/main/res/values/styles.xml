@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomBottomNavigationView" parent="Widget.Design.BottomNavigationView">
+        <item name="android:paddingTop">1dp</item> <!-- 自定义上边距 -->
+        <item name="android:paddingBottom">1dp</item> <!-- 自定义下边距 -->
+        <item name="android:paddingStart">10dp</item> <!-- 自定义左边距 -->
+        <item name="android:paddingEnd">10dp</item> <!-- 自定义右边距 -->
+    </style>
+
+
+</resources>

@@ -2,23 +2,15 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.ContextMenu
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -27,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
-import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
@@ -35,13 +26,6 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private lateinit var ivDialog: Dialog
@@ -271,7 +255,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             R.id.tv_btm2 -> {
                 when (getTask().auditStatus) {
-                    0 -> homeViewModel.apiTaskApply(getTask().taskId!!)//报名
+                    0 -> homeViewModel.apiTaskApply(getTask().taskId)//报名
                     else -> getTaskSubmit()//提交
                 }
 

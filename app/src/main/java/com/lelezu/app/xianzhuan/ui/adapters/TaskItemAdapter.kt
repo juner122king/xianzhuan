@@ -36,6 +36,7 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
     }
 
 
+
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
@@ -50,8 +51,6 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.home_task_list_item_layout, parent, false)
-
-
         return ItemViewHolder(view)
     }
 

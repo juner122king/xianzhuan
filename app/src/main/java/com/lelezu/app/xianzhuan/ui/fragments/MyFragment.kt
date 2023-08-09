@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,24 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
-import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
-import com.lelezu.app.xianzhuan.ui.views.HomeActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
-import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -50,6 +43,9 @@ class MyFragment : Fragment(), View.OnClickListener {
             param2 = it.getString(ARG_PARAM2)
         }
 
+        loginViewModel2.errInfo.observe(this) {
+            ToastUtils.showToast(requireContext(), it, 0)
+        }
 
     }
 
@@ -63,6 +59,7 @@ class MyFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         view.findViewById<View>(R.id.iv_op).setOnClickListener(this)
         view.findViewById<View>(R.id.iv_message).setOnClickListener(this)
 
@@ -83,13 +80,13 @@ class MyFragment : Fragment(), View.OnClickListener {
 
 
         //执行获取用户信息接口
-        loginViewModel2.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)!!)
+        loginViewModel2.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
 
         loginViewModel2.userInfo.observe(requireActivity()) {
             view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
-            view.findViewById<TextView>(R.id.tv_user_id).text = it!!.userId
-            view.findViewById<TextView>(R.id.tv_my_text1).text = it!!.rechargeAmount.toString()
-            view.findViewById<TextView>(R.id.tv_my_text2).text = it!!.balanceAmount.toString()
+            view.findViewById<TextView>(R.id.tv_user_id).text = it.userId
+            view.findViewById<TextView>(R.id.tv_my_text1).text = it.rechargeAmount.toString()
+            view.findViewById<TextView>(R.id.tv_my_text2).text = it.balanceAmount.toString()
             ImageViewUtil.load(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
 
 
@@ -102,6 +99,7 @@ class MyFragment : Fragment(), View.OnClickListener {
                 2 -> {
                     ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)//黄金
                 }
+
                 3 -> {
                 }   //忽略
                 4 -> {

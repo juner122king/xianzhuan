@@ -207,18 +207,12 @@ Q.idea/sonarlint/securityhotspotstore/7/4/74fd2a60b2cd47df2db786c1694c2aaa33fac1
 Q.idea/sonarlint/securityhotspotstore/1/9/195f9f08877339d93bc8a972079cc0e398461cdc,9\f\9fc3fd540d87d11ffdbc848f85cd696c99d83bfa
 Å
 Q.idea/sonarlint/securityhotspotstore/2/7/273a62cdcf1a6feac254f4c68d7ab0425a18cbbb,4\3\436370ee120e8ed88aca4753e17b24e3d974fa08
-v
-Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/EmptyAdapter.kt,5\0\50c641cdee1da37b2d7432803477af34edccd085
 s
 Capp/src/main/java/com/lelezu/app/xianzhuan/wxapi/WXEntryActivity.kt,6\f\6f614c78ed06e58cdee7c4f6fcd7ac6d5a00f7c7
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 @
 local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
-y
-Iapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskUploadVerify.kt,c\3\c3505fe5441dcd789b6da9ad70cd1fb46d7651ed
-z
-Japp/src/main/java/com/lelezu/app/xianzhuan/ui/views/TaskDetailsActivity.kt,6\8\6807d6cbf2a43fc2a3cf4d5fba360c32a939fd76
 m
 =app/src/main/java/com/lelezu/app/xianzhuan/data/model/Task.kt,0\d\0d0fa110d7e4a55584d95ae3e7569caa2bf6c518
 x

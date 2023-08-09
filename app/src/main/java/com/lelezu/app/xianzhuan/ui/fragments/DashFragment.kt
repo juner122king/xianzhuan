@@ -1,15 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lelezu.app.xianzhuan.MyApplication
@@ -81,6 +78,7 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         adapter2.setEmptyView(view.findViewById(R.id.recycler_layout))
         adapter3.setEmptyView(view.findViewById(R.id.recycler_layout))
         adapter4.setEmptyView(view.findViewById(R.id.recycler_layout))
+
 
 
         recyclerView.adapter = adapter1
