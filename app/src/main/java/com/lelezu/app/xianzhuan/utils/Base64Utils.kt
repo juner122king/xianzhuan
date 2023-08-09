@@ -21,10 +21,30 @@ object Base64Utils {
         val compressedBitmap = compressBitmap(bitmap)
         bitmap?.recycle()
         val byteArrayOutputStream = ByteArrayOutputStream()
-        compressedBitmap?.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream)
+        compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream)
         compressedBitmap?.recycle()
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.NO_WRAP)
+    }
+
+
+    fun zipPic2(uri: Uri): String? {
+        val mimeType = context?.contentResolver?.getType(uri)
+        val bitmap = decodeUriToBitmap(uri)
+        val compressedBitmap = compressBitmap(bitmap)
+        bitmap?.recycle()
+        val byteArrayOutputStream = ByteArrayOutputStream()
+
+        return if (mimeType != null && mimeType.contains("jpeg")) {
+            compressedBitmap?.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream)
+            "image/jpeg;base64," + Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP)
+        } else if (mimeType != null && mimeType.contains("png")) {
+            compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream)
+            "image/png;base64," + Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP)
+        } else {
+            // Unsupported image format
+            null
+        }
     }
 
     private fun decodeUriToBitmap(uri: Uri): Bitmap? {
@@ -41,8 +61,8 @@ object Base64Utils {
         return bitmap?.let {
             val width = it.width
             val height = it.height
-            val maxWidth = 600
-            val maxHeight = 800
+            val maxWidth = 300
+            val maxHeight = 400
             val scalingFactor =
                 (maxWidth.toFloat() / width).coerceAtMost(maxHeight.toFloat() / height)
             val scaledWidth = (width * scalingFactor).toInt()

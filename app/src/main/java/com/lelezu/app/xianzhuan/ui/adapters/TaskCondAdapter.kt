@@ -70,7 +70,6 @@ class TaskCondAdapter(var context: Context, var datas: List<TaskType>) : BaseAda
 
 
         view?.setOnClickListener {
-            ToastUtils.showToast(context, datas[position].typeTitle, Toast.LENGTH_SHORT)
             selectposition = position
             notifyDataSetChanged();
         }

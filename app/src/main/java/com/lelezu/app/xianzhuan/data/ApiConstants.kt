@@ -6,7 +6,6 @@ object ApiConstants {
     basePath:          /dxz
      */
     const val HOST = "https://test.ipandata.com" //
-    const val BASE_pATH = "/dxz" //
 
 
     const val LOGIN_METHOD_PHONE = "MOBILE"    //登录方式，MOBILE：手机号，WX：微信授权，

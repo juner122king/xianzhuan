@@ -80,9 +80,10 @@ class WebViewActivity : BaseActivity() {
         if (it != null) {
             // 获取内容URI对应的文件路径
             val thread = Thread {
-                val imageData = "image/png;base64," + Base64Utils.zipPic(it)
+                val imageData = Base64Utils.zipPic(it)
                 wv.post {
                     Log.i("H5调原生:", "图片字节码长度:${imageData?.length}")
+                    Log.i("H5调原生:", "图片字节码:${imageData}")
                     wv.callHandler("showSelectedImage", imageData) {
                         //可以在这里弹出提示
                     }

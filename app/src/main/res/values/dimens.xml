@@ -13,4 +13,9 @@
 
 
     <dimen name="top_bar_h">55dp</dimen>
+
+
+    <dimen name="radius_dialog">20dp</dimen>
+
+
 </resources>

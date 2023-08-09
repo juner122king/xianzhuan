@@ -92,6 +92,16 @@
             android:textColor="@color/text_check"
             android:textSize="@dimen/font_small" />
 
+        <TextView
+            android:id="@+id/tv_agreement2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="18px"
+            android:text="@string/text_agreement1"
+            android:textColor="@color/text_check"
+            android:textSize="@dimen/font_small" />
+
     </LinearLayout>
 
     <TextView

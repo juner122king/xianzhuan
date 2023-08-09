@@ -9,7 +9,6 @@ import android.view.View.OnClickListener
 import android.widget.GridView
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
@@ -39,7 +38,6 @@ class TaskCondSelectActivity : BaseActivity(), OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_task_cond_select)
 
         tv1 = findViewById(R.id.btu_price1)
         tv2 = findViewById(R.id.btu_price2)

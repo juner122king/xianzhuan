@@ -27,11 +27,6 @@ class CustomLogoView @JvmOverloads constructor(
         textView2 = findViewById(R.id.tv2)
     }
 
-    // 提供公共方法来设置ImageView和TextView的内容、样式等
-
-    fun setImageResource(resourceId: Int) {
-        imageView.setImageResource(resourceId)
-    }
 
     fun setText(text: CharSequence) {
         textView1.text = text
