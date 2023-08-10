@@ -56,7 +56,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
             )
         )
         if (taskList != null) _taskList.postValue(taskList.records)
-        else _taskList.postValue(mutableListOf())
+        else errMessage.postValue("没有更多了！")
     }
 
     // 获取任务列表数据 简单查询条件
@@ -65,7 +65,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : ViewModel() {
             taskQuery
         )
         if (taskList != null) _taskList.postValue(taskList.records)
-        else _taskList.postValue(mutableListOf())
+        else errMessage.postValue("没有更多了！")
     }
 
 

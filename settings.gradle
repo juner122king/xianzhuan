@@ -1,7 +1,7 @@
 pluginManagement {
     repositories {
         flatDir {
-            dirs 'libs'
+            dirs 'app/libs'
         }
         google()
         mavenCentral()

@@ -18,7 +18,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
@@ -28,8 +28,8 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹
-    private val loginViewModel2: LoginViewModel2 by viewModels {
-        LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
+    private val loginViewModel: LoginViewModel by viewModels {
+        LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,16 +60,16 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     private fun getLogin(wxCode: String) {
         Log.i("LoginActivity", "开始执行登录请求方法getLogin")
-        loginViewModel2.getLoginInfo(wxCode)
-        loginViewModel2.loginRePLiveData.observe(this) {
+        loginViewModel.getLoginInfo(wxCode)
+        loginViewModel.loginRePLiveData.observe(this) {
             onLogin(it)
         }
 
     }
 
     private fun goToRegister() {
-        loginViewModel2.getRegister()
-        loginViewModel2.registerLoginRePLiveData.observe(this) {
+        loginViewModel.getRegister()
+        loginViewModel.registerLoginRePLiveData.observe(this) {
             onLogin(it)
         }
     }

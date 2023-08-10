@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
@@ -27,8 +27,8 @@ private const val ARG_PARAM2 = "param2"
 class MyFragment : Fragment(), View.OnClickListener {
 
 
-    private val loginViewModel2: LoginViewModel2 by viewModels {
-        LoginViewModel2.LoginViewFactory(((activity?.application as MyApplication).userRepository))
+    private val loginViewModel: LoginViewModel by viewModels {
+        LoginViewModel.LoginViewFactory(((activity?.application as MyApplication).userRepository))
     }
 
 
@@ -43,7 +43,7 @@ class MyFragment : Fragment(), View.OnClickListener {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        loginViewModel2.errInfo.observe(this) {
+        loginViewModel.errInfo.observe(this) {
             ToastUtils.showToast(requireContext(), it, 0)
         }
 
@@ -80,9 +80,9 @@ class MyFragment : Fragment(), View.OnClickListener {
 
 
         //执行获取用户信息接口
-        loginViewModel2.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
+        loginViewModel.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
 
-        loginViewModel2.userInfo.observe(requireActivity()) {
+        loginViewModel.userInfo.observe(requireActivity()) {
             view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
             view.findViewById<TextView>(R.id.tv_user_id).text = it.userId
             view.findViewById<TextView>(R.id.tv_my_text1).text = it.rechargeAmount.toString()

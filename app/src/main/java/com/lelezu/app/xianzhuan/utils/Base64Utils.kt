@@ -37,17 +37,23 @@ object Base64Utils {
 
         return if (mimeType != null && mimeType.contains("jpeg")) {
             compressedBitmap?.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream)
-            "image/jpeg;base64," + Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP)
+            "image/jpeg;base64," + Base64.encodeToString(
+                byteArrayOutputStream.toByteArray(),
+                Base64.NO_WRAP
+            )
         } else if (mimeType != null && mimeType.contains("png")) {
             compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream)
-            "image/png;base64," + Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP)
+            "image/png;base64," + Base64.encodeToString(
+                byteArrayOutputStream.toByteArray(),
+                Base64.NO_WRAP
+            )
         } else {
             // Unsupported image format
             null
         }
     }
 
-    private fun decodeUriToBitmap(uri: Uri): Bitmap? {
+    fun decodeUriToBitmap(uri: Uri): Bitmap? {
         return try {
             val inputStream = context?.contentResolver?.openInputStream(uri)
             BitmapFactory.decodeStream(inputStream)
@@ -57,7 +63,7 @@ object Base64Utils {
         }
     }
 
-    private fun compressBitmap(bitmap: Bitmap?): Bitmap? {
+    fun compressBitmap(bitmap: Bitmap?): Bitmap? {
         return bitmap?.let {
             val width = it.width
             val height = it.height

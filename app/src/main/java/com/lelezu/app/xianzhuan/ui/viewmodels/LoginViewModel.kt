@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
  * @constructor 用户信息相关的
  *
  */
-class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() {
+class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     val loginRePLiveData: MutableLiveData<LoginReP?> = MutableLiveData()
     val registerLoginRePLiveData: MutableLiveData<LoginReP?> = MutableLiveData()
@@ -79,8 +78,8 @@ class LoginViewModel2(private val userRepository: UserRepository) : ViewModel() 
 
     class LoginViewFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(LoginViewModel2::class.java)) {
-                @Suppress("UNCHECKED_CAST") return LoginViewModel2(repository) as T
+            if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST") return LoginViewModel(repository) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

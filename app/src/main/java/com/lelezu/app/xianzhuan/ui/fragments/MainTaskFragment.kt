@@ -64,9 +64,16 @@ class MainTaskFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         homeViewModel._taskList.observe(viewLifecycleOwner) {
             loadDone(it)
         }
+        //错误信息监听
+        homeViewModel.errMessage.observe(requireActivity()) {
+            // 停止刷新动画
+            swiper.isRefreshing = false
+            ToastUtils.showToast(requireActivity(), it, 0)
+        }
 
         // 初始加载
         refresh()
+
     }
 
 
@@ -74,13 +81,9 @@ class MainTaskFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
 
         // 停止刷新动画
         swiper.isRefreshing = false
+        if (recyclerView.isLoadMore()) adapter.addData(it)
+        else adapter.upData(it)
 
-        if (it.isEmpty() && recyclerView.isLoadMore()) {
-            ToastUtils.showToast(requireContext(), "没有更多了！", 0)
-        } else {
-            if (recyclerView.isLoadMore()) adapter.addData(it)
-            else adapter.upData(it)
-        }
     }
 
     override fun onRefresh() {

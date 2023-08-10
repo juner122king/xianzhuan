@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lelezu.app.xianzhuan.MyApplication
@@ -34,6 +35,8 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
     private lateinit var adapter2: TaskItemAdapter
     private lateinit var adapter3: TaskItemAdapter
     private lateinit var adapter4: TaskItemAdapter
+
+    private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
     private var page: Int = 0;//当前选择page  0为第一项：置顶
 
@@ -65,8 +68,6 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         val context = requireContext()
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_task_list)
         recyclerView = view.findViewById(R.id.recyclerView)
-
-
         // 创建适配器，并将其绑定到 RecyclerView 上
         adapter1 = TaskItemAdapter(mutableListOf(), context)
         adapter2 = TaskItemAdapter(mutableListOf(), context)
@@ -78,13 +79,18 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         adapter3.setEmptyView(view.findViewById(R.id.recycler_layout))
         adapter4.setEmptyView(view.findViewById(R.id.recycler_layout))
 
-
-
         recyclerView.adapter = adapter1
 
         recyclerView.setListener(this)
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
+
+        swiper = view.findViewById(R.id.swiper)
+        swiper.setColorSchemeResources(R.color.colorControlActivated)
+        swiper.setOnRefreshListener {
+            // 执行刷新操作
+            refresh()
+        }
 
 
 
@@ -116,32 +122,39 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
 
         // 观察 ViewModel 中的任务列表数据变化
         homeViewModel._taskList.observe(viewLifecycleOwner) {
+
             loadDone(it)
         }
         loadData(true)//正常加载
 
+
+        //错误信息监听
+        homeViewModel.errMessage.observe(requireActivity()) {
+            // 停止刷新动画
+            swiper.isRefreshing = false
+            ToastUtils.showToast(requireActivity(), it, 0)
+        }
     }
 
 
     private fun loadDone(it: MutableList<Task>) {
 
-        if (it.isEmpty() && recyclerView.isLoadMore()) {
-            ToastUtils.showToast(requireContext(), "没有更多了！", 0)
-        } else {
-            when (page) {
-                0 -> if (recyclerView.isLoadMore()) adapter1.addData(it)
-                else adapter1.upData(it)
+        // 停止刷新动画
+        swiper.isRefreshing = false
+        when (page) {
+            0 -> if (recyclerView.isLoadMore()) adapter1.addData(it)
+            else adapter1.upData(it)
 
-                1 -> if (recyclerView.isLoadMore()) adapter2.addData(it)
-                else adapter2.upData(it)
+            1 -> if (recyclerView.isLoadMore()) adapter2.addData(it)
+            else adapter2.upData(it)
 
-                2 -> if (recyclerView.isLoadMore()) adapter3.addData(it)
-                else adapter3.upData(it)
+            2 -> if (recyclerView.isLoadMore()) adapter3.addData(it)
+            else adapter3.upData(it)
 
-                3 -> if (recyclerView.isLoadMore()) adapter4.addData(it)
-                else adapter4.upData(it)
-            }
+            3 -> if (recyclerView.isLoadMore()) adapter4.addData(it)
+            else adapter4.upData(it)
         }
+
     }
 
     private fun loadData(isLoad: Boolean) {
@@ -176,8 +189,7 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         }
     }
 
-    override fun onRefresh() {
-        //重置页码
+    private fun refresh() {
         when (page) {
             0 -> current1 = 1
             1 -> current2 = 1
@@ -185,6 +197,11 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
             3 -> current4 = 1
         }
         loadData(true)
+    }
+
+    override fun onRefresh() {
+
+        //
     }
 
 
@@ -200,6 +217,7 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
 
     override fun onLoaded() {
     }
+
 
     companion object {
         @JvmStatic

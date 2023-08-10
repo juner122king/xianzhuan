@@ -22,13 +22,11 @@ import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel2
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
-
-
 
 
     private lateinit var ivDialog: Dialog
@@ -41,8 +39,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
     }
 
-    private val lvModel: LoginViewModel2 by viewModels {
-        LoginViewModel2.LoginViewFactory((application as MyApplication).userRepository)
+    private val lvModel: LoginViewModel by viewModels {
+        LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
     }
 
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
@@ -99,9 +97,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //报名监听
         homeViewModel.isApply.observe(this) {
             ToastUtils.showToast(this, if (it) "报名成功" else "报名失败", 0)
-            if (it) {
-                finish()
-            }
+
         }
 
         //错误信息监听

@@ -116,7 +116,6 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         homeViewModel.myTaskList.observe(this) {
             loadDone(it)
         }
-
     }
 
     private fun initData() {
