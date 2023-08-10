@@ -139,6 +139,14 @@ dependencies {
     implementation 'cn.jiguang.sdk:joperate:2.0.2'
 
 
-    implementation 'cn.hutool:hutool-all:5.8.16'
+    implementation 'cn.hutool:hutool-all:5.8.16'//工具包
+
+
+
+    //任务墙sdk
+    implementation (name: 'zj_sdk_2.4.11_8', ext: 'aar')
+    implementation (name: 'zj-tasklibrary-release-1.1.9.0', ext: 'aar')
+    implementation (name: 'zj_ywsdk_1.1.7', ext: 'aar')
+    implementation (name: 'moku-planet-api-native-sdk-release-1.6.2', ext: 'aar')
 
 }
