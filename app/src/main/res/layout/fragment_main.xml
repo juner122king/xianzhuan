@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -245,25 +246,44 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@drawable/radius_border"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingStart="2dp"
         android:paddingTop="10dp"
         android:paddingEnd="2dp"
         android:paddingBottom="10dp">
 
         <ImageView
+            android:id="@+id/iv_local_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
-            android:src="@drawable/home_icon4" />
+            android:src="@drawable/home_icon4"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <include layout="@layout/rv_layout" />
+        <ImageView
+            android:id="@+id/iv_zj_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/home_icon4"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/task_vp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
+
+<!--    -->
+
+<!--    <include layout="@layout/rv_layout" />-->
 
 </LinearLayout>

@@ -17,6 +17,7 @@ import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.umeng.commonsdk.UMConfigure
+import com.zj.zjsdk.ZjSdk
 import java.io.BufferedReader
 import java.io.FileReader
 
@@ -90,7 +91,7 @@ class MyApplication : Application() {
 
 
         //极光SDK开始
-        JPushInterface.setDebugMode(true);
+        JPushInterface.setDebugMode(false);
         // 调整点一：初始化代码前增加setAuth调用
 //        val isPrivacyReady// app根据是否已弹窗获取隐私授权来赋值
 //        if(!isPrivacyReady){
@@ -102,12 +103,21 @@ class MyApplication : Application() {
         //极光SDK结束
 
 
-
         //获取Android ID
 //        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,DeviceUtils.getAndroidId(this))
-        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,"ANDROIDID123")
+        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID, "ANDROIDID123")
 
+        // 任务墙SDK 初始化
+        ZjSdk.init(this, "Z6269688056", object : ZjSdk.ZjSdkInitListener {
+            override fun initSuccess() {
+                Log.i("任务墙SDK", "初始化成功！")
 
+            }
+
+            override fun initFail(code: Int, msg: String?) {
+                Log.i("任务墙SDK", "初始化失败！")
+            }
+        })
     }
 
     fun getVersionName(): String {

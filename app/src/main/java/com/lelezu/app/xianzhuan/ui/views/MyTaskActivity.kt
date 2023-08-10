@@ -2,14 +2,11 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
-import com.lelezu.app.xianzhuan.data.model.TaskQuery
-import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.utils.ToastUtils
@@ -59,8 +56,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         adapter4.setEmptyView(findViewById(R.id.recycler_layout))
 
         recyclerView.adapter = adapter1
-        // 可以在这里设置 RecyclerView 的布局管理器，例如：
-        recyclerView.layoutManager = LinearLayoutManager(this)
+
 
         recyclerView.setListener(this)
         recyclerView.setRefreshEnable(true)

@@ -7,13 +7,23 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 网络通信 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 获取设备信息 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 获取MAC地址 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 获取网络状态 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 若targetSdkVersion>=30，则需要增加以下权限，否则会影响SDK功能 -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许改变网络连接状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许改变WiFi网络连接状态 -->
+
+    <!-- 需要确保权限获取后再请求广告 -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -28,6 +38,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/round_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
@@ -35,8 +46,8 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.views.WebViewActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.views.MyTaskActivity"
             android:exported="false"
@@ -110,7 +121,8 @@
         <!-- Since JCore2.0.0 Required SDK核心功能-->
         <!-- 可配置android:process参数将Service放在其他进程中；android:enabled属性不能是false -->
         <!-- 这个是自定义Service，要继承极光JCommonService，可以在更多手机平台上使得推送通道保持的更稳定 -->
-        <service android:name=".jiguang.XService"
+        <service
+            android:name=".jiguang.XService"
             android:enabled="true"
             android:exported="false"
             android:process=":pushcore">
@@ -126,13 +138,12 @@
         <receiver
             android:name=".jiguang.JGuangReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
                 <category android:name="您应用的包名" />
             </intent-filter>
         </receiver>
-
 
 
         <provider

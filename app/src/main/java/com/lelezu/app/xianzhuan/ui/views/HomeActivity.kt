@@ -23,26 +23,17 @@ class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
         viewPager.isUserInputEnabled = false//禁止滑动
-
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
-
         initData()
-
         val adapter = HomeActivityAdapter(supportFragmentManager, lifecycle, fragmentList)
         viewPager.adapter = adapter
-
-
         //  页面更改监听
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
                 position: Int, positionOffset: Float, positionOffsetPixels: Int
             ) {
-                // Do nothing
             }
 
             override fun onPageSelected(position: Int) {
@@ -55,7 +46,6 @@ class HomeActivity : BaseActivity() {
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-                // Do nothing
             }
         })
 
@@ -94,11 +84,14 @@ class HomeActivity : BaseActivity() {
         }
 
 
+        initZjTask()
+
+
     }
 
 
     private fun initData() {
-        val mainFragment = MainFragment.newInstance(getString(R.string.title_home), "")
+        val mainFragment = MainFragment.newInstance()
         fragmentList.add(mainFragment)
 
         val dashFragment = DashFragment.newInstance(getString(R.string.title_dashboard), "")
@@ -110,6 +103,13 @@ class HomeActivity : BaseActivity() {
 
         val myFragment = MyFragment.newInstance(getString(R.string.title_my), "")
         fragmentList.add(myFragment)
+    }
+
+
+    private fun initZjTask() {
+
+
+
     }
 
     override fun getLayoutId(): Int {

@@ -1,171 +1,87 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.widget.Toast
 import android.widget.ViewFlipper
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.lelezu.app.xianzhuan.MyApplication
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Task
-import com.lelezu.app.xianzhuan.data.model.TaskQuery
-import com.lelezu.app.xianzhuan.data.repository.TaskRepository
-import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondHIGHER
-import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
-import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
-import com.lelezu.app.xianzhuan.ui.views.HomeActivity
-import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
-
-private const val ARG_PARAM1 = "param1"
-
-
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickListener {
-    private var param1: String? = null
-    private var param2: String? = null
-    private lateinit var recyclerView: RefreshRecycleView
-    private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
+import com.zj.zjsdk.ad.ZjAdError
+import com.zj.zjsdk.ad.ZjTaskAd
+import com.zj.zjsdk.ad.ZjTaskAdListener
 
 
-    private lateinit var adapter: TaskItemAdapter
+class MainFragment : Fragment(), OnClickListener {
+    private lateinit var viewPager: ViewPager2
+    private lateinit var pagerAdapter: MyPagerAdapter
 
-    private var current: Int = 1;//当前加载页
+    private lateinit var zjTask: ZjTaskAd
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val posID = "J1517087581"
 
-    }
+    private val permissions = arrayOf(
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        // 添加其他需要的权限
+    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_main, container, false)
+        viewPager = view.findViewById(R.id.task_vp)
+        pagerAdapter = MyPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+        viewPager.adapter = pagerAdapter
 
 
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModel.ViewFactory((activity?.application as MyApplication).taskRepository)
+        addLocalTaskFragment()//加载本地任务列表
+
+        return view
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         view.findViewById<View>(R.id.ll_top_btm1).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm2).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
-
         //Banner图初始化
-        var viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
+        val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
         viewFlipper.startFlipping()
 
-        swiper = view.findViewById(R.id.swiper)
-        swiper.setColorSchemeResources(R.color.colorControlActivated)
-        swiper.setOnRefreshListener {
-            // 执行刷新操作
-            refresh()
-        }
 
+        initZjTask()//执行广告sdk
 
-        recyclerView = view.findViewById(R.id.recyclerView)
-        // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = TaskItemAdapter(mutableListOf(), requireActivity())
-
-        adapter.setEmptyView(view.findViewById(R.id.recycler_layout))
-
-        recyclerView.adapter = adapter
-        // 可以在这里设置 RecyclerView 的布局管理器，例如：
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        recyclerView.setListener(this)
-        recyclerView.setRefreshEnable(true)
-        recyclerView.setLoadMoreEnable(true)
-
-
-        // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel._taskList.observe(viewLifecycleOwner) {
-
-            // 数据变化时更新 RecyclerView
-            loadDone(it)
-        }
-
-        // 初始加载
-        refresh()
-
-    }
-
-    private fun loadDone(it: MutableList<Task>) {
-        // 停止刷新动画
-        swiper.isRefreshing = false
-
-        if (it.isEmpty() && recyclerView.isLoadMore()) {
-            ToastUtils.showToast(requireContext(), "没有更多了！", 0)
-//            recyclerView.setLoadMoreEnable(false)//关闭上拉加载更多
-        } else {
-            if (recyclerView.isLoadMore()) adapter.addData(it)
-            else adapter.upData(it)
-        }
-    }
-
-
-    private fun loadData() {
-        homeViewModel.getTaskList(TaskRepository.queryCondLATEST,current)
     }
 
     companion object {
-
         @JvmStatic
-        fun newInstance(param1: String, param2: String) = MainFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_PARAM1, param1)
-                putString(ARG_PARAM2, param2)
-            }
-        }
-    }
-
-    override fun onRefresh() {
-//        refresh()
-    }
-
-    private fun refresh() {
-        current = 1
-        loadData()
-    }
-
-
-    override fun onLoadMore() {
-        current = current.inc()//页数+1
-        loadData()
-    }
-
-    override fun onLoaded() {
-
+        fun newInstance() = MainFragment()
     }
 
     override fun onClick(p0: View?) {
@@ -192,5 +108,81 @@ class MainFragment : Fragment(), RefreshRecycleView.IOnScrollListener, OnClickLi
 
     }
 
+    private fun initZjTask() {
+        // 检查是否已经有权限
+        val hasPermissions = permissions.all {
+            ContextCompat.checkSelfPermission(
+                requireContext(), it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+        if (!hasPermissions) {
+            // 请求权限
+            requestPermissionLauncher.launch(permissions)
+        } else {
+            zjTask = ZjTaskAd(requireActivity(), posID, ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID, object : ZjTaskAdListener {
+                override fun onZjAdLoaded() {
+                    ToastUtils.showToast(requireActivity(), "任务墙加载成功", 0)
+                    addZjTaskFragment()
+                }
+                override fun onZjAdError(zjAdError: ZjAdError) {
+                    ToastUtils.showToast(
+                        requireActivity(),
+                        "任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg,
+                        0
+                    )
+                }
+            })
+        }
+
+    }
+
+    //添加本地任务列表
+    private fun addLocalTaskFragment() {
+        val mainTaskFragment = MainTaskFragment.newInstance()  //创建一个本地任务列表fragment
+        pagerAdapter.addFragment(mainTaskFragment)
+        pagerAdapter.notifyDataSetChanged()
+    }
+
+    //添加SDK任务列表
+    fun addZjTaskFragment() {
+        pagerAdapter.addFragment(zjTask.loadCPLFragmentAd())
+        pagerAdapter.addFragment(zjTask.loadCPAFragmentAd())
+        pagerAdapter.notifyDataSetChanged()
+    }
+
+    class MyPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+        FragmentStateAdapter(fragmentManager, lifecycle) {
+
+        private val fragments = mutableListOf<Fragment>()
+
+        fun addFragment(fragment: Fragment) {
+            fragments.add(fragment)
+        }
+
+        override fun getItemCount(): Int {
+            return fragments.size
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return fragments[position]
+        }
+    }
+
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        // 在这里处理权限请求结果
+        if (permissions.all { it.value }) {
+            // 所有权限被授予
+            Toast.makeText(requireActivity(), "已授权", Toast.LENGTH_SHORT).show()
+            initZjTask()
+        } else {
+            // 至少一个权限未被授予
+            Toast.makeText(
+                requireActivity(), "没有相关权限加载任务墙，请退出重试!", Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
 }

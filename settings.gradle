@@ -14,12 +14,13 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         flatDir {
-            dirs 'libs'
+            dirs 'app/libs'
         }
         google()
         mavenCentral()
         maven { url 'https://repo1.maven.org/maven2/' }
         maven { url "https://jitpack.io" }
+        jcenter()
     }
 }
 rootProject.name = "My Application"

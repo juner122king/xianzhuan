@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.annotation.Nullable
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -71,6 +72,7 @@ class RefreshRecycleView @JvmOverloads constructor(
             }
         })
         setOnTouchListener(this)
+        layoutManager = LinearLayoutManager(context)
     }
 
     /**
@@ -166,6 +168,7 @@ class RefreshRecycleView @JvmOverloads constructor(
     fun isLoadMore(): Boolean { //是否是加载动作
         return nowAction == mORELoad
     }
+
     fun isRefresh(): Boolean {//是否是刷新动作
         return nowAction == mEFRESHLoad
     }

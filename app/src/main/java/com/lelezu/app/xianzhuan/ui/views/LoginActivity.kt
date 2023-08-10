@@ -1,13 +1,10 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.WindowManager
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
@@ -89,6 +86,8 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
             } else {
                 goToHomeActivity()
             }
+        }else{
+            ToastUtils.showToast(this, "登录失败！请重试！")
         }
     }
 

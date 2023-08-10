@@ -1,7 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.R
 
@@ -25,8 +24,6 @@ abstract class BaseActivity : AppCompatActivity() {
     var mTvRight: TextView? = null
     var mRltBase: RelativeLayout? = null
     private var rootView: View? = null
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,11 +84,11 @@ abstract class BaseActivity : AppCompatActivity() {
         mTvTitle!!.text = t
     }
 
-    fun hideView(){
+    fun hideView() {
         mRltBase?.visibility = View.GONE
     }
 
-    fun showView(){
+    fun showView() {
         mRltBase?.visibility = View.VISIBLE
     }
 
@@ -112,5 +109,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected abstract fun isShowBack(): Boolean
 
+
+
+     fun onNoPermissions() {
+        Toast.makeText(this, "权限不足，请同意电话、存储等权限", Toast.LENGTH_SHORT).show()
+    }
 
 }

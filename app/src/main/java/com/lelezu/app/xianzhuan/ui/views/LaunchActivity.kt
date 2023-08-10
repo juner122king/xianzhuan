@@ -1,13 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
@@ -24,12 +22,6 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 @SuppressLint("CustomSplashScreen")
 class LaunchActivity : AppCompatActivity() {
-
-    private val permissions = arrayOf(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.READ_SMS,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lelezu.app.xianzhuan.MyApplication
@@ -83,8 +82,6 @@ class DashFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
 
         recyclerView.adapter = adapter1
 
-        // 可以在这里设置 RecyclerView 的布局管理器，例如：
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setListener(this)
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
