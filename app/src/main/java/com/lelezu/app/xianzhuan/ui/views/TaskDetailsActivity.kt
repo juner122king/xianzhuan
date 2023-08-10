@@ -28,6 +28,9 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
+
+
+
     private lateinit var ivDialog: Dialog
 
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
@@ -80,10 +83,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
 
-
-
-
-
         taskDetails(intent.getStringExtra("taskId")!!)
         //监听任务信息变化
         homeViewModel.task.observe(this) {
@@ -111,13 +110,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        openPhoto()
-    }
-
     private fun taskDetails(taskId: String) {
-
         homeViewModel.getTaskDetails(taskId)
     }
 
@@ -181,7 +174,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
     private fun changeView(task: Task) {
-//        setTitleText("状态：${task.auditStatus} TID：${task.taskId}")
         when (task.auditStatus) {
             //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
             0 -> {
@@ -301,36 +293,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private fun setBto2Text(str1: String, str2: String) {
         findViewById<TextView>(R.id.tv_btm1).text = str1
         findViewById<TextView>(R.id.tv_btm2).text = str2
-    }
-
-
-    private val rc: Int = 123
-    private fun openPhoto() {
-        // 检查图片权限
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // 请求权限
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
-            )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == rc) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 用户授予了权限，继续进行文件操作
-                //上传图片，打开相册
-            } else {
-                // 用户拒绝了权限，处理拒绝权限的情况
-                ToastUtils.showToast(this, "没有读取图片权限，请退出重试！", 0)
-            }
-        }
     }
 
 }

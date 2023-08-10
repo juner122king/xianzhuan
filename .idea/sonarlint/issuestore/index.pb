@@ -218,8 +218,6 @@ q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/UserInfo.kt,5\f\5f2cfae8be0a5d4a986de2f8734d0ffdcbca6b9f
 m
 =app/src/main/java/com/lelezu/app/xianzhuan/wxapi/WxLogin.java,c\b\cbdf872b8e7730778d86c057f57db8dc5a64dd8c
-
-Oapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/TaskVerifyStepAdapter.kt,1\6\162a07dd47a08b7dc3c5a8b85858429f5e5693df
 y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskUploadVerify.kt,c\3\c3505fe5441dcd789b6da9ad70cd1fb46d7651ed
 m

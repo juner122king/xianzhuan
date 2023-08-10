@@ -1,9 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
+import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
 import android.text.Editable
@@ -16,6 +18,8 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
@@ -43,6 +47,11 @@ class TaskVerifyStepAdapter(
 
     private var mPosition: Int = -0 //当前选中的
 
+
+    private val permissions = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,//读取内部资源
+        // 添加其他需要的权限
+    )
 
     // 更新数据方法
     fun updateData(newItems: List<TaskUploadVerify>, status: Int) {
@@ -93,9 +102,10 @@ class TaskVerifyStepAdapter(
                 holder.ivUserPic.visibility = View.VISIBLE
                 holder.btmUpPic.visibility = View.VISIBLE
                 holder.btmUpPic.setOnClickListener {
-                    //上传图片，打开相册
-                    pickImageContract.launch(Unit)
-                    mPosition = holder.adapterPosition
+                    mPosition = holder.adapterPosition//保存选中的Position
+
+                    onPickImage()
+
                 }
             }
         } else {
@@ -165,6 +175,41 @@ class TaskVerifyStepAdapter(
     }
 
 
+    private fun onPickImage() {
+        //判断是否有权限
+        // 检查是否已经有权限
+        val hasPermissions = permissions.all {
+            ContextCompat.checkSelfPermission(
+                activity, it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+        if (!hasPermissions) {
+            // 请求权限
+            requestPermissionLauncher.launch(permissions)
+        } else {
+
+            //上传图片，打开相册
+            pickImageContract.launch(Unit)
+        }
+
+    }
+
+
+    //权限请求
+    private val requestPermissionLauncher = activity.registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { it.value }) {
+            // 用户授予了权限，继续进行文件操作
+            //上传图片，打开相册
+            pickImageContract.launch(Unit)
+        } else {
+            // 用户拒绝了权限，处理拒绝权限的情况
+            ToastUtils.showToast(activity, "没有读取图片权限，请退出重试！", 0)
+        }
+    }
+
+
     private val pickImageContract = activity.registerForActivityResult(PickImageContract()) {
         if (it != null) {
             homeViewModel.apiUpload(it)
@@ -176,7 +221,6 @@ class TaskVerifyStepAdapter(
             }
         }
     }
-
 
     //处理选择图片的请求和结果
     inner class PickImageContract : ActivityResultContract<Unit, Uri?>() {
