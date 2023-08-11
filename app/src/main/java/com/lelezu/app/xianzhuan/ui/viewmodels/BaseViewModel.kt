@@ -12,7 +12,10 @@ import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
+import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
+import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
+import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 
 /**
  * @author:Administrator
@@ -23,7 +26,7 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 open class BaseViewModel : ViewModel() {
 
 
-     val errMessage: MutableLiveData<String> = MutableLiveData() //接口返回的错误信息
+    val errMessage: MutableLiveData<String> = MutableLiveData() //接口返回的错误信息
 
     protected fun getFilePathFromUri(uri: Uri): String {
         var filePath = ""
@@ -39,26 +42,33 @@ open class BaseViewModel : ViewModel() {
         }
         return filePath
     }
+
     protected fun <T> handleApiResponse(r: ApiResponse<T>, liveData: MutableLiveData<T>) {
         when (r) {
             is ApiSuccessResponse -> {
                 // 处理成功的响应
                 liveData.postValue(r.data)
+                if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对角为登录回应对象就保存
+
             }
 
             is ApiFailedResponse -> {
                 // 处理失败的响应
                 errMessage.postValue(r.message!!)
+                if (r.data is LoginReP) cleanInfo()//如果返回对角为登录回应对象就删除之前的登录信息
+
             }
 
             is ApiEmptyResponse -> {
                 // 处理空的响应
                 errMessage.postValue("返回data为null")
+                if (r.data is LoginReP) cleanInfo()//如果返回对角为登录回应对象就删除之前的登录信息
             }
 
             is ApiErrorResponse -> {
                 // 处理错误的响应
                 errMessage.postValue(r.throwable.message)
+                if (r.data is LoginReP) cleanInfo()//如果返回对角为登录回应对象就删除之前的登录信息
             }
         }
     }

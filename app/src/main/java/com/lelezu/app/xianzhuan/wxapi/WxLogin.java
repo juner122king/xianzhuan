@@ -46,63 +46,39 @@ public class WxLogin {
         api.sendReq(req);
     }
 
-    public static void shareWx(String url) {
-        if (!api.isWXAppInstalled()) {
-            Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.banner1);
-
-        //初始化 WXImageObject 和 WXMediaMessage 对象
-        WXImageObject imgObj = new WXImageObject(bmp);
-        WXMediaMessage msg = new WXMediaMessage();
-        msg.mediaObject = imgObj;
-
-        //设置缩略图
-        Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
-        bmp.recycle();
-        msg.thumbData = Util.bmpToByteArray(thumbBmp, true);
-
-        //构造一个Req
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction("img");
-        req.message = msg;
-        req.scene = mTargetScene;
-        //调用api接口，发送数据到微信
-        api.sendReq(req);
-    }
 
     public static void webWx(String url) {
         if (!api.isWXAppInstalled()) {
             Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
             return;
         }
-        //初始化一个WXWebpageObject，填写url
-        WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = url;
-
-        //用 WXWebpageObject 对象初始化一个 WXMediaMessage 对象
-        WXMediaMessage msg = new WXMediaMessage(webpage);
-        msg.title = mContext.getString(R.string.app_name);
-        msg.description = "点击下载";
-
-//        Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.banner1);
-//        Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
-//        bmp.recycle();
-//        msg.thumbData = Util.bmpToByteArray(thumbBmp, true);
-//
-        msg.thumbData = Util.getHtmlByteArray(url);
+        if (url.isEmpty()) {
+            Toast.makeText(mContext, "分享失败，请检验图片链接是否正确！", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
 
+        try {
+            WXWebpageObject webpage = new WXWebpageObject();
+            webpage.webpageUrl = url;  //需要确保url能正常打开
+            WXMediaMessage msg = new WXMediaMessage(webpage);
+            msg.title = "WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
+            msg.description = "WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
+            Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.banner1);
+            Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
+            bmp.recycle();
+            msg.thumbData = Util.bmpToByteArray(thumbBmp, true);
 
-        //构造一个Req
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction("webpage");
-        req.message = msg;
-        req.scene = mTargetScene;
+            SendMessageToWX.Req req = new SendMessageToWX.Req();
+            req.transaction = buildTransaction("webpage");
+            req.message = msg;
+            req.scene = mTargetScene;
+            api.sendReq(req);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, "分享失败，请检验图片链接是否正确！", Toast.LENGTH_SHORT).show();
 
-        //调用api接口，发送数据到微信
-        api.sendReq(req);
+        }
     }
 
 

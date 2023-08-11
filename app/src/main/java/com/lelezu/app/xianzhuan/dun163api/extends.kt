@@ -15,7 +15,7 @@ import kotlin.math.roundToInt
  * @desc
  * @email liulingfeng@mistong.com
  */
-inline fun <reified T> open(context: Context, block: Intent.() -> Unit) {
+inline fun <reified T> extends(context: Context, block: Intent.() -> Unit) {
     val intent = Intent(context, T::class.java)
     intent.block()
     context.startActivity(intent)

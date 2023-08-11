@@ -3,6 +3,7 @@ package com.lelezu.app.xianzhuan.data.repository
 
 import android.util.Log
 import com.lelezu.app.xianzhuan.data.ApiService
+import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.UserInfo
@@ -18,106 +19,25 @@ import kotlinx.coroutines.withContext
  * @description:与用户相关的数据
  *
  */
-class UserRepository(private var apiService: ApiService) {
+class UserRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取登录信息
-    suspend fun apiLogin(loginInfo: LoginInfo): LoginReP? = withContext(Dispatchers.IO) {
-        try {
-            val response = apiService.getLogin(loginInfo).execute()
-            if (response.isSuccessful) {
-                when (response.body()?.code) {
-                    "000000" -> {
-                        Log.d(
-                            "APP登录接口login",
-                            "登录成功 : Uid ${response.body()?.data?.userId},Token ${response.body()?.data?.accessToken}"
-                        )
-                        response.body()?.data?.let {
-                            saveInfo(it)
-                        }
-                        response.body()?.data
-                    }
-
-                    else -> {
-                        Log.d(
-                            "APP登录接口login",
-                            "登录失败${response.body()?.code}:${response.body()?.message}"
-                        )
-                        cleanInfo()
-
-                        null
-                    }
-                }
-
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    suspend fun apiLogin(loginInfo: LoginInfo): ApiResponse<LoginReP> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.getLogin(loginInfo)
+            executeApiCall(call)
         }
-    }
 
     //用户注册
-    suspend fun apiRegister(register: String): LoginReP? = withContext(Dispatchers.IO) {
-        try {
-            val response = apiService.register(register).execute()
-            if (response.isSuccessful) {
-                when (response.body()?.code) {
-                    "000000" -> {
-                        Log.d(
-                            "APP注册接口Register",
-                            "成功 : Uid ${response.body()?.data?.userId},Token ${response.body()?.data?.accessToken}"
-                        )
-                        response.body()?.data?.let {
-                            saveInfo(it)
-                        }
-                        response.body()?.data
-                    }
-
-                    else -> {
-                        Log.d(
-                            "AP接口Register",
-                            "失败${response.body()?.code}:${response.body()?.message}"
-                        )
-                        cleanInfo()
-                        null
-                    }
-                }
-
-            } else {
-
-                null
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+    suspend fun apiRegister(register: String): ApiResponse<LoginReP> = withContext(Dispatchers.IO) {
+        val call = apiService.register(register)
+        executeApiCall(call)
     }
 
 
     //获取用户信息
-    suspend fun apiUserInfo(userId: String): UserInfo? = withContext(Dispatchers.IO) {
-        try {
-            val response = apiService.getUserInfo(
-                userId, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
-            ).execute()
-            if (response.isSuccessful) {
-                when (response.body()?.code) {
-                    "000000" -> {
-
-                        response.body()?.data
-                    }
-                    else -> {
-                        null
-                    }
-                }
-
-            } else {
-                null
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+    suspend fun apiUserInfo(userId: String): ApiResponse<UserInfo> = withContext(Dispatchers.IO) {
+        val call = apiService.getUserInfo(userId, loginToken)
+        executeApiCall(call)
     }
 }

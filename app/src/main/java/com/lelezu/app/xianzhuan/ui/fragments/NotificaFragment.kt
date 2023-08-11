@@ -1,23 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.Context
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.CookieManager
-import android.webkit.CookieSyncManager
-import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface

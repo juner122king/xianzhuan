@@ -25,27 +25,22 @@ import kotlinx.coroutines.launch
  * @constructor 用户信息相关的
  *
  */
-class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
+class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel() {
 
-    val loginRePLiveData: MutableLiveData<LoginReP?> = MutableLiveData()
-    val registerLoginRePLiveData: MutableLiveData<LoginReP?> = MutableLiveData()
-
-
-    val userInfo: MutableLiveData<UserInfo?> = MutableLiveData()
-
-    val errInfo: MutableLiveData<String?> = MutableLiveData()
+    val loginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
+    val registerLoginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
+    val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
 
 
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
         val loginReP =
             userRepository.apiLogin(loginInfo(ApiConstants.LOGIN_METHOD_WX, wxCode, "", ""))
-        loginRePLiveData.postValue(loginReP)
+        handleApiResponse(loginReP, loginRePLiveData)
     }
 
     private fun loginInfo(
         loginMethod: String, wxCode: String?, mobileToken: String?, mobileAccessToken: String?
     ): LoginInfo {
-
         return LoginInfo(
             WxData.WEIXIN_APP_ID, loginMethod, mobileToken, mobileAccessToken, wxCode
         )
@@ -54,12 +49,7 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     fun getUserInfo(userId: String) = viewModelScope.launch {
         val rep = userRepository.apiUserInfo(userId)
-
-        if (rep != null) {
-            userInfo.postValue(rep)
-        } else {
-            errInfo.postValue("用户信息获取失败！")
-        }
+        handleApiResponse(rep, userInfo)
     }
 
 
@@ -70,9 +60,8 @@ class LoginViewModel(private val userRepository: UserRepository) : ViewModel() {
         val o64 = Base64.encode(o, "UTF-8")
         val en64 = AesTool.encryptStr(o64)
 
-        val registerLoginReP = userRepository.apiRegister(en64)
-        registerLoginRePLiveData.postValue(registerLoginReP)
-
+        val apiListResponse = userRepository.apiRegister(en64)
+        handleApiResponse(apiListResponse, registerLoginRePLiveData)
     }
 
 

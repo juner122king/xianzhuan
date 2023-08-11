@@ -282,8 +282,5 @@
         android:layout_weight="1" />
 
 
-<!--    -->
-
-<!--    <include layout="@layout/rv_layout" />-->
 
 </LinearLayout>

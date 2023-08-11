@@ -43,7 +43,7 @@ class MyFragment : Fragment(), View.OnClickListener {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        loginViewModel.errInfo.observe(this) {
+        loginViewModel.errMessage.observe(this) {
             ToastUtils.showToast(requireContext(), it, 0)
         }
 

@@ -92,6 +92,8 @@ class PhoneLoginActivity : Activity() {
                 Log.d(
                     "易盾号码认证Api", "一键登录失败：${msg}"
                 )
+
+                ToastUtils.showToast(baseContext, "易盾号码认证:一键登录失败：${msg}", 0)
                 finish()
 
             }

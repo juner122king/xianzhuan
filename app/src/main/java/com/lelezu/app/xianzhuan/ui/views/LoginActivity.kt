@@ -74,20 +74,15 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
         }
     }
 
-    private fun onLogin(it: LoginReP?) {
-        if (it != null) {
-            Log.i(
-                "LoginActivity登录与注册",
-                "用户ID:${it.userId},token：${it.accessToken},新用户？：${it.isNewer}"
-            )
-            if (it.isNewer) {
-
-                startActivity(Intent(context, PhoneLoginActivity::class.java))
-            } else {
-                goToHomeActivity()
-            }
-        }else{
-            ToastUtils.showToast(this, "登录失败！请重试！")
+    private fun onLogin(it: LoginReP) {
+        Log.i(
+            "LoginActivity登录与注册",
+            "用户ID:${it.userId},token：${it.accessToken},新用户？：${it.isNewer}"
+        )
+        if (it.isNewer) {
+            startActivity(Intent(context, PhoneLoginActivity::class.java))
+        } else {
+            goToHomeActivity()
         }
     }
 
@@ -163,7 +158,7 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
                 getString(R.string.text_agreement), WebViewSettings.link100
             ) // 显示《用户使用协议》
             R.id.tv_agreement2 -> showAgreementDialog(
-                getString(R.string.text_agreement1), WebViewSettings.link100
+                getString(R.string.text_agreement1), WebViewSettings.link101
             ) // 显示《隐私政策》
             R.id.bto_wx_login -> wxLoginInit() // 微信登录按钮
             R.id.bto_phome_login -> wxLoginInit() // 使用手机登录

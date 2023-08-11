@@ -53,7 +53,7 @@ class MainFragment : Fragment(), OnClickListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
         viewPager = view.findViewById(R.id.task_vp)
-        pagerAdapter = MyPagerAdapter(requireActivity().supportFragmentManager, lifecycle)
+        pagerAdapter = MyPagerAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = pagerAdapter
 
 
@@ -121,7 +121,7 @@ class MainFragment : Fragment(), OnClickListener {
         } else {
             zjTask = ZjTaskAd(requireActivity(), posID, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID), object : ZjTaskAdListener {
                 override fun onZjAdLoaded() {
-                    ToastUtils.showToast(requireActivity(), "任务墙加载成功", 0)
+
                     addZjTaskFragment()
                 }
                 override fun onZjAdError(zjAdError: ZjAdError) {

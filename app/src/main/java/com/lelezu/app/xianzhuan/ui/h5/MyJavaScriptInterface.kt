@@ -20,7 +20,7 @@ class MyJavaScriptInterface(private val context: Context) {
 
     @JavascriptInterface
     public fun shareFriends(imageUrl: String) {
-        // 调用保存图片的方法
+        // 调用分享图片的方法
         (context as HomeActivity).shareFriends(imageUrl)
     }
 

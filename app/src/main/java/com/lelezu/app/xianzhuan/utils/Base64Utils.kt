@@ -21,7 +21,7 @@ object Base64Utils {
         val compressedBitmap = compressBitmap(bitmap)
         bitmap?.recycle()
         val byteArrayOutputStream = ByteArrayOutputStream()
-        compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream)
+        compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream)
         compressedBitmap?.recycle()
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.NO_WRAP)

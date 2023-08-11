@@ -144,9 +144,10 @@ class HomeActivity : BaseActivity() {
 
     //分享微信
     fun shareFriends(imageUrl: String) {
-        Log.i("H5分享图片", "成功")
+        Log.i("H5分享图片", "imageUrl：${imageUrl}")
+
+
         WxLogin.webWx(imageUrl)
-//        WxLogin.shareWx(imageUrl)
 
     }
 
