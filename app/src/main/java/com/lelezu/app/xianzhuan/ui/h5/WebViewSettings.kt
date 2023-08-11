@@ -43,7 +43,7 @@ object WebViewSettings {
 
     var link7 = "/pages/reportForms/index" //我的-流水报表
     var link8 = "/pages/balance/index?pageType=recharge" //充值
-    var link9 = "" //提现
+    var link9 = "/pages/balance/index?pageType=withdrawal" //提现
     var link10 = "/pages/feedback/opinion/index?pageType=report" //举报维权
 
     var link11 = "/pages/feedback/index" //客服与反馈
@@ -100,6 +100,9 @@ object WebViewSettings {
             host, ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         )
         cookieManager.flush()
+
+
+
 
     }
 
