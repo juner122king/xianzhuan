@@ -6,4 +6,4 @@ package com.lelezu.app.xianzhuan.data.model
  * @description:
  *
  */
-data class ApiErrorResponse<T>(val throwable: Throwable) : ApiResponse2<T>(error = throwable)
+data class ApiErrorResponse<T>(val throwable: Throwable) : ApiResponse<T>(error = throwable)

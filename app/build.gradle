@@ -146,6 +146,9 @@ dependencies {
 
 
     //任务墙sdk 开始
+    // OAID
+    implementation (name: 'oaid_sdk_1.0.25', ext: 'aar')
+
     implementation (name: 'zj_sdk_2.4.11', ext: 'aar')
     implementation (name: 'moku-planet-api-native-sdk-release-1.6.2', ext: 'aar')
     implementation (name: 'zj-tasklibrary-release-1.1.8.0', ext: 'aar')

@@ -119,7 +119,7 @@ class MainFragment : Fragment(), OnClickListener {
             // 请求权限
             requestPermissionLauncher.launch(permissions)
         } else {
-            zjTask = ZjTaskAd(requireActivity(), posID, ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID, object : ZjTaskAdListener {
+            zjTask = ZjTaskAd(requireActivity(), posID, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID), object : ZjTaskAdListener {
                 override fun onZjAdLoaded() {
                     ToastUtils.showToast(requireActivity(), "任务墙加载成功", 0)
                     addZjTaskFragment()

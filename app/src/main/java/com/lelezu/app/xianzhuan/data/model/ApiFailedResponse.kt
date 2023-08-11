@@ -6,4 +6,4 @@ package com.lelezu.app.xianzhuan.data.model
  * @description:
  *
  */
-data class ApiFailedResponse<T>(override val code: String?, override val message: String?) : ApiResponse2<T>(code = code, message = code)
+data class ApiFailedResponse<T>(override val code: String?, override val message: String?) : ApiResponse<T>(code = code, message = message)

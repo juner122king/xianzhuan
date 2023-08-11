@@ -6,4 +6,4 @@ package com.lelezu.app.xianzhuan.data.model
  * @description:
  *
  */
-data class ApiSuccessResponse<T>(val response: T) : ApiResponse2<T>(data = response)
+data class ApiSuccessResponse<T>(val response: T) : ApiResponse<T>(data = response)

@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
 /**
@@ -110,9 +111,9 @@ abstract class BaseActivity : AppCompatActivity() {
     protected abstract fun isShowBack(): Boolean
 
 
-
-     fun onNoPermissions() {
-        Toast.makeText(this, "权限不足，请同意电话、存储等权限", Toast.LENGTH_SHORT).show()
+    protected open fun showToast(message: String?) {
+        ToastUtils.showToast(this, message, Toast.LENGTH_SHORT)
     }
+
 
 }

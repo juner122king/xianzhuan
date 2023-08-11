@@ -116,6 +116,10 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         homeViewModel.myTaskList.observe(this) {
             loadDone(it)
         }
+        //弹出错误
+        homeViewModel.errMessage.observe(this) {
+            showToast(it)
+        }
     }
 
     private fun initData() {
@@ -141,7 +145,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         // 停止刷新动画
         swiper.isRefreshing = false
         if (it.isEmpty() && recyclerView.isLoadMore()) {
-            ToastUtils.showToast(this, "没有更多了！", 0)
+            showToast("没有更多了！")
         } else {
             when (page) {
                 0 -> if (recyclerView.isLoadMore()) adapter1.addData(it)
@@ -220,4 +224,6 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         }
         loadData(true)
     }
+
+
 }

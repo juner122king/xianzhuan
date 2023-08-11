@@ -1,10 +1,13 @@
 package com.lelezu.app.xianzhuan.data.repository
 
+import android.util.Log
 import com.lelezu.app.xianzhuan.data.model.ApiEmptyResponse
 import com.lelezu.app.xianzhuan.data.model.ApiErrorResponse
 import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
+import com.lelezu.app.xianzhuan.utils.ShareUtil
+import retrofit2.Call
 
 /**
  * @author:Administrator
@@ -13,47 +16,32 @@ import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
  *
  */
 open class BaseRepository {
-//    suspend fun <T> executeHttp(block: suspend () -> ApiResponse<T>): ApiResponse<T> {
-//        runCatching {
-//            block.invoke()
-//        }.onSuccess { data: ApiResponse<T> ->
-//            return handleHttpOk(data)
-//        }.onFailure { e ->
-//            return handleHttpError(e)
-//        }
-//        return ApiEmptyResponse()
-//    }
-//
-//    /**
-//     * 非后台返回错误，捕获到的异常
-//     */
-//    private fun <T> handleHttpError(e: Throwable): ApiErrorResponse<T> {
-//        if (BuildConfig.DEBUG) e.printStackTrace()
-//        handlingExceptions(e)
-//        return ApiErrorResponse(e)
-//    }
-//
-//    /**
-//     * 返回200，但是还要判断isSuccess
-//     */
-//    private fun <T> handleHttpOk(data: ApiResponse<T>): ApiResponse<T> {
-//        return if (data.code == "000000") {
-//            getHttpSuccessResponse(data)
-//        } else {
-//            handlingApiExceptions(data.code, data.message)
-//            ApiFailedResponse(data.code, data.message)
-//        }
-//    }
-//
-//    /**
-//     * 成功和数据为空的处理
-//     */
-//    private fun <T> getHttpSuccessResponse(response: ApiResponse<T>): ApiResponse<T> {
-//        return if (response.data == null || response.data is List<*> && (response.data as List<*>).isEmpty()) {
-//            ApiEmptyResponse()
-//        } else {
-//            ApiSuccessResponse(response.data!!)
-//        }
-//    }
+    protected val loginToken: String //访问值时执行get()
+        get() = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+
+    protected inline fun <reified T> executeApiCall(call: Call<ApiResponse<T>>): ApiResponse<T> {
+        return try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                val body = response.body()
+                when (body?.code) {
+                    "000000" -> {
+                        Log.d("APP接口", "成功 : ToString: ${body.data?.toString()}")
+                        ApiSuccessResponse(body.data!!)
+                    }
+
+                    else -> {
+                        Log.d("APP接口", "失败${body?.code}:${body?.message}")
+                        ApiFailedResponse(body?.code, body?.message)
+                    }
+                }
+            } else {
+                ApiEmptyResponse()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ApiErrorResponse(e)
+        }
+    }
 
 }

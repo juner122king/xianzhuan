@@ -32,6 +32,7 @@ class WebViewActivity : BaseActivity() {
         wv = findViewById(R.id.webView)
         WebViewSettings.setDefaultWebSettings(wv)
         wv.loadUrl(WebViewSettings.host + link)
+//        wv.loadUrl("https://liulanmi.com/labs/core.html")
         Log.i("H5调原生：", WebViewSettings.host + link)
 
 

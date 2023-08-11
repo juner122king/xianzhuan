@@ -23,7 +23,7 @@ import retrofit2.Response
  * @description:与系统消息相关的数据
  *
  */
-class SysInformRepository(private var apiService: ApiService) {
+class SysInformRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取系统消息列表
     suspend fun apiGetList(current: Int, size: Int): ListData<Message>? =
