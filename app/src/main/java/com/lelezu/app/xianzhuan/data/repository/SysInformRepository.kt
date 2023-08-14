@@ -26,74 +26,24 @@ import retrofit2.Response
 class SysInformRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取系统消息列表
-    suspend fun apiGetList(current: Int, size: Int): ListData<Message>? =
+    suspend fun apiGetList(current: Int, size: Int): ApiResponse<ListData<Message>> =
         withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getSysMessageList(
-                    current, size, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
-                ).execute()
-                if (response.isSuccessful) {
-                    when (response.body()?.code) {
-                        "000000" -> {
-                            Log.d(
-                                "APP接口inform/page",
-                                "获取成功 : ToString: ${response.body()?.data?.toString()}"
-                            )
-                            response.body()?.data
-                        }
-
-                        else -> {
-                            Log.d(
-                                "APP接口inform/page",
-                                "请求失败${response.body()?.code}:${response.body()?.message}"
-                            )
-                            null
-                        }
-                    }
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
+            val call = apiService.getSysMessageList(
+                current, size, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            )
+            executeApiCall(call)
         }
 
 
     //获取系统配置信息
-    suspend fun apiConfig(confType: String, configKey: String): Config? =
+    suspend fun apiConfig(confType: String, configKey: String): ApiResponse<Config> =
         withContext(Dispatchers.IO) {
-            try {
-                val response = apiService.getConfig(
-                    confType,
-                    configKey,
-                    ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
-                ).execute()
-                if (response.isSuccessful) {
-                    when (response.body()?.code) {
-                        "000000" -> {
-                            Log.d(
-                                "APP登录接口/config",
-                                "获取成功 : ToString: ${response.body()?.data?.toString()}"
-                            )
-                            response.body()?.data
-                        }
-
-                        else -> {
-                            Log.d(
-                                "APP登录接口/config",
-                                "请求失败${response.body()?.code}:${response.body()?.message}"
-                            )
-                            null
-                        }
-                    }
-                } else {
-                    null
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
+            val call = apiService.getConfig(
+                confType,
+                configKey,
+                ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            )
+            executeApiCall(call)
         }
 
 }

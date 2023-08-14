@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.lelezu.app.xianzhuan.MyApplication
+import com.lelezu.app.xianzhuan.data.ApiConstants.DUN_PHONE_BUSINESS_ID
+import com.lelezu.app.xianzhuan.data.ApiConstants.DUN_RISK_BUSINESS_ID
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
@@ -27,15 +29,15 @@ class PhoneLoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        QuickLogin.getInstance().init(MyApplication.context, "23b26346411243b79a760cefaadabe09")
+        QuickLogin.getInstance().init(MyApplication.context, DUN_PHONE_BUSINESS_ID)
         QuickLogin.getInstance().setDebugMode(true)
         QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
 
         HTProtect.getTokenAsync(
-            3000, "e377b3fedaec37da3be3a08a8c202e71"
+            3000, DUN_RISK_BUSINESS_ID
         ) {
             Log.d("易盾风控引擎Api  code:", it!!.code.toString());
-            if (it!!.code == AntiCheatResult.OK) {
+            if (it.code == AntiCheatResult.OK) {
                 // 调用成功，获取token
                 Log.d("易盾风控引擎Api  token:", it.token)
                 ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)

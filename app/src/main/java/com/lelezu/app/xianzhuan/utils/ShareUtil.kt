@@ -1,7 +1,10 @@
 package com.lelezu.app.xianzhuan.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.provider.Settings
+import android.util.Log
 import cn.hutool.json.JSONUtil
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.LoginReP
@@ -117,6 +120,7 @@ object ShareUtil {
     //获取注册请求体对象
     fun getRegister(): Register {
 
+
         val deviceToken = getString(APP_163_PHONE_LOGIN_DEVICE_TOKEN)
         val mobileAccessToken = getString(APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
         val mobileToken = getString(APP_163_PHONE_LOGIN_MOBILE_TOKEN)
@@ -140,6 +144,13 @@ object ShareUtil {
     }
 
 
+    @SuppressLint("HardwareIds")
+    fun putAndroidID(context: Context) {
+        putString(
+            APP_DEVICE_ANDROIDID,
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        )
+    }
 
 
 }

@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.setPadding
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskType

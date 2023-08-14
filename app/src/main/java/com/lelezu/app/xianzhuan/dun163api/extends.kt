@@ -2,12 +2,9 @@ package com.lelezu.app.xianzhuan.dun163api
 
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.widget.Toast
-import java.util.*
-import kotlin.math.roundToInt
 
 /**
  * @author liuxiaoshuai

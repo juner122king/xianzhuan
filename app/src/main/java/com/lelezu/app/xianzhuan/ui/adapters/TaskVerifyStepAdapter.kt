@@ -21,7 +21,6 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
@@ -40,6 +39,7 @@ class TaskVerifyStepAdapter(
     private var items: List<TaskUploadVerify>,
     private var ivDialog: Dialog,
     private var activity: BaseActivity,
+
     private val homeViewModel: HomeViewModel
 ) : RecyclerView.Adapter<TaskVerifyStepAdapter.ItemViewHolder>() {
 
@@ -206,6 +206,7 @@ class TaskVerifyStepAdapter(
         } else {
             // 用户拒绝了权限，处理拒绝权限的情况
             ToastUtils.showToast(activity, "没有读取图片权限，请退出重试！", 0)
+
         }
     }
 

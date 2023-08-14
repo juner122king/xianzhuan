@@ -18,6 +18,8 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOK
  */
 object WebViewSettings {
 
+    var isProcessing = "isProcessing"
+
     var link100 = "http://www.zhongshoubang.com/yhxy.html"//《用户使用协议》
     var link101 = "http://www.zhongshoubang.com/yszc.html"//《隐私政策》
 

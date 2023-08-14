@@ -4,23 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 /**
  *
  * 主页本地任务列表
  */
-class MainTaskFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
+class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
 
     private lateinit var recyclerView: RefreshRecycleView
@@ -34,10 +29,6 @@ class MainTaskFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_main_tesk_list, container, false)
-    }
-
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModel.ViewFactory((activity?.application as MyApplication).taskRepository)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +59,7 @@ class MainTaskFragment : Fragment(), RefreshRecycleView.IOnScrollListener {
         homeViewModel.errMessage.observe(requireActivity()) {
             // 停止刷新动画
             swiper.isRefreshing = false
-            ToastUtils.showToast(requireActivity(), it, 0)
+            showToast(it)
         }
 
         // 初始加载

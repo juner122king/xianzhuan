@@ -1,16 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
-import com.lelezu.app.xianzhuan.utils.ToastUtils
-
 class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
     private lateinit var recyclerView: RefreshRecycleView //下拉刷新RecycleView
@@ -30,9 +25,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
     private var auditStatus = 1//当前选择的子项状态 默认加载待提交
 
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,10 +109,8 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         homeViewModel.myTaskList.observe(this) {
             loadDone(it)
         }
-        //弹出错误
-        homeViewModel.errMessage.observe(this) {
-            showToast(it)
-        }
+
+
     }
 
     private fun initData() {
@@ -135,7 +126,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
     override fun onResume() {
         super.onResume()
-        initData()
+//        initData()
         // 执行刷新操作
         refresh()
 

@@ -15,11 +15,11 @@ import com.lelezu.app.xianzhuan.ui.fragments.DashFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,9 +84,6 @@ class HomeActivity : BaseActivity() {
         }
 
 
-        initZjTask()
-
-
     }
 
 
@@ -94,23 +91,16 @@ class HomeActivity : BaseActivity() {
         val mainFragment = MainFragment.newInstance()
         fragmentList.add(mainFragment)
 
-        val dashFragment = DashFragment.newInstance(getString(R.string.title_dashboard), "")
+        val dashFragment = DashFragment.newInstance()
         fragmentList.add(dashFragment)
 
-        val notificaFragment =
-            NotificaFragment.newInstance(getString(R.string.title_notifications), "")
+        val notificaFragment = NotificaFragment.newInstance()
         fragmentList.add(notificaFragment)
 
-        val myFragment = MyFragment.newInstance(getString(R.string.title_my), "")
+        val myFragment = MyFragment.newInstance()
         fragmentList.add(myFragment)
     }
 
-
-    private fun initZjTask() {
-
-
-
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.activity_home
@@ -132,7 +122,7 @@ class HomeActivity : BaseActivity() {
 
         val imageName = getString(R.string.app_name) + "_" + System.currentTimeMillis()
 
-        ToastUtils.showToast(this, "图片已保存:${Environment.DIRECTORY_DOWNLOADS}$imageName", 0)
+        showToast("图片已保存:${Environment.DIRECTORY_DOWNLOADS}$imageName")
 
         val request = DownloadManager.Request(Uri.parse(imageUrl))
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -145,7 +135,6 @@ class HomeActivity : BaseActivity() {
     //分享微信
     fun shareFriends(imageUrl: String) {
         Log.i("H5分享图片", "imageUrl：${imageUrl}")
-
 
         WxLogin.webWx(imageUrl)
 

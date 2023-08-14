@@ -57,5 +57,9 @@
     <string name="btm_xrjl">新人奖励</string>
     <string name="btm_zq">收徒赚钱</string>
 
+    <string name="l_task">推荐任务</string>
+    <string name="app_task">热们任务</string>
+    <string name="game_task">游戏试玩</string>
+
 
 </resources>

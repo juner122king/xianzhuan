@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.data
 
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.Config
+import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
@@ -37,6 +38,9 @@ interface ApiService {
     fun getUserInfo(
         @Query("userId") userId: String, @Header("Authorization") token: String
     ): Call<ApiResponse<UserInfo>>
+
+    @GET("/dxz/app/user/receive/apprentice/earnings")  //收徒收益
+    fun getEarnings(@Header("Authorization") token: String): Call<ApiResponse<Earning>>
 
     @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
     fun getTaskInfo(

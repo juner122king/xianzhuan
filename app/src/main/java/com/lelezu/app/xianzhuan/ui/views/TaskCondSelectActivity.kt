@@ -8,12 +8,9 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.GridView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.core.view.setPadding
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.TaskCondAdapter
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 
 /**
  * @author:Administrator
@@ -32,9 +29,7 @@ class TaskCondSelectActivity : BaseActivity(), OnClickListener {
 
 
     private val adapter = TaskCondAdapter(this, emptyList())
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

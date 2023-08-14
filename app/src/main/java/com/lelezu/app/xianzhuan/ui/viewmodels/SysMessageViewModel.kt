@@ -14,17 +14,15 @@ import kotlinx.coroutines.launch
  * @description:系统消息相关
  *
  */
-class SysMessageViewModel(private val sysInformRepository: SysInformRepository): ViewModel() {
+class SysMessageViewModel(private val sysInformRepository: SysInformRepository) : BaseViewModel() {
 
-    val liveData: MutableLiveData<List<Message>> = MutableLiveData()
+    val liveData: MutableLiveData<MutableList<Message>> = MutableLiveData()
 
 
     //获取系统消息列表
     fun getMessageList() = viewModelScope.launch {
-        val list = sysInformRepository.apiGetList(1,100)
-        liveData.postValue(list!!.records)
-
-
+        val list = sysInformRepository.apiGetList(1, 100)
+        handleApiListResponse(list, liveData)
     }
 
 

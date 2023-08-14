@@ -18,7 +18,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
@@ -26,21 +29,20 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 import com.zj.zjsdk.ad.ZjAdError
 import com.zj.zjsdk.ad.ZjTaskAd
 import com.zj.zjsdk.ad.ZjTaskAdListener
 
 
-class MainFragment : Fragment(), OnClickListener {
+class MainFragment : BaseFragment(), OnClickListener {
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: MyPagerAdapter
+    private lateinit var tabLayout: TabLayout
 
     private lateinit var zjTask: ZjTaskAd
 
-
-    private val posID = "J1517087581"
-
+    // 定义一个包含Tab文字的List
+    private var tabTextList = arrayOf<String>()
     private val permissions = arrayOf(
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -51,13 +53,19 @@ class MainFragment : Fragment(), OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_main, container, false)
+        val view = inflater.inflate(R.layout.fragment_main2, container, false)
         viewPager = view.findViewById(R.id.task_vp)
         pagerAdapter = MyPagerAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = pagerAdapter
 
+        tabLayout = view.findViewById(R.id.tab_task_list)
 
-        addLocalTaskFragment()//加载本地任务列表
+        // 定义一个包含Tab文字的List
+        tabTextList = arrayOf(
+            getString(R.string.l_task), getString(R.string.app_task), getString(R.string.game_task)
+        )
+
+
 
         return view
     }
@@ -73,9 +81,25 @@ class MainFragment : Fragment(), OnClickListener {
         //Banner图初始化
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
         viewFlipper.startFlipping()
-
+//
+//        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+//            override fun onTabSelected(tab: TabLayout.Tab) {
+//
+//            }
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab) {
+//
+//
+//            }
+//
+//            override fun onTabReselected(tab: TabLayout.Tab) {
+//
+//
+//            }
+//        })
 
         initZjTask()//执行广告sdk
+        addLocalTaskFragment()//加载本地任务列表
 
     }
 
@@ -119,25 +143,32 @@ class MainFragment : Fragment(), OnClickListener {
             // 请求权限
             requestPermissionLauncher.launch(permissions)
         } else {
-            zjTask = ZjTaskAd(requireActivity(), posID, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID), object : ZjTaskAdListener {
-                override fun onZjAdLoaded() {
+            zjTask = ZjTaskAd(requireActivity(),
+                ZJ_BUSINESS_POS_ID,
+                ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID),
+                object : ZjTaskAdListener {
+                    override fun onZjAdLoaded() {
+                        addZjTaskFragment()
+                    }
 
-                    addZjTaskFragment()
-                }
-                override fun onZjAdError(zjAdError: ZjAdError) {
-                    ToastUtils.showToast(
-                        requireActivity(),
-                        "任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg,
-                        0
-                    )
-                }
-            })
+                    override fun onZjAdError(zjAdError: ZjAdError) {
+                        showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+                    }
+                })
         }
 
     }
 
     //添加本地任务列表
     private fun addLocalTaskFragment() {
+
+
+        // 创建一个新的Tab对象
+        val newTab = tabLayout.newTab()
+        // 设置Tab的文本内容
+        newTab.text = tabTextList[0]
+        tabLayout.addTab(newTab)
+
         val mainTaskFragment = MainTaskFragment.newInstance()  //创建一个本地任务列表fragment
         pagerAdapter.addFragment(mainTaskFragment)
         pagerAdapter.notifyDataSetChanged()
@@ -145,8 +176,24 @@ class MainFragment : Fragment(), OnClickListener {
 
     //添加SDK任务列表
     fun addZjTaskFragment() {
-        pagerAdapter.addFragment(zjTask.loadCPLFragmentAd())
+
+
+        // 创建一个新的Tab对象
+        val newTab1 = tabLayout.newTab()
+        // 创建一个新的Tab对象
+        val newTab2 = tabLayout.newTab()
+
+        // 将新的Tab添加到TabLayout中
+        tabLayout.addTab(newTab1)
+        tabLayout.addTab(newTab2)
+
+        // 将TabLayout与ViewPager2关联起来
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabTextList[position]
+        }.attach()
+
         pagerAdapter.addFragment(zjTask.loadCPAFragmentAd())
+        pagerAdapter.addFragment(zjTask.loadCPLFragmentAd())
         pagerAdapter.notifyDataSetChanged()
     }
 
@@ -175,7 +222,6 @@ class MainFragment : Fragment(), OnClickListener {
         // 在这里处理权限请求结果
         if (permissions.all { it.value }) {
             // 所有权限被授予
-            Toast.makeText(requireActivity(), "已授权", Toast.LENGTH_SHORT).show()
             initZjTask()
         } else {
             // 至少一个权限未被授予

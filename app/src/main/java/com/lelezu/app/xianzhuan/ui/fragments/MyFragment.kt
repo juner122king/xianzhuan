@@ -2,49 +2,27 @@ package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.viewModels
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-class MyFragment : Fragment(), View.OnClickListener {
-
-
-    private val loginViewModel: LoginViewModel by viewModels {
-        LoginViewModel.LoginViewFactory(((activity?.application as MyApplication).userRepository))
-    }
-
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class MyFragment : BaseFragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
 
         loginViewModel.errMessage.observe(this) {
-            ToastUtils.showToast(requireContext(), it, 0)
+            showToast(it)
         }
 
     }
@@ -52,7 +30,6 @@ class MyFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my, container, false)
     }
 
@@ -81,6 +58,8 @@ class MyFragment : Fragment(), View.OnClickListener {
 
         //执行获取用户信息接口
         loginViewModel.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
+        //执行获取收徒收益
+        loginViewModel.getEarnings()
 
         loginViewModel.userInfo.observe(requireActivity()) {
             view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
@@ -108,18 +87,16 @@ class MyFragment : Fragment(), View.OnClickListener {
             }
 
         }
-
+        loginViewModel.earnings.observe(requireActivity()) {
+            view.findViewById<TextView>(R.id.tv_my_text3).text = it.totalEarned.toString()
+            view.findViewById<TextView>(R.id.tv_my_text4).text = it.beEarned.toString()
+        }
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) = MyFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_PARAM1, param1)
-                putString(ARG_PARAM2, param2)
-            }
-        }
+        fun newInstance() = MyFragment()
     }
 
     override fun onClick(p0: View?) {

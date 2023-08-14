@@ -41,6 +41,7 @@ class LaunchActivity : AppCompatActivity() {
     private fun preloadContent() {
         //判断是否已登录APP
         val isLoggedIn = checkUserLoginStatus()
+//        val isLoggedIn = true
         if (isLoggedIn) {
             // 用户已登录， 跳转到主页登录页面
             val intent = Intent(this, HomeActivity::class.java)

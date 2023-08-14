@@ -47,5 +47,25 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tv_agreement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/text_agreement"
+        android:textColor="@color/text_check"
+        android:textSize="@dimen/font_small2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CopyRight@聚赚2023 - 2123"
+        android:textColor="@color/text_s"
+        android:textSize="@dimen/font_small2" />
 
 </LinearLayout>

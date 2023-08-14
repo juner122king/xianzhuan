@@ -8,35 +8,26 @@ import android.view.View.OnClickListener
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 
 //登录页面
-class LoginActivity : AppCompatActivity(), OnClickListener {
+class LoginActivity : BaseActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹
-    private val loginViewModel: LoginViewModel by viewModels {
-        LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        setContentView(R.layout.activity_login)
         cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
         findViewById<TextView>(R.id.bto_phome_login).setOnClickListener(this)//‘使用手机登录’按钮
         findViewById<ImageView>(R.id.bto_wx_login).setOnClickListener(this)//微信登录按钮
@@ -45,15 +36,17 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     }
 
+
     private fun wxLoginInit() {
 
         when (cbAgree.isChecked) {
             true -> {
+                showLoading()
                 WxLogin.longWx()  //微信登录
             }
 
             else -> {
-                ToastUtils.showToast(this, "请同意隐私政策")
+                showToast("请同意隐私政策")
             }
         }
     }
@@ -62,6 +55,7 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
         Log.i("LoginActivity", "开始执行登录请求方法getLogin")
         loginViewModel.getLoginInfo(wxCode)
         loginViewModel.loginRePLiveData.observe(this) {
+            hideLoading()
             onLogin(it)
         }
 
@@ -70,6 +64,7 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
     private fun goToRegister() {
         loginViewModel.getRegister()
         loginViewModel.registerLoginRePLiveData.observe(this) {
+            hideLoading()
             onLogin(it)
         }
     }
@@ -94,7 +89,6 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-
         if (intent != null) {
             Log.i("LoginActivity上级页面：", "${intent.getStringExtra("type")}")
             //从微信授权页面返回
@@ -166,5 +160,15 @@ class LoginActivity : AppCompatActivity(), OnClickListener {
 
     }
 
+    override fun getLayoutId(): Int {
+        return R.layout.activity_login
+    }
 
+    override fun getContentTitle(): String? {
+        return null
+    }
+
+    override fun isShowBack(): Boolean {
+        return false
+    }
 }

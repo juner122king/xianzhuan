@@ -8,8 +8,12 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
@@ -20,19 +24,43 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
  *
  */
 abstract class BaseActivity : AppCompatActivity() {
-    var mBack: LinearLayout? = null
-    var mTvTitle: TextView? = null
-    var mTvRight: TextView? = null
-    var mRltBase: RelativeLayout? = null
+    private var mBack: LinearLayout? = null
+    private var mTvTitle: TextView? = null
+    private var mTvRight: TextView? = null
+    private var mRltBase: RelativeLayout? = null
     private var rootView: View? = null
 
+    private var loadingView: View? = null
 
+    protected val loginViewModel: LoginViewModel by viewModels {
+        LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
+    }
+
+    protected val homeViewModel: HomeViewModel by viewModels {
+        HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootView = View.inflate(this, R.layout.activity_title, null)
         setContentView(getLayoutId())
         addContent()
         setContentView(rootView)
+        initViewModel()
+
+        val loadingView = findViewById<View>(R.id.loadingView)
+        setLoadingView(loadingView)
+
+    }
+    private fun initViewModel() {
+
+        loginViewModel.errMessage.observe(this){
+            hideLoading()
+            showToast(it)
+        }
+        homeViewModel.errMessage.observe(this){
+            hideLoading()
+            showToast(it)
+        }
     }
 
     private fun addContent() {
@@ -92,7 +120,17 @@ abstract class BaseActivity : AppCompatActivity() {
     fun showView() {
         mRltBase?.visibility = View.VISIBLE
     }
+    protected fun setLoadingView(view: View) {
+        loadingView = view
+    }
 
+    fun showLoading() {
+        loadingView?.visibility = View.VISIBLE
+    }
+
+    fun hideLoading() {
+        loadingView?.visibility = View.GONE
+    }
 
     /**
      * 获取布局ID

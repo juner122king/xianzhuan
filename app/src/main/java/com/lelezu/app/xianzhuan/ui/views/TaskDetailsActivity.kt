@@ -1,9 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.View
@@ -11,21 +9,15 @@ import android.view.View.OnClickListener
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ToastUtils
+
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
@@ -34,14 +26,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
     private lateinit var taskVerifyRV: RecyclerView //验证列表
 
-
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
-    }
-
-    private val lvModel: LoginViewModel by viewModels {
-        LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
-    }
 
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
     private lateinit var adapterVerify: TaskVerifyStepAdapter//验证列表
@@ -96,14 +80,10 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         //报名监听
         homeViewModel.isApply.observe(this) {
-            ToastUtils.showToast(this, if (it) "报名成功" else "报名失败", 0)
-
+            showToast(if (it) "报名成功" else "报名失败")
         }
 
-        //错误信息监听
-        homeViewModel.errMessage.observe(this) {
-            ToastUtils.showToast(this, it, 0)
-        }
+
     }
 
     private fun taskDetails(taskId: String) {
@@ -122,7 +102,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         findViewById<TextView>(R.id.tv_task_title).text = task.taskTitle //任务标题
         findViewById<TextView>(R.id.tv_task_des_c).text = task.taskDesc //任务说明
-        findViewById<TextView>(R.id.tv_time).text = "限时${task.operateTime}小时完成" //
+        findViewById<TextView>(R.id.tv_time).text = "限时${task.deadlineTime}小时完成" //
         findViewById<TextView>(R.id.tv_nub).text = "剩余${task.rest}单" //
         findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}元" //
 
@@ -132,8 +112,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         adapterDetails.updateData(task.taskStepList)
         adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
 
-        lvModel.getUserInfo(task.userId)//获取商家信息
-        lvModel.userInfo.observe(this) {
+        loginViewModel.getUserInfo(task.userId)//获取商家信息
+        loginViewModel.userInfo.observe(this) {
 
             ImageViewUtil.load(
                 findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
@@ -259,10 +239,10 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         homeViewModel.apiTaskSubmit(getTask().applyLogId, adapterVerify.getItems())
         homeViewModel.isUp.observe(this) {
             if (it) {
-                ToastUtils.showToast(this, "提交成功", 0)
+                showToast("提交成功")
                 finish()
             } else {
-                ToastUtils.showToast(this, "提交失败！", 0)
+                showToast("提交失败！")
             }
         }
 

@@ -44,6 +44,7 @@ data class Task(
     val isTop: Boolean,
     val limitTimes: Int,
     val operateTime: String?,
+    val deadlineTime: Int?,
     val quantity: Int,
     val rejectReason: String?,
     val remainApplyCount: Int,

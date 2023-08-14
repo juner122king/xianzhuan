@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -21,10 +22,9 @@ class TaskSearchResultActivity : BaseActivity() {
     private lateinit var notResulView: View
     private lateinit var adapter: TaskItemAdapter
 
-    private val homeViewModel: HomeViewModel by viewModels {
-        HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
-    }
 
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,7 +46,7 @@ class TaskSearchResultActivity : BaseActivity() {
 
             if (itemList.isNotEmpty()) {
                 adapter.upData(itemList)
-                var num = itemList.size
+                val num = itemList.size
                 amountTextView.text = "共有${num}个结果"
 
             } else showNotResult()  //搜索结果为0 返回三个随机任务
@@ -54,9 +54,7 @@ class TaskSearchResultActivity : BaseActivity() {
 
         homeViewModel.shuffleList.observe(this) { itemList ->
             // 数据变化时更新 RecyclerView
-
             adapter.upData(itemList)
-
         }
 
 

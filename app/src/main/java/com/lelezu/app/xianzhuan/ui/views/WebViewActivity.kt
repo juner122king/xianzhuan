@@ -22,6 +22,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 
 
@@ -35,12 +36,16 @@ class WebViewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         context = this
         wv = findViewById(R.id.webView)
-        WebViewSettings.setDefaultWebSettings(wv)
 
         link = intent.getStringExtra(LINK_KEY)!!
-        Log.i("H5调原生：", WebViewSettings.host + link)
+        WebViewSettings.setDefaultWebSettings(wv)
 
+        if (!intent.getBooleanExtra(isProcessing, true)) {
 
+            wv.setInitialScale(200)
+            wv.loadUrl(link)
+            return
+        }
         //添加uri拦截
         wv.webViewClient = object : WebViewClient() {
             @Deprecated("Deprecated in Java", ReplaceWith("false"))
@@ -56,7 +61,12 @@ class WebViewActivity : BaseActivity() {
                             .setPositiveButton("立即安装",
                                 DialogInterface.OnClickListener { dialog, which ->
                                     val alipayUrl = Uri.parse("https://d.alipay.com")
-                                    startActivity(Intent("android.intent.action.VIEW", alipayUrl))
+                                    startActivity(
+                                        Intent(
+                                            "android.intent.action.VIEW",
+                                            alipayUrl
+                                        )
+                                    )
                                 }).setNegativeButton("取消", null).show()
                     }
                     return true
@@ -70,19 +80,13 @@ class WebViewActivity : BaseActivity() {
             }
         }
 
-
-
-
-
-
-
         wv.loadUrl(WebViewSettings.host + link)
+
 
         //向H5注入方法
         wv.registerHandler("chooseImage") { data, function ->
             openPhoto()
         }
-
 
         //处理返回键
         onBackPressedDispatcher.addCallback(this, // lifecycle owner

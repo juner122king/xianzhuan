@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cn.hutool.core.codec.Base64
 import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
+import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.UserInfo
@@ -31,6 +33,8 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val registerLoginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
     val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
 
+    val earnings: MutableLiveData<Earning> = MutableLiveData()
+
 
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
         val loginReP =
@@ -53,9 +57,16 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     }
 
 
+    fun getEarnings() = viewModelScope.launch {
+        val rep = userRepository.apiEarnings()
+        handleApiResponse(rep, earnings)
+    }
+
+
     //注册
     fun getRegister() = viewModelScope.launch {
 
+        Log.i("登录请求体对象", "Register:" + ShareUtil.getRegister().toString())
         val o = Gson().toJson(ShareUtil.getRegister())
         val o64 = Base64.encode(o, "UTF-8")
         val en64 = AesTool.encryptStr(o64)

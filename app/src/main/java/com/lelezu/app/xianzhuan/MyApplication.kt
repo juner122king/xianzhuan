@@ -7,6 +7,9 @@ import android.text.TextUtils
 import android.util.Log
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
+import com.lelezu.app.xianzhuan.data.ApiConstants.DUN_BUSINESS_NO
+import com.lelezu.app.xianzhuan.data.ApiConstants.UM_BUSINESS_NO
+import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_NO
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
@@ -71,20 +74,16 @@ class MyApplication : Application() {
             Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
         }
-        HTProtect.init(context, "YD00525369360953", callback, config)
+        HTProtect.init(context, DUN_BUSINESS_NO, callback, config)
         //易盾结束
 
 
         //友盟开始
         //调用预初始化函数
-        UMConfigure.preInit(this, "648282fba1a164591b2e9331", "测试");
+        UMConfigure.preInit(this, UM_BUSINESS_NO, "测试");
         //正式初始化函数
         UMConfigure.init(
-            this,
-            "648282fba1a164591b2e9331",
-            getString(R.string.app_name),
-            UMConfigure.DEVICE_TYPE_PHONE,
-            ""
+            this, UM_BUSINESS_NO, getString(R.string.app_name), UMConfigure.DEVICE_TYPE_PHONE, ""
         )
         UMConfigure.setLogEnabled(true)
         //友盟结束
@@ -104,11 +103,10 @@ class MyApplication : Application() {
 
 
         //获取Android ID
-//        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID,DeviceUtils.getAndroidId(this))
-        ShareUtil.putString(ShareUtil.APP_DEVICE_ANDROIDID, "ANDROIDID123")
+        ShareUtil.putAndroidID(this)
 
         // 任务墙SDK 初始化
-        ZjSdk.init(this, "Z6269688056", object : ZjSdk.ZjSdkInitListener {
+        ZjSdk.init(this, ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
             override fun initSuccess() {
                 Log.i("任务墙SDK", "初始化成功！")
 

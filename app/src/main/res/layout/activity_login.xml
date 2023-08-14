@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".ui.views.LaunchActivity">
 
     <TextView
@@ -87,7 +88,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:padding="18px"
+            android:paddingStart="18px"
+            android:paddingTop="18px"
+            android:paddingBottom="18px"
             android:text="@string/text_agreement"
             android:textColor="@color/text_check"
             android:textSize="@dimen/font_small" />
@@ -96,10 +99,19 @@
             android:id="@+id/tv_agreement2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:padding="18px"
+            android:paddingTop="18px"
+            android:paddingBottom="18px"
             android:text="@string/text_agreement1"
             android:textColor="@color/text_check"
+            android:textSize="@dimen/font_small" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="18px"
+            android:paddingBottom="18px"
+            android:text="协议"
+            android:textColor="@color/text_s"
             android:textSize="@dimen/font_small" />
 
     </LinearLayout>
