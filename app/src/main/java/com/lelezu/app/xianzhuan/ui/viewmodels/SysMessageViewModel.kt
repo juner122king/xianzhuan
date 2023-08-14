@@ -18,11 +18,29 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
 
     val liveData: MutableLiveData<MutableList<Message>> = MutableLiveData()
 
+    val isMark: MutableLiveData<Boolean> = MutableLiveData()
+    val msgNum: MutableLiveData<Int> = MutableLiveData()
+
 
     //获取系统消息列表
     fun getMessageList() = viewModelScope.launch {
         val list = sysInformRepository.apiGetList(1, 100)
         handleApiListResponse(list, liveData)
+    }
+
+
+
+    //获取系统消息列表
+    fun markSysMessage(msg: String) = viewModelScope.launch {
+        val call = sysInformRepository.markSysMessage(msg)
+        handleApiResponse(call, isMark)
+    }
+
+
+    //获取用户未读信息数量
+    fun getSysMessageNum() = viewModelScope.launch {
+        val call = sysInformRepository.markSysMessage()
+        handleApiResponse(call, msgNum)
     }
 
 

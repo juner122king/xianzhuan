@@ -10,7 +10,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_task_list"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="@dimen/tab_h"
         android:background="@color/white"
         app:tabIndicatorColor="@color/colorControlActivated"
         app:tabMaxWidth="200dp"

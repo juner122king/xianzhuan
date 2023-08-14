@@ -91,6 +91,12 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text3).text = it.totalEarned.toString()
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.beEarned.toString()
         }
+
+        sysMessageViewModel.msgNum.observe(requireActivity()) {
+
+        }
+        //获取系统消息数量
+        sysMessageViewModel.getSysMessageNum()
     }
 
     companion object {

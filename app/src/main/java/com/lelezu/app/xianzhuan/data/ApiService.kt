@@ -112,6 +112,15 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<Message>>>
 
+    @GET("/dxz/app/sys/inform/count/unread")//获取用户未读信息数量
+    fun getSysMessageNum(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Int>>
+
+    @POST("/dxz/app/sys/inform/mark/read")//标记已读系统消息
+    fun getMarkSysMessage(
+        @Path("msgId") msgId: String, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
 
     @GET("/dxz/app/sys/config")//获取系统配置信息
     fun getConfig(

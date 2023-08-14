@@ -17,7 +17,7 @@ data class Message(
     val msgTitle: String?,
     val msgContent: String?,
     val isRead: Boolean?,
-    val msgId: String?,
+    val msgId: String,
     val createdDt: String?
 
 )

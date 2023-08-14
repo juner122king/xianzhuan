@@ -62,8 +62,8 @@ public class WxLogin {
             WXWebpageObject webpage = new WXWebpageObject();
             webpage.webpageUrl = url;  //需要确保url能正常打开
             WXMediaMessage msg = new WXMediaMessage(webpage);
-            msg.title = "WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title WebPage Title Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
-            msg.description = "WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description WebPage Description Very Long Very Long Very Long Very Long Very Long Very Long Very Long";
+            msg.title = "标题";
+            msg.description = "内容";
             Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.banner1);
             Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
             bmp.recycle();

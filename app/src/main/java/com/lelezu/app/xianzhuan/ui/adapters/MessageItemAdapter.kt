@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 
 /**
  * @author:Administrator
@@ -14,7 +15,9 @@ import com.lelezu.app.xianzhuan.data.model.Message
  * @description:消息列表适配器
  *
  */
-class MessageItemAdapter(private var items: List<Message>) : RecyclerView.Adapter<MessageItemAdapter.ItemViewHolder>() {
+class MessageItemAdapter(
+    private var items: List<Message>, private var sysMessageViewModel: SysMessageViewModel
+) : RecyclerView.Adapter<MessageItemAdapter.ItemViewHolder>() {
 
     // 更新数据方法
     fun updateData(newItems: List<Message>) {
@@ -30,7 +33,8 @@ class MessageItemAdapter(private var items: List<Message>) : RecyclerView.Adapte
 
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.sys_message_item_layout, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.sys_message_item_layout, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -39,10 +43,13 @@ class MessageItemAdapter(private var items: List<Message>) : RecyclerView.Adapte
         val item = items[position]
         holder.title.text = item.msgTitle
         holder.content.text = item.msgContent
+
+        holder.itemView.setOnClickListener { sysMessageViewModel.markSysMessage(item.msgId) }
     }
 
     // 返回数据项数量
     override fun getItemCount(): Int {
         return items.size
     }
+
 }

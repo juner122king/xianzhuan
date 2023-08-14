@@ -18,5 +18,7 @@
 
     <dimen name="radius_dialog">20dp</dimen>
 
+    <dimen name="tab_h">50dp</dimen>
+
 
 </resources>
