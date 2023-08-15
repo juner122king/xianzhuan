@@ -17,20 +17,15 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOK
  *
  */
 object WebViewSettings {
+    var LINK_KEY = "URL_LINK"
+    var URL_TITLE = "URL_TITLE"
 
     var isProcessing = "isProcessing"
 
     var link100 = "http://www.zhongshoubang.com/yhxy.html"//《用户使用协议》
     var link101 = "http://www.zhongshoubang.com/yszc.html"//《隐私政策》
 
-
-    //        var host = "http://192.168.3.7:8000/#/"
-//    var host = "http://192.168.3.35:8000"
-    var host = "$HOST/statics/dxz/h5/#"
-
-
-    var LINK_KEY = "URL_LINK"
-    var URL_TITLE = "URL_TITLE"
+    var host = "$HOST/statics/dxz/h5"
 
 
     var link1 = "/pages/index/dailyRewards/dailyRewards"

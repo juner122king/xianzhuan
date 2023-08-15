@@ -73,6 +73,7 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             // 执行刷新操作
             refresh()
         }
+        setSwipeRefreshLayout(swiper)
 
 
 
@@ -110,12 +111,15 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         loadData(true)//正常加载
 
 
-        //错误信息监听
-        homeViewModel.errMessage.observe(requireActivity()) {
-            // 停止刷新动画
-            swiper.isRefreshing = false
-            showToast(it)
-        }
+//        //错误信息监听
+//        homeViewModel.errMessage.observe(requireActivity()) {
+//            // 停止刷新动画
+//            swiper.isRefreshing = false
+//            showToast(it)
+//        }
+
+
+
     }
 
 

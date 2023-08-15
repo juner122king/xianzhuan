@@ -13,6 +13,7 @@ import com.lelezu.app.xianzhuan.data.model.ApiErrorResponse
 import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
+import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
@@ -129,7 +130,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
             handleApiResponse(r, isUp)
 
         } else {
-            errMessage.postValue("验证内容不完整！")
+            errMessage.postValue(ErrResponse(null, "验证内容不完整！"))
         }
     }
 

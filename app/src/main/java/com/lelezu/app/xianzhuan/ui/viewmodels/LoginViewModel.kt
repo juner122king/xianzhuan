@@ -36,6 +36,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val earnings: MutableLiveData<Earning> = MutableLiveData()
 
 
+
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
         val loginReP =
             userRepository.apiLogin(loginInfo(ApiConstants.LOGIN_METHOD_WX, wxCode, "", ""))

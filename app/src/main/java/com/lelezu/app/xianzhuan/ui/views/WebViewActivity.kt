@@ -81,7 +81,7 @@ class WebViewActivity : BaseActivity() {
         }
 
         wv.loadUrl(WebViewSettings.host + link)
-
+        Log.i("123",WebViewSettings.host + link)
 
         //向H5注入方法
         wv.registerHandler("chooseImage") { data, function ->

@@ -26,12 +26,10 @@ open class BaseRepository {
                 val body = response.body()
                 when (body?.code) {
                     "000000" -> {
-                        Log.d("APP接口", "成功 : ToString: ${body.data?.toString()}")
                         ApiSuccessResponse(body.data!!)
                     }
 
                     else -> {
-                        Log.d("APP接口", "失败${body?.code}:${body?.message}")
                         ApiFailedResponse(body?.code, body?.message)
                     }
                 }

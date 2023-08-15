@@ -2,18 +2,18 @@ package com.lelezu.app.xianzhuan.ui.viewmodels
 
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.ApiEmptyResponse
 import com.lelezu.app.xianzhuan.data.model.ApiErrorResponse
 import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
+import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginReP
-import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
 import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 
@@ -26,7 +26,7 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 open class BaseViewModel : ViewModel() {
 
 
-    val errMessage: MutableLiveData<String> = MutableLiveData() //接口返回的错误信息
+    val errMessage: MutableLiveData<ErrResponse> = MutableLiveData() //接口返回的错误信息
 
     protected fun getFilePathFromUri(uri: Uri): String {
         var filePath = ""
@@ -44,9 +44,13 @@ open class BaseViewModel : ViewModel() {
     }
 
     protected fun <T> handleApiResponse(r: ApiResponse<T>, liveData: MutableLiveData<T>) {
+
+
         when (r) {
             is ApiSuccessResponse -> {
                 // 处理成功的响应
+
+                Log.i("BaseViewModel:", "ApiSuccessResponse")
                 liveData.postValue(r.data)
                 if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对角为登录回应对象就保存
 
@@ -54,24 +58,22 @@ open class BaseViewModel : ViewModel() {
 
             is ApiFailedResponse -> {
                 // 处理失败的响应
-                errMessage.postValue(r.message!!)
-                if (r.data is LoginReP) cleanInfo()//如果返回对角为登录回应对象就删除之前的登录信息
-
+                failedResponse(r, r.message)
             }
 
             is ApiEmptyResponse -> {
                 // 处理空的响应
-                errMessage.postValue("返回data为null")
-                if (r.data is LoginReP) cleanInfo()//如果返回对角为登录回应对象就删除之前的登录信息
+                failedResponse(r, "data为null!")
             }
 
             is ApiErrorResponse -> {
+
                 // 处理错误的响应
-                errMessage.postValue(r.throwable.message)
-                if (r.data is LoginReP) cleanInfo()//如果返回对角为登录回应对象就删除之前的登录信息
+                failedResponse(r, r.error!!.message)
             }
         }
     }
+
 
     protected fun <T> handleApiListResponse(
         r: ApiResponse<ListData<T>>, liveData: MutableLiveData<MutableList<T>>
@@ -84,19 +86,31 @@ open class BaseViewModel : ViewModel() {
 
             is ApiFailedResponse -> {
                 // 处理失败的响应
-                errMessage.postValue(r.message!!)
+                failedResponse(r, r.message)
             }
 
             is ApiEmptyResponse -> {
                 // 处理空的响应
-                errMessage.postValue("返回data为null")
+                failedResponse(r, "data为null!")
             }
 
             is ApiErrorResponse -> {
                 // 处理错误的响应
-                errMessage.postValue(r.throwable.message)
+                failedResponse(r, r.error!!.message)
             }
         }
+    }
+
+
+    //Token失效
+    private fun <T> failedResponse(r: ApiResponse<T>, mes: String?) {
+        Log.i("BaseViewModel:", "r.code:${r.code},mes:${mes}")
+        errMessage.postValue(ErrResponse(r.code, mes))
+        if (r.data is LoginReP || r.isTokenLose) onLoginFailed()
+    }
+
+    private fun onLoginFailed() {
+        cleanInfo()//如果返回对象为登录回应对象就删除之前的登录信息
     }
 
 }

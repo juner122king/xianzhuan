@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.ToastUtils
@@ -39,6 +40,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootView = View.inflate(this, R.layout.activity_title, null)
@@ -51,17 +53,31 @@ abstract class BaseActivity : AppCompatActivity() {
         setLoadingView(loadingView)
 
     }
+    //监听token失效
+
+    //重新打开登录页面
+    private fun goToLoginView() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
     private fun initViewModel() {
 
-        loginViewModel.errMessage.observe(this){
-            hideLoading()
-            showToast(it)
+        loginViewModel.errMessage.observe(this) {
+            onErrMessage(it)
         }
-        homeViewModel.errMessage.observe(this){
-            hideLoading()
-            showToast(it)
+        homeViewModel.errMessage.observe(this) {
+            onErrMessage(it)
         }
     }
+
+    private fun onErrMessage(it: ErrResponse) {
+        hideLoading()
+        showToast(it.message)
+        if (it.isTokenLose()) goToLoginView()    //重新打开登录页面
+    }
+
 
     private fun addContent() {
         mBack = rootView!!.findViewById<View>(R.id.back) as LinearLayout
@@ -120,6 +136,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun showView() {
         mRltBase?.visibility = View.VISIBLE
     }
+
     protected fun setLoadingView(view: View) {
         loadingView = view
     }

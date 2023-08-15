@@ -21,9 +21,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loginViewModel.errMessage.observe(this) {
-            showToast(it)
-        }
+//        loginViewModel.errMessage.observe(this) {
+//            showToast(it)
+//        }
 
     }
 

@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -80,25 +79,11 @@ class MainFragment : BaseFragment(), OnClickListener {
         //Banner图初始化
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
         viewFlipper.startFlipping()
-//
-//        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab) {
-//
-//            }
-//
-//            override fun onTabUnselected(tab: TabLayout.Tab) {
-//
-//
-//            }
-//
-//            override fun onTabReselected(tab: TabLayout.Tab) {
-//
-//
-//            }
-//        })
 
         initZjTask()//执行广告sdk
         addLocalTaskFragment()//加载本地任务列表
+
+
 
     }
 
@@ -151,7 +136,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                     }
 
                     override fun onZjAdError(zjAdError: ZjAdError) {
-                        showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+//                        showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
                     }
                 })
         }
@@ -224,9 +209,9 @@ class MainFragment : BaseFragment(), OnClickListener {
             initZjTask()
         } else {
             // 至少一个权限未被授予
-            Toast.makeText(
-                requireActivity(), "没有相关权限加载任务墙，请退出重试!", Toast.LENGTH_SHORT
-            ).show()
+//            Toast.makeText(
+//                requireActivity(), "没有相关权限加载任务墙，请退出重试!", Toast.LENGTH_SHORT
+//            ).show()
         }
     }
 

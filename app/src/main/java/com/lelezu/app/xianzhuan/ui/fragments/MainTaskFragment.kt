@@ -41,6 +41,8 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             refresh()
         }
 
+        setSwipeRefreshLayout(swiper)
+
         // 创建适配器，并将其绑定到 RecyclerView 上
         adapter = TaskItemAdapter(mutableListOf(), requireActivity())
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))
@@ -55,13 +57,6 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         homeViewModel._taskList.observe(viewLifecycleOwner) {
             loadDone(it)
         }
-        //错误信息监听
-        homeViewModel.errMessage.observe(requireActivity()) {
-            // 停止刷新动画
-            swiper.isRefreshing = false
-            showToast(it)
-        }
-
         // 初始加载
         refresh()
 

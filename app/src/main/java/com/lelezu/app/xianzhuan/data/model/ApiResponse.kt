@@ -16,5 +16,6 @@ open class ApiResponse<T>(
 ) : Serializable {
     val isSuccess: Boolean
         get() = code == "000000"
-
+    val isTokenLose: Boolean
+        get() = code == "300002" || code == "300003" || code == "300004"
 }
