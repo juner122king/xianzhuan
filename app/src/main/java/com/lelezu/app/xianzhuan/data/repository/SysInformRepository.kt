@@ -36,9 +36,9 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
 
 
     //标记已读系统消息
-    suspend fun markSysMessage(msgId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+    suspend fun markSysMessage(msgIds: List<String>): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
         val call = apiService.getMarkSysMessage(
-            msgId, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            msgIds, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         )
         executeApiCall(call)
     }

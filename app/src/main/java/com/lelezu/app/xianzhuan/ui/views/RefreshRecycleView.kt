@@ -1,13 +1,19 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.annotation.Nullable
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lelezu.app.xianzhuan.R
 
 
 /**
@@ -43,7 +49,44 @@ class RefreshRecycleView @JvmOverloads constructor(
     /**
      * 初始化
      */
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun init() {
+
+        val decoration = DividerItemDecoration(
+            context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+        )
+        context.getDrawable(R.drawable.divider)?.let { decoration.setDrawable(it) }
+        addItemDecoration(decoration)
+
+//        val decoration = object : RecyclerView.ItemDecoration() {
+//            val horizontalMarginInPixels = resources.getDimensionPixelSize(R.dimen.horizontal_margin)
+//            val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
+//            val dividerDrawable = context.getDrawable(R.drawable.divider)
+//
+//            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+//                super.onDraw(c, parent, state)
+//
+//                val left = parent.paddingLeft + horizontalMarginInPixels
+//                val right = parent.width - parent.paddingRight - horizontalMarginInPixels
+//
+//                val childCount = parent.childCount
+//                for (i in 0 until childCount - 1) {
+//                    val child = parent.getChildAt(i)
+//                    val params = child.layoutParams as RecyclerView.LayoutParams
+//                    val top = child.bottom + params.bottomMargin
+//                    val bottom = top + dividerHeight
+//
+//                    dividerDrawable?.let {
+//                        it.setBounds(left, top, right, bottom)
+//                        it.draw(c)
+//                    }
+//                }
+//            }
+//        }
+
+        addItemDecoration(decoration)
+
+
         isLoadEnd = false
         isLoadStart = true
         addOnScrollListener(object : OnScrollListener() {
@@ -171,5 +214,24 @@ class RefreshRecycleView @JvmOverloads constructor(
 
     fun isRefresh(): Boolean {//是否是刷新动作
         return nowAction == mEFRESHLoad
+    }
+
+    class DividerItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+        private val divider: Drawable? = context.getDrawable(R.drawable.divider)
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            val left = parent.paddingLeft
+            val right = parent.width - parent.paddingRight
+
+            for (i in 0 until parent.childCount - 1) {
+                val child = parent.getChildAt(i)
+                val params = child.layoutParams as RecyclerView.LayoutParams
+                val top = child.bottom + params.bottomMargin
+                val bottom = top + divider?.intrinsicHeight!! ?: 0
+
+                divider.setBounds(left, top, right, bottom)
+                divider.draw(c)
+            }
+        }
     }
 }

@@ -78,11 +78,10 @@ class MainFragment : BaseFragment(), OnClickListener {
         view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
         //Banner图初始化
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
-        viewFlipper.startFlipping()
+//        viewFlipper.startFlipping()
 
         initZjTask()//执行广告sdk
         addLocalTaskFragment()//加载本地任务列表
-
 
 
     }
@@ -124,8 +123,12 @@ class MainFragment : BaseFragment(), OnClickListener {
             ) == PackageManager.PERMISSION_GRANTED
         }
         if (!hasPermissions) {
-            // 请求权限
-            requestPermissionLauncher.launch(permissions)
+            try {
+                // 请求权限
+                requestPermissionLauncher.launch(permissions)
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
+            }
         } else {
             zjTask = ZjTaskAd(requireActivity(),
                 ZJ_BUSINESS_POS_ID,

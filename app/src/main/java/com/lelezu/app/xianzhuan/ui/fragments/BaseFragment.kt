@@ -66,7 +66,7 @@ open class BaseFragment : Fragment() {
 
 
     private fun onErrMessage(it: ErrResponse) {
-        if (swiper != null) swiper!!.isRefreshing = false
+        onStopSwiperRefreshing()
         showToast(it.message)
         if (it.isTokenLose()) goToLoginView()    //重新打开登录页面
     }
@@ -78,5 +78,15 @@ open class BaseFragment : Fragment() {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
+
+    private fun onStopSwiperRefreshing() {
+        if (swiper != null) swiper!!.isRefreshing = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        onStopSwiperRefreshing()
+    }
+
 
 }

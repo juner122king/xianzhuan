@@ -14,6 +14,7 @@ import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginReP
+import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
 import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 
@@ -44,30 +45,22 @@ open class BaseViewModel : ViewModel() {
     }
 
     protected fun <T> handleApiResponse(r: ApiResponse<T>, liveData: MutableLiveData<T>) {
-
-
         when (r) {
             is ApiSuccessResponse -> {
                 // 处理成功的响应
-
                 Log.i("BaseViewModel:", "ApiSuccessResponse")
                 liveData.postValue(r.data)
                 if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对角为登录回应对象就保存
-
             }
-
             is ApiFailedResponse -> {
                 // 处理失败的响应
                 failedResponse(r, r.message)
             }
-
             is ApiEmptyResponse -> {
                 // 处理空的响应
                 failedResponse(r, "data为null!")
             }
-
             is ApiErrorResponse -> {
-
                 // 处理错误的响应
                 failedResponse(r, r.error!!.message)
             }

@@ -11,6 +11,7 @@ import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
+import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.utils.AesTool
@@ -34,6 +35,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
 
     val earnings: MutableLiveData<Earning> = MutableLiveData()
+    val related: MutableLiveData<Related> = MutableLiveData()
 
 
 
@@ -61,6 +63,11 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     fun getEarnings() = viewModelScope.launch {
         val rep = userRepository.apiEarnings()
         handleApiResponse(rep, earnings)
+    }
+
+    fun getRelated() = viewModelScope.launch {
+        val rep = userRepository.apiRelated()
+        handleApiResponse(rep, related)
     }
 
 

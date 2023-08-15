@@ -28,7 +28,6 @@ open class BaseRepository {
                     "000000" -> {
                         ApiSuccessResponse(body.data!!)
                     }
-
                     else -> {
                         ApiFailedResponse(body?.code, body?.message)
                     }

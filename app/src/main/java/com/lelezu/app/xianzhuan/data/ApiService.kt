@@ -8,6 +8,7 @@ import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.Register
+import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
@@ -41,6 +42,10 @@ interface ApiService {
 
     @GET("/dxz/app/user/receive/apprentice/earnings")  //收徒收益
     fun getEarnings(@Header("Authorization") token: String): Call<ApiResponse<Earning>>
+
+    @GET("/dxz/app/user/task/related")  //个人中心任务相关的数据
+    fun getRelated(@Header("Authorization") token: String): Call<ApiResponse<Related>>
+
 
     @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
     fun getTaskInfo(
@@ -119,7 +124,7 @@ interface ApiService {
 
     @POST("/dxz/app/sys/inform/mark/read")//标记已读系统消息
     fun getMarkSysMessage(
-        @Path("msgId") msgId: String, @Header("Authorization") token: String
+        @Query("msgIds") msgId: List<String>, @Header("Authorization") token: String
     ): Call<ApiResponse<Boolean>>
 
     @GET("/dxz/app/sys/config")//获取系统配置信息

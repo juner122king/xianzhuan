@@ -6,6 +6,7 @@ import com.google.android.material.tabs.TabLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
+
 class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
     private lateinit var recyclerView: RefreshRecycleView //下拉刷新RecycleView
@@ -15,6 +16,8 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     private lateinit var adapter2: TaskItemAdapter
     private lateinit var adapter3: TaskItemAdapter
     private lateinit var adapter4: TaskItemAdapter
+
+    private lateinit var tabLayout: TabLayout
 
     private var page: Int = 0//当前选择page  0为第一项：置顶
 
@@ -26,7 +29,6 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     private var auditStatus = 1//当前选择的子项状态 默认加载待提交
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,7 +36,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     }
 
     private fun initView() {
-        val tabLayout = findViewById<TabLayout>(R.id.tab_task_list)
+        tabLayout = findViewById<TabLayout>(R.id.tab_task_list)
         recyclerView = findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
         // 创建适配器，并将其绑定到 RecyclerView 上
@@ -48,7 +50,9 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         adapter3.setEmptyView(findViewById(R.id.recycler_layout))
         adapter4.setEmptyView(findViewById(R.id.recycler_layout))
 
-        recyclerView.adapter = adapter1
+        page = intent.getIntExtra("selectedTab", 0) // 获取传递的Tab索引，默认为0
+        tabLayout.setScrollPosition(page, 0f, true) // 设置要显示的Tab
+
 
 
         recyclerView.setListener(this)
@@ -62,37 +66,19 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
             refresh()
         }
 
+
+        // 观察 ViewModel 中的任务列表数据变化
+        homeViewModel.myTaskList.observe(this) {
+            loadDone(it)
+        }
+
+        onTabSelected()
+
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 page = tab.position
                 //因供用一个recyclerView，所以当切换page时要设置相应的adapter
-                when (page) {
-                    0 -> {
-                        recyclerView.adapter = adapter1
-                        adapter1.notifyDataSetChanged()
-
-                        auditStatus = 1
-                    }
-
-                    1 -> {
-                        recyclerView.adapter = adapter2
-                        adapter2.notifyDataSetChanged()
-                        auditStatus = 2
-                    }
-
-                    2 -> {
-                        recyclerView.adapter = adapter3
-                        adapter3.notifyDataSetChanged()
-                        auditStatus = 3
-                    }
-
-                    3 -> {
-                        recyclerView.adapter = adapter4
-                        adapter4.notifyDataSetChanged()
-                        auditStatus = 4
-                    }
-                }
-                loadData(false)
+                onTabSelected()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -105,13 +91,42 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
             }
         })
-        // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel.myTaskList.observe(this) {
-            loadDone(it)
+
+    }
+
+
+    fun onTabSelected() {
+
+        when (page) {
+            0 -> {
+                recyclerView.adapter = adapter1
+                adapter1.notifyDataSetChanged()
+                auditStatus = 1
+            }
+
+            1 -> {
+                recyclerView.adapter = adapter2
+                adapter2.notifyDataSetChanged()
+                auditStatus = 2
+            }
+
+            2 -> {
+                recyclerView.adapter = adapter3
+                adapter3.notifyDataSetChanged()
+                auditStatus = 3
+            }
+
+            3 -> {
+                recyclerView.adapter = adapter4
+                adapter4.notifyDataSetChanged()
+                auditStatus = 4
+            }
         }
+        loadData(false)
 
 
     }
+
 
     private fun initData() {
 

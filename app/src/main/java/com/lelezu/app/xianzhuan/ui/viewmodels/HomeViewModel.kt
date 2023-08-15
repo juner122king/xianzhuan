@@ -1,16 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
 import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lelezu.app.xianzhuan.MyApplication
-import com.lelezu.app.xianzhuan.data.model.ApiEmptyResponse
-import com.lelezu.app.xianzhuan.data.model.ApiErrorResponse
-import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ErrResponse

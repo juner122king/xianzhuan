@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="客服热线：400-000-000"
+            android:text="客服热线：020-38551519"
             android:textColor="@color/text_999"
             android:textSize="15sp" />
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:text="客服邮箱：1009904544@qq.com"
+            android:text="客服邮箱：fankui@zhongshoubang.com"
             android:textColor="@color/text_999"
             android:textSize="15sp" />
 
@@ -64,7 +64,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CopyRight@聚赚2023 - 2123"
+        android:text="© 1997-2023 众手帮版权所有"
         android:textColor="@color/text_s"
         android:textSize="@dimen/font_small2" />
 

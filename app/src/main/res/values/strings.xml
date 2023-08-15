@@ -61,5 +61,7 @@
     <string name="app_task">热们任务</string>
     <string name="game_task">游戏试玩</string>
 
+    <string name="tag_my_task">my_task</string>
+
 
 </resources>

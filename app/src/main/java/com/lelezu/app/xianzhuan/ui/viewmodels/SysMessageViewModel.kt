@@ -30,8 +30,8 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
 
 
 
-    //获取系统消息列表
-    fun markSysMessage(msg: String) = viewModelScope.launch {
+    //标记已读系统消息
+    fun markSysMessage(msg: List<String>) = viewModelScope.launch {
         val call = sysInformRepository.markSysMessage(msg)
         handleApiResponse(call, isMark)
     }

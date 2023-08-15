@@ -21,6 +21,8 @@ class MessageActivity : BaseActivity() {
 
     private lateinit var adapter: MessageItemAdapter
 
+    private lateinit var msgIds: List<String>//未读id集合
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,31 +35,30 @@ class MessageActivity : BaseActivity() {
         }
 
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = MessageItemAdapter(emptyList(),sysMessageViewModel)
+        adapter = MessageItemAdapter(emptyList())
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
 
 
 
-        sysMessageViewModel.liveData.observe(this) {
+        sysMessageViewModel.liveData.observe(this) { it ->
             // 数据变化时更新 RecyclerView
             // 停止刷新动画
             swiper.isRefreshing = false
             adapter.updateData(it)
-
-
+            msgIds = it.filter { !it.isRead }.map { it.msgId }
         }
         sysMessageViewModel.getMessageList()
 
-
-        sysMessageViewModel.isMark.observe(this){
-
-            sysMessageViewModel.getMessageList()
-        }
-
-
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sysMessageViewModel.markSysMessage(msgIds)
+    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.activity_message

@@ -15,4 +15,8 @@
 
     </style>
 
+    <style name="tabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

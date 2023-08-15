@@ -224,7 +224,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="招1位赚15元"
+                            android:text="招1位赚8元"
                             android:textColor="#a6a6a6"
                             android:textSize="11sp" />
 
@@ -238,7 +238,7 @@
 
             <ViewFlipper
                 android:id="@+id/vp_banner"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
@@ -246,10 +246,9 @@
                 android:flipInterval="3000"
                 android:inAnimation="@anim/banner_in"
                 android:outAnimation="@anim/banner_out">
-
                 <include layout="@layout/view_banner_item1" />
 
-                <include layout="@layout/view_banner_item1" />
+<!--                <include layout="@layout/view_banner_item1" />-->
 
             </ViewFlipper>
 
@@ -262,6 +261,7 @@
                     android:id="@+id/tab_task_list"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/tab_h"
+                    app:tabTextAppearance="@style/tabLayout"
                     android:background="@color/white"
                     app:tabGravity="start"
                     app:tabIndicatorAnimationMode="elastic"

@@ -36,7 +36,7 @@ object WebViewSettings {
 
     var link5 = "/pages/publishTask/selectTaskClassification/index" //我的-发布任务
 
-    var link6 = "/pages/member/index" //我的-开通会员
+    var link6 = "/pages/shop/list/index" //我的店铺
 
     var link7 = "/pages/reportForms/index" //我的-流水报表
     var link8 = "/pages/balance/index?pageType=recharge" //充值

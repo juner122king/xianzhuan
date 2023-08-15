@@ -14,7 +14,6 @@ import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
 
 
-
 /**
  *
  * 悬赏大厅
@@ -67,6 +66,8 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
 
+
+
         swiper = view.findViewById(R.id.swiper)
         swiper.setColorSchemeResources(R.color.colorControlActivated)
         swiper.setOnRefreshListener {
@@ -109,16 +110,6 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             loadDone(it)
         }
         loadData(true)//正常加载
-
-
-//        //错误信息监听
-//        homeViewModel.errMessage.observe(requireActivity()) {
-//            // 停止刷新动画
-//            swiper.isRefreshing = false
-//            showToast(it)
-//        }
-
-
 
     }
 
