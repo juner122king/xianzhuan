@@ -88,7 +88,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:paddingStart="18px"
             android:paddingTop="18px"
             android:paddingBottom="18px"
             android:text="@string/text_agreement"

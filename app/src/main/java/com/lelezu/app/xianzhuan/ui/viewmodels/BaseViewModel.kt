@@ -66,15 +66,18 @@ open class BaseViewModel : ViewModel() {
             }
         }
     }
-
-
     protected fun <T> handleApiListResponse(
         r: ApiResponse<ListData<T>>, liveData: MutableLiveData<MutableList<T>>
     ) {
         when (r) {
             is ApiSuccessResponse -> {
-                // 处理成功的响应
-                liveData.postValue(r.response.records)
+                if (r.response.records.isEmpty()) {
+                    // 处理空列表的情况
+                    failedResponse(r, "没有更多了")
+                } else {
+                    // 处理非空列表的情况
+                    liveData.postValue(r.response.records)
+                }
             }
 
             is ApiFailedResponse -> {
@@ -83,6 +86,7 @@ open class BaseViewModel : ViewModel() {
             }
 
             is ApiEmptyResponse -> {
+
                 // 处理空的响应
                 failedResponse(r, "data为null!")
             }
@@ -93,6 +97,9 @@ open class BaseViewModel : ViewModel() {
             }
         }
     }
+
+
+
 
 
     //Token失效

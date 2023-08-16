@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
@@ -42,69 +43,86 @@ class WebViewActivity : BaseActivity() {
 
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
+            //显示简单的用户协议页面
             wv.setInitialScale(200)
             wv.loadUrl(link)
             return
         }
-        //添加uri拦截
-        wv.webViewClient = object : WebViewClient() {
-            @Deprecated("Deprecated in Java", ReplaceWith("false"))
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-
-                // ------  对alipays:相关的scheme处理 -------
-                if (url.startsWith("alipays:") || url.startsWith("alipay")) {
-                    try {
-                        startActivity(Intent("android.intent.action.VIEW", Uri.parse(url)))
-                    } catch (e: Exception) {
-                        AlertDialog.Builder(context)
-                            .setMessage("未检测到支付宝客户端，请安装后重试。")
-                            .setPositiveButton("立即安装",
-                                DialogInterface.OnClickListener { dialog, which ->
-                                    val alipayUrl = Uri.parse("https://d.alipay.com")
-                                    startActivity(
-                                        Intent(
-                                            "android.intent.action.VIEW",
-                                            alipayUrl
-                                        )
-                                    )
-                                }).setNegativeButton("取消", null).show()
-                    }
-                    return true
-                }
-                // ------- 处理结束 -------
-                if (!(url.startsWith("http") || url.startsWith("https"))) {
-                    return true
-                }
-                view.loadUrl(url)
-                return true
-            }
-        }
 
         wv.loadUrl(WebViewSettings.host + link)
-        Log.i("123",WebViewSettings.host + link)
+        Log.i("WebView_URL", WebViewSettings.host + link)
 
-        //向H5注入方法
+        //注入打开相册方法
         wv.registerHandler("chooseImage") { data, function ->
             openPhoto()
         }
 
-        //处理返回键
-        onBackPressedDispatcher.addCallback(this, // lifecycle owner
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (wv.canGoBack()) {
-                        if (wv.url.equals(WebViewSettings.host + link)) finish()
-                        else wv.goBack()
-                    } else finish()
-                }
-            })
+        //注入回到主页方法
+        wv.registerHandler("backToHome") { fragmentPosition, function ->
+            backToHome(fragmentPosition)
+        }
 
+        //注入进入任务详情页面方法
+        wv.registerHandler("gotoTaskDetails") { taskId, function ->
+            gotoTaskDetails(taskId)
+        }
+
+
+        //处理返回键
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backOrFinish()
+            }
+        })
+
+        super.mBack!!.setOnClickListener { backOrFinish() }
+
+
+        if (link == WebViewSettings.link8)//充值页面才添加拦截
+        //添加uri拦截
+            wv.webViewClient = object : WebViewClient() {
+                @Deprecated("Deprecated in Java", ReplaceWith("false"))
+                override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+
+                    // ------  对alipays:相关的scheme处理 -------
+                    if (url.startsWith("alipays:") || url.startsWith("alipay")) {
+                        try {
+                            startActivity(Intent("android.intent.action.VIEW", Uri.parse(url)))
+                        } catch (e: Exception) {
+                            AlertDialog.Builder(context)
+                                .setMessage("未检测到支付宝客户端，请安装后重试。").setPositiveButton(
+                                    "立即安装",
+                                    DialogInterface.OnClickListener { dialog, which ->
+                                        val alipayUrl = Uri.parse("https://d.alipay.com")
+                                        startActivity(
+                                            Intent(
+                                                "android.intent.action.VIEW", alipayUrl
+                                            )
+                                        )
+                                    }).setNegativeButton("取消", null).show()
+                        }
+                        return true
+                    }
+                    // ------- 处理结束 -------
+                    if (!(url.startsWith("http") || url.startsWith("https"))) {
+                        return true
+                    }
+                    view.loadUrl(url)
+                    return true
+                }
+            }
 
     }
 
+    fun backOrFinish() {
+        if (wv.canGoBack()) {
+            if (wv.url.equals(WebViewSettings.host + link)) finish()
+            else wv.goBack()
+        } else finish()
+    }
+
+
     private val rc: Int = 123
-
-
     private fun openPhoto() {
         // 检查图片权限
         if (ContextCompat.checkSelfPermission(

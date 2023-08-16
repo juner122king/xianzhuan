@@ -40,8 +40,6 @@ class MessageActivity : BaseActivity() {
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-
-
         sysMessageViewModel.liveData.observe(this) { it ->
             // 数据变化时更新 RecyclerView
             // 停止刷新动画
@@ -53,18 +51,16 @@ class MessageActivity : BaseActivity() {
 
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         sysMessageViewModel.markSysMessage(msgIds)
     }
 
-
     override fun getLayoutId(): Int {
         return R.layout.activity_message
     }
 
-    override fun getContentTitle(): String? {
+    override fun getContentTitle(): String {
         return getString(R.string.title_activity_message)
     }
 

@@ -2,7 +2,6 @@ package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ViewFlipper
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -26,6 +24,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.zj.zjsdk.ad.ZjAdError
 import com.zj.zjsdk.ad.ZjTaskAd
@@ -39,13 +38,11 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     private lateinit var zjTask: ZjTaskAd
 
+    private var isZjTaskLoadDone: Boolean = false//任务墙是否加载完成
+    private var isZjTaskLoading: Boolean = false//任务墙是否加载中
+
     // 定义一个包含Tab文字的List
     private var tabTextList = arrayOf<String>()
-    private val permissions = arrayOf(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        // 添加其他需要的权限
-    )
 
 
     override fun onCreateView(
@@ -80,10 +77,28 @@ class MainFragment : BaseFragment(), OnClickListener {
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
 //        viewFlipper.startFlipping()
 
-        initZjTask()//执行广告sdk
+
         addLocalTaskFragment()//加载本地任务列表
 
+        //开始权限
+        checkAndRequestPermissions(registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions: Map<String, Boolean> ->
+            val deniedPermissions = permissions.filterNot { it.value }.map { it.key }
+            if (deniedPermissions.isEmpty()) {
+                // 所有权限被授予
+            } else {
+                showPermissionAlertDialog(
+                    "加载任务列表需要写入数据和读取设备的电话状态，是否开启？",
+                    "权限已拒绝，将不加载任务墙列表！"
+                )
+            }
+        })
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (isHasPermissions() && !isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
     }
 
     companion object {
@@ -116,40 +131,29 @@ class MainFragment : BaseFragment(), OnClickListener {
     }
 
     private fun initZjTask() {
-        // 检查是否已经有权限
-        val hasPermissions = permissions.all {
-            ContextCompat.checkSelfPermission(
-                requireContext(), it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-        if (!hasPermissions) {
-            try {
-                // 请求权限
-                requestPermissionLauncher.launch(permissions)
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            }
-        } else {
-            zjTask = ZjTaskAd(requireActivity(),
-                ZJ_BUSINESS_POS_ID,
-                ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID),
-                object : ZjTaskAdListener {
-                    override fun onZjAdLoaded() {
-                        addZjTaskFragment()
-                    }
 
-                    override fun onZjAdError(zjAdError: ZjAdError) {
-//                        showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
-                    }
-                })
-        }
+        isZjTaskLoading = true
+        LogUtils.d("任务墙加载中")
+        zjTask = ZjTaskAd(requireActivity(),
+            ZJ_BUSINESS_POS_ID,
+            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID),
+            object : ZjTaskAdListener {
+                override fun onZjAdLoaded() {
+                    LogUtils.d("任务墙加载完成")
+                    isZjTaskLoadDone = true
+                    isZjTaskLoading = false
+                    addZjTaskFragment()
+                }
+
+                override fun onZjAdError(zjAdError: ZjAdError) {
+                    LogUtils.d("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+                }
+            })
 
     }
 
     //添加本地任务列表
     private fun addLocalTaskFragment() {
-
-
         // 创建一个新的Tab对象
         val newTab = tabLayout.newTab()
         // 设置Tab的文本内容
@@ -163,7 +167,6 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     //添加SDK任务列表
     fun addZjTaskFragment() {
-
 
         // 创建一个新的Tab对象
         val newTab1 = tabLayout.newTab()
@@ -202,20 +205,5 @@ class MainFragment : BaseFragment(), OnClickListener {
         }
     }
 
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        // 在这里处理权限请求结果
-        if (permissions.all { it.value }) {
-            // 所有权限被授予
-            initZjTask()
-        } else {
-            // 至少一个权限未被授予
-//            Toast.makeText(
-//                requireActivity(), "没有相关权限加载任务墙，请退出重试!", Toast.LENGTH_SHORT
-//            ).show()
-        }
-    }
 
 }

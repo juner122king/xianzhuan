@@ -1,11 +1,22 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.Manifest
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
 import android.util.Log
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,8 +29,14 @@ import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class HomeActivity : BaseActivity() {
-    private val fragmentList: ArrayList<Fragment> = ArrayList()
 
+    private val permissions = arrayOf(
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        // 添加其他需要的权限
+    )
+
+    private val fragmentList: ArrayList<Fragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +100,9 @@ class HomeActivity : BaseActivity() {
             true
         }
 
+
+        // 在每次进入 Activity 时检查权限并触发请求
+//        checkAndRequestPermissions()
     }
 
 
@@ -139,4 +159,48 @@ class HomeActivity : BaseActivity() {
 
     }
 
+    private fun checkAndRequestPermissions() {
+        val hasPermissions = permissions.all {
+            ContextCompat.checkSelfPermission(
+                this, it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+        if (!hasPermissions) {
+            // 请求权限
+            requestPermissionLauncher.launch(permissions)
+        }
+    }
+
+
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions: Map<String, Boolean> ->
+        val deniedPermissions = permissions.filterNot { it.value }.map { it.key }
+        if (deniedPermissions.isEmpty()) {
+            // 所有权限被授予
+        } else {
+            showPermissionAlertDialog("加载任务列表需要写入数据和读取设备的电话状态，是否开启？")
+        }
+    }
+    private fun openAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        intent.data = Uri.fromParts("package", packageName, null)
+        startActivity(intent)
+    }
+
+    private fun showPermissionAlertDialog(message: String) {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("权限请求")
+            .setMessage(message)
+            .setPositiveButton("前往设置开启权限") { _, _ ->
+                openAppSettings()
+            }
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+    }
 }

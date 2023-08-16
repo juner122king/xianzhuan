@@ -21,4 +21,5 @@
 
     <!-- 设置 BottomNavigationView 图标选中状态下的颜色 -->
     <color name="colorControlActivated">#FF5431</color>
+    <color name="pass">#14A600</color>
 </resources>

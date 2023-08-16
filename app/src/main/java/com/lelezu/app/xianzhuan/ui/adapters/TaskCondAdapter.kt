@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.ui.adapters
 
 import android.content.Context
 import android.graphics.Typeface
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,12 +49,11 @@ class TaskCondAdapter(var context: Context, var datas: List<TaskType>) : BaseAda
 
         if (selectposition == position) {
 
-
             myHolder.textView.setTextColor(context.getColor(R.color.colorControlActivated))
             myHolder.textView.setBackgroundResource(R.drawable.radius_border_stroke_selected)
             myHolder.textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            myHolder.textView.setPadding(10)
-
+            myHolder.textView.setPadding(26, 10, 26, 10)
+            myHolder.textView.gravity = Gravity.CENTER_HORIZONTAL
 
         } else {
 
@@ -61,7 +61,8 @@ class TaskCondAdapter(var context: Context, var datas: List<TaskType>) : BaseAda
             myHolder.textView.setTextColor(context.getColor(R.color.text_999))
             myHolder.textView.setBackgroundResource(R.drawable.radius_border_stroke)
             myHolder.textView.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
-            myHolder.textView.setPadding(10)
+            myHolder.textView.setPadding(26, 10, 26, 10)
+            myHolder.textView.gravity = Gravity.CENTER_HORIZONTAL
         }
 
 

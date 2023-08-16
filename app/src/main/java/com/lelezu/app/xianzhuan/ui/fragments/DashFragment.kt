@@ -143,7 +143,7 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             1 -> if (adapter2.itemCount == 0 || isLoad) {
                 homeViewModel.getTaskList(
                     TaskQuery(
-                        "SIMPLE", current2, null, null, null, null, null
+                        "SIMPLE", current2, 1f, null, null, null, null
                     )
                 )
             }
@@ -151,7 +151,7 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             2 -> if (adapter3.itemCount == 0 || isLoad) {
                 homeViewModel.getTaskList(
                     TaskQuery(
-                        "HIGHER", current3, null, null, null, null, null
+                        "HIGHER", current3, null, 1f, null, null, null
                     )
                 )
             }
