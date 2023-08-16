@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.lelezu.app.xianzhuan.data.model.Announce
+import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import kotlinx.coroutines.launch
@@ -21,6 +23,14 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val isMark: MutableLiveData<Boolean> = MutableLiveData()
     val msgNum: MutableLiveData<Int> = MutableLiveData()
 
+    val announce: MutableLiveData<List<Announce>> = MutableLiveData()
+
+
+    //获取系统消息列表
+    fun getAnnounce() = viewModelScope.launch {
+        val list = sysInformRepository.apiAnnounce()
+        handleApiResponse(list, announce)
+    }
 
     //获取系统消息列表
     fun getMessageList() = viewModelScope.launch {
@@ -29,17 +39,16 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     }
 
 
-
     //标记已读系统消息
-    fun markSysMessage(msg: List<String>) = viewModelScope.launch {
-        val call = sysInformRepository.markSysMessage(msg)
+    fun markSysMessage(msgs: List<String>) = viewModelScope.launch {
+        val call = sysInformRepository.markSysMessage(msgs)
         handleApiResponse(call, isMark)
     }
 
 
     //获取用户未读信息数量
     fun getSysMessageNum() = viewModelScope.launch {
-        val call = sysInformRepository.markSysMessage()
+        val call = sysInformRepository.getSysMessageNum()
         handleApiResponse(call, msgNum)
     }
 

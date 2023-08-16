@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.data
 
+import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Earning
@@ -7,7 +8,6 @@ import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
-import com.lelezu.app.xianzhuan.data.model.Register
 import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -124,7 +124,7 @@ interface ApiService {
 
     @POST("/dxz/app/sys/inform/mark/read")//标记已读系统消息
     fun getMarkSysMessage(
-        @Query("msgIds") msgId: List<String>, @Header("Authorization") token: String
+        @Body msgIds: List<String>, @Header("Authorization") token: String
     ): Call<ApiResponse<Boolean>>
 
     @GET("/dxz/app/sys/config")//获取系统配置信息
@@ -133,6 +133,12 @@ interface ApiService {
         @Path("configKey") configKey: String,
         @Header("Authorization") token: String
     ): Call<ApiResponse<Config>>
+
+
+    @GET("/dxz/app/announce")//公告
+    fun getAnnounce(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<List<Announce>>>
 
 
     @POST("/dxz/app/task/submit")//用户提交任务

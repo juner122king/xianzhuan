@@ -29,15 +29,7 @@ import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class HomeActivity : BaseActivity() {
-
-    private val permissions = arrayOf(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        // 添加其他需要的权限
-    )
-
     private val fragmentList: ArrayList<Fragment> = ArrayList()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
@@ -65,8 +57,6 @@ class HomeActivity : BaseActivity() {
             override fun onPageScrollStateChanged(state: Int) {
             }
         })
-
-
         //  图标选择监听
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             hideRightText()
@@ -101,10 +91,19 @@ class HomeActivity : BaseActivity() {
         }
 
 
-        // 在每次进入 Activity 时检查权限并触发请求
-//        checkAndRequestPermissions()
-    }
 
+        //处理H5页面返回主页的动作
+        val fragmentPosition = intent.getStringExtra("FragmentPosition")
+        if (fragmentPosition != null) {
+            when (fragmentPosition) {
+                "1" -> viewPager.currentItem = 0
+                "2" -> viewPager.currentItem = 1
+                "3" -> viewPager.currentItem = 2
+                "4" -> viewPager.currentItem = 3
+            }
+        }
+
+    }
 
     private fun initData() {
         val mainFragment = MainFragment.newInstance()
@@ -133,8 +132,6 @@ class HomeActivity : BaseActivity() {
     override fun isShowBack(): Boolean {
         return false
     }
-
-
     //保存图片方法
     fun saveImageToSystem(imageUrl: String) {
         Log.i("H5保存图片", "成功  imageUrl：${imageUrl}")
@@ -159,48 +156,6 @@ class HomeActivity : BaseActivity() {
 
     }
 
-    private fun checkAndRequestPermissions() {
-        val hasPermissions = permissions.all {
-            ContextCompat.checkSelfPermission(
-                this, it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-        if (!hasPermissions) {
-            // 请求权限
-            requestPermissionLauncher.launch(permissions)
-        }
-    }
 
 
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions: Map<String, Boolean> ->
-        val deniedPermissions = permissions.filterNot { it.value }.map { it.key }
-        if (deniedPermissions.isEmpty()) {
-            // 所有权限被授予
-        } else {
-            showPermissionAlertDialog("加载任务列表需要写入数据和读取设备的电话状态，是否开启？")
-        }
-    }
-    private fun openAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.fromParts("package", packageName, null)
-        startActivity(intent)
-    }
-
-    private fun showPermissionAlertDialog(message: String) {
-        val alertDialog = AlertDialog.Builder(this)
-            .setTitle("权限请求")
-            .setMessage(message)
-            .setPositiveButton("前往设置开启权限") { _, _ ->
-                openAppSettings()
-            }
-            .setNegativeButton("取消") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-
-        alertDialog.show()
-    }
 }

@@ -15,6 +15,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
@@ -63,22 +64,22 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 
-    protected fun backToHome(position:String){
-        showToast("进入主页")
+    protected fun backToHome(position: String) {
+        LogUtils.d("进入主页:${position}")
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("FragmentPosition", position)
         startActivity(intent)
     }
 
 
-    protected fun gotoTaskDetails(taskId:String){
-        showToast("进入任务详情")
+    protected fun gotoTaskDetails(taskId: String) {
+
+        LogUtils.d("进入任务详情:${taskId}")
         val intent = Intent(this, TaskDetailsActivity::class.java)
         intent.putExtra("taskId", taskId)
         startActivity(intent)
     }
-
-
 
 
     private fun initViewModel() {

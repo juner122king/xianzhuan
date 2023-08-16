@@ -45,7 +45,6 @@
     <string name="title_task_my4">未通过</string>
 
 
-
     <string name="btm_hgrw">换个任务</string>
     <string name="btm_lxgz">联系雇主</string>
     <string name="btm_ljtj">立即提交</string>
@@ -58,10 +57,11 @@
     <string name="btm_zq">收徒赚钱</string>
 
     <string name="l_task">推荐任务</string>
-    <string name="app_task">热们任务</string>
+    <string name="app_task">热门任务</string>
     <string name="game_task">游戏试玩</string>
 
     <string name="tag_my_task">my_task</string>
+    <string name="title_ZJTaskHistory">领奖记录</string>
 
 
 </resources>

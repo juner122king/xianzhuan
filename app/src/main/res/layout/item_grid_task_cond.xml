@@ -3,19 +3,19 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:padding="5dp">
+    android:padding="3dp">
 
     <TextView
         android:id="@+id/tv_task_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/radius_border_stroke"
-        android:paddingStart="16dp"
+        android:paddingStart="14dp"
         android:paddingTop="6dp"
-        android:paddingEnd="16dp"
+        android:paddingEnd="14dp"
         android:paddingBottom="6dp"
         android:text="注册下载"
         android:textColor="@color/text_999"
-        android:textSize="15sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

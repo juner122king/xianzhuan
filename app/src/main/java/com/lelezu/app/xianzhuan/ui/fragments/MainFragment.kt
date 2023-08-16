@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -59,16 +58,12 @@ class MainFragment : BaseFragment(), OnClickListener {
         tabTextList = arrayOf(
             getString(R.string.l_task), getString(R.string.app_task), getString(R.string.game_task)
         )
-
-
-
         return view
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         view.findViewById<View>(R.id.ll_top_btm1).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm2).setOnClickListener(this)
@@ -80,7 +75,7 @@ class MainFragment : BaseFragment(), OnClickListener {
 
         addLocalTaskFragment()//加载本地任务列表
 
-        //开始权限
+        //开启权限
         checkAndRequestPermissions(registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions: Map<String, Boolean> ->
@@ -149,7 +144,6 @@ class MainFragment : BaseFragment(), OnClickListener {
                     LogUtils.d("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
                 }
             })
-
     }
 
     //添加本地任务列表

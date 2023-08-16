@@ -35,7 +35,7 @@ class MessageActivity : BaseActivity() {
         }
 
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter = MessageItemAdapter(emptyList())
+        adapter = MessageItemAdapter(emptyList(), sysMessageViewModel)
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -49,11 +49,18 @@ class MessageActivity : BaseActivity() {
         }
         sysMessageViewModel.getMessageList()
 
+
+        sysMessageViewModel.isMark.observe(this) {
+            showToast("消息已确认！")
+            swiper.isRefreshing = true
+            sysMessageViewModel.getMessageList()
+        }
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        sysMessageViewModel.markSysMessage(msgIds)
+//        sysMessageViewModel.markSysMessage(msgIds)
     }
 
     override fun getLayoutId(): Int {

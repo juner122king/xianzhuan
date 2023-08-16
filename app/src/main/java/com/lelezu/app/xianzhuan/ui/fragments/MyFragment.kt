@@ -10,13 +10,18 @@ import android.widget.TextView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
+import com.lelezu.app.xianzhuan.ui.views.AutoScrollView
+import com.lelezu.app.xianzhuan.ui.views.AutoScrollView.ISmartScrollChangedListener
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
+import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class MyFragment : BaseFragment(), View.OnClickListener {
+
+    lateinit var autoScrollView: AutoScrollView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,8 +53,12 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.iv_my_task4).setOnClickListener(this)
         view.findViewById<View>(R.id.btm_vip).setOnClickListener(this)
 
+        view.findViewById<View>(R.id.iv_log).setOnClickListener(this)
+        view.findViewById<View>(R.id.iv_cash).setOnClickListener(this)
+
         view.findViewById<View>(R.id.tv_my_text2).setOnClickListener(this)
         view.findViewById<View>(R.id.tv_my_text4).setOnClickListener(this)
+        autoScrollView = view.findViewById(R.id.asv)
 
         val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
 
@@ -87,14 +96,34 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text1).text = it.taskEstimatedAmount.toString()
         }
 
+        var messageIv = view.findViewById<ImageView>(R.id.iv_message)
 
         //消息数量
         sysMessageViewModel.msgNum.observe(requireActivity()) {
-//            if (it > 0) view.findViewById<View>(R.id.iv_message).visibility = View.VISIBLE
-//            else view.findViewById<View>(R.id.iv_message).visibility = View.GONE
-
+            if (it > 0) messageIv.setImageResource(R.drawable.icon_message)
+            else messageIv.setImageResource(R.drawable.icon_message2)
         }
 
+
+
+        autoScrollView.setAutoToScroll(true)
+        autoScrollView.setFistTimeScroll(2000)
+        autoScrollView.setScrollRate(50)//设置滑动的速率
+        autoScrollView.setScrollLoop(true)//设置是否循环滑动
+
+        autoScrollView.setScanScrollChangedListener(object : ISmartScrollChangedListener {
+            override fun onScrolledToBottom() {}
+            override fun onScrolledToTop() {}
+        })
+
+        sysMessageViewModel.announce.observe(requireActivity()) {
+            //处理公告滚动
+            view.findViewById<TextView>(R.id.tv_sysnotin).text = it[0].announceContent
+
+
+//            view.findViewById<TextView>(R.id.tv_sysnotin).text =
+//                "1aaaaaaaaaaa\\n2aaaaaaaaaaa\\n3aaaaaaaaaaa\\n4aaaaaaaaaaa\\n5aaaaaaaaaaa\\n\" +\"6aaaaaaaaaaa\\n7aaaaaaaaaaa\\n8aaaaaaaaaaa\\n9aaaaaaaaaaa\\n10aaaaaaaaaaa\\n\" +\"11aaaaaaaaaaa\\n12aaaaaaaaaaa\\n13aaaaaaaaaaa\\n14aaaaaaaaaaa\\n15aaaaaaaaaaa"
+        }
 
     }
 
@@ -109,6 +138,10 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
         //个人中心任务相关的数据
         loginViewModel.getRelated()
+
+        //获取公告
+        sysMessageViewModel.getAnnounce()
+
     }
 
 
@@ -152,6 +185,11 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                     startActivity(Intent(activity, MessageActivity::class.java))//消息
                 }
 
+                R.id.iv_log -> {
+                    startActivity(Intent(activity, ZJTaskHistoryActivity::class.java))//任务墙领奖记录
+                }
+
+
                 else -> {
                     val intent = Intent(requireContext(), WebViewActivity::class.java)
                     when (p0?.id) {
@@ -177,7 +215,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                             intent.putExtra(WebViewSettings.URL_TITLE, "充值")
                         }
 
-                        R.id.ll_l5, R.id.tv_my_text2 -> {
+                        R.id.ll_l5, R.id.tv_my_text2, R.id.iv_cash -> {
                             intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link9)
                             intent.putExtra(WebViewSettings.URL_TITLE, "提现")
                         }

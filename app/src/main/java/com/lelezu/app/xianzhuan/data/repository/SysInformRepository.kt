@@ -4,6 +4,7 @@ import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.ApiService
+import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.ListData
@@ -35,17 +36,27 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
         }
 
 
-    //标记已读系统消息
-    suspend fun markSysMessage(msgIds: List<String>): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.getMarkSysMessage(
-            msgIds, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+    //公告
+    suspend fun apiAnnounce(): ApiResponse<List<Announce>> = withContext(Dispatchers.IO) {
+        val call = apiService.getAnnounce(
+            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         )
         executeApiCall(call)
     }
 
 
+    //标记已读系统消息
+    suspend fun markSysMessage(msgIds: List<String>): ApiResponse<Boolean> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.getMarkSysMessage(
+                msgIds, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            )
+            executeApiCall(call)
+        }
+
+
     //获取用户未读信息数量
-    suspend fun markSysMessage(): ApiResponse<Int> = withContext(Dispatchers.IO) {
+    suspend fun getSysMessageNum(): ApiResponse<Int> = withContext(Dispatchers.IO) {
         val call = apiService.getSysMessageNum(
             ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         )

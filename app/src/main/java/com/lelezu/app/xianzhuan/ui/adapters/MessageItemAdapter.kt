@@ -16,7 +16,7 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
  *
  */
 class MessageItemAdapter(
-    private var items: List<Message>
+    private var items: List<Message>, private var sysMessageViewModel: SysMessageViewModel
 ) : RecyclerView.Adapter<MessageItemAdapter.ItemViewHolder>() {
 
     // 更新数据方法
@@ -30,6 +30,7 @@ class MessageItemAdapter(
         val title: TextView = itemView.findViewById(R.id.tv_title)
         val content: TextView = itemView.findViewById(R.id.tv_content)
         val tip: View = itemView.findViewById(R.id.v_tip)
+        val time: TextView = itemView.findViewById(R.id.tv_message_time)
     }
 
     // 创建视图，并返回 ItemViewHolder
@@ -44,12 +45,16 @@ class MessageItemAdapter(
         val item = items[position]
         holder.title.text = item.msgTitle
         holder.content.text = item.msgContent
+        holder.time.text = item.createdDt
 
-        if (item.isRead)
-            holder.tip.visibility = View.INVISIBLE
-        else
-            holder.tip.visibility = View.VISIBLE
+        if (item.isRead) holder.tip.visibility = View.INVISIBLE
+        else holder.tip.visibility = View.VISIBLE
 
+
+        holder.itemView.setOnClickListener {
+            if (!item.isRead)//未读才读
+                sysMessageViewModel.markSysMessage(listOf(item.msgId))
+        }
     }
 
     // 返回数据项数量
