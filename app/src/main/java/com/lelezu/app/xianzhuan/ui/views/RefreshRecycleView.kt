@@ -25,6 +25,10 @@ import com.lelezu.app.xianzhuan.R
 class RefreshRecycleView @JvmOverloads constructor(
     context: Context?, @Nullable attrs: AttributeSet? = null, defStyle: Int = 0
 ) : RecyclerView(context!!, attrs, defStyle), OnTouchListener {
+    private var isDecoration //显示分隔线
+            : Boolean = true
+
+
     private var isLoadMore //加载更多标志
             : Boolean? = null
     private var isLoadEnd //加载到最后的标志
@@ -53,38 +57,12 @@ class RefreshRecycleView @JvmOverloads constructor(
     private fun init() {
 
         val decoration = DividerItemDecoration(
-            context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+            context, DividerItemDecoration.VERTICAL
         )
         context.getDrawable(R.drawable.divider)?.let { decoration.setDrawable(it) }
-        addItemDecoration(decoration)
 
-//        val decoration = object : RecyclerView.ItemDecoration() {
-//            val horizontalMarginInPixels = resources.getDimensionPixelSize(R.dimen.horizontal_margin)
-//            val dividerHeight = resources.getDimensionPixelSize(R.dimen.divider_height)
-//            val dividerDrawable = context.getDrawable(R.drawable.divider)
-//
-//            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-//                super.onDraw(c, parent, state)
-//
-//                val left = parent.paddingLeft + horizontalMarginInPixels
-//                val right = parent.width - parent.paddingRight - horizontalMarginInPixels
-//
-//                val childCount = parent.childCount
-//                for (i in 0 until childCount - 1) {
-//                    val child = parent.getChildAt(i)
-//                    val params = child.layoutParams as RecyclerView.LayoutParams
-//                    val top = child.bottom + params.bottomMargin
-//                    val bottom = top + dividerHeight
-//
-//                    dividerDrawable?.let {
-//                        it.setBounds(left, top, right, bottom)
-//                        it.draw(c)
-//                    }
-//                }
-//            }
-//        }
 
-        addItemDecoration(decoration)
+        if (isDecoration) addItemDecoration(decoration)
 
 
         isLoadEnd = false
@@ -214,24 +192,5 @@ class RefreshRecycleView @JvmOverloads constructor(
 
     fun isRefresh(): Boolean {//是否是刷新动作
         return nowAction == mEFRESHLoad
-    }
-
-    class DividerItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
-        private val divider: Drawable? = context.getDrawable(R.drawable.divider)
-
-        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            val left = parent.paddingLeft
-            val right = parent.width - parent.paddingRight
-
-            for (i in 0 until parent.childCount - 1) {
-                val child = parent.getChildAt(i)
-                val params = child.layoutParams as RecyclerView.LayoutParams
-                val top = child.bottom + params.bottomMargin
-                val bottom = top + divider?.intrinsicHeight!! ?: 0
-
-                divider.setBounds(left, top, right, bottom)
-                divider.draw(c)
-            }
-        }
     }
 }

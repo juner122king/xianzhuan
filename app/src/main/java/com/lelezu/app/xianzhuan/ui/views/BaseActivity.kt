@@ -25,7 +25,7 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
  *
  */
 abstract class BaseActivity : AppCompatActivity() {
-    private var mBack: LinearLayout? = null
+    protected var mBack: LinearLayout? = null
     private var mTvTitle: TextView? = null
     private var mTvRight: TextView? = null
     private var mRltBase: RelativeLayout? = null
@@ -62,6 +62,25 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+
+    protected fun backToHome(position:String){
+        showToast("进入主页")
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
+
+    protected fun gotoTaskDetails(taskId:String){
+        showToast("进入任务详情")
+        val intent = Intent(this, TaskDetailsActivity::class.java)
+        intent.putExtra("taskId", taskId)
+        startActivity(intent)
+    }
+
+
+
+
     private fun initViewModel() {
 
         loginViewModel.errMessage.observe(this) {
@@ -86,6 +105,8 @@ abstract class BaseActivity : AppCompatActivity() {
         mRltBase = rootView!!.findViewById<View>(R.id.rlt_base) as RelativeLayout
         val flContent = rootView!!.findViewById<View>(R.id.fl_content) as FrameLayout
         mTvTitle!!.text = if (getContentTitle() == null) "" else getContentTitle()
+
+
         mBack!!.setOnClickListener { finish() } //java8写法，特此备注一下
 
 

@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream
 /**
  * @author:Administrator
  * @date:2023/8/9 0009
- * @description:
+ * @description:H5图片上传压缩
  *
  */
 object Base64Utils {
@@ -18,11 +18,11 @@ object Base64Utils {
 
     fun zipPic(uri: Uri): String? {
         val bitmap = decodeUriToBitmap(uri)
-        val compressedBitmap = compressBitmap(bitmap)
-        bitmap?.recycle()
+//        val compressedBitmap = compressBitmap(bitmap) //
+//        bitmap?.recycle()
         val byteArrayOutputStream = ByteArrayOutputStream()
-        compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream)
-        compressedBitmap?.recycle()
+        bitmap?.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream)
+        bitmap?.recycle()
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.NO_WRAP)
     }
@@ -67,8 +67,8 @@ object Base64Utils {
         return bitmap?.let {
             val width = it.width
             val height = it.height
-            val maxWidth = 300
-            val maxHeight = 400
+            val maxWidth = 600
+            val maxHeight = 800
             val scalingFactor =
                 (maxWidth.toFloat() / width).coerceAtMost(maxHeight.toFloat() / height)
             val scaledWidth = (width * scalingFactor).toInt()

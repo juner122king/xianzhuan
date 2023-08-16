@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -18,8 +19,37 @@ import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
  * @description:主页任务列表适配器
  *
  */
-class TaskItemAdapter(private var items: MutableList<Task>, var activity: Context) :
-    EmptyAdapter<TaskItemAdapter.ItemViewHolder>() {
+class TaskItemAdapter(
+    private var items: MutableList<Task>,
+    var activity: Context,
+    private var itemLayout: Int = R.layout.home_task_list_item_layout,
+    private var isShowTopView: Boolean = false
+) : EmptyAdapter<TaskItemAdapter.ItemViewHolder>() {
+
+    private val statusMap = mapOf(
+        0 to "未报名", 1 to "待提交", 2 to "审核中", 3 to "审核通过", 4 to "审核被否", 5 to "已取消"
+        // 可以继续添加其他映射关系
+    )
+
+
+    private val statusTimeMap = mapOf(
+        0 to "未报名",
+        1 to "剩余时间：",
+        2 to "提交时间：",
+        3 to "通过时间：",
+        4 to "审核时间：",
+        5 to "已取消"
+        // 可以继续添加其他映射关系
+    )
+
+    private val colorMap = mapOf(
+        0 to R.color.colorControlActivated,
+        1 to R.color.colorControlActivated,
+        2 to R.color.colorControlActivated,
+        3 to R.color.pass,
+        4 to R.color.colorControlActivated,
+        5 to R.color.colorControlActivated,
+    )
 
 
     // 更新数据方法
@@ -36,7 +66,6 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
     }
 
 
-
     // 创建 ItemViewHolder，用于展示每个列表项的视图
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
@@ -45,12 +74,18 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
         val tvEarnedCount: TextView = itemView.findViewById(R.id.tv_task_earnedCount)
         val tvTR: TextView = itemView.findViewById(R.id.tv_task_rest)
         val clickVIew: View = itemView.findViewById(R.id.click_view)
+
+        val lTopView: View = itemView.findViewById(R.id.ll_top_view)//topView
+        val tvTime: TextView = itemView.findViewById(R.id.tv_time)//时间
+        val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
+
+
     }
 
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.home_task_list_item_layout, parent, false)
+            .inflate(itemLayout, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -62,10 +97,9 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
         holder.shangJiTv.text = "${item.unitPrice}元"
         holder.tvEarnedCount.text = "${item.earnedCount}人已赚"
         holder.tvTR.text = "剩余${item.rest}个"
-
-        if(item.taskLabel==null){
+        if (item.taskLabel == null) {
             holder.tvTaskLabel.visibility = View.GONE
-        }else{
+        } else {
             holder.tvTaskLabel.text = item.taskLabel
             holder.tvTaskLabel.visibility = View.VISIBLE
         }
@@ -77,6 +111,27 @@ class TaskItemAdapter(private var items: MutableList<Task>, var activity: Contex
             intent.putExtra("taskId", items[position].taskId)
             activity.startActivity(intent)
         }
+
+        //处理topView显示
+
+        if (isShowTopView) {
+
+            val statusText = statusMap[item.auditStatus] ?: "未知状态"
+            val statusTimeText = statusTimeMap[item.auditStatus] ?: "未知"
+            // 设置文本颜色
+            val statusColor = colorMap[item.auditStatus] ?: R.color.colorControlActivated
+            val resolvedColor = ContextCompat.getColor(activity, statusColor)
+
+
+            holder.lTopView.visibility = View.VISIBLE
+            holder.tvTime.text = statusTimeText + item.operateTime
+            holder.tvTaskStatus.text = statusText
+            holder.tvTaskStatus.setTextColor(resolvedColor)
+
+        } else {
+            holder.lTopView.visibility = View.GONE
+        }
+
 
     }
 

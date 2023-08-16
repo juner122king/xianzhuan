@@ -5,6 +5,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 
 class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
@@ -36,14 +37,14 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     }
 
     private fun initView() {
-        tabLayout = findViewById<TabLayout>(R.id.tab_task_list)
+        tabLayout = findViewById(R.id.tab_task_list)
         recyclerView = findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter1 = TaskItemAdapter(mutableListOf(), this)
-        adapter2 = TaskItemAdapter(mutableListOf(), this)
-        adapter3 = TaskItemAdapter(mutableListOf(), this)
-        adapter4 = TaskItemAdapter(mutableListOf(), this)
+        adapter1 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
+        adapter2 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
+        adapter3 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
+        adapter4 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
 
         adapter1.setEmptyView(findViewById(R.id.recycler_layout))//设置空view
         adapter2.setEmptyView(findViewById(R.id.recycler_layout))
@@ -52,7 +53,6 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
 
         page = intent.getIntExtra("selectedTab", 0) // 获取传递的Tab索引，默认为0
         tabLayout.setScrollPosition(page, 0f, true) // 设置要显示的Tab
-
 
 
         recyclerView.setListener(this)
@@ -169,10 +169,11 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         }
     }
 
-    fun loadData(isLoad: Boolean) {
+    private fun loadData(isLoad: Boolean) {
         when (page) {
             0 -> if (adapter1.itemCount == 0 || isLoad) {
                 homeViewModel.getMyTaskList(auditStatus, current1)
+
             }
 
             1 -> if (adapter2.itemCount == 0 || isLoad) {

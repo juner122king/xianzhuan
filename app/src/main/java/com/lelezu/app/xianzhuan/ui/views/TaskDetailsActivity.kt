@@ -81,6 +81,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //报名监听
         homeViewModel.isApply.observe(this) {
             showToast(if (it) "报名成功" else "报名失败")
+            if (it) taskDetails(task.taskId)
         }
 
 

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
@@ -92,7 +93,12 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     private fun loadData() {
-        homeViewModel.getTaskList(TaskRepository.queryCondLATEST, current)
+//        homeViewModel.getTaskList(TaskRepository.queryCondLATEST, current)
+        homeViewModel.getTaskList(
+            TaskQuery(
+                TaskRepository.queryCondLATEST, current, null, null, null, null, null
+        )
+        )
     }
 
 
