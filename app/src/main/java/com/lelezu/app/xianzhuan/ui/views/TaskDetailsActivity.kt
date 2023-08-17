@@ -2,11 +2,14 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.ContextMenu
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,11 +19,15 @@ import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
-
+    private var pic = mapOf(
+        1 to R.drawable.icon_head, 2 to R.drawable.icon_head, 4 to R.drawable.icon_head
+        // 可以继续添加其他映射关系
+    )
     private lateinit var ivDialog: Dialog
 
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
@@ -34,14 +41,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         //开始--示例图打开功能
         ivDialog = Dialog(this, R.style.FullActivity)
         val attributes = window.attributes
         attributes.width = WindowManager.LayoutParams.MATCH_PARENT
         attributes.height = WindowManager.LayoutParams.MATCH_PARENT
         ivDialog.window?.attributes = attributes
-
 
 
         taskDetailsRV = findViewById(R.id.rv_task_step)
@@ -62,7 +67,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //底部两个按键
         findViewById<TextView>(R.id.tv_btm1).setOnClickListener(this)
         findViewById<TextView>(R.id.tv_btm2).setOnClickListener(this)
-
 
 
         taskDetails(intent.getStringExtra("taskId")!!)
@@ -92,20 +96,38 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     }
 
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
     private fun setData(task: Task) {
+
+        LogUtils.d(task.toString())
         putTask(task)
 
         changeView(task)//根据任务状态id改变页面
 
+        findViewById<TextView>(R.id.tv_task_title).text = task.taskTitle //任务标题
+        findViewById<TextView>(R.id.tv_task_des_c).text = task.taskDesc //任务说明
+
+
+        val text1 =
+            "<font color='#999999'>限时</font><font color='#FF5431'>${task.deadlineTime}</font><font color='#999999'>小时完成</font>"
+        val text2 =
+            "<font color='#999999'>剩余</font><font color='#FF5431'>${task.rest}</font><font color='#999999'>单</font>"
 
         val string = "${task.earnedCount}人已完成任务，任务可报名${task.limitTimes}次"
 
-        findViewById<TextView>(R.id.tv_task_title).text = task.taskTitle //任务标题
-        findViewById<TextView>(R.id.tv_task_des_c).text = task.taskDesc //任务说明
-        findViewById<TextView>(R.id.tv_time).text = "限时${task.deadlineTime}小时完成" //
-        findViewById<TextView>(R.id.tv_nub).text = "剩余${task.rest}单" //
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            findViewById<TextView>(R.id.tv_time).text =
+                Html.fromHtml(text1, Html.FROM_HTML_MODE_COMPACT)
+            findViewById<TextView>(R.id.tv_nub).text =
+                Html.fromHtml(text2, Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            findViewById<TextView>(R.id.tv_time).text = Html.fromHtml(text1)
+            findViewById<TextView>(R.id.tv_nub).text = Html.fromHtml(text2)
+        }
+
         findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}元" //
+
+        findViewById<TextView>(R.id.tv_user_vip).text = "分享赚${task.shareAmount}元" //
 
         findViewById<TextView>(R.id.tv_info).text = string
 
@@ -116,9 +138,15 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         loginViewModel.getUserInfo(task.userId)//获取商家信息
         loginViewModel.userInfo.observe(this) {
 
-            ImageViewUtil.load(
+            ImageViewUtil.loadCircleCrop(
                 findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
             )
+
+            findViewById<ImageView>(R.id.iv_user_pic2).background = pic[it.vipLevel]?.let { it1 ->
+                getDrawable(
+                    it1
+                )
+            }
             findViewById<TextView>(R.id.tv_name).text = it!!.nickname
         }
 

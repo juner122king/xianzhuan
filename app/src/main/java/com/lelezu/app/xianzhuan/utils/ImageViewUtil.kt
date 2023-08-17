@@ -2,7 +2,11 @@ package com.lelezu.app.xianzhuan.utils
 
 import android.widget.ImageView
 import coil.load
+import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
+import com.lelezu.app.xianzhuan.MyApplication.Companion.context
+import com.lelezu.app.xianzhuan.R
+import kotlin.coroutines.coroutineContext
 
 /**
  * @author:Administrator
@@ -13,11 +17,28 @@ import coil.transform.RoundedCornersTransformation
 object ImageViewUtil {
 
     fun load(imageView: ImageView, any: Any?) {
-
+        val roundedCorners = context.resources.getDimensionPixelSize(R.dimen.im_rounded).toFloat()
         if (any != null) {
             imageView.load(any) {
                 crossfade(true)
-                transformations(RoundedCornersTransformation(10f, 10f, 10f, 10f))
+                transformations(
+                    RoundedCornersTransformation(
+                        roundedCorners,
+                        roundedCorners,
+                        roundedCorners,
+                        roundedCorners
+                    )
+                )
+            }
+        }
+    }
+
+    fun loadCircleCrop(imageView: ImageView, any: Any?) {
+        if (any != null) {
+            imageView.load(any) {
+                crossfade(true)
+                //placeholder(R.drawable.placeholder) 设置占位图
+                transformations(CircleCropTransformation())//圆形切图
             }
         }
     }

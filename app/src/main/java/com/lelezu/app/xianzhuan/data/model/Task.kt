@@ -18,6 +18,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property operateTime String?    剩余/提交/审核时间
  * @property quantity Int           数量
  * @property rejectReason String?   被否原因
+ * @property deadlineTime Int?   订单提交截止时间，单位：小时
  * @property remainApplyCount Int   剩余报名次数
  * @property rest Int               剩余数量
  * @property supportDevices List<String>    	支持设备
@@ -31,6 +32,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property taskTypeTitle String?  任务类型标题
  * @property taskUploadVerifyList List<TaskUploadVerify>    任务上传验证
  * @property unitPrice Float  单价
+ * @property shareAmount Float  分享赚
  * @property updatedDt String?  	更新时间
  * @property userId String?  	发布者ID
  * @constructor
@@ -61,6 +63,7 @@ data class Task(
     val taskTypeTitle: String?,
     val taskUploadVerifyList: List<TaskUploadVerify>,
     val unitPrice: Float,
+    val shareAmount: Float,
     val updatedDt: String?,
     val userId: String
 

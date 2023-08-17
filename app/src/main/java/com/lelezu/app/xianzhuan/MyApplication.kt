@@ -43,7 +43,7 @@ class MyApplication : Application() {
 
     //声明公共变量
     companion object {
-        var context: Context? = null
+        lateinit var context: Context
     }
 
     override fun onCreate() {

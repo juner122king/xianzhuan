@@ -67,7 +67,6 @@
                     android:id="@+id/iv_user_pic"
                     android:layout_width="65dp"
                     android:layout_height="65dp"
-                    android:src="@drawable/my_user_head"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -255,8 +254,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:visibility="gone"
                 android:background="@drawable/radius_border_sys_notin"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:padding="12dp">
 
 
@@ -266,19 +267,18 @@
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/icon_notice2" />
 
-                <com.lelezu.app.xianzhuan.ui.views.AutoScrollView
-                    android:id="@+id/asv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/tv_sysnotin"
-                        android:layout_width="200dp"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:text="XXX 因违规发布信息被冻结账户"
-                        android:textSize="13sp" />
-                </com.lelezu.app.xianzhuan.ui.views.AutoScrollView>
+                <TextView
+                    android:id="@+id/tv_sysnotin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:textSize="13sp" />
+
+                <com.lelezu.app.xianzhuan.ui.views.BulletinView
+                    android:id="@+id/bv"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
             </LinearLayout>
 
 
