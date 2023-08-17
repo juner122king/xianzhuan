@@ -18,7 +18,7 @@
         app:tabIndicatorColor="@color/colorControlActivated"
         app:tabIndicatorFullWidth="false"
         app:tabMaxWidth="100dp"
-        app:tabMinWidth="100dp"
+        app:tabMinWidth="50dp"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/text_s" >

@@ -27,8 +27,8 @@
     <dimen name="im_rounded">10px</dimen>
 
 
-    <dimen name="task_step_iv_h">280dp</dimen>
-    <dimen name="task_step_iv_w">150dp</dimen>
+    <dimen name="task_step_iv_h">270dp</dimen>
+    <dimen name="task_step_iv_w">130dp</dimen>
 
 
 

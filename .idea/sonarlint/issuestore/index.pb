@@ -148,8 +148,6 @@ p
 Lapp/src/main/java/com/lelezu/app/xianzhuan/data/repository/UserRepository.kt,e\f\ef1d8e99e1e2f2caf334767e0e5aa11995d40ed6
 s
 Capp/src/main/java/com/lelezu/app/xianzhuan/wxapi/WXEntryActivity.kt,6\f\6f614c78ed06e58cdee7c4f6fcd7ac6d5a00f7c7
-|
-Lapp/src/main/java/com/lelezu/app/xianzhuan/data/repository/TaskRepository.kt,c\f\cf95b95ae11a8c93a9e39478ab9e88358630ed24
 {
 Kapp/src/main/java/com/lelezu/app/xianzhuan/data/model/ApiSuccessResponse.kt,2\6\26967483fa0efbe21873a82243fbcac7efb7e70f
 
@@ -160,8 +158,6 @@ s
 Capp/src/main/java/com/lelezu/app/xianzhuan/ui/h5/WebViewSettings.kt,3\0\30e2e18fbb5d10e076880ee866dd8bc677a8592a
 o
 ?app/src/main/java/com/lelezu/app/xianzhuan/utils/Base64Utils.kt,5\0\502957b39259cc00e0debf9ef5e1679fe055051b
-y
-Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/viewmodels/BaseViewModel.kt,f\d\fd8401c5c335bdfc195d37d01a6ee64e92c068d7
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 l
@@ -178,14 +174,8 @@ u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/LaunchActivity.kt,5\f\5fb84bcebd317cdb77735d4dd8a17ce92e2b5372
 y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/RefreshRecycleView.kt,2\2\220cd47889c99408aa827ab2408629ac80e0885e
-{
-Kapp/src/main/java/com/lelezu/app/xianzhuan/ui/fragments/MainTaskFragment.kt,3\a\3a0c68a04096bee46b03896c04720deb3baf58e3
 o
 ?app/src/main/java/com/lelezu/app/xianzhuan/data/ApiConstants.kt,5\9\59f7456c2a3f4a9efb43f2da59c6628534ac645e
-t
-Dapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/LoginActivity.kt,4\9\49c53175be1255d99ec88792cd3fa00f23e92f5e
-|
-Lapp/src/main/java/com/lelezu/app/xianzhuan/data/repository/BaseRepository.kt,a\9\a9a349366ebc38aeed9e2b58f76d7498830ea585
 p
 @app/src/main/java/com/lelezu/app/xianzhuan/data/model/Message.kt,6\6\6656d4a41bf9fbb866bf6ebcbda52550e6750072
 q

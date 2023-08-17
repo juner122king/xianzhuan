@@ -30,7 +30,6 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_my, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -75,19 +74,23 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
             when (it.vipLevel) {
                 0 -> {
-
+                    view.findViewById<View>(R.id.v_vip).visibility = View.VISIBLE
                 }   //普通
                 1 -> {
                     ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv0)
+                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
                 }   //白银
                 2 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)//黄金
+                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)//
+                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
                 }
 
                 3 -> {
+                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
                 }   //忽略
                 4 -> {
                     ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv1)//钻
+                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
                 }
             }
 
