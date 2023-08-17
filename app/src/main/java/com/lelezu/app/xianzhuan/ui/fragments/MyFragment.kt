@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
-import com.lelezu.app.xianzhuan.ui.views.AutoScrollView
-import com.lelezu.app.xianzhuan.ui.views.AutoScrollView.ISmartScrollChangedListener
+import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
@@ -21,7 +21,8 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class MyFragment : BaseFragment(), View.OnClickListener {
 
-    lateinit var autoScrollView: AutoScrollView
+    private lateinit var bulletinView: BulletinView//公告栏View
+    private lateinit var llNotice: View//公告栏区域
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -58,7 +59,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
         view.findViewById<View>(R.id.tv_my_text2).setOnClickListener(this)
         view.findViewById<View>(R.id.tv_my_text4).setOnClickListener(this)
-        autoScrollView = view.findViewById(R.id.asv)
+
+        bulletinView = view.findViewById(R.id.bv)
+        llNotice = view.findViewById(R.id.ll_notice)
 
         val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
 
@@ -106,23 +109,18 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
 
 
-        autoScrollView.setAutoToScroll(true)
-        autoScrollView.setFistTimeScroll(2000)
-        autoScrollView.setScrollRate(50)//设置滑动的速率
-        autoScrollView.setScrollLoop(true)//设置是否循环滑动
-
-        autoScrollView.setScanScrollChangedListener(object : ISmartScrollChangedListener {
-            override fun onScrolledToBottom() {}
-            override fun onScrolledToTop() {}
-        })
-
         sysMessageViewModel.announce.observe(requireActivity()) {
             //处理公告滚动
-            view.findViewById<TextView>(R.id.tv_sysnotin).text = it[0].announceContent
+
+            if (it.isNotEmpty()) {
+                llNotice.visibility = View.VISIBLE
+                bulletinView.setAdapter(ComplexViewAdapter(it))
+                bulletinView.setOnItemClickListener { itemData, pointer, view ->
+
+                }
+            }
 
 
-//            view.findViewById<TextView>(R.id.tv_sysnotin).text =
-//                "1aaaaaaaaaaa\\n2aaaaaaaaaaa\\n3aaaaaaaaaaa\\n4aaaaaaaaaaa\\n5aaaaaaaaaaa\\n\" +\"6aaaaaaaaaaa\\n7aaaaaaaaaaa\\n8aaaaaaaaaaa\\n9aaaaaaaaaaa\\n10aaaaaaaaaaa\\n\" +\"11aaaaaaaaaaa\\n12aaaaaaaaaaa\\n13aaaaaaaaaaa\\n14aaaaaaaaaaa\\n15aaaaaaaaaaa"
         }
 
     }
