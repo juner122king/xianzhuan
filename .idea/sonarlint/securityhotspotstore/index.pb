@@ -106,8 +106,6 @@ q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/dun163api/UiConfigs.kt,7\6\7649fa2efe2873a5efd110185edb6d3e61bff5ee
 r
 Bapp/src/main/java/com/lelezu/app/xianzhuan/data/model/LoginInfo.kt,a\6\a6d4690ccd4214df9d6e2a71e035dddd4fedb2ed
-l
-<app/src/main/java/com/lelezu/app/xianzhuan/wxapi/WxData.java,7\3\731e71d36993e1d98be08865d8187ff5d2701033
 j
 :app/src/main/java/com/lelezu/app/xianzhuan/wxapi/Util.java,1\5\15ea36212a398971ac99a5262ac5ff54f2e18408
 {
@@ -178,8 +176,6 @@ u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/BulletinView.java,c\8\c8619fe294e5b2d19a6777f994d0e5186136d2d4
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/Announce.kt,7\3\73795a65728404f060988828443a4fe6c54e49a4
-}
-Mapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/HomeActivityAdapter.kt,b\0\b0bd2b24957bcc501782ce9bd1bcaa2e0e9dcd6a
 |
 Lapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/MessageItemAdapter.kt,a\1\a12a108f0437b044dd1ff2da41f6804a6c3d37b5
 y

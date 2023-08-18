@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,6 +40,7 @@ class HomeActivity : BaseActivity() {
 
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
         viewPager.isUserInputEnabled = false//禁止滑动
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
         initData()
         val adapter = HomeActivityAdapter(supportFragmentManager, lifecycle, fragmentList)
@@ -68,25 +70,28 @@ class HomeActivity : BaseActivity() {
             showView()
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    viewPager.currentItem = 0
+                    viewPager.setCurrentItem(0,false)
                     setTitleText(getString(R.string.title_activity_home))
 
                 }
 
                 R.id.navigation_dashboard -> {
-                    viewPager.currentItem = 1
+//                    viewPager.currentItem = 1
+                    viewPager.setCurrentItem(1,false)
                     showRightText(getString(R.string.dashboard_tab5_text))
                     setTitleText(getString(R.string.title_dashboard))
                 }
 
                 R.id.navigation_notifications -> {
-                    viewPager.currentItem = 2
+//                    viewPager.currentItem = 2
+                    viewPager.setCurrentItem(2,false)
                     setTitleText(getString(R.string.title_notifications))
 
                 }
 
                 R.id.navigation_my -> {
-                    viewPager.currentItem = 3
+//                    viewPager.currentItem = 3
+                    viewPager.setCurrentItem(3,false)
                     setTitleText(getString(R.string.title_my))
                     hideView()
 
@@ -202,6 +207,7 @@ class HomeActivity : BaseActivity() {
         unregisterReceiver(downloadReceiver)
 
     }
+
 
 
 }
