@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.ViewFlipper
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -49,7 +47,7 @@ class MainFragment : BaseFragment(), OnClickListener {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main2, container, false)
         viewPager = view.findViewById(R.id.task_vp)
-        pagerAdapter = MyPagerAdapter(childFragmentManager, lifecycle)
+        pagerAdapter = MyPagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
         tabLayout = view.findViewById(R.id.tab_task_list)
@@ -72,8 +70,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
 //        viewFlipper.startFlipping()
 
-
-        addLocalTaskFragment()//加载本地任务列表
+        initTaskTabLayout()//初始化TabLayout
 
         //开启权限
         checkAndRequestPermissions(registerForActivityResult(
@@ -146,23 +143,15 @@ class MainFragment : BaseFragment(), OnClickListener {
             })
     }
 
-    //添加本地任务列表
-    private fun addLocalTaskFragment() {
+
+    private fun initTaskTabLayout() {
         // 创建一个新的Tab对象
         val newTab = tabLayout.newTab()
         // 设置Tab的文本内容
         newTab.text = tabTextList[0]
         tabLayout.addTab(newTab)
 
-        val mainTaskFragment = MainTaskFragment.newInstance()  //创建一个本地任务列表fragment
-        pagerAdapter.addFragment(mainTaskFragment)
-        pagerAdapter.notifyDataSetChanged()
-    }
-
-    //添加SDK任务列表
-    fun addZjTaskFragment() {
-
-        // 创建一个新的Tab对象
+        // 创建一个新的Tab对象 DK任务列表
         val newTab1 = tabLayout.newTab()
         // 创建一个新的Tab对象
         val newTab2 = tabLayout.newTab()
@@ -176,28 +165,87 @@ class MainFragment : BaseFragment(), OnClickListener {
             tab.text = tabTextList[position]
         }.attach()
 
-        pagerAdapter.addFragment(zjTask.loadCPAFragmentAd())
-        pagerAdapter.addFragment(zjTask.loadCPLFragmentAd())
-        pagerAdapter.notifyDataSetChanged()
+
     }
 
-    class MyPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
-        FragmentStateAdapter(fragmentManager, lifecycle) {
 
-        private val fragments = mutableListOf<Fragment>()
+    //添加SDK任务列表
+    fun addZjTaskFragment() {
+        pagerAdapter.showZjTask(zjTask)
 
-        fun addFragment(fragment: Fragment) {
-            fragments.add(fragment)
+    }
+
+
+    /**
+     *
+     * @property isShowZjTask Boolean
+     * @property zjTask ZjTaskAd
+     * @property fid1 Long
+     * @property fid2 Long
+     * @property fid3 Long
+     * @property fid4 Long
+     * @property fid5 Long
+     * @property ids ArrayList<Long>
+     * @property createdIds HashSet<Long>
+     * @constructor 参考：https://zhuanlan.zhihu.com/p/105700960
+     */
+    class MyPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+
+        private var isShowZjTask: Boolean = false
+        private lateinit var zjTask: ZjTaskAd
+        fun showZjTask(zj:ZjTaskAd) {
+            isShowZjTask = true
+            zjTask = zj
+            notifyDataSetChanged()
         }
 
+        private val fid1 = 111.toLong()
+        private val fid2 = 222.toLong()
+        private val fid3 = 333.toLong()
+        private val fid4 = 444.toLong()
+        private val fid5 = 555.toLong()
+
+
+        private val ids: ArrayList<Long>
+            get() = if (isShowZjTask) {
+                arrayListOf(fid1, fid4, fid5)
+            } else {
+                arrayListOf(fid1, fid2, fid3)
+            }
+
+        private val createdIds = hashSetOf<Long>()
+
         override fun getItemCount(): Int {
-            return fragments.size
+            return if (true) 3 else 4
+        }
+
+        override fun getItemId(position: Int): Long {
+            return ids[position]
+        }
+
+        override fun containsItem(itemId: Long): Boolean {
+            return createdIds.contains(itemId)
         }
 
         override fun createFragment(position: Int): Fragment {
-            return fragments[position]
+            val id = ids[position]
+            createdIds.add(id)
+            return when (id) {
+                fid2 -> EmptyFragment()
+                fid3 -> EmptyFragment()
+                fid4 -> zjTask.loadCPAFragmentAd()
+                fid5 -> zjTask.loadCPLFragmentAd()
+                else -> MainTaskFragment.newInstance()
+            }
         }
     }
 
+    class EmptyFragment : Fragment() {
+        override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        ): View? {
+            return inflater.inflate(R.layout.fragent_empty, container, false)
+        }
+    }
 
 }
