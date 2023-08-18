@@ -13,8 +13,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:background="@color/ll_bg"
+            android:orientation="vertical"
             android:padding="10dp">
 
             <LinearLayout
@@ -260,15 +260,14 @@
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_task_list"
-                    android:layout_width="wrap_content"
+                    app:tabRippleColor="@android:color/transparent"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/tab_h"
                     android:background="@color/white"
-                    app:tabGravity="start"
+                    app:tabGravity="fill"
                     app:tabIndicatorAnimationMode="elastic"
                     app:tabIndicatorColor="@color/colorControlActivated"
                     app:tabIndicatorFullWidth="false"
-                    app:tabMaxWidth="100dp"
-                    app:tabMinWidth="100dp"
                     app:tabMode="fixed"
                     app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/tabLayout"
@@ -278,7 +277,7 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/task_vp"
                 android:layout_width="match_parent"
-                android:layout_height="1000dp" />
+                android:layout_height="1500dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

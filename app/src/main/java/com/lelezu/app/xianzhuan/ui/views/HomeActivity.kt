@@ -1,9 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -30,8 +33,10 @@ import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
         viewPager.isUserInputEnabled = false//禁止滑动
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
@@ -136,7 +141,7 @@ class HomeActivity : BaseActivity() {
     fun saveImageToSystem(imageUrl: String) {
         Log.i("H5保存图片", "成功  imageUrl：${imageUrl}")
 
-        val imageName = getString(R.string.app_name) + "_" + System.currentTimeMillis()
+        val imageName = "1455"
 
         showToast("图片已保存:${Environment.DIRECTORY_DOWNLOADS}$imageName")
 
@@ -148,14 +153,55 @@ class HomeActivity : BaseActivity() {
         downloadManager.enqueue(request)
     }
 
+    private val downloadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
+                // 下载完成时的处理
+                val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                handleDownloadComplete(downloadId)
+            }
+        }
+    }
     //分享微信
     fun shareFriends(imageUrl: String) {
         Log.i("H5分享图片", "imageUrl：${imageUrl}")
+        // 注册广播接收器
+        val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        registerReceiver(downloadReceiver, intentFilter)
+        saveImageToSystem(imageUrl)
 
-        WxLogin.webWx(imageUrl)
+
 
     }
+    @SuppressLint("Range")
+    private fun handleDownloadComplete(downloadId: Long) {
+        val query = DownloadManager.Query().apply {
+            setFilterById(downloadId)
+        }
 
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val cursor = downloadManager.query(query)
+
+        if (cursor.moveToFirst()) {
+            val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+            if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                // 下载成功的处理
+                val localUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+
+                Log.i("下载完成", "imageUrl：${localUri}")
+                WxLogin.localWx(localUri)
+            } else {
+                // 下载失败的处理
+                val reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
+                showToast("下载失败，失败原因：$reason")
+            }
+        }
+
+        cursor.close()
+
+        unregisterReceiver(downloadReceiver)
+
+    }
 
 
 }

@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -18,17 +19,21 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
+
+    //vip头像等级框图片
     private var pic = mapOf(
-        1 to R.drawable.icon_head, 2 to R.drawable.icon_head, 4 to R.drawable.icon_head
+        1 to R.drawable.icon_head1, 2 to R.drawable.icon_head, 4 to R.drawable.icon_head2
         // 可以继续添加其他映射关系
     )
     private lateinit var ivDialog: Dialog
+
 
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
     private lateinit var taskVerifyRV: RecyclerView //验证列表
@@ -67,6 +72,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //底部两个按键
         findViewById<TextView>(R.id.tv_btm1).setOnClickListener(this)
         findViewById<TextView>(R.id.tv_btm2).setOnClickListener(this)
+
+        findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
 
 
         taskDetails(intent.getStringExtra("taskId")!!)
@@ -150,6 +157,19 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<TextView>(R.id.tv_name).text = it!!.nickname
         }
 
+
+        //支持设备 ["0"]-安卓, ["1"]-苹果, []-全部
+        if (task.supportDevices.size == 1) {
+            when (task.supportDevices[0]) {
+                "0" -> findViewById<View>(R.id.iv_and).visibility = View.VISIBLE
+                else -> findViewById<View>(R.id.iv_ios).visibility = View.VISIBLE
+            }
+        } else {
+            findViewById<View>(R.id.iv_and).visibility = View.VISIBLE
+            findViewById<View>(R.id.iv_ios).visibility = View.VISIBLE
+        }
+
+
     }
 
 
@@ -170,7 +190,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             true
         }
 
-        menu!!.getItem(1).setOnMenuItemClickListener {
+        menu.getItem(1).setOnMenuItemClickListener {
             ivDialog.dismiss()
             true
         }
@@ -255,8 +275,13 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     0 -> homeViewModel.apiTaskApply(getTask().taskId)//报名
                     else -> getTaskSubmit()//提交
                 }
+            }
 
-
+            R.id.tv_agreement -> {
+                val intent = Intent(this, WebViewActivity::class.java)
+                intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link14)
+                intent.putExtra(WebViewSettings.URL_TITLE, "接单规则")
+                startActivity(intent)
             }
         }
     }

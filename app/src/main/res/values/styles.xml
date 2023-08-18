@@ -18,5 +18,7 @@
     <style name="tabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="android:textSize">16sp</item>
     </style>
-
+    <style name="NoClickEffectTabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:stateListAnimator">@null</item>
+    </style>
 </resources>

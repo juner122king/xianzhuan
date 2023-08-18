@@ -171,6 +171,7 @@ abstract class BaseActivity : AppCompatActivity() {
         loadingView?.visibility = View.GONE
     }
 
+
     /**
      * 获取布局ID
      *
@@ -195,6 +196,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        showLoading()
+        hideLoading()
     }
 }

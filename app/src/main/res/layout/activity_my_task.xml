@@ -9,16 +9,15 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_task_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/tab_h"
         android:background="@color/white"
-        app:tabGravity="start"
+        app:tabGravity="fill"
         app:tabTextAppearance="@style/tabLayout"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@color/colorControlActivated"
         app:tabIndicatorFullWidth="false"
-        app:tabMaxWidth="100dp"
-        app:tabMinWidth="50dp"
+        app:tabRippleColor="@android:color/transparent"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/text_s" >
