@@ -24,7 +24,7 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     private lateinit var adapter: TaskItemAdapter
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
-    private var current: Int = 1;//当前选择page1加载页
+    private var current: Int = 1//当前选择page1加载页
 
 
     override fun onCreateView(
@@ -54,13 +54,15 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
 
-
+        //启用嵌套滚动
+//        recyclerView.isNestedScrollingEnabled = false
         // 观察 ViewModel 中的任务列表数据变化
         homeViewModel._taskList.observe(viewLifecycleOwner) {
             loadDone(it)
         }
         // 初始加载
         refresh()
+
 
     }
 
@@ -93,7 +95,6 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     private fun loadData() {
-//        homeViewModel.getTaskList(TaskRepository.queryCondLATEST, current)
         homeViewModel.getTaskList(
             TaskQuery(
                 TaskRepository.queryCondLATEST, current, null, null, null, null, null

@@ -22,8 +22,8 @@ object WebViewSettings {
 
     var isProcessing = "isProcessing"
 
-    var link100 = "http://www.zhongshoubang.com/yhxy.html"//《用户使用协议》
-    var link101 = "http://www.zhongshoubang.com/yszc.html"//《隐私政策》
+    var link100 = "$HOST/statics/dxz/h5/pages/agreement/user"//《用户使用协议》
+    var link101 = "$HOST/statics/dxz/h5/pages/agreement/privacy"//《隐私政策》
 
     var host = "$HOST/statics/dxz/h5"
 
@@ -48,6 +48,7 @@ object WebViewSettings {
     var link12 = "/pages/personalData/index" //设置个人资料
 
     var link13 = "/pages/member/index" //开通会员
+    var link14 = "/pages/member/index" //接单规则
 
 
     @SuppressLint("SetJavaScriptEnabled")

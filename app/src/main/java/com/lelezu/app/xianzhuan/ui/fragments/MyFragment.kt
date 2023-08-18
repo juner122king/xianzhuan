@@ -17,6 +17,7 @@ import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class MyFragment : BaseFragment(), View.OnClickListener {
@@ -130,6 +131,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        LogUtils.i("ONRESUME")
         //获取系统消息数量
         sysMessageViewModel.getSysMessageNum()
         //执行获取用户信息接口
