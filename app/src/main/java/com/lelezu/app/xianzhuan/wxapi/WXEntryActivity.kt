@@ -37,6 +37,7 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
 
     override fun onReq(req: BaseReq) {
         // 暂不处理请求回调
+        finish()
     }
 
     override fun onResp(baseResp: BaseResp) {

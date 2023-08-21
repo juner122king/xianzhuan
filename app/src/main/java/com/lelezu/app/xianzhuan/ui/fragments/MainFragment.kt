@@ -72,25 +72,18 @@ class MainFragment : BaseFragment(), OnClickListener {
 
         initTaskTabLayout()//初始化TabLayout
 
-        //开启权限
-        checkAndRequestPermissions(registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions: Map<String, Boolean> ->
-            val deniedPermissions = permissions.filterNot { it.value }.map { it.key }
-            if (deniedPermissions.isEmpty()) {
-                // 所有权限被授予
-            } else {
-                showPermissionAlertDialog(
-                    "加载任务列表需要写入数据和读取设备的电话状态，是否开启？",
-                    "权限已拒绝，将不加载任务墙列表！"
-                )
-            }
-        })
+
     }
 
     override fun onResume() {
         super.onResume()
-        if (isHasPermissions() && !isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
+
+        if (havePermission) {
+            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
+        } else {
+            checkPermission()
+        }
+
     }
 
     companion object {
@@ -138,7 +131,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                 }
 
                 override fun onZjAdError(zjAdError: ZjAdError) {
-                    LogUtils.d("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+                    showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
                 }
             })
     }
@@ -193,7 +186,7 @@ class MainFragment : BaseFragment(), OnClickListener {
 
         private var isShowZjTask: Boolean = false
         private lateinit var zjTask: ZjTaskAd
-        fun showZjTask(zj:ZjTaskAd) {
+        fun showZjTask(zj: ZjTaskAd) {
             isShowZjTask = true
             zjTask = zj
             notifyDataSetChanged()

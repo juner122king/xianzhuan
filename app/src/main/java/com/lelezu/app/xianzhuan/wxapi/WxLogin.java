@@ -2,10 +2,14 @@ package com.lelezu.app.xianzhuan.wxapi;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.lelezu.app.xianzhuan.R;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -48,8 +52,9 @@ public class WxLogin {
         req.state = WxData.STATE;
         api.sendReq(req);
     }
-    public static void localWx(String path) {
-        Log.i("下载完成", " path = " + path);
+
+    public static void localWx( String path) {
+        Log.i("微信分享", " path = " + path);
         if (!api.isWXAppInstalled()) {
             Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
             return;
@@ -72,12 +77,14 @@ public class WxLogin {
             req.scene = mTargetScene;
             api.sendReq(req);
 
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(mContext, "分享失败，请检验图片链接是否正确！", Toast.LENGTH_SHORT).show();
 
         }
     }
+
 
 
     private static String buildTransaction(final String type) {

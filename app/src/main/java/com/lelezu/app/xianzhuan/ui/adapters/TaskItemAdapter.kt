@@ -80,12 +80,14 @@ class TaskItemAdapter(
         val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
 
 
+        val doneView: View = itemView.findViewById(R.id.tvv)//去完成按钮
+
+
     }
 
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(itemLayout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(itemLayout, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -128,9 +130,14 @@ class TaskItemAdapter(
             holder.tvTaskStatus.text = statusText
             holder.tvTaskStatus.setTextColor(resolvedColor)
 
+            holder.doneView.visibility = View.GONE
+
         } else {
             holder.lTopView.visibility = View.GONE
+            holder.doneView.visibility = View.VISIBLE
         }
+
+
 
 
     }

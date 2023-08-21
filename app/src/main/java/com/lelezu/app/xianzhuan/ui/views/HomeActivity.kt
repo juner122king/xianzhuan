@@ -70,28 +70,28 @@ class HomeActivity : BaseActivity() {
             showView()
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    viewPager.setCurrentItem(0,false)
+                    viewPager.setCurrentItem(0, false)
                     setTitleText(getString(R.string.title_activity_home))
 
                 }
 
                 R.id.navigation_dashboard -> {
 //                    viewPager.currentItem = 1
-                    viewPager.setCurrentItem(1,false)
+                    viewPager.setCurrentItem(1, false)
                     showRightText(getString(R.string.dashboard_tab5_text))
                     setTitleText(getString(R.string.title_dashboard))
                 }
 
                 R.id.navigation_notifications -> {
 //                    viewPager.currentItem = 2
-                    viewPager.setCurrentItem(2,false)
+                    viewPager.setCurrentItem(2, false)
                     setTitleText(getString(R.string.title_notifications))
 
                 }
 
                 R.id.navigation_my -> {
 //                    viewPager.currentItem = 3
-                    viewPager.setCurrentItem(3,false)
+                    viewPager.setCurrentItem(3, false)
                     setTitleText(getString(R.string.title_my))
                     hideView()
 
@@ -99,7 +99,6 @@ class HomeActivity : BaseActivity() {
             }
             true
         }
-
 
 
         //处理H5页面返回主页的动作
@@ -142,13 +141,14 @@ class HomeActivity : BaseActivity() {
     override fun isShowBack(): Boolean {
         return false
     }
+
     //保存图片方法
     fun saveImageToSystem(imageUrl: String) {
         Log.i("H5保存图片", "成功  imageUrl：${imageUrl}")
+        showToast("保存图片成功")
 
-        val imageName = "1455"
+        val imageName = "lelezu_pic"
 
-        showToast("图片已保存:${Environment.DIRECTORY_DOWNLOADS}$imageName")
 
         val request = DownloadManager.Request(Uri.parse(imageUrl))
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -157,6 +157,7 @@ class HomeActivity : BaseActivity() {
         val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadManager.enqueue(request)
     }
+
 
     private val downloadReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -167,6 +168,7 @@ class HomeActivity : BaseActivity() {
             }
         }
     }
+
     //分享微信
     fun shareFriends(imageUrl: String) {
         Log.i("H5分享图片", "imageUrl：${imageUrl}")
@@ -176,8 +178,8 @@ class HomeActivity : BaseActivity() {
         saveImageToSystem(imageUrl)
 
 
-
     }
+
     @SuppressLint("Range")
     private fun handleDownloadComplete(downloadId: Long) {
         val query = DownloadManager.Query().apply {
@@ -191,7 +193,8 @@ class HomeActivity : BaseActivity() {
             val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
             if (status == DownloadManager.STATUS_SUCCESSFUL) {
                 // 下载成功的处理
-                val localUri = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+                val localUri =
+                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
 
                 Log.i("下载完成", "imageUrl：${localUri}")
                 WxLogin.localWx(localUri)
@@ -203,7 +206,6 @@ class HomeActivity : BaseActivity() {
         }
 
         cursor.close()
-
         unregisterReceiver(downloadReceiver)
 
     }
