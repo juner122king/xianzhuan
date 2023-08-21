@@ -38,6 +38,7 @@ class TaskDetailsStepAdapter(
         val title: TextView = itemView.findViewById(R.id.tv_step_text)
         val step: TextView = itemView.findViewById(R.id.tv_step)
         val ivCasePic: ImageView = itemView.findViewById(R.id.iv_case_pic)//示例图片
+        val fCasePic: View = itemView.findViewById(R.id.f_case_pic)//示例图片区域
         val tvWebUrl: TextView = itemView.findViewById(R.id.tv_web_url)//链接
         val ivUserPic: ImageView = itemView.findViewById(R.id.iv_user_up_pic)//用户图片
         val line: View = itemView.findViewById(R.id.line)//垂直线
@@ -62,19 +63,21 @@ class TaskDetailsStepAdapter(
         holder.ivUserPic.visibility = View.GONE
         holder.step.text = ("${position + 1}").toString()
 
-        if (item.stepType == 2) {
-            holder.ivCasePic.visibility = View.VISIBLE
-            ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
-            holder.ivCasePic.setOnClickListener {//图片全屏显示
-                ivDialog.setContentView(getImageView(item.useCaseImage))
-                ivDialog.show()
+        if (item.stepType == 1) {
+            if (item.useCaseImage != null) {
+                holder.fCasePic.visibility = View.VISIBLE
+                ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
+                holder.ivCasePic.setOnClickListener {//图片全屏显示
+                    ivDialog.setContentView(getImageView(item.useCaseImage))
+                    ivDialog.show()
+                }
+            } else {
+                holder.fCasePic.visibility = View.GONE
             }
-
         } else {
             holder.tvWebUrl.visibility = View.VISIBLE
             holder.tvWebUrl.text = item.webUrl
         }
-
 
 
         // 判断是否为整个 RecyclerView 的最后一个项

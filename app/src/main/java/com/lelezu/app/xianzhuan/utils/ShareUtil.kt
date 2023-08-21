@@ -44,6 +44,9 @@ object ShareUtil {
     const val APP_TASK_PIC_DOWN_URL: String = "PIC_DOWN_URL"
 
 
+    const val TAGMYTASK = "isMyTask"
+
+
     private val applicationContext by lazy { MyApplication.context }
 
     private fun getSps(): SharedPreferences {

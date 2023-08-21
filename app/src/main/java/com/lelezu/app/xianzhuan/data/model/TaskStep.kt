@@ -18,7 +18,7 @@ package com.lelezu.app.xianzhuan.data.model
 data class TaskStep(
     val stepDesc: String?,
     val stepId: String?,
-    val useCaseImage: String,
+    val useCaseImage: String?,
     val webUrl: String,
     val stepType: Int?
 )

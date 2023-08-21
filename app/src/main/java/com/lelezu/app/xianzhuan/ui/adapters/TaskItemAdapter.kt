@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
+import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
 
 /**
  * @author:Administrator
@@ -22,7 +23,6 @@ import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 class TaskItemAdapter(
     private var items: MutableList<Task>,
     var activity: Context,
-    private var itemLayout: Int = R.layout.home_task_list_item_layout,
     private var isShowTopView: Boolean = false
 ) : EmptyAdapter<TaskItemAdapter.ItemViewHolder>() {
 
@@ -71,11 +71,13 @@ class TaskItemAdapter(
         val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
         val shangJiTv: TextView = itemView.findViewById(R.id.tv_shang_ji)
         val tvTaskLabel: TextView = itemView.findViewById(R.id.tv_taskLabel)
+        val tvTaskLabel2: TextView = itemView.findViewById(R.id.tv_taskLabel2)
         val tvEarnedCount: TextView = itemView.findViewById(R.id.tv_task_earnedCount)
         val tvTR: TextView = itemView.findViewById(R.id.tv_task_rest)
         val clickVIew: View = itemView.findViewById(R.id.click_view)
 
         val lTopView: View = itemView.findViewById(R.id.ll_top_view)//topView
+        val line: View = itemView.findViewById(R.id.line)//topView
         val tvTime: TextView = itemView.findViewById(R.id.tv_time)//时间
         val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
 
@@ -87,7 +89,11 @@ class TaskItemAdapter(
 
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(itemLayout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(
+            if (isShowTopView) R.layout.task_list_item_layout else R.layout.home_task_list_item_layout,
+            parent,
+            false
+        )
         return ItemViewHolder(view)
     }
 
@@ -101,9 +107,12 @@ class TaskItemAdapter(
         holder.tvTR.text = "剩余${item.rest}个"
         if (item.taskLabel == null) {
             holder.tvTaskLabel.visibility = View.GONE
+            holder.tvTaskLabel2.visibility = View.GONE
         } else {
-            holder.tvTaskLabel.text = item.taskLabel
+            holder.tvTaskLabel.text = item.taskTypeTitle
             holder.tvTaskLabel.visibility = View.VISIBLE
+            holder.tvTaskLabel2.text = item.taskLabel
+            holder.tvTaskLabel2.visibility = View.VISIBLE
         }
 
 
@@ -111,6 +120,7 @@ class TaskItemAdapter(
         holder.clickVIew.setOnClickListener {
             val intent = Intent(activity, TaskDetailsActivity::class.java)
             intent.putExtra("taskId", items[position].taskId)
+            intent.putExtra(TAGMYTASK, isShowTopView)
             activity.startActivity(intent)
         }
 
@@ -126,6 +136,7 @@ class TaskItemAdapter(
 
 
             holder.lTopView.visibility = View.VISIBLE
+            holder.line.visibility = View.VISIBLE
             holder.tvTime.text = statusTimeText + item.operateTime
             holder.tvTaskStatus.text = statusText
             holder.tvTaskStatus.setTextColor(resolvedColor)
@@ -134,10 +145,9 @@ class TaskItemAdapter(
 
         } else {
             holder.lTopView.visibility = View.GONE
+            holder.line.visibility = View.GONE
             holder.doneView.visibility = View.VISIBLE
         }
-
-
 
 
     }

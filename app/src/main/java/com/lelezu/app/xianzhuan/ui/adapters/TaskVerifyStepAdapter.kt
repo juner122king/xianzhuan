@@ -51,6 +51,7 @@ class TaskVerifyStepAdapter(
 
     private val permissions = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,//读取内部资源
+        Manifest.permission.READ_MEDIA_IMAGES//13更高版本的权限
         // 添加其他需要的权限
     )
 
@@ -90,7 +91,7 @@ class TaskVerifyStepAdapter(
 
         if (item.verifyType == 1) {//验证步骤是否为图片类型
 
-            holder.ivCasePic.visibility = View.VISIBLE
+            holder.fCasePic.visibility = View.VISIBLE
             holder.ivUserPic.visibility = View.VISIBLE
             holder.idEt.visibility = View.GONE
             ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
@@ -200,37 +201,20 @@ class TaskVerifyStepAdapter(
     private fun onPickImage() {
         //判断是否有权限
         // 检查是否已经有权限
-        val hasPermissions = permissions.all {
+        val hasPermissions = permissions.any {
             ContextCompat.checkSelfPermission(
                 activity, it
             ) == PackageManager.PERMISSION_GRANTED
         }
-        if (!hasPermissions) {
-            // 请求权限
-            requestPermissionLauncher.launch(permissions)
-        } else {
-
-            //上传图片，打开相册
-            pickImageContract.launch(Unit)
-        }
-
-    }
-
-
-    //权限请求
-    private val requestPermissionLauncher = activity.registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions.all { it.value }) {
-            // 用户授予了权限，继续进行文件操作
+        if (hasPermissions) {
             //上传图片，打开相册
             pickImageContract.launch(Unit)
         } else {
-            // 用户拒绝了权限，处理拒绝权限的情况
             ToastUtils.showToast(activity, "没有读取图片权限，请退出重试！", 0)
-
         }
+
     }
+
 
 
     private val pickImageContract = activity.registerForActivityResult(PickImageContract()) {

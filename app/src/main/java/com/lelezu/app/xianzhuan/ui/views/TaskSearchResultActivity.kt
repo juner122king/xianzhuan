@@ -61,6 +61,12 @@ class TaskSearchResultActivity : BaseActivity() {
         // 获取搜索结果
         homeViewModel.getTaskList(getCond())
 
+
+
+        //数据为空的时候
+        homeViewModel.errMessage.observe(this){
+            showNotResult()
+        }
     }
 
     override fun getLayoutId(): Int {

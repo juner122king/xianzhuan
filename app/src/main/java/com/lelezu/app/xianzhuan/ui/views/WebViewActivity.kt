@@ -45,7 +45,7 @@ class WebViewActivity : BaseActivity() {
 
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
-
+        Log.i("WebView_URL",  link)
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
             //显示简单的用户协议页面
@@ -55,7 +55,6 @@ class WebViewActivity : BaseActivity() {
         }
 
         wv.loadUrl(WebViewSettings.host + link)
-        Log.i("WebView_URL", WebViewSettings.host + link)
 
         //注入打开相册方法
         wv.registerHandler("chooseImage") { data, function ->

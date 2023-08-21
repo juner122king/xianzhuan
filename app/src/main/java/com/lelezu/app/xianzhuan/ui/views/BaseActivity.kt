@@ -1,6 +1,9 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
@@ -10,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
@@ -26,6 +31,9 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
  *
  */
 abstract class BaseActivity : AppCompatActivity() {
+
+
+
     protected var mBack: LinearLayout? = null
     private var mTvTitle: TextView? = null
     private var mTvRight: TextView? = null
@@ -197,5 +205,30 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         hideLoading()
+    }
+
+    private val rc: Int = 123
+    protected fun checkPermissionRead() {
+
+
+        LogUtils.i("打开相册  android级别：${Build.VERSION.SDK_INT}")
+        // 检查图片权限
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            //13更高版本后的图片弹窗询问
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.READ_MEDIA_IMAGES), rc
+                )
+            } else {
+
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
+                )
+            }
+        }
     }
 }

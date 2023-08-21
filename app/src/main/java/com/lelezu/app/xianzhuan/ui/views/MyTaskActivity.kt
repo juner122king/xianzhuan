@@ -41,10 +41,10 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         recyclerView = findViewById(R.id.recyclerView)
         // 创建适配器，并将其绑定到 RecyclerView 上
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter1 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
-        adapter2 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
-        adapter3 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
-        adapter4 = TaskItemAdapter(mutableListOf(), this, R.layout.my_task_list_item_layout, true)
+        adapter1 = TaskItemAdapter(mutableListOf(), this, true)
+        adapter2 = TaskItemAdapter(mutableListOf(), this, true)
+        adapter3 = TaskItemAdapter(mutableListOf(), this, true)
+        adapter4 = TaskItemAdapter(mutableListOf(), this, true)
 
         adapter1.setEmptyView(findViewById(R.id.recycler_layout))//设置空view
         adapter2.setEmptyView(findViewById(R.id.recycler_layout))
@@ -151,7 +151,7 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
         // 停止刷新动画
         swiper.isRefreshing = false
         if (it.isEmpty() && recyclerView.isLoadMore()) {
-            showToast("没有更多了！")
+//            showToast("没有更多了！")
         } else {
             when (page) {
                 0 -> if (recyclerView.isLoadMore()) adapter1.addData(it)

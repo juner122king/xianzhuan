@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
+import com.lelezu.app.xianzhuan.data.model.Announce;
+
 import java.util.List;
 
 /**
@@ -222,8 +224,8 @@ public class BulletinView extends NestedScrollView {
         protected abstract View onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType);
     }
 
-    public interface OnItemClickListener<T> {
-        void onItemClickListener(T itemData, int pointer, View view);
+    public interface OnItemClickListener<Announce> {
+        void onItemClickListener(Announce itemData, int pointer, View view);
     }
 
     //设置开始动画,可不设置

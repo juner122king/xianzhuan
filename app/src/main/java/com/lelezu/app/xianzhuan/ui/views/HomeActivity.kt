@@ -145,7 +145,7 @@ class HomeActivity : BaseActivity() {
     //保存图片方法
     fun saveImageToSystem(imageUrl: String) {
         Log.i("H5保存图片", "成功  imageUrl：${imageUrl}")
-        showToast("保存图片成功")
+
 
         val imageName = "lelezu_pic"
 

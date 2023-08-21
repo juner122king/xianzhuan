@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
@@ -120,7 +121,11 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 llNotice.visibility = View.VISIBLE
                 bulletinView.setAdapter(ComplexViewAdapter(it))
                 bulletinView.setOnItemClickListener { itemData, pointer, view ->
-
+                    val intent = Intent(requireContext(), WebViewActivity::class.java)
+                    intent.putExtra(WebViewSettings.LINK_KEY, (itemData as Announce).announceContent)
+                    intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
+                    intent.putExtra(WebViewSettings.isProcessing, false)
+                    startActivity(intent)
                 }
             }
 

@@ -14,7 +14,7 @@
         android:id="@+id/tv_result_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="共有100个结果"
+        android:text="共有0个结果"
         android:textColor="@color/text_999"
         android:textSize="12sp" />
 
