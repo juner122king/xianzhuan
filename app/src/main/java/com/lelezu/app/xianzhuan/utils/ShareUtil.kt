@@ -9,6 +9,7 @@ import cn.hutool.json.JSONUtil
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Register
+import java.util.regex.Pattern
 
 /**
  * @author:Administrator
@@ -116,9 +117,28 @@ object ShareUtil {
     fun cleanInfo() {
         clean(APP_SHARED_PREFERENCES_LOGIN_TOKEN) //清空登录TOKEN
         clean(APP_SHARED_PREFERENCES_LOGIN_ID) //清空用户id
+        clean(APP_SHARED_PREFERENCES_RECOMMEND_USERID) //recommendUserIdid
         putBoolean(APP_SHARED_PREFERENCES_LOGIN_STATUS, false) //保存登录状态
     }
 
+
+    //从粘贴板上保存邀请人id 内容格式：#h5WSCZw25nq11#1690966178059579393#
+    fun putRecommendUserId(text: String) {
+        LogUtils.i("邀请码：$text")
+        // 查找第二个和第三个#之间的内容
+        val pattern = "#[^#]*#(\\d+)#"
+
+        val regex = Pattern.compile(pattern)
+        val matcher = regex.matcher(text)
+
+        if (matcher.find()) {
+            val recommendUserId = matcher.group(1)
+            LogUtils.i("邀请人id：$recommendUserId")
+            putString(APP_SHARED_PREFERENCES_RECOMMEND_USERID, recommendUserId)
+        }
+
+
+    }
 
     //获取注册请求体对象
     fun getRegister(): Register {

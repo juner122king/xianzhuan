@@ -171,4 +171,14 @@ class LoginActivity : BaseActivity(), OnClickListener {
     override fun isShowBack(): Boolean {
         return false
     }
+
+
+    /**
+     *    //监听焦点变化再获取剪切板数据 Android 10以及以上版本限制了对剪贴板数据的访问
+     * @param hasFocus Boolean
+     */
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) getClipBoar()
+    }
 }

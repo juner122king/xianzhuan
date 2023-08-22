@@ -9,9 +9,6 @@ import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.UserInfo
-import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
-import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

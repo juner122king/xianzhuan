@@ -14,7 +14,6 @@ import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginReP
-import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
 import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 

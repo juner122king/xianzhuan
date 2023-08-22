@@ -1,12 +1,16 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
+import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 /**  APP启动屏
@@ -31,6 +35,7 @@ class LaunchActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             // 在这里执行你想要暂停的操作
             //登录判断
+            LogUtils.i("执行preloadContent")
             preloadContent()
         }, 2000) // 延迟 2000 毫秒（即 2 秒）
 
@@ -64,4 +69,8 @@ class LaunchActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+
+
+
 }

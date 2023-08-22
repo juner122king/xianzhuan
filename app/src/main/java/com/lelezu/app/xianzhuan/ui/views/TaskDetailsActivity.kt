@@ -87,7 +87,11 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
 
 
+
+        //获取上个页面返回的TaskId再请求一次
         taskDetails(intent.getStringExtra("taskId")!!)
+
+
         //监听任务信息变化
         homeViewModel.task.observe(this) {
             //初始化页面数据

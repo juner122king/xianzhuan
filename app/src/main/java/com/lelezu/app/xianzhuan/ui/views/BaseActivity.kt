@@ -1,6 +1,9 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
+import android.content.ClipDescription
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -21,6 +24,7 @@ import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
@@ -31,7 +35,6 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
  *
  */
 abstract class BaseActivity : AppCompatActivity() {
-
 
 
     protected var mBack: LinearLayout? = null
@@ -228,6 +231,33 @@ abstract class BaseActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(
                     this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
                 )
+            }
+        }
+    }
+
+    /**
+     * 首先，它检查剪贴板是否有主要剪贴内容，即剪贴板是否有数据。如果没有数据，pasteItem.isEnabled将被设置为false，禁用粘贴菜单项。
+     * 接下来，它检查剪贴板的主要剪贴描述是否包含纯文本的 MIME 类型。如果剪贴板的内容不是纯文本，pasteItem.isEnabled将被设置为false，禁用粘贴菜单项。
+     * 最后，如果剪贴板的内容是纯文本，pasteItem.isEnabled将被设置为true，启用粘贴菜单项。
+     *
+     * ！！Android 10以及以上版本限制了对剪贴板数据的访问  监听焦点变化再获取剪切板数据
+     */
+    protected fun getClipBoar() {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        when {
+            !clipboard.hasPrimaryClip() -> {
+                LogUtils.i("粘贴板没有内容")
+            }
+
+            !(clipboard.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))!! -> {
+                LogUtils.i("粘贴板有内容，但不是纯文本")
+            }
+
+            else -> {
+                val text = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+                LogUtils.i("粘贴板文本内容:${text}")
+                ShareUtil.putRecommendUserId(text)
             }
         }
     }
