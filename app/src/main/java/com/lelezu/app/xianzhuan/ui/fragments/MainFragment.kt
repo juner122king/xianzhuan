@@ -48,6 +48,8 @@ class MainFragment : BaseFragment(), OnClickListener {
         val view = inflater.inflate(R.layout.fragment_main2, container, false)
         viewPager = view.findViewById(R.id.task_vp)
         pagerAdapter = MyPagerAdapter(this)
+
+
         viewPager.adapter = pagerAdapter
 
         tabLayout = view.findViewById(R.id.tab_task_list)
@@ -158,7 +160,6 @@ class MainFragment : BaseFragment(), OnClickListener {
             tab.text = tabTextList[position]
         }.attach()
 
-
     }
 
 
@@ -173,11 +174,6 @@ class MainFragment : BaseFragment(), OnClickListener {
      *
      * @property isShowZjTask Boolean
      * @property zjTask ZjTaskAd
-     * @property fid1 Long
-     * @property fid2 Long
-     * @property fid3 Long
-     * @property fid4 Long
-     * @property fid5 Long
      * @property ids ArrayList<Long>
      * @property createdIds HashSet<Long>
      * @constructor 参考：https://zhuanlan.zhihu.com/p/105700960

@@ -43,9 +43,7 @@ abstract class EmptyAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter
             emptyView?.visibility = if (isEmpty) View.VISIBLE else View.GONE
             recyclerView?.visibility = if (isEmpty) View.GONE else View.VISIBLE
         }
-//
-//        emptyView?.visibility =  View.VISIBLE
-//        recyclerView?.visibility = View.GONE
+
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {

@@ -84,6 +84,11 @@ open class BaseFragment : Fragment() {
             onErrMessage(it)
         }
 
+        homeViewModel.emptyListMessage.observe(viewLifecycleOwner) {
+            // 如果列表为空 停止刷新动画
+            if (it) onStopSwiperRefreshing()
+        }
+
     }
 
 

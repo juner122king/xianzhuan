@@ -28,6 +28,8 @@ open class BaseViewModel : ViewModel() {
 
     val errMessage: MutableLiveData<ErrResponse> = MutableLiveData() //接口返回的错误信息
 
+    val emptyListMessage: MutableLiveData<Boolean> = MutableLiveData() //接口列表数据为空的错误信息
+
     protected fun getFilePathFromUri(uri: Uri): String {
         var filePath = ""
         val projection = arrayOf(MediaStore.Images.Media.DATA)
@@ -72,7 +74,7 @@ open class BaseViewModel : ViewModel() {
             is ApiSuccessResponse -> {
                 if (r.response.records.isEmpty()) {
                     // 处理空列表的情况
-//                    failedResponse(r, "")
+                    emptyListMessage.postValue(true)
                 } else {
                     // 处理非空列表的情况
                     liveData.postValue(r.response.records)
@@ -104,6 +106,9 @@ open class BaseViewModel : ViewModel() {
         errMessage.postValue(ErrResponse(r.code, mes))
         if (r.data is LoginReP || r.isTokenLose) onLoginFailed()
     }
+    //Token失效
+
+
 
     private fun onLoginFailed() {
         cleanInfo()//如果返回对象为登录回应对象就删除之前的登录信息
