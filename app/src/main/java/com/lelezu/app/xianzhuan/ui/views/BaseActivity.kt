@@ -104,6 +104,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun onErrMessage(it: ErrResponse) {
+        LogUtils.d("ErrResponse:${it}")
         hideLoading()
         showToast(it.message)
         if (it.isTokenLose()) goToLoginView()    //重新打开登录页面

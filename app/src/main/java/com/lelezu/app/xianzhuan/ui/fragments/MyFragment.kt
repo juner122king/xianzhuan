@@ -73,26 +73,28 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.rechargeAmount.toString()
             ImageViewUtil.loadCircleCrop(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
 
-
             when (it.vipLevel) {
                 0 -> {
-                    view.findViewById<View>(R.id.v_vip).visibility = View.VISIBLE
+                    view.findViewById<ImageView>(R.id.btm_vip)
+                        .setImageResource(R.drawable.my_icon_get_vip)
                 }   //普通
                 1 -> {
                     ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv0)
-                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
+                    view.findViewById<ImageView>(R.id.btm_vip)
+                        .setImageResource(R.drawable.my_icon_get_vip2)
                 }   //白银
                 2 -> {
                     ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)//
-                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
+                    view.findViewById<ImageView>(R.id.btm_vip)
+                        .setImageResource(R.drawable.my_icon_get_vip2)
                 }
-
                 3 -> {
-                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
                 }   //忽略
                 4 -> {
                     ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv1)//钻
-                    view.findViewById<View>(R.id.v_vip).visibility = View.GONE
+                    view.findViewById<ImageView>(R.id.btm_vip)
+                        .setImageResource(R.drawable.my_icon_get_vip2)
+
                 }
             }
 
@@ -104,7 +106,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text1).text = it.taskEstimatedAmount.toString()
         }
 
-        var messageIv = view.findViewById<ImageView>(R.id.iv_message)
+        val messageIv = view.findViewById<ImageView>(R.id.iv_message)
 
         //消息数量
         sysMessageViewModel.msgNum.observe(requireActivity()) {
@@ -122,7 +124,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 bulletinView.setAdapter(ComplexViewAdapter(it))
                 bulletinView.setOnItemClickListener { itemData, pointer, view ->
                     val intent = Intent(requireContext(), WebViewActivity::class.java)
-                    intent.putExtra(WebViewSettings.LINK_KEY, (itemData as Announce).announceContent)
+                    intent.putExtra(
+                        WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
+                    )
                     intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
                     intent.putExtra(WebViewSettings.isProcessing, false)
                     startActivity(intent)
@@ -136,13 +140,10 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        LogUtils.i("ONRESUME")
         //获取系统消息数量
         sysMessageViewModel.getSysMessageNum()
         //执行获取用户信息接口
         loginViewModel.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
-        //执行获取收徒收益
-//        loginViewModel.getEarnings()
 
         //个人中心任务相关的数据
         loginViewModel.getRelated()

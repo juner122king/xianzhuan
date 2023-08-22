@@ -72,7 +72,7 @@ open class BaseViewModel : ViewModel() {
             is ApiSuccessResponse -> {
                 if (r.response.records.isEmpty()) {
                     // 处理空列表的情况
-                    failedResponse(r, "没有更多了")
+//                    failedResponse(r, "")
                 } else {
                     // 处理非空列表的情况
                     liveData.postValue(r.response.records)
