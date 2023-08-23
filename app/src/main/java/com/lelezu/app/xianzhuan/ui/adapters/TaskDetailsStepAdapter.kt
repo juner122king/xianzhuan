@@ -64,6 +64,7 @@ class TaskDetailsStepAdapter(
         holder.step.text = ("${position + 1}").toString()
 
         if (item.stepType == 1) {
+            holder.tvWebUrl.visibility = View.GONE
             if (item.useCaseImage != null) {
                 holder.fCasePic.visibility = View.VISIBLE
                 ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
@@ -71,10 +72,9 @@ class TaskDetailsStepAdapter(
                     ivDialog.setContentView(getImageView(item.useCaseImage))
                     ivDialog.show()
                 }
-            } else {
-                holder.fCasePic.visibility = View.GONE
             }
         } else {
+            holder.fCasePic.visibility = View.GONE
             holder.tvWebUrl.visibility = View.VISIBLE
             holder.tvWebUrl.text = item.webUrl
         }

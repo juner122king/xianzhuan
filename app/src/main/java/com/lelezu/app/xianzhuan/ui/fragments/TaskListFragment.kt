@@ -6,6 +6,9 @@ import android.os.StrictMode.VmPolicy.Builder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -52,14 +55,14 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recyclerView)
         swiper = view.findViewById(R.id.swiper)
-
         swiper.setColorSchemeResources(R.color.colorControlActivated)
         swiper.setOnRefreshListener {
             // 执行刷新操作
             refresh()
         }
+        setSwipeRefreshLayout(swiper)
 
-        adapter = TaskItemAdapter(mutableListOf(), requireActivity(), true)
+        adapter = TaskItemAdapter(mutableListOf(), requireActivity(), isMyTask)
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
         recyclerView.adapter = adapter
 
@@ -67,25 +70,27 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         recyclerView.setListener(this)
         recyclerView.setRefreshEnable(true)
         recyclerView.setLoadMoreEnable(true)
-        setSwipeRefreshLayout(swiper)
-
-        observeList()
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // 初始加载
         refresh()
     }
 
+
+    //
+    override fun onResume() {
+        super.onResume()
+        observeList()
+    }
+
     private fun observeList() {
+
         homeViewModel.taskList.observe(viewLifecycleOwner) {
             LogUtils.i(it.toString())
             loadDone(it)
         }
 
+        homeViewModel.emptyListMessage.observe(viewLifecycleOwner) {
+            // 如果列表为空，禁加载更多
+            recyclerView.setLoadMoreEnable(false)
+        }
     }
 
     private fun loadDone(it: MutableList<Task>) {
@@ -99,9 +104,8 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
     private fun loadData() {
 
-
         homeViewModel.getTaskList(
-            taskQuery, true
+            taskQuery, isMyTask
         )
     }
 
@@ -116,15 +120,17 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     override fun onLoadMore() {
         taskQuery.current = taskQuery.current.inc()//页数+1
         loadData()
+
     }
 
     override fun onLoaded() {
+
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance(taskQuery: TaskQuery, isMyTask: Boolean) =
+        fun newInstance(taskQuery: TaskQuery, isMyTask: Boolean = false) =
             TaskListFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM, taskQuery)

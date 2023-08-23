@@ -14,7 +14,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
-import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity2
+import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
@@ -162,7 +162,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         //我的任务
         if (p0?.tag == getString(R.string.tag_my_task)) {
-            val intent = Intent(requireContext(), MyTaskActivity2::class.java)
+            val intent = Intent(requireContext(), MyTaskActivity::class.java)
             when (p0.id) {
                 R.id.iv_my_task1, R.id.ll_my_task1 -> {
                     intent.putExtra("selectedTab", 0)

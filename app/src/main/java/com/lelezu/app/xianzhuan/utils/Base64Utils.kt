@@ -18,14 +18,15 @@ object Base64Utils {
 
     fun zipPic(uri: Uri): String? {
         val bitmap = decodeUriToBitmap(uri)
-//        val compressedBitmap = compressBitmap(bitmap) //
-//        bitmap?.recycle()
+
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
         bitmap?.recycle()
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.NO_WRAP)
     }
+
+
 
 
     fun zipPic2(uri: Uri): String? {
@@ -53,9 +54,9 @@ object Base64Utils {
         }
     }
 
-    fun decodeUriToBitmap(uri: Uri): Bitmap? {
+    private fun decodeUriToBitmap(uri: Uri): Bitmap? {
         return try {
-            val inputStream = context?.contentResolver?.openInputStream(uri)
+            val inputStream = context.contentResolver?.openInputStream(uri)
             BitmapFactory.decodeStream(inputStream)
         } catch (e: Exception) {
             e.printStackTrace()

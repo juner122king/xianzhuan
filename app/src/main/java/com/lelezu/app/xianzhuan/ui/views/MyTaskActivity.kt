@@ -1,198 +1,90 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
-import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
+import com.lelezu.app.xianzhuan.ui.fragments.TaskListFragment
 
-class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
-
-    private lateinit var recyclerView: RefreshRecycleView //下拉刷新RecycleView
-    private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
-
-    private lateinit var adapter1: TaskItemAdapter
-    private lateinit var adapter2: TaskItemAdapter
-    private lateinit var adapter3: TaskItemAdapter
-    private lateinit var adapter4: TaskItemAdapter
-
+class MyTaskActivity : BaseActivity() {
     private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager: ViewPager2
 
-    private var page: Int = 0//当前选择page  0为第一项：置顶
-
-    private var current1: Int = 1//当前选择page1加载页
-    private var current2: Int = 1//当前选择page2加载页
-    private var current3: Int = 1//当前选择page3加载页
-    private var current4: Int = 1//当前选择page4加载页
-
-    private var auditStatus = 1//当前选择的子项状态 默认加载待提交
-
+    // 定义一个包含Tab文字的List
+    private var tabTextList = arrayOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        tabTextList = arrayOf(
+            getString(R.string.title_task_my1),
+            getString(R.string.title_task_my2),
+            getString(R.string.title_task_my3),
+            getString(R.string.title_task_my4)
+        )
         initView()
+        initTaskTabLayout()
     }
 
     private fun initView() {
         tabLayout = findViewById(R.id.tab_task_list)
-        recyclerView = findViewById(R.id.recyclerView)
-        // 创建适配器，并将其绑定到 RecyclerView 上
-        // 创建适配器，并将其绑定到 RecyclerView 上
-        adapter1 = TaskItemAdapter(mutableListOf(), this, true)
-        adapter2 = TaskItemAdapter(mutableListOf(), this, true)
-        adapter3 = TaskItemAdapter(mutableListOf(), this, true)
-        adapter4 = TaskItemAdapter(mutableListOf(), this, true)
+        viewPager = findViewById(R.id.task_vp)
+        viewPager.adapter = TaskListFragmentPagerAdapter(this)
 
-        adapter1.setEmptyView(findViewById(R.id.recycler_layout))//设置空view
-        adapter2.setEmptyView(findViewById(R.id.recycler_layout))
-        adapter3.setEmptyView(findViewById(R.id.recycler_layout))
-        adapter4.setEmptyView(findViewById(R.id.recycler_layout))
+    }
 
-        page = intent.getIntExtra("selectedTab", 0) // 获取传递的Tab索引，默认为0
-        tabLayout.setScrollPosition(page, 0f, true) // 设置要显示的Tab
+    private fun initTaskTabLayout() {
+
+        // 将TabLayout与ViewPager2关联起来
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabTextList[position]
+        }.attach()
+
+        viewPager.setCurrentItem(intent.getIntExtra("selectedTab", 0), false)//打开哪一页面
+    }
 
 
-        recyclerView.setListener(this)
-        recyclerView.setRefreshEnable(true)
-        recyclerView.setLoadMoreEnable(true)
-
-        swiper = findViewById(R.id.swiper)
-        swiper.setColorSchemeResources(R.color.colorControlActivated)
-        swiper.setOnRefreshListener {
-            // 执行刷新操作
-            refresh()
+    class TaskListFragmentPagerAdapter(activity: FragmentActivity) :
+        FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int {
+            return 4
         }
 
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                //	提交完成任务状态(0-未报名 1-待提交 2-审核中 3-审核通过 4-审核被否 5-手动取消 6-超时取消)
+                0 -> TaskListFragment.newInstance(
+                    getTaskQuery(1), true
+                )
 
-        // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel.myTaskList.observe(this) {
-            loadDone(it)
-        }
+                1 -> TaskListFragment.newInstance(
+                    getTaskQuery(2), true
+                )
 
-        onTabSelected()
+                2 -> TaskListFragment.newInstance(
+                    getTaskQuery(3), true
+                )
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                page = tab.position
-                //因供用一个recyclerView，所以当切换page时要设置相应的adapter
-                onTabSelected()
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-
-            }
-        })
-
-    }
-
-
-    fun onTabSelected() {
-
-        when (page) {
-            0 -> {
-                recyclerView.adapter = adapter1
-                adapter1.notifyDataSetChanged()
-                auditStatus = 1
-            }
-
-            1 -> {
-                recyclerView.adapter = adapter2
-                adapter2.notifyDataSetChanged()
-                auditStatus = 2
-            }
-
-            2 -> {
-                recyclerView.adapter = adapter3
-                adapter3.notifyDataSetChanged()
-                auditStatus = 3
-            }
-
-            3 -> {
-                recyclerView.adapter = adapter4
-                adapter4.notifyDataSetChanged()
-                auditStatus = 4
-            }
-        }
-        loadData(false)
-
-
-    }
-
-
-    private fun initData() {
-
-        page = 0;//当前选择page  0为第一项：置顶
-        current1 = 1;//当前选择page1加载页
-        current2 = 1;//当前选择page2加载页
-        current3 = 1;//当前选择page3加载页
-        current4 = 1;//当前选择page4加载页
-        auditStatus = 1//当前选择的子项状态 默认加载待提交
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        initData()
-        // 执行刷新操作
-        refresh()
-
-    }
-
-    private fun loadDone(it: MutableList<Task>) {
-        // 停止刷新动画
-        swiper.isRefreshing = false
-        if (it.isEmpty() && recyclerView.isLoadMore()) {
-//            showToast("没有更多了！")
-        } else {
-            when (page) {
-                0 -> if (recyclerView.isLoadMore()) adapter1.addData(it)
-                else adapter1.upData(it)
-
-                1 -> if (recyclerView.isLoadMore()) adapter2.addData(it)
-                else adapter2.upData(it)
-
-                2 -> if (recyclerView.isLoadMore()) adapter3.addData(it)
-                else adapter3.upData(it)
-
-                3 -> if (recyclerView.isLoadMore()) adapter4.addData(it)
-                else adapter4.upData(it)
-            }
-        }
-    }
-
-    private fun loadData(isLoad: Boolean) {
-        when (page) {
-            0 -> if (adapter1.itemCount == 0 || isLoad) {
-                homeViewModel.getMyTaskList(auditStatus, current1)
-
-            }
-
-            1 -> if (adapter2.itemCount == 0 || isLoad) {
-                homeViewModel.getMyTaskList(auditStatus, current2)
-            }
-
-            2 -> if (adapter3.itemCount == 0 || isLoad) {
-                homeViewModel.getMyTaskList(auditStatus, current3)
-            }
-
-            else -> if (adapter4.itemCount == 0 || isLoad) {
-                homeViewModel.getMyTaskList(auditStatus, current4)
+                else -> TaskListFragment.newInstance(
+                    getTaskQuery(4), true
+                )
             }
         }
 
+        private fun getTaskQuery(status: Int): TaskQuery {
+            return TaskQuery(
+                null, 1, null, null, null, status, null
+            )
+        }
     }
+
 
     override fun getLayoutId(): Int {
-        return R.layout.activity_my_task
+        return R.layout.activity_my_task2
     }
 
     override fun getContentTitle(): String {
@@ -202,35 +94,4 @@ class MyTaskActivity : BaseActivity(), RefreshRecycleView.IOnScrollListener {
     override fun isShowBack(): Boolean {
         return true
     }
-
-    override fun onRefresh() {
-
-    }
-
-
-    override fun onLoadMore() {
-        when (page) {
-            0 -> current1 = current1.inc()
-            1 -> current2 = current2.inc()
-            2 -> current3 = current3.inc()
-            3 -> current4 = current4.inc()
-        }
-        loadData(true)
-    }
-
-    override fun onLoaded() {
-
-    }
-
-    private fun refresh() {
-        when (page) {
-            0 -> current1 = 1
-            1 -> current2 = 1
-            2 -> current3 = 1
-            3 -> current4 = 1
-        }
-        loadData(true)
-    }
-
-
 }

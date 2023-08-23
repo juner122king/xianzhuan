@@ -259,28 +259,20 @@
                 android:background="@drawable/radius_border_sys_notin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="12dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
+                    android:layout_marginStart="12dp"
                     android:background="@drawable/icon_notice2" />
-
-
-                <TextView
-                    android:id="@+id/tv_sysnotin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:visibility="gone" />
 
                 <com.lelezu.app.xianzhuan.ui.views.BulletinView
                     android:id="@+id/bv"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp" />
+                    android:layout_height="35dp" />
             </LinearLayout>
 
 

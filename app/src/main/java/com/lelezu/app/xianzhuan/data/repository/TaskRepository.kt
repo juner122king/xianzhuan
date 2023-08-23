@@ -34,60 +34,27 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取任务列表
     suspend fun apiGetTaskList(
-        query: TaskQuery,
-        isMyTask: Boolean = false
-    ): ApiResponse<ListData<Task>> =
-        withContext(Dispatchers.IO) {
-            val queryCond = query.queryCond
-            val current = query.current
-            val highPrice = query.highPrice
-            val lowPrice = query.lowPrice
-            val size = query.size
-            val taskStatus = query.taskStatus
-            val taskTypeId = query.taskTypeId
+        query: TaskQuery, isMyTask: Boolean = false
+    ): ApiResponse<ListData<Task>> = withContext(Dispatchers.IO) {
+        val queryCond = query.queryCond
+        val current = query.current
+        val highPrice = query.highPrice
+        val lowPrice = query.lowPrice
+        val size = query.size
+        val taskStatus = query.taskStatus
+        val taskTypeId = query.taskTypeId
 
-            val call = if (isMyTask) {
-                apiService.getMyTaskList(
-                    queryCond,
-                    current,
-                    highPrice,
-                    lowPrice,
-                    size,
-                    taskStatus,
-                    taskTypeId,
-                    loginToken
-                )
-            } else {
-                apiService.getTaskList(
-                    queryCond,
-                    current,
-                    highPrice,
-                    lowPrice,
-                    size,
-                    taskStatus,
-                    taskTypeId,
-                    loginToken
-                )
-            }
-
-            executeApiCall(call)
-        }
-
-    //获取我的任务列表
-    suspend fun apiGetMyTaskList(query: TaskQuery): ApiResponse<ListData<Task>> =
-        withContext(Dispatchers.IO) {
-            val queryCond = query.queryCond
-            val current = query.current
-            val highPrice = query.highPrice
-            val lowPrice = query.lowPrice
-            val size = query.size
-            val taskStatus = query.taskStatus
-            val taskTypeId = query.taskTypeId
-            val call = apiService.getMyTaskList(
+        val call = if (isMyTask) {
+            apiService.getMyTaskList(
                 queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId, loginToken
             )
-            executeApiCall(call)
+        } else {
+            apiService.getTaskList(
+                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId, loginToken
+            )
         }
+        executeApiCall(call)
+    }
 
     //获取任务类型列表
     suspend fun apiGetTaskTypeList(): ApiResponse<List<TaskType>> = withContext(Dispatchers.IO) {
@@ -104,8 +71,8 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
 
     //任务详情
-    suspend fun apiTaskDetails(taskId: String): ApiResponse<Task> = withContext(Dispatchers.IO) {
-        val call = apiService.getTaskInfo(taskId, loginToken)
+    suspend fun apiTaskDetails(taskId: String,applyLogId: String?=null): ApiResponse<Task> = withContext(Dispatchers.IO) {
+        val call = apiService.getTaskInfo(taskId, applyLogId,loginToken)
         executeApiCall(call)
     }
 

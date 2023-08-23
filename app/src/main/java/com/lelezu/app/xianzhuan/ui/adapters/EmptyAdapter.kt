@@ -14,6 +14,7 @@ abstract class EmptyAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter
     private var emptyView: View? = null
     private var recyclerView: RecyclerView? = null
 
+
     private val observer: RecyclerView.AdapterDataObserver =
         object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
@@ -28,6 +29,9 @@ abstract class EmptyAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter
                 checkIfEmpty()
             }
         }
+
+
+
 
     fun setEmptyView(view: View) {
 

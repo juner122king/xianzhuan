@@ -27,10 +27,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel() {
 
     // 定义一个 MutableLiveData 来保存任务列表
-    val taskList: MutableLiveData<MutableList<Task>> = MutableLiveData()
-
-    // 我的任务列表
-    val myTaskList: MutableLiveData<MutableList<Task>> = MutableLiveData()
+    val taskList: MutableLiveData<MutableList<Task>> = SingleLiveEvent()
 
 
     val shuffleList: MutableLiveData<MutableList<Task>> = MutableLiveData()
@@ -48,24 +45,13 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
 
     // 获取任务列表数据 简单查询条件
-    fun getTaskList(taskQuery: TaskQuery, isMyTask: Boolean=false) = viewModelScope.launch {
+    fun getTaskList(taskQuery: TaskQuery, isMyTask: Boolean = false) = viewModelScope.launch {
         val apiListResponse = taskRepository.apiGetTaskList(
             taskQuery, isMyTask
         )
         handleApiListResponse(apiListResponse, taskList)
     }
 
-
-    // 获取《我的》任务列表数据 简单查询条件
-    fun getMyTaskList(auditStatus: Int, current: Int) = viewModelScope.launch {
-        val apiListResponse = taskRepository.apiGetMyTaskList(
-            TaskQuery(
-                null, current, null, null, null, auditStatus, null
-            )
-        )
-        handleApiListResponse(apiListResponse, myTaskList)
-
-    }
 
     // 获取任务类型数据
     fun getTaskTypeList() = viewModelScope.launch {
@@ -77,15 +63,14 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     // 随机为用户推荐3个任务
     fun getShuffle() = viewModelScope.launch {
         val r = taskRepository.apiShuffle()
-
         handleApiResponse(r, shuffleList)
 
     }
 
 
     // 获取任务详情
-    fun getTaskDetails(taskId: String) = viewModelScope.launch {
-        val r = taskRepository.apiTaskDetails(taskId)
+    fun getTaskDetails(taskId: String, applyLogId: String? = null) = viewModelScope.launch {
+        val r = taskRepository.apiTaskDetails(taskId, applyLogId)
 
         handleApiResponse(r, task)
 

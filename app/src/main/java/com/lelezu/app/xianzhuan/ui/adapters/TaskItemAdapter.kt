@@ -24,7 +24,7 @@ class TaskItemAdapter(
     private var items: MutableList<Task>,
     var activity: Context,
     private var isShowTopView: Boolean = false
-) : EmptyAdapter<TaskItemAdapter.ItemViewHolder>() {
+) : EmptyAdapter<RecyclerView.ViewHolder>() {
 
     private val statusMap = mapOf(
         0 to "未报名", 1 to "待提交", 2 to "审核中", 3 to "审核通过", 4 to "审核被否", 5 to "已取消"
@@ -80,81 +80,107 @@ class TaskItemAdapter(
         val line: View = itemView.findViewById(R.id.line)//topView
         val tvTime: TextView = itemView.findViewById(R.id.tv_time)//时间
         val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
-
-
         val doneView: View = itemView.findViewById(R.id.tvv)//去完成按钮
-
-
     }
+//
+//    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+//        val tvNm: TextView = itemView.findViewById(R.id.tv_not_more)
+//    }
 
     // 创建视图，并返回 ItemViewHolder
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
+
+//        if (viewType == viewTypeITEM) {
         val view = LayoutInflater.from(parent.context).inflate(
             if (isShowTopView) R.layout.task_list_item_layout else R.layout.home_task_list_item_layout,
             parent,
             false
         )
         return ItemViewHolder(view)
+//        } else {
+//            val view =
+//                LayoutInflater.from(parent.context).inflate(R.layout.item_footer, parent, false)
+//            FooterViewHolder(view)
+//        }
+
     }
+
 
     // 绑定数据到 ItemViewHolder
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val item = items[position]
-        holder.nameTextView.text = item.taskTitle
-        holder.shangJiTv.text = "${item.unitPrice}元"
-        holder.tvEarnedCount.text = "${item.earnedCount}人已赚"
-        holder.tvTR.text = "剩余${item.rest}个"
-        if (item.taskLabel == null) {
-            holder.tvTaskLabel.visibility = View.GONE
-            holder.tvTaskLabel2.visibility = View.GONE
-        } else {
-            holder.tvTaskLabel.text = item.taskTypeTitle
-            holder.tvTaskLabel.visibility = View.VISIBLE
-            holder.tvTaskLabel2.text = item.taskLabel
-            holder.tvTaskLabel2.visibility = View.VISIBLE
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ItemViewHolder) {
+            val item = items[position]
+
+            // 绑定普通视图的数据和事件
+            holder.nameTextView.text = item.taskTitle
+            holder.shangJiTv.text = "${item.unitPrice}元"
+            holder.tvEarnedCount.text = "${item.earnedCount}人已赚"
+            holder.tvTR.text = "剩余${item.rest}个"
+            if (item.taskLabel == null) {
+                holder.tvTaskLabel.visibility = View.GONE
+                holder.tvTaskLabel2.visibility = View.GONE
+            } else {
+                holder.tvTaskLabel.text = item.taskTypeTitle
+                holder.tvTaskLabel.visibility = View.VISIBLE
+                holder.tvTaskLabel2.text = item.taskLabel
+                holder.tvTaskLabel2.visibility = View.VISIBLE
+            }
+
+
+            //整个itemView能点击
+            holder.clickVIew.setOnClickListener {
+                val intent = Intent(activity, TaskDetailsActivity::class.java)
+                intent.putExtra("taskId", items[position].taskId)
+                intent.putExtra("applyLogId", items[position].applyLogId)
+                intent.putExtra(TAGMYTASK, isShowTopView)
+                activity.startActivity(intent)
+            }
+
+            //处理topView显示
+
+            if (isShowTopView) {
+
+                val statusText = statusMap[item.auditStatus] ?: "未知状态"
+                val statusTimeText = statusTimeMap[item.auditStatus] ?: "未知"
+                // 设置文本颜色
+                val statusColor = colorMap[item.auditStatus] ?: R.color.colorControlActivated
+                val resolvedColor = ContextCompat.getColor(activity, statusColor)
+
+
+                holder.lTopView.visibility = View.VISIBLE
+                holder.line.visibility = View.VISIBLE
+                holder.tvTime.text = statusTimeText + item.operateTime
+                holder.tvTaskStatus.text = statusText
+                holder.tvTaskStatus.setTextColor(resolvedColor)
+
+                holder.doneView.visibility = View.GONE
+
+            } else {
+                holder.lTopView.visibility = View.GONE
+                holder.line.visibility = View.GONE
+                holder.doneView.visibility = View.VISIBLE
+            }
         }
-
-
-        //整个itemView能点击
-        holder.clickVIew.setOnClickListener {
-            val intent = Intent(activity, TaskDetailsActivity::class.java)
-            intent.putExtra("taskId", items[position].taskId)
-            intent.putExtra(TAGMYTASK, isShowTopView)
-            activity.startActivity(intent)
-        }
-
-        //处理topView显示
-
-        if (isShowTopView) {
-
-            val statusText = statusMap[item.auditStatus] ?: "未知状态"
-            val statusTimeText = statusTimeMap[item.auditStatus] ?: "未知"
-            // 设置文本颜色
-            val statusColor = colorMap[item.auditStatus] ?: R.color.colorControlActivated
-            val resolvedColor = ContextCompat.getColor(activity, statusColor)
-
-
-            holder.lTopView.visibility = View.VISIBLE
-            holder.line.visibility = View.VISIBLE
-            holder.tvTime.text = statusTimeText + item.operateTime
-            holder.tvTaskStatus.text = statusText
-            holder.tvTaskStatus.setTextColor(resolvedColor)
-
-            holder.doneView.visibility = View.GONE
-
-        } else {
-            holder.lTopView.visibility = View.GONE
-            holder.line.visibility = View.GONE
-            holder.doneView.visibility = View.VISIBLE
-        }
-
 
     }
 
     // 返回数据项数量
     override fun getItemCount(): Int {
+//        return items.size + 1
         return items.size
     }
+
+
+//    private val viewTypeITEM = 0
+//    private val viewTypeFOOTER = 1//页脚
+//    override fun getItemViewType(position: Int): Int {
+//        return if (position >= itemCount - 1) {
+//            viewTypeFOOTER
+//        } else {
+//            viewTypeITEM
+//        }
+//    }
 
 }

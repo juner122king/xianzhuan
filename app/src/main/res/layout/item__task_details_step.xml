@@ -7,8 +7,8 @@
 
     <TextView
         android:id="@+id/tv_step"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:background="@drawable/radius_border_button2"
         android:gravity="center"
         android:text="1"
@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/tv_step_text"
-        android:layout_width="280dp"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="进去页面后右上角三条杠，分享二维码点进去。"

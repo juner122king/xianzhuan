@@ -12,13 +12,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -42,7 +39,6 @@ class WebViewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         context = this
         wv = findViewById(R.id.webView)
-
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
         Log.i("WebView_URL",  link)
@@ -51,6 +47,7 @@ class WebViewActivity : BaseActivity() {
             //显示简单的用户协议页面
             wv.setInitialScale(200)
             wv.loadUrl(link)
+
             return
         }
 
