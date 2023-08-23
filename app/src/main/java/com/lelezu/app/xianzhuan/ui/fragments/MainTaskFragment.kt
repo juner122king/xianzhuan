@@ -57,7 +57,7 @@ class MainTaskFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         //启用嵌套滚动
 //        recyclerView.isNestedScrollingEnabled = false
         // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel._taskList.observe(viewLifecycleOwner) {
+        homeViewModel.taskList.observe(viewLifecycleOwner) {
             loadDone(it)
         }
         // 初始加载

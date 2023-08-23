@@ -33,7 +33,10 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
 
     //获取任务列表
-    suspend fun apiGetTaskList(query: TaskQuery): ApiResponse<ListData<Task>> =
+    suspend fun apiGetTaskList(
+        query: TaskQuery,
+        isMyTask: Boolean = false
+    ): ApiResponse<ListData<Task>> =
         withContext(Dispatchers.IO) {
             val queryCond = query.queryCond
             val current = query.current
@@ -42,9 +45,31 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
             val size = query.size
             val taskStatus = query.taskStatus
             val taskTypeId = query.taskTypeId
-            val call = apiService.getTaskList(
-                queryCond, current, highPrice, lowPrice, size, taskStatus, taskTypeId, loginToken
-            )
+
+            val call = if (isMyTask) {
+                apiService.getMyTaskList(
+                    queryCond,
+                    current,
+                    highPrice,
+                    lowPrice,
+                    size,
+                    taskStatus,
+                    taskTypeId,
+                    loginToken
+                )
+            } else {
+                apiService.getTaskList(
+                    queryCond,
+                    current,
+                    highPrice,
+                    lowPrice,
+                    size,
+                    taskStatus,
+                    taskTypeId,
+                    loginToken
+                )
+            }
+
             executeApiCall(call)
         }
 
@@ -92,12 +117,13 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
     }
 
     // 任务提交
-    suspend fun apiTaskSubmit(taskSubmit: TaskSubmit):  ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.taskSubmit(
-            taskSubmit, loginToken
-        )
-        executeApiCall(call)
-    }
+    suspend fun apiTaskSubmit(taskSubmit: TaskSubmit): ApiResponse<Boolean> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.taskSubmit(
+                taskSubmit, loginToken
+            )
+            executeApiCall(call)
+        }
 
     // 上传图片
     suspend fun apiUpload(imagePath: String): ApiResponse<String> = withContext(Dispatchers.IO) {

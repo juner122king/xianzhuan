@@ -1,17 +1,21 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.StrictMode.VmPolicy.Builder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
 import com.lelezu.app.xianzhuan.utils.LogUtils
 
-private const val ARG_PARAM1 = "auditStatus"
+private const val ARG_PARAM = "TaskQuery"
+private const val ARG_PARAM2 = "isMyTask"
 
 /**
  * @author:Administrator
@@ -23,16 +27,18 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
     private lateinit var recyclerView: RefreshRecycleView //下拉刷新RecycleView
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
-
-    private var current: Int = 1//当前加载页
-
     private lateinit var adapter: TaskItemAdapter
+    private lateinit var taskQuery: TaskQuery // 获取任任务列表的请求体
 
-    private var auditStatus = 1//当前选择的子项状态 默认加载待提交
+    private var isMyTask: Boolean = false// 列表的显示类型
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            auditStatus = it.getInt(ARG_PARAM1)
+            isMyTask = it.getBoolean(ARG_PARAM2)
+            taskQuery = when {
+                SDK_INT >= 33 -> it.getParcelable(ARG_PARAM, TaskQuery::class.java)!!
+                else -> it.getParcelable(ARG_PARAM)!!
+            }
         }
     }
 
@@ -41,18 +47,17 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     ): View? {
         return inflater.inflate(R.layout.rv_layout, container, false)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recyclerView)
         swiper = view.findViewById(R.id.swiper)
-
 
         swiper.setColorSchemeResources(R.color.colorControlActivated)
         swiper.setOnRefreshListener {
             // 执行刷新操作
             refresh()
         }
-
 
         adapter = TaskItemAdapter(mutableListOf(), requireActivity(), true)
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
@@ -76,7 +81,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     private fun observeList() {
-        homeViewModel.myTaskList.observe(viewLifecycleOwner) {
+        homeViewModel.taskList.observe(viewLifecycleOwner) {
             LogUtils.i(it.toString())
             loadDone(it)
         }
@@ -93,11 +98,15 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     private fun loadData() {
-        homeViewModel.getMyTaskList(auditStatus, current)
+
+
+        homeViewModel.getTaskList(
+            taskQuery, true
+        )
     }
 
     private fun refresh() {
-        current = 1
+        taskQuery.current = 1
         loadData()
     }
 
@@ -105,7 +114,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     override fun onLoadMore() {
-        current = current.inc()//页数+1
+        taskQuery.current = taskQuery.current.inc()//页数+1
         loadData()
     }
 
@@ -115,10 +124,11 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     companion object {
 
         @JvmStatic
-        fun newInstance(auditStatus: Int) =
+        fun newInstance(taskQuery: TaskQuery, isMyTask: Boolean) =
             TaskListFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_PARAM1, auditStatus)
+                    putParcelable(ARG_PARAM, taskQuery)
+                    putBoolean(ARG_PARAM2, isMyTask)
                 }
             }
     }

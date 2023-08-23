@@ -105,7 +105,7 @@ class DashFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
 
         // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel._taskList.observe(viewLifecycleOwner) {
+        homeViewModel.taskList.observe(viewLifecycleOwner) {
 
             loadDone(it)
         }

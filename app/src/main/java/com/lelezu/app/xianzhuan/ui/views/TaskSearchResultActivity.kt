@@ -40,7 +40,7 @@ class TaskSearchResultActivity : BaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // 观察 ViewModel 中的任务列表数据变化
-        homeViewModel._taskList.observe(this) { itemList ->
+        homeViewModel.taskList.observe(this) { itemList ->
             // 数据变化时更新 RecyclerView
 
 
@@ -64,7 +64,7 @@ class TaskSearchResultActivity : BaseActivity() {
 
 
         //数据为空的时候
-        homeViewModel.errMessage.observe(this){
+        homeViewModel.emptyListMessage.observe(this){
             showNotResult()
         }
     }
@@ -91,7 +91,7 @@ class TaskSearchResultActivity : BaseActivity() {
         val lowPrice = bundle?.getFloat("lowPrice")
         val taskTypeId = bundle?.getString("taskTypeId")
 
-        return TaskQuery(queryCondCOMBO, null, highPrice, lowPrice, 9999, null, taskTypeId)
+        return TaskQuery(queryCondCOMBO, 1, highPrice, lowPrice, 9999, null, taskTypeId)
     }
 
 
