@@ -4,15 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondCOMBO
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 
 class TaskSearchResultActivity : BaseActivity() {
 
@@ -21,8 +18,6 @@ class TaskSearchResultActivity : BaseActivity() {
     private lateinit var amountTextView: TextView
     private lateinit var notResulView: View
     private lateinit var adapter: TaskItemAdapter
-
-
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {

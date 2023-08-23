@@ -44,6 +44,7 @@ class MyTaskActivity2 : BaseActivity() {
             tab.text = tabTextList[position]
         }.attach()
 
+        viewPager.setCurrentItem(intent.getIntExtra("selectedTab", 0), false)//打开哪一页面
     }
 
 
@@ -52,6 +53,7 @@ class MyTaskActivity2 : BaseActivity() {
         override fun getItemCount(): Int {
             return 4
         }
+
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 //	提交完成任务状态(0-未报名 1-待提交 2-审核中 3-审核通过 4-审核被否 5-手动取消 6-超时取消)

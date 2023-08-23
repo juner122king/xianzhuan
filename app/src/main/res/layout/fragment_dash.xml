@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.fragments.DashFragment">
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_task_list"
         android:layout_width="match_parent"
@@ -20,34 +19,11 @@
         app:tabRippleColor="@android:color/transparent"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/black"
-        app:tabTextColor="@color/text_s" >
+        app:tabTextColor="@color/text_s" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/dashboard_tab1_text" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/dashboard_tab2_text" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/dashboard_tab3_text" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/dashboard_tab4_text" />
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <include layout="@layout/rv_layout" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/task_vp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

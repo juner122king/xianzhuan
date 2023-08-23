@@ -146,8 +146,6 @@ Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/UserInfo.kt,5\f\5f2cfae8
 Mapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/HomeActivityAdapter.kt,b\0\b0bd2b24957bcc501782ce9bd1bcaa2e0e9dcd6a
 s
 Capp/src/main/java/com/lelezu/app/xianzhuan/ui/h5/WebViewSettings.kt,3\0\30e2e18fbb5d10e076880ee866dd8bc677a8592a
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 z
 Japp/src/main/java/com/lelezu/app/xianzhuan/dun163api/PhoneLoginActivity.kt,7\c\7c61794e1cdb31570eb134ed429f0f041ad4357b
 m
@@ -178,8 +176,6 @@ Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/WebViewActivity.kt,9\a\9aa
 Papp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/TaskDetailsStepAdapter.kt,d\d\ddae46633f118c83ab2319dcd083757fddc16c12
 
 Oapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/TaskVerifyStepAdapter.kt,1\6\162a07dd47a08b7dc3c5a8b85858429f5e5693df
-s
-Capp/src/main/java/com/lelezu/app/xianzhuan/ui/views/HomeActivity.kt,5\9\599c3bfd2fb4d0d1f8ba2e84d6692fc143326458
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskStep.kt,4\b\4ba93c54da03fb5c1817bc2e2b5dc29d951e6aca
 l
@@ -192,23 +188,11 @@ m
 =app/src/main/java/com/lelezu/app/xianzhuan/utils/ShareUtil.kt,0\1\0108e3391273249c745e4ddb2bcd85a13f1dbc9b
 u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/LaunchActivity.kt,5\f\5fb84bcebd317cdb77735d4dd8a17ce92e2b5372
-m
-=app/src/main/java/com/lelezu/app/xianzhuan/data/ApiFactory.kt,2\7\273a62cdcf1a6feac254f4c68d7ab0425a18cbbb
 t
 Dapp/src/main/java/com/lelezu/app/xianzhuan/data/model/ErrResponse.kt,a\c\acf61d1aa39eaa80e5fd278a634d24d2a69901c7
 k
 ;app/src/main/java/com/lelezu/app/xianzhuan/MyApplication.kt,3\8\38d9059c3d7dc67ec6a7fcb1792072f8f2379998
-o
-?app/src/main/java/com/lelezu/app/xianzhuan/data/ApiConstants.kt,5\9\59f7456c2a3f4a9efb43f2da59c6628534ac645e
-m
-=app/src/main/java/com/lelezu/app/xianzhuan/data/model/Task.kt,0\d\0d0fa110d7e4a55584d95ae3e7569caa2bf6c518
-z
-Japp/src/main/java/com/lelezu/app/xianzhuan/ui/views/TaskDetailsActivity.kt,6\8\6807d6cbf2a43fc2a3cf4d5fba360c32a939fd76
 s
 Capp/src/main/java/com/lelezu/app/xianzhuan/ui/views/BaseActivity.kt,c\2\c2ba875a3d425cd4a16b32f4890d23adcfba6122
 u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/BulletinView.java,c\8\c8619fe294e5b2d19a6777f994d0e5186136d2d4
-u
-Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/fragments/MyFragment.kt,6\8\688ad6e11d664e2d6fc470b571d3ec90cd1b14f9
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e

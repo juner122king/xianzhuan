@@ -109,7 +109,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             showToast(if (it) "报名成功" else "报名失败")
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
-                taskDetails(task.taskId)
+                taskDetails(task.taskId,task.applyLogId)
             }
         }
 
@@ -119,8 +119,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     }
 
-    private fun taskDetails(taskId: String) {
-        homeViewModel.getTaskDetails(taskId)
+    private fun taskDetails(taskId: String,applyId:String?=null) {
+        homeViewModel.getTaskDetails(taskId,applyId)
     }
 
 
@@ -222,7 +222,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun changeView(task: Task) {
 
-        if (isMyTask) {  //我的任务详情，根据auditStatus改变UI
+//        if (isMyTask) {  //我的任务详情，根据auditStatus改变UI
             when (task.auditStatus) {
                 //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
                 0 -> {
@@ -262,13 +262,13 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                 }
             }
-        }else{
-            //任务大厅的任务详情
-            findViewById<View>(R.id.ll_status).visibility = View.GONE
-            findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-            setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
-
-        }
+//        }else{
+//            //任务大厅的任务详情
+//            findViewById<View>(R.id.ll_status).visibility = View.GONE
+//            findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+//            setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
+//
+//        }
     }
 
 

@@ -15,6 +15,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
+import com.lelezu.app.xianzhuan.data.model.TaskQuery
+import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
@@ -49,8 +51,8 @@ class MainFragment : BaseFragment(), OnClickListener {
         viewPager = view.findViewById(R.id.task_vp)
         pagerAdapter = MyPagerAdapter(this)
 
-
         viewPager.adapter = pagerAdapter
+
 
         tabLayout = view.findViewById(R.id.tab_task_list)
 
@@ -140,21 +142,6 @@ class MainFragment : BaseFragment(), OnClickListener {
 
 
     private fun initTaskTabLayout() {
-        // 创建一个新的Tab对象
-        val newTab = tabLayout.newTab()
-        // 设置Tab的文本内容
-        newTab.text = tabTextList[0]
-        tabLayout.addTab(newTab)
-
-        // 创建一个新的Tab对象 DK任务列表
-        val newTab1 = tabLayout.newTab()
-        // 创建一个新的Tab对象
-        val newTab2 = tabLayout.newTab()
-
-        // 将新的Tab添加到TabLayout中
-        tabLayout.addTab(newTab1)
-        tabLayout.addTab(newTab2)
-
         // 将TabLayout与ViewPager2关联起来
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabTextList[position]
@@ -205,7 +192,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         private val createdIds = hashSetOf<Long>()
 
         override fun getItemCount(): Int {
-            return if (true) 3 else 4
+            return 3
         }
 
         override fun getItemId(position: Int): Long {
@@ -224,7 +211,11 @@ class MainFragment : BaseFragment(), OnClickListener {
                 fid3 -> EmptyFragment()
                 fid4 -> zjTask.loadCPAFragmentAd()
                 fid5 -> zjTask.loadCPLFragmentAd()
-                else -> MainTaskFragment.newInstance()
+                else -> TaskListFragment.newInstance(
+                    TaskQuery(
+                        TaskRepository.queryCondLATEST
+                    )
+                )
             }
         }
     }

@@ -47,9 +47,9 @@ interface ApiService {
     fun getRelated(@Header("Authorization") token: String): Call<ApiResponse<Related>>
 
 
-    @GET("/dxz/app/task/page/details/{taskId}")//获取任务详情
+    @GET("/dxz/app/task/page/details/")//获取任务详情
     fun getTaskInfo(
-        @Path("taskId") id: String, @Header("Authorization") token: String
+        @Query("taskId") id: String, @Query("applyLogId") applyLogId: String?=null, @Header("Authorization") token: String
     ): Call<ApiResponse<Task>>
 
     @POST("/dxz/app/task/user/apply")//任务报名
