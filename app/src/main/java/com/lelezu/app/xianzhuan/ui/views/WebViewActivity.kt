@@ -41,7 +41,7 @@ class WebViewActivity : BaseActivity() {
         wv = findViewById(R.id.webView)
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
-        Log.i("WebView_URL",  link)
+        Log.i("WebView_URL", link)
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
             //显示简单的用户协议页面
@@ -114,7 +114,6 @@ class WebViewActivity : BaseActivity() {
             }
 
 
-
     }
 
 
@@ -179,9 +178,9 @@ class WebViewActivity : BaseActivity() {
             // 获取内容URI对应的文件路径
             val thread = Thread {
                 val imageData = Base64Utils.zipPic(it)
-                wv.post {
+                if (imageData != null && imageData.length > 1000 * 2000) showToast("图片不能超过2MB,请重新选择！")
+                else wv.post {
                     Log.i("H5调原生:", "图片字节码长度:${imageData?.length}")
-                    Log.i("H5调原生:", "图片字节码:${imageData}")
                     wv.callHandler("showSelectedImage", imageData) {
                         //可以在这里弹出提示
                     }
@@ -217,15 +216,15 @@ class WebViewActivity : BaseActivity() {
     override fun isShowBack(): Boolean {
         return true
     }
-    protected fun showPermissionAlertDialog(message: String,negaString:String) {
-        val alertDialog =
-            AlertDialog.Builder(this).setTitle("权限请求").setMessage(message)
-                .setPositiveButton("前往设置开启权限") { _, _ ->
-                    openAppSettings()
-                }.setNegativeButton("取消") { dialog, _ ->
-                    showToast(negaString)
-                    dialog.dismiss()
-                }.create()
+
+    protected fun showPermissionAlertDialog(message: String, negaString: String) {
+        val alertDialog = AlertDialog.Builder(this).setTitle("权限请求").setMessage(message)
+            .setPositiveButton("前往设置开启权限") { _, _ ->
+                openAppSettings()
+            }.setNegativeButton("取消") { dialog, _ ->
+                showToast(negaString)
+                dialog.dismiss()
+            }.create()
 
         alertDialog.show()
     }

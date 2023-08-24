@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
+import android.util.Log
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import java.io.ByteArrayOutputStream
 
@@ -18,11 +19,11 @@ object Base64Utils {
 
     fun zipPic(uri: Uri): String? {
         val bitmap = decodeUriToBitmap(uri)
-
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
         bitmap?.recycle()
         val byteArray = byteArrayOutputStream.toByteArray()
+        Log.i("H5调原生:", "byteArray长度:${byteArray.size}")
         return Base64.encodeToString(byteArray, Base64.NO_WRAP)
     }
 
