@@ -23,5 +23,5 @@ data class TaskUploadVerify(
     val verifyDesc: String?,
     val verifyId: String?,
     var uploadImage: String,
-    var uploadValue: String = ""
+    var uploadValue: String?
 )

@@ -16,6 +16,7 @@ import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import kotlinx.coroutines.launch
 
 /**
@@ -87,20 +88,29 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
 
     // 任务提交
-    fun apiTaskSubmit(applyLogId: String, verifys: List<TaskUploadVerify>) = viewModelScope.launch {
+    fun apiTaskSubmit(applyLogId: String?, verifys: List<TaskUploadVerify>?) =
+        viewModelScope.launch {
 
-        Log.i("验证信息", verifys.toString())
-        val isUploadValueEmpty = verifys.all { verify ->
-            verify.uploadValue?.isNotEmpty() ?: false
-        }
-        if (isUploadValueEmpty) {
-            val r = taskRepository.apiTaskSubmit(TaskSubmit(applyLogId, verifys))
-            handleApiResponse(r, isUp)
+            if (verifys == null) {
+                errMessage.postValue(ErrResponse(null, "请上传相关验证内容！"))
 
-        } else {
-            errMessage.postValue(ErrResponse(null, "验证内容不完整！"))
+            } else {
+                LogUtils.i(verifys.toString())
+
+                val isUploadValueEmpty = verifys.any { verify ->
+                    verify.uploadValue==null
+                }
+                if (!isUploadValueEmpty) {
+                    val r = taskRepository.apiTaskSubmit(TaskSubmit(applyLogId, verifys))
+                    handleApiResponse(r, isUp)
+
+                } else {
+                    errMessage.postValue(ErrResponse(null, "验证内容不完整！"))
+                }
+            }
+
+
         }
-    }
 
     // 上传图片接口
     fun apiUpload(uri: Uri) = viewModelScope.launch {

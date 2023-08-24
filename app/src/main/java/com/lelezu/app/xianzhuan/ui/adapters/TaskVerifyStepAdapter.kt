@@ -73,6 +73,8 @@ class TaskVerifyStepAdapter(
         val btmUpPic: View = itemView.findViewById(R.id.tv_up_pic)//上传图片按键
         val line: View = itemView.findViewById(R.id.line)//垂直线
         val tvTr: TextView = itemView.findViewById(R.id.tv_tr)//角标说明
+
+        val viewUrl: View = itemView.findViewById(R.id.tv_web_url)//链接区域
     }
 
     // 创建视图，并返回 ItemViewHolder
@@ -88,7 +90,7 @@ class TaskVerifyStepAdapter(
         val item = items[position]
         holder.title.text = item.verifyDesc
         holder.step.text = ("${position + 1}").toString()
-
+        holder.viewUrl.visibility = View.GONE
         if (item.verifyType == 1) {//验证步骤是否为图片类型
 
             holder.fCasePic.visibility = View.VISIBLE

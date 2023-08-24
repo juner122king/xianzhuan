@@ -18,9 +18,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils
@@ -37,7 +39,7 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
 abstract class BaseActivity : AppCompatActivity() {
 
 
-    protected var mBack: LinearLayout? = null
+    public var mBack: LinearLayout? = null
     private var mTvTitle: TextView? = null
     private var mTvRight: TextView? = null
     private var mRltBase: RelativeLayout? = null
@@ -137,6 +139,15 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
+    public fun showBack(){
+        mBack!!.visibility = View.VISIBLE
+    }
+    public fun hideBack(){
+        mBack!!.visibility = View.GONE
+    }
+
+
+
     fun showRightText(text: String) {
         mTvRight!!.text = text
         mTvRight!!.visibility = View.VISIBLE
@@ -214,8 +225,6 @@ abstract class BaseActivity : AppCompatActivity() {
     private val rc: Int = 123
     protected fun checkPermissionRead() {
 
-
-        LogUtils.i("打开相册  android级别：${Build.VERSION.SDK_INT}")
         // 检查图片权限
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.READ_EXTERNAL_STORAGE
@@ -262,4 +271,5 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         }
     }
+
 }

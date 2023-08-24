@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
@@ -41,6 +42,15 @@ class WebViewActivity : BaseActivity() {
         wv = findViewById(R.id.webView)
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
+        //设置标题
+        wv.webChromeClient = object : WebChromeClient() {
+            override fun onReceivedTitle(view: WebView?, title: String?) {
+                super.onReceivedTitle(view, title)
+                if (title != null) {
+                    setTitleText(title)
+                }
+            }
+        }
         Log.i("WebView_URL", link)
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
@@ -76,11 +86,14 @@ class WebViewActivity : BaseActivity() {
             }
         })
 
+        //返回监听
         super.mBack!!.setOnClickListener { backOrFinish() }
 
 
-        if (link == WebViewSettings.link8)//充值页面才添加拦截
-        //添加uri拦截
+
+
+
+        if (link == WebViewSettings.link8) {//充值页面才添加拦截
             wv.webViewClient = object : WebViewClient() {
                 @Deprecated("Deprecated in Java", ReplaceWith("false"))
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -110,19 +123,15 @@ class WebViewActivity : BaseActivity() {
                     }
                     view.loadUrl(url)
                     return true
-                }
+                }//拦截支付宝
             }
+        }
+
+
+
 
 
     }
-
-
-    private fun openAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.fromParts("package", packageName, null)
-        startActivity(intent)
-    }
-
 
     fun backOrFinish() {
         if (wv.canGoBack()) {
@@ -217,15 +226,4 @@ class WebViewActivity : BaseActivity() {
         return true
     }
 
-    protected fun showPermissionAlertDialog(message: String, negaString: String) {
-        val alertDialog = AlertDialog.Builder(this).setTitle("权限请求").setMessage(message)
-            .setPositiveButton("前往设置开启权限") { _, _ ->
-                openAppSettings()
-            }.setNegativeButton("取消") { dialog, _ ->
-                showToast(negaString)
-                dialog.dismiss()
-            }.create()
-
-        alertDialog.show()
-    }
 }

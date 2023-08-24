@@ -1,26 +1,16 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.Settings
 import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -68,6 +58,7 @@ class HomeActivity : BaseActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             hideRightText()
             showView()
+            hideBack()
             when (item.itemId) {
                 R.id.navigation_home -> {
                     viewPager.setCurrentItem(0, false)
@@ -76,21 +67,19 @@ class HomeActivity : BaseActivity() {
                 }
 
                 R.id.navigation_dashboard -> {
-//                    viewPager.currentItem = 1
                     viewPager.setCurrentItem(1, false)
                     showRightText(getString(R.string.dashboard_tab5_text))
                     setTitleText(getString(R.string.title_dashboard))
                 }
 
                 R.id.navigation_notifications -> {
-//                    viewPager.currentItem = 2
                     viewPager.setCurrentItem(2, false)
                     setTitleText(getString(R.string.title_notifications))
+
 
                 }
 
                 R.id.navigation_my -> {
-//                    viewPager.currentItem = 3
                     viewPager.setCurrentItem(3, false)
                     setTitleText(getString(R.string.title_my))
                     hideView()
@@ -112,6 +101,8 @@ class HomeActivity : BaseActivity() {
             }
         }
 
+
+
     }
 
     private fun initData() {
@@ -121,7 +112,7 @@ class HomeActivity : BaseActivity() {
         val dashFragment = DashFragment.newInstance()
         fragmentList.add(dashFragment)
 
-        val notificaFragment = NotificaFragment.newInstance()
+        val notificaFragment = NotificaFragment()
         fragmentList.add(notificaFragment)
 
         val myFragment = MyFragment.newInstance()

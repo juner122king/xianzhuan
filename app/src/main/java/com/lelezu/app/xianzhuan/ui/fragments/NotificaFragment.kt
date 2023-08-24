@@ -1,17 +1,14 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.R
@@ -19,11 +16,11 @@ import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
-import com.lelezu.app.xianzhuan.utils.LogUtils
-
 
 class NotificaFragment : Fragment() {
 
+    private lateinit var wv: BridgeWebView
+    private lateinit var link: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -35,18 +32,53 @@ class NotificaFragment : Fragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val wv: BridgeWebView = view.findViewById(R.id.webView)
+        wv = view.findViewById(R.id.webView)
 
         WebViewSettings.setDefaultWebSettings(wv)
         wv.addJavascriptInterface(MyJavaScriptInterface(requireActivity()), "Android")//注入方法
-        wv.loadUrl(WebViewSettings.host + link3)//最后才load
 
+        link = WebViewSettings.host + link3
+        wv.loadUrl(link)//最后才load
+
+        wv.webViewClient = object : WebViewClient() {
+            override fun onLoadResource(view: WebView?, url: String?) {
+                super.onLoadResource(view, url)
+                onIsShowBack()
+            }
+        }
 
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = NotificaFragment()
+    override fun onResume() {
+        super.onResume()
+        onIsShowBack()
+        //返回监听
+        (requireActivity() as HomeActivity).mBack!!.setOnClickListener { backOrFinish() }
+
+        // 处理返回键事件
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 在这里执行你的操作，比如弹出对话框或导航
+                // 如果你想拦截返回键事件，不执行默认操作，可以不调用super.handleOnBackPressed()
+                // 如果想执行默认的返回操作（比如退出当前 Fragment），调用super.handleOnBackPressed()
+                backOrFinish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    fun backOrFinish() {
+        if (wv.canGoBack()) {
+            if (wv.url.equals(link)) requireActivity().finish()
+            else wv.goBack()
+        } else requireActivity().finish()
+    }
+
+
+    fun onIsShowBack() {
+        if (wv.url.equals(WebViewSettings.host + link3)) (requireActivity() as HomeActivity).hideBack()
+        else (requireActivity() as HomeActivity).showBack()
+
     }
 
 

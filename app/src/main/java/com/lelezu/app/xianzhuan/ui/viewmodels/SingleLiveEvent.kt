@@ -22,7 +22,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
 
         if (hasActiveObservers()) {
-            LogUtils.w("注册了多个观察员，但只有一个会收到更改通知注册了多个观察员，但只有一个会收到更改通知")
+//            LogUtils.w("注册了多个观察员，但只有一个会收到更改通知注册了多个观察员，但只有一个会收到更改通知")
         }
 
         // Observe the internal MutableLiveData

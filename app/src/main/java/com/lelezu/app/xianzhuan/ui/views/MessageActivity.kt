@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.ui.adapters.MessageItemAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
+import com.lelezu.app.xianzhuan.utils.LogUtils
 
 class MessageActivity : BaseActivity() {
 
@@ -40,12 +42,13 @@ class MessageActivity : BaseActivity() {
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        sysMessageViewModel.liveData.observe(this) { it ->
-            // 数据变化时更新 RecyclerView
+        sysMessageViewModel.liveData.observe(this) {
+
+            LogUtils.i(it.toString())
             // 停止刷新动画
             swiper.isRefreshing = false
             adapter.updateData(it)
-            msgIds = it.filter { !it.isRead }.map { it.msgId }
+//            msgIds = it.filter { !it.isRead }.map { it.msgId }
         }
         sysMessageViewModel.getMessageList()
 

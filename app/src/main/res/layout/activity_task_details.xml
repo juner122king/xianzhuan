@@ -121,8 +121,8 @@
                     android:id="@+id/tv_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="状态：审核中"
                     android:textSize="16sp"
+                    android:textColor="@color/red"
                     android:textStyle="bold" />
 
                 <TextView
@@ -130,9 +130,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="状态：审核中文案"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:textColor="@color/red"
                     android:visibility="gone" />
 
 
