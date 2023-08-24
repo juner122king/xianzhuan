@@ -48,7 +48,7 @@ object WebViewSettings {
     var link12 = "/pages/personalData/index" //设置个人资料
 
     var link13 = "/pages/member/index" //开通会员
-    var link14 = "/pages/member/index" //接单规则
+    var link14 = "/pages/publishTask/publishingRule/index" //接单规则
 
 
     @SuppressLint("SetJavaScriptEnabled")

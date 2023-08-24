@@ -214,8 +214,6 @@ abstract class BaseActivity : AppCompatActivity() {
     private val rc: Int = 123
     protected fun checkPermissionRead() {
 
-
-        LogUtils.i("打开相册  android级别：${Build.VERSION.SDK_INT}")
         // 检查图片权限
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.READ_EXTERNAL_STORAGE

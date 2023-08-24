@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许改变网络连接状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许改变WiFi网络连接状态 -->
 
-
     <!-- 需要确保权限获取后再请求广告 -->
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"

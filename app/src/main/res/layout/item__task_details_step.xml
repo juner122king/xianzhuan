@@ -38,16 +38,43 @@
         app:layout_constraintStart_toEndOf="@id/tv_step"
         app:layout_constraintTop_toTopOf="@id/tv_step" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/tv_web_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:textSize="12sp"
-        android:visibility="visible"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
-        app:layout_constraintTop_toBottomOf="@id/tv_step_text" />
+        app:layout_constraintTop_toBottomOf="@id/tv_step_text">
+
+        <TextView
+            android:id="@+id/tv_go_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radius_border_button3"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:text="点击访问链接"
+            android:textColor="@color/text_check"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_copy_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/radius_border_button"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:text="点击复制链接"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/f_case_pic"

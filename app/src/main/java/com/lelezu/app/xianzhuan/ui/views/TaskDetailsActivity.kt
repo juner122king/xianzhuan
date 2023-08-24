@@ -35,27 +35,30 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     )
     private lateinit var ivDialog: Dialog
 
-
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
     private lateinit var taskVerifyRV: RecyclerView //验证列表
-
 
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
     private lateinit var adapterVerify: TaskVerifyStepAdapter//验证列表
 
     private lateinit var task: Task
 
-
     private var isMyTask: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        isMyTask = intent.getBooleanExtra(TAGMYTASK, false)//是否为我的任务详情，默认不是
+        initView()
+
+        initObserve()
+
+        //检查图片权限
+        checkPermissionRead()
+
+    }
 
 
-        //获取上个页面返回的TaskId再请求一次
-        taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
-
+    private fun initView() {
 
         //开始--示例图打开功能
         ivDialog = Dialog(this, R.style.FullActivity)
@@ -86,7 +89,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
 
+        //获取上个页面返回的TaskId再请求一次
+        taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
+        isMyTask = intent.getBooleanExtra(TAGMYTASK, false)//是否为我的任务详情，默认不是
+    }
 
+    private fun initObserve() {
         //监听任务信息变化
         homeViewModel.task.observe(this) {
             //初始化页面数据
@@ -98,9 +106,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             taskDetails(it[0].taskId)
         }
 
-
         //报名监听
         homeViewModel.isApply.observe(this) {
+            hideLoading()
             showToast(if (it) "报名成功" else "报名失败")
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
@@ -108,14 +116,16 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             }
         }
 
+        //任务提交监听
+        homeViewModel.isUp.observe(this) {
+            if (it) {
+                showToast("提交成功")
+                finish()
+            } else {
+                showToast("提交失败！")
+            }
+        }
 
-        //检查图片权限
-        checkPermissionRead()
-
-    }
-
-    private fun taskDetails(taskId: String, applyId: String? = null) {
-        homeViewModel.getTaskDetails(taskId, applyId)
     }
 
 
@@ -130,8 +140,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         findViewById<TextView>(R.id.tv_task_title).text = task.taskTitle //任务标题
         findViewById<TextView>(R.id.tv_task_des_c).text = task.taskDesc //任务说明
-
-
         val text1 =
             "<font color='#999999'>限时</font><font color='#FF5431'>${task.deadlineTime}</font><font color='#999999'>小时完成</font>"
         val text2 =
@@ -174,7 +182,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<TextView>(R.id.tv_name).text = it!!.nickname
         }
 
-
         //支持设备 ["0"]-安卓, ["1"]-苹果, []-全部
         if (task.supportDevices.size == 1) {
             when (task.supportDevices[0]) {
@@ -189,6 +196,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     }
 
+    private fun taskDetails(taskId: String, applyId: String? = null) {
+        homeViewModel.getTaskDetails(taskId, applyId)
+    }
 
     override fun onCreateContextMenu(
         menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?
@@ -217,7 +227,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun changeView(task: Task) {
 
-//        if (isMyTask) {  //我的任务详情，根据auditStatus改变UI
         when (task.auditStatus) {
             //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
             0 -> {
@@ -234,17 +243,20 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             2 -> {
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 setStatusText("状态：审核中")
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
             }
 
             3 -> {
                 findViewById<View>(R.id.ll_btm).visibility = View.GONE
+                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 setStatusText("状态：审核通过")
             }
 
             4 -> {
                 setStatusText("状态：审核不通过")
+                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 findViewById<TextView>(R.id.tv_status_text).text = "原因：${task.rejectReason}"
                 findViewById<TextView>(R.id.tv_status_text).visibility = View.VISIBLE
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
@@ -254,16 +266,17 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             5 -> {
                 setStatusText("手动取消")
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
+                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
             }
         }
-//        }else{
-//            //任务大厅的任务详情
-//            findViewById<View>(R.id.ll_status).visibility = View.GONE
-//            findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-//            setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
-//
-//        }
+
+
+        if (isMyTask) {  //接单规则是否显示
+            findViewById<View>(R.id.tv_agreement).visibility = View.GONE
+        } else {
+            findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
+        }
     }
 
 
@@ -286,7 +299,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 when (getTask().auditStatus) {
                     0 -> {
                         showLoading()
-                        homeViewModel.getShuffle()}//换个任务
+                        homeViewModel.getShuffle()
+                    }//换个任务
                     else -> Toast.makeText(
                         this, "功能开发中...", Toast.LENGTH_SHORT
                     ).show() //取系雇主
@@ -296,8 +310,13 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             R.id.tv_btm2 -> {
                 when (getTask().auditStatus) {
-                    0 -> homeViewModel.apiTaskApply(getTask().taskId)//报名
-                    else -> getTaskSubmit()//提交
+                    0 -> {
+                        showLoading()
+                        homeViewModel.apiTaskApply(getTask().taskId)
+                    }//报名
+                    else -> homeViewModel.apiTaskSubmit(
+                        getTask().applyLogId, adapterVerify.getItems()
+                    )//提交
                 }
             }
 
@@ -308,23 +327,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 startActivity(intent)
             }
         }
-    }
-
-
-    //判断用户是否填数据完数据
-    private fun getTaskSubmit() {
-
-        homeViewModel.apiTaskSubmit(getTask().applyLogId, adapterVerify.getItems())
-        homeViewModel.isUp.observe(this) {
-            if (it) {
-                showToast("提交成功")
-                finish()
-            } else {
-                showToast("提交失败！")
-            }
-        }
-
-
     }
 
 
