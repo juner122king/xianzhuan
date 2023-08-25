@@ -15,6 +15,7 @@ import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
+import com.lelezu.app.xianzhuan.ui.views.TestActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
@@ -186,7 +187,8 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         } else {
             when (p0?.id) {
                 R.id.ll_l9 -> {
-                    startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
+//                    startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
+                    startActivity(Intent(activity, TestActivity::class.java))//关于我们
                 }
 
                 R.id.iv_message -> {

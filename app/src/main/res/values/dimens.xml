@@ -29,7 +29,9 @@
 
     <dimen name="task_step_iv_h">270dp</dimen>
     <dimen name="task_step_iv_w">130dp</dimen>
-
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 
 </resources>
