@@ -2,13 +2,9 @@ package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
-import android.os.StrictMode.VmPolicy.Builder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -128,7 +124,6 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(taskQuery: TaskQuery, isMyTask: Boolean = false) =
             TaskListFragment().apply {

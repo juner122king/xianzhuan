@@ -1,15 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lelezu.app.xianzhuan.data.model.ApiResponse
-import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
-import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
@@ -30,23 +26,21 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     // 定义一个 MutableLiveData 来保存任务列表
     val taskList: MutableLiveData<MutableList<Task>> = SingleLiveEvent()
 
-
     val shuffleList: MutableLiveData<MutableList<Task>> = MutableLiveData()
 
     val taskTypeList: MutableLiveData<List<TaskType>> = MutableLiveData()
-
 
     val task: MutableLiveData<Task> = MutableLiveData() //任务详情类
 
     val isApply: MutableLiveData<Boolean> = MutableLiveData() //是否报名成功
     val isUp: MutableLiveData<Boolean> = MutableLiveData() //是否提交成功
 
-
     val upLink: MutableLiveData<String> = MutableLiveData() //图片上传成功的返回Link
 
 
     // 获取任务列表数据 简单查询条件
     fun getTaskList(taskQuery: TaskQuery, isMyTask: Boolean = false) = viewModelScope.launch {
+        LogUtils.i(taskQuery.toString())
         val apiListResponse = taskRepository.apiGetTaskList(
             taskQuery, isMyTask
         )
@@ -72,10 +66,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     // 获取任务详情
     fun getTaskDetails(taskId: String, applyLogId: String? = null) = viewModelScope.launch {
         val r = taskRepository.apiTaskDetails(taskId, applyLogId)
-
         handleApiResponse(r, task)
-
-
     }
 
 
@@ -83,25 +74,21 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     fun apiTaskApply(taskId: String) = viewModelScope.launch {
         val r = taskRepository.apiTaskApply(taskId)
         handleApiResponse(r, isApply)
-
     }
 
 
     // 任务提交
-    fun apiTaskSubmit(applyLogId: String?, verifys: List<TaskUploadVerify>?) =
+    fun apiTaskSubmit(applyLogId: String?, verify: List<TaskUploadVerify>?) =
         viewModelScope.launch {
-
-            if (verifys == null) {
+            if (verify == null) {
                 errMessage.postValue(ErrResponse(null, "请上传相关验证内容！"))
-
             } else {
-                LogUtils.i(verifys.toString())
-
-                val isUploadValueEmpty = verifys.any { verify ->
-                    verify.uploadValue==null
+                LogUtils.i(verify.toString())
+                val isUploadValueEmpty = verify.any { verify ->
+                    verify.uploadValue == null
                 }
                 if (!isUploadValueEmpty) {
-                    val r = taskRepository.apiTaskSubmit(TaskSubmit(applyLogId, verifys))
+                    val r = taskRepository.apiTaskSubmit(TaskSubmit(applyLogId, verify))
                     handleApiResponse(r, isUp)
 
                 } else {
@@ -114,7 +101,6 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
     // 上传图片接口
     fun apiUpload(uri: Uri) = viewModelScope.launch {
-
         val r = taskRepository.apiUpload(getFilePathFromUri(uri))
         handleApiResponse(r, upLink)
 

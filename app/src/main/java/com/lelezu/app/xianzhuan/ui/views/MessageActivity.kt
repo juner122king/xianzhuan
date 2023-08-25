@@ -1,14 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.ui.adapters.MessageItemAdapter
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils

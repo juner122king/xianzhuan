@@ -17,7 +17,8 @@ data class TaskQuery(
     val lowPrice: Float? = null,
     val size: Int? = null,
     val taskStatus: Int? = null,
-    val taskTypeId: String? = null
+    val taskTypeId: String? = null,
+    val taskTitle: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -26,6 +27,7 @@ data class TaskQuery(
         parcel.readValue(Float::class.java.classLoader) as? Float,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
         parcel.readString()
     ) {
     }
@@ -42,6 +44,7 @@ data class TaskQuery(
         parcel.writeValue(size)
         parcel.writeValue(taskStatus)
         parcel.writeString(taskTypeId)
+        parcel.writeString(taskTitle)
     }
 
     companion object CREATOR : Parcelable.Creator<TaskQuery> {
@@ -52,5 +55,18 @@ data class TaskQuery(
         override fun newArray(size: Int): Array<TaskQuery?> {
             return arrayOfNulls(size)
         }
+    }
+
+    fun toMap(): Map<String, String?> {
+        val map = mutableMapOf<String, String?>()
+        if (queryCond != null) map["queryCond"] = queryCond
+        map["current"] = current.toString()
+        if (highPrice != null) map["highPrice"] = highPrice.toString()
+        if (lowPrice != null) map["lowPrice"] = lowPrice.toString()
+        if (size != null) map["size"] = size.toString()
+        if (taskStatus != null) map["taskStatus"] = taskStatus.toString()
+        if (taskTypeId != null) map["taskTypeId"] = taskTypeId
+        if (taskTitle != null) map["taskTitle"] = taskTitle
+        return map
     }
 }

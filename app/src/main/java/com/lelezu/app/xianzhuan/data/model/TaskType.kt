@@ -19,8 +19,5 @@ package com.lelezu.app.xianzhuan.data.model
 data class TaskType(
     val typeTitle: String?,
     val taskTypeId: String?,
-//    val typeIconImage: String?,
-//    val typeSubTitle: String?,
-//    val unitPrice: Double?
 
 )

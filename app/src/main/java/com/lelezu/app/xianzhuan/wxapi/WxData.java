@@ -1,37 +1,8 @@
 package com.lelezu.app.xianzhuan.wxapi;
 
 public class WxData {
-    /**
-     * 你的AppID
-     * <p>
-     * 在此特别注意,本Demo只适用微信的登陆功能,并不能用到微信支付功能
-     * <p>
-     * 在此注意,必须要和微信官网签名一致,否则调用不起来微信APP,
-     * <p>
-     * 如果在你调用出错的情况下(微信APP死活不出来的情况下),请参阅作者简书网址 : https://www.jianshu.com/p/04ed0b65f3df
-     * <p>
-     * 微信APP掉不出来:有以下原因:
-     * <p>
-     * 1.签名不正确(APK所使用签名的MD5码) 签名MD5码不要有 : 如A0:5B:12:63.... ,要全部是小写(推荐)a05b1263...,这种形式的
-     * <p>
-     * 2.APP_ID不正确
-     * <p>
-     * 3.密匙不正确
-     * <p>
-     * 4.包名不正确
-     * <p>
-     * 不走回调WXEntryActivity
-     * <p>
-     * 1.AndroidManifest.xml里没有配置
-     * <p>
-     * <activity
-     * android:name=".wxapi.WXEntryActivity"
-     * android:exported="true"
-     * android:label="WXEntryActivity" />
-     * 2.必须是   你的包名.wxapi
-     * 如果你的所有信息填写正确,还是掉不起来微信,那就可能是微信服务器问题,请稍等3-5分钟,在尝试调用,否则就重复以上选项
-     * 大兄弟,记得细心一点哟~~~
-     */
+
+
     public static final String WEIXIN_APP_ID = "wx1bdc5e2f8be515eb";
 //    public static final String APP_SECRET = "4f14bc84466839484131532150b";
 

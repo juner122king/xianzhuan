@@ -98,10 +98,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.lelezu.app.xianzhuan"
             android:theme="@android:style/Theme.Translucent" />
-        <activity
-            android:name=".ui.views.SetSMSCodeActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".ui.views.LoginActivity"
             android:exported="false"

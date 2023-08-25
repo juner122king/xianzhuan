@@ -292,7 +292,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         return R.layout.activity_task_details
     }
 
-    override fun getContentTitle(): String? {
+    override fun getContentTitle(): String {
         return getString(R.string.title_task_details)
     }
 
@@ -331,6 +331,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 val intent = Intent(this, WebViewActivity::class.java)
                 intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link14)
                 intent.putExtra(WebViewSettings.URL_TITLE, "接单规则")
+                intent.putExtra(WebViewSettings.isProcessing, false)
                 startActivity(intent)
             }
         }

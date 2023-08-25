@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
-import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondCOMBO
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 
 class TaskSearchResultActivity : BaseActivity() {
@@ -37,8 +36,6 @@ class TaskSearchResultActivity : BaseActivity() {
         // 观察 ViewModel 中的任务列表数据变化
         homeViewModel.taskList.observe(this) { itemList ->
             // 数据变化时更新 RecyclerView
-
-
             if (itemList.isNotEmpty()) {
                 adapter.upData(itemList)
                 val num = itemList.size
@@ -57,9 +54,8 @@ class TaskSearchResultActivity : BaseActivity() {
         homeViewModel.getTaskList(getCond())
 
 
-
         //数据为空的时候
-        homeViewModel.emptyListMessage.observe(this){
+        homeViewModel.emptyListMessage.observe(this) {
             showNotResult()
         }
     }
@@ -68,7 +64,7 @@ class TaskSearchResultActivity : BaseActivity() {
         return R.layout.activity_task_search_result
     }
 
-    override fun getContentTitle(): String? {
+    override fun getContentTitle(): String {
         return getString(R.string.title_activity_search_result)
     }
 
@@ -85,8 +81,11 @@ class TaskSearchResultActivity : BaseActivity() {
         val highPrice = bundle?.getFloat("highPrice")
         val lowPrice = bundle?.getFloat("lowPrice")
         val taskTypeId = bundle?.getString("taskTypeId")
+        val taskTitle = bundle?.getString("taskTitle")
+        val cond = bundle?.getString("queryCond")
 
-        return TaskQuery(queryCondCOMBO, 1, highPrice, lowPrice, 9999, null, taskTypeId)
+
+        return TaskQuery(cond, 1, highPrice, lowPrice, 9999, null, taskTypeId, taskTitle)
     }
 
 

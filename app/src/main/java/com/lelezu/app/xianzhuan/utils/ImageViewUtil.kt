@@ -6,7 +6,6 @@ import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
-import kotlin.coroutines.coroutineContext
 
 /**
  * @author:Administrator

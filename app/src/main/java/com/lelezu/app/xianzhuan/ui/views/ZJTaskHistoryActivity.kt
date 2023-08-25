@@ -1,9 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
 import com.lelezu.app.xianzhuan.utils.ShareUtil

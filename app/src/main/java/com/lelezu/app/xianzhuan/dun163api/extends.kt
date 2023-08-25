@@ -47,27 +47,3 @@ fun getScreenHeight(context: Context): Int {
     wm.defaultDisplay.getMetrics(outMetrics)
     return (outMetrics.heightPixels.toFloat()).px2dp(context)
 }
-
-//fun generateSign(secretKey: String, params: Map<String, String>): String? {
-//    var signature: String? = ""
-//    if (TextUtils.isEmpty(secretKey) || params.isEmpty()) {
-//        return signature
-//    }
-//    try {
-//        // 1. 参数名按照ASCII码表升序排序
-//        val keys = params.keys.toTypedArray()
-//        Arrays.sort(keys)
-//        // 2. 按照排序拼接参数名与参数值
-//        val paramBuffer = StringBuilder()
-//        for (key in keys) {
-//            paramBuffer.append(key).append(if (params[key] == null) "" else params[key])
-//        }
-//        // 3. 将secretKey拼接到最后
-//        paramBuffer.append(secretKey)
-//        // 4. MD5是128位长度的摘要算法，用16进制表示，一个十六进制的字符能表示4个位，所以签名后的字符串长度固定为32个十六进制字符。
-//        signature = DigestUtils.md5Hex(paramBuffer.toString().toByteArray(charset("UTF-8")))
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//    }
-//    return signature
-//}

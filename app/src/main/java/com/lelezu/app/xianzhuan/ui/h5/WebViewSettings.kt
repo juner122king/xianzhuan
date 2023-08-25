@@ -23,7 +23,9 @@ object WebViewSettings {
     var isProcessing = "isProcessing"
 
     var link100 = "$HOST/statics/dxz/h5/pages/agreement/user"//《用户使用协议》
-    var link101 = "$HOST/statics/dxz/h5/pages/agreement/privacy"//《隐私政策》
+    var link101 = "$HOST/statics/dxz/text/ysxy.html"//《隐私政策》
+
+    var link14 = "$HOST/statics/dxz/text/jiedan.html" //接单规则
 
     var host = "$HOST/statics/dxz/h5"
 
@@ -48,16 +50,15 @@ object WebViewSettings {
     var link12 = "/pages/personalData/index" //设置个人资料
 
     var link13 = "/pages/member/index" //开通会员
-    var link14 = "/pages/publishTask/publishingRule/index" //接单规则
 
 
     @SuppressLint("SetJavaScriptEnabled")
     fun setDefaultWebSettings(webView: WebView) {
         val webSettings = webView.settings
         //5.0以上开启混合模式加载
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        }
+
+        webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+
         webSettings.loadWithOverviewMode = true
         webSettings.useWideViewPort = true
         //允许js代码
@@ -69,23 +70,13 @@ object WebViewSettings {
         webSettings.builtInZoomControls = false
         //禁用文字缩放
         webSettings.textZoom = 100
-//        //10M缓存，api 18后，系统自动管理。
-//        webSettings.setAppCacheMaxSize(10 * 1024 * 1024)
-//        //允许缓存，设置缓存位置
-//        webSettings.setAppCacheEnabled(true)
-//        webSettings.setAppCachePath(context.getDir("appcache", 0).getPath())
 
         webSettings.cacheMode
 
         //允许WebView使用File协议
         webSettings.allowFileAccess = true
-        //不保存密码
-        webSettings.savePassword = false
-        //设置UA
-//        webSettings.setUserAgentString(webSettings.userAgentString + " kaolaApp/" + AppUtils.getVersionName())
-        //移除部分系统JavaScript接口
-//        KaolaWebViewSecurity.removeJavascriptInterfaces(webView)
-        //自动加载图片
+
+
         webSettings.loadsImagesAutomatically = true
         webView.settings.blockNetworkImage = false
 
@@ -98,8 +89,6 @@ object WebViewSettings {
             host, ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         )
         cookieManager.flush()
-
-
 
 
     }

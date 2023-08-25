@@ -35,6 +35,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
 
     val earnings: MutableLiveData<Earning> = MutableLiveData()
+
     val related: MutableLiveData<Related> = MutableLiveData()
 
 

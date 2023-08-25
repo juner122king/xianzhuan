@@ -28,5 +28,4 @@ object ApiConstants {
     const val ZJ_BUSINESS_POS_ID = "J1517087581" //posID
 
 
-
 }

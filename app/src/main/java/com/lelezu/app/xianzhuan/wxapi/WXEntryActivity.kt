@@ -1,15 +1,10 @@
 package com.lelezu.app.xianzhuan.wxapi
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.lelezu.app.xianzhuan.ui.views.HomeActivity
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
-import com.netease.htprotect.HTProtect
-import com.netease.htprotect.callback.GetTokenCallback
-import com.netease.htprotect.result.AntiCheatResult
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp
@@ -51,10 +46,8 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                         finish()
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.putExtra("wx_code", r.code)
-                        intent.putExtra("type","WX")
+                        intent.putExtra("type", "WX")
                         startActivity(intent)
-
-
                     }
 
                     BaseResp.ErrCode.ERR_AUTH_DENIED -> {
@@ -76,8 +69,6 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                     }
                 }
             }
-
         }
     }
-
 }

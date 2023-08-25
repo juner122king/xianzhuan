@@ -1,9 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -11,12 +14,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondHIGHER
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondLATEST
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondSIMPLE
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondTOP
+import com.lelezu.app.xianzhuan.ui.views.TaskSearchResultActivity
 
 
 /**
@@ -28,6 +31,9 @@ class DashFragment : BaseFragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
 
+    private lateinit var ets: EditText
+    private lateinit var ivs: ImageView  //搜索
+
     // 定义一个包含Tab文字的List
     private var tabTextList = arrayOf<String>()
 
@@ -35,22 +41,39 @@ class DashFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_dash, container, false)
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         tabTextList = arrayOf(
             getString(R.string.dashboard_tab1_text),
             getString(R.string.dashboard_tab2_text),
             getString(R.string.dashboard_tab3_text),
             getString(R.string.dashboard_tab4_text)
         )
+        return inflater.inflate(R.layout.fragment_dash, container, false)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        ets = view.findViewById(R.id.et_s)
+        ivs = view.findViewById(R.id.view_s)
+
+        ivs.setOnClickListener {
+            val inputText = ets.text.toString().trim()
+            if (inputText.isNotEmpty()) {
+                val intent = Intent(context, TaskSearchResultActivity::class.java)
+                intent.putExtra("taskTitle", inputText)
+                intent.putExtra("queryCond", queryCondHIGHER)
+                startActivity(intent)
+            } else {
+                // 提示用户输入内容为空
+                showToast("请输入内容")
+            }
+
+        }
+
         tabLayout = view.findViewById(R.id.tab_task_list)
         viewPager = view.findViewById(R.id.task_vp)
         viewPager.adapter = TaskListFragmentPagerAdapter(requireActivity())
-
         viewPager.offscreenPageLimit = tabTextList.size
         initTaskTabLayout()
     }

@@ -121,7 +121,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             if (it.isNotEmpty()) {
                 llNotice.visibility = View.VISIBLE
                 bulletinView.setAdapter(ComplexViewAdapter(it))
-                bulletinView.setOnItemClickListener { itemData, pointer, view ->
+                bulletinView.setOnItemClickListener { itemData, _, _ ->
                     val intent = Intent(requireContext(), WebViewActivity::class.java)
                     intent.putExtra(
                         WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
