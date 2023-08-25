@@ -20,6 +20,7 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCo
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondSIMPLE
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondTOP
 import com.lelezu.app.xianzhuan.ui.views.TaskSearchResultActivity
+import com.lelezu.app.xianzhuan.utils.LogUtils
 
 
 /**

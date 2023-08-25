@@ -40,7 +40,6 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
     // 获取任务列表数据 简单查询条件
     fun getTaskList(taskQuery: TaskQuery, isMyTask: Boolean = false) = viewModelScope.launch {
-        LogUtils.i(taskQuery.toString())
         val apiListResponse = taskRepository.apiGetTaskList(
             taskQuery, isMyTask
         )

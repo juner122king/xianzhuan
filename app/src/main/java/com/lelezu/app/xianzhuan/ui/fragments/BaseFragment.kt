@@ -24,6 +24,7 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
@@ -35,23 +36,11 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
  */
 open class BaseFragment : Fragment() {
 
-
-    private val permissions = arrayOf(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        // 添加其他需要的权限
-    )
     private val permissions_READ_PHONE_STATE = arrayOf(
         Manifest.permission.READ_PHONE_STATE,
         // 添加其他需要的权限
     )
 
-    private var swiper: SwipeRefreshLayout? = null
-
-    protected fun setSwipeRefreshLayout(s: SwipeRefreshLayout) {
-
-        swiper = s
-    }
 
     protected val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((activity?.application as MyApplication).taskRepository)
@@ -85,16 +74,12 @@ open class BaseFragment : Fragment() {
             onErrMessage(it)
         }
 
-        homeViewModel.emptyListMessage.observe(viewLifecycleOwner) {
-            // 如果列表为空 停止刷新动画
-            if (it) onStopSwiperRefreshing()
-        }
 
     }
 
 
     private fun onErrMessage(it: ErrResponse) {
-        onStopSwiperRefreshing()
+
         showToast(it.message)
         if (it.isTokenLose()) goToLoginView()    //重新打开登录页面
     }
@@ -106,52 +91,6 @@ open class BaseFragment : Fragment() {
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
-
-    private fun onStopSwiperRefreshing() {
-        if (swiper != null) swiper!!.isRefreshing = false
-    }
-
-    override fun onStop() {
-        super.onStop()
-        onStopSwiperRefreshing()
-    }
-
-
-    protected fun checkAndRequestPermissions(registerForActivityResult: ActivityResultLauncher<Array<String>>) {
-
-        if (!isHasPermissions()) {
-            // 请求权限
-            registerForActivityResult.launch(permissions)
-        }
-    }
-
-    protected fun isHasPermissions(): Boolean {
-        return permissions.all {
-            ContextCompat.checkSelfPermission(
-                requireContext(), it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-
-    }
-
-    private fun openAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.data = Uri.fromParts("package", requireContext().packageName, null)
-        startActivity(intent)
-    }
-
-    protected fun showPermissionAlertDialog(message: String, negaString: String) {
-        val alertDialog =
-            AlertDialog.Builder(requireContext()).setTitle("权限请求").setMessage(message)
-                .setPositiveButton("前往设置开启权限") { _, _ ->
-                    openAppSettings()
-                }.setNegativeButton("取消") { dialog, _ ->
-                    showToast(negaString)
-                    dialog.dismiss()
-                }.create()
-        alertDialog.show()
-    }
-
 
     private var dialog: AlertDialog? = null
 
@@ -227,4 +166,6 @@ open class BaseFragment : Fragment() {
             }
         }
     }
+
+
 }

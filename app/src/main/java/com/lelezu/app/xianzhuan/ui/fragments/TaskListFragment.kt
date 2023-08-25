@@ -56,7 +56,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             // 执行刷新操作
             refresh()
         }
-        setSwipeRefreshLayout(swiper)
+
 
         adapter = TaskItemAdapter(mutableListOf(), requireActivity(), isMyTask)
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
@@ -65,41 +65,45 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
         recyclerView.setListener(this)
         recyclerView.setRefreshEnable(true)
-        recyclerView.setLoadMoreEnable(true)
-        refresh()
+        recyclerView.setLoadMoreEnable(false)
+
     }
 
 
     //
-    override fun onResume() {
-        super.onResume()
-        observeList()
-    }
+
 
     private fun observeList() {
-
         homeViewModel.taskList.observe(viewLifecycleOwner) {
-            LogUtils.i(it.toString())
             loadDone(it)
         }
-
         homeViewModel.emptyListMessage.observe(viewLifecycleOwner) {
+
+            // 停止刷新动画
+            onStopSwiperRefreshing()
+
             // 如果列表为空，禁加载更多
             recyclerView.setLoadMoreEnable(false)
+            //结果返回为空，就设置空
+            adapter.setEmpty()
         }
     }
 
     private fun loadDone(it: MutableList<Task>) {
 
+        LogUtils.i("loadDone:" + it.size.toString())
         // 停止刷新动画
-        swiper.isRefreshing = false
-        if (recyclerView.isLoadMore()) adapter.addData(it)
-        else adapter.upData(it)
+        onStopSwiperRefreshing()
+
+        //暂时去掉加载更多，目前每次获取100条
+//        if (recyclerView.isLoadMore()) adapter.addData(it)
+//        else
+        adapter.upData(it)
 
     }
 
     private fun loadData() {
-
+        onShowSwiperRefreshing()
         homeViewModel.getTaskList(
             taskQuery, isMyTask
         )
@@ -133,4 +137,52 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
                 }
             }
     }
+
+    override fun onResume() {
+        super.onResume()
+        LogUtils.i("${taskQuery.taskStatus}onResume")
+        observeList()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        refresh()
+        LogUtils.i("${taskQuery.taskStatus}onStart")
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LogUtils.i("${taskQuery.taskStatus}onPause")
+        onStopSwiperRefreshing()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LogUtils.i("${taskQuery.taskStatus}onStop")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LogUtils.i("${taskQuery.taskStatus}onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LogUtils.i("${taskQuery.taskStatus}onDestroy")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        LogUtils.i("${taskQuery.taskStatus}onDetach")
+    }
+
+    private fun onStopSwiperRefreshing() {
+        swiper.isRefreshing = false
+    }
+
+    private fun onShowSwiperRefreshing() {
+        swiper.isRefreshing = true
+    }
+
 }

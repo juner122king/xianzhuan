@@ -59,6 +59,13 @@ class TaskItemAdapter(
         notifyDataSetChanged()
 
     }
+    // 更新数据方法
+    fun setEmpty() {
+
+        items = mutableListOf()
+        notifyDataSetChanged()
+
+    }
 
     fun addData(newItems: MutableList<Task>) {
         items.addAll(newItems)
