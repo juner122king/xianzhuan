@@ -1,15 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lelezu.app.xianzhuan.data.model.ApiResponse
-import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
-import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
@@ -47,6 +43,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
     // 获取任务列表数据 简单查询条件
     fun getTaskList(taskQuery: TaskQuery, isMyTask: Boolean = false) = viewModelScope.launch {
+        LogUtils.i(taskQuery.toString())
         val apiListResponse = taskRepository.apiGetTaskList(
             taskQuery, isMyTask
         )

@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -51,7 +50,7 @@ class WebViewActivity : BaseActivity() {
                 }
             }
         }
-        Log.i("WebView_URL", link)
+
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
             //显示简单的用户协议页面
@@ -64,17 +63,17 @@ class WebViewActivity : BaseActivity() {
         wv.loadUrl(WebViewSettings.host + link)
 
         //注入打开相册方法
-        wv.registerHandler("chooseImage") { data, function ->
+        wv.registerHandler("chooseImage") { _, _ ->
             openPhoto()
         }
 
         //注入回到主页方法
-        wv.registerHandler("backToHome") { fragmentPosition, function ->
+        wv.registerHandler("backToHome") { fragmentPosition, _ ->
             backToHome(fragmentPosition)
         }
 
         //注入进入任务详情页面方法
-        wv.registerHandler("gotoTaskDetails") { taskId, function ->
+        wv.registerHandler("gotoTaskDetails") { taskId, _ ->
             gotoTaskDetails(taskId)
         }
 
@@ -105,15 +104,15 @@ class WebViewActivity : BaseActivity() {
                         } catch (e: Exception) {
                             AlertDialog.Builder(context)
                                 .setMessage("未检测到支付宝客户端，请安装后重试。").setPositiveButton(
-                                    "立即安装",
-                                    DialogInterface.OnClickListener { dialog, which ->
-                                        val alipayUrl = Uri.parse("https://d.alipay.com")
-                                        startActivity(
-                                            Intent(
-                                                "android.intent.action.VIEW", alipayUrl
-                                            )
+                                    "立即安装"
+                                ) { _, _ ->
+                                    val alipayUrl = Uri.parse("https://d.alipay.com")
+                                    startActivity(
+                                        Intent(
+                                            "android.intent.action.VIEW", alipayUrl
                                         )
-                                    }).setNegativeButton("取消", null).show()
+                                    )
+                                }.setNegativeButton("取消", null).show()
                         }
                         return true
                     }
@@ -126,9 +125,6 @@ class WebViewActivity : BaseActivity() {
                 }//拦截支付宝
             }
         }
-
-
-
 
 
     }

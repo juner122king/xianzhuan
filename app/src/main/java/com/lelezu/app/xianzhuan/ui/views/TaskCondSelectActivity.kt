@@ -10,6 +10,7 @@ import android.widget.GridView
 import android.widget.TextView
 import androidx.core.view.setPadding
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondCOMBO
 import com.lelezu.app.xianzhuan.ui.adapters.TaskCondAdapter
 
 /**
@@ -51,6 +52,7 @@ class TaskCondSelectActivity : BaseActivity(), OnClickListener {
             bundle.putString("taskTypeId", adapter.getSelectItem().taskTypeId)
             bundle.putFloat("lowPrice", getLowPrice())
             bundle.putFloat("highPrice", getHighPrice())
+            bundle.putString("queryCond", queryCondCOMBO)
             val intent = Intent(this, TaskSearchResultActivity::class.java)
             intent.putExtras(bundle)
             startActivity(intent)
@@ -147,7 +149,7 @@ class TaskCondSelectActivity : BaseActivity(), OnClickListener {
         return R.layout.activity_task_cond_select
     }
 
-    override fun getContentTitle(): String? {
+    override fun getContentTitle(): String {
         return getString(R.string.title_task_cs)
     }
 

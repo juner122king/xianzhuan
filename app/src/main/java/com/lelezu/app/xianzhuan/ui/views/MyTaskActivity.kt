@@ -84,7 +84,7 @@ class MyTaskActivity : BaseActivity() {
 
 
     override fun getLayoutId(): Int {
-        return R.layout.activity_my_task2
+        return R.layout.activity_my_task
     }
 
     override fun getContentTitle(): String {

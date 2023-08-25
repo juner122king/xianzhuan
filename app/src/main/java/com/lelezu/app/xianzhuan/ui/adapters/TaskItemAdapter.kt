@@ -82,27 +82,18 @@ class TaskItemAdapter(
         val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
         val doneView: View = itemView.findViewById(R.id.tvv)//去完成按钮
     }
-//
-//    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val tvNm: TextView = itemView.findViewById(R.id.tv_not_more)
-//    }
 
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
 
-//        if (viewType == viewTypeITEM) {
         val view = LayoutInflater.from(parent.context).inflate(
             if (isShowTopView) R.layout.task_list_item_layout else R.layout.home_task_list_item_layout,
             parent,
             false
         )
         return ItemViewHolder(view)
-//        } else {
-//            val view =
-//                LayoutInflater.from(parent.context).inflate(R.layout.item_footer, parent, false)
-//            FooterViewHolder(view)
-//        }
+
 
     }
 
@@ -168,19 +159,7 @@ class TaskItemAdapter(
 
     // 返回数据项数量
     override fun getItemCount(): Int {
-//        return items.size + 1
+
         return items.size
     }
-
-
-//    private val viewTypeITEM = 0
-//    private val viewTypeFOOTER = 1//页脚
-//    override fun getItemViewType(position: Int): Int {
-//        return if (position >= itemCount - 1) {
-//            viewTypeFOOTER
-//        } else {
-//            viewTypeITEM
-//        }
-//    }
-
 }

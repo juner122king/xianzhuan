@@ -77,6 +77,7 @@ interface ApiService {
         @Query("size") size: Int?,
         @Query("taskStatus") taskStatus: Int?,
         @Query("taskTypeId") taskTypeId: String?,
+        @Query("taskTitle") taskTitle: String?,
         @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<Task>>>
 

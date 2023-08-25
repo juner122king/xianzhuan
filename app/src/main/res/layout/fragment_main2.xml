@@ -15,8 +15,8 @@
             android:layout_height="match_parent"
             android:background="@color/ll_bg"
             android:orientation="vertical"
-            android:paddingTop="10dp"
             android:paddingStart="10dp"
+            android:paddingTop="10dp"
             android:paddingEnd="10dp"
 
             >
@@ -253,7 +253,6 @@
 
                 <include layout="@layout/view_banner_item1" />
 
-                <!--                <include layout="@layout/view_banner_item1" />-->
 
             </ViewFlipper>
 
@@ -264,7 +263,6 @@
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_task_list"
-                    app:tabRippleColor="@android:color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tab_h"
                     android:background="@color/white"
@@ -273,6 +271,7 @@
                     app:tabIndicatorColor="@color/colorControlActivated"
                     app:tabIndicatorFullWidth="false"
                     app:tabMode="fixed"
+                    app:tabRippleColor="@android:color/transparent"
                     app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/tabLayout"
                     app:tabTextColor="@color/text_s" />

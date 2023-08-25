@@ -49,9 +49,10 @@ class MessageItemAdapter(
         val item = items[position]
         holder.title.text = item.msgTitle
         holder.content.text = item.msgContent
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            holder.time.text = calculateTimeDifference(item.createdDt!!)
-        }
+            holder.time.text = calculateTimeDifference(item.createdDt!!) //时间处理
+        } else holder.time.text = item.createdDt
 
         if (item.isRead) holder.tip.visibility = View.INVISIBLE
         else holder.tip.visibility = View.VISIBLE
@@ -70,7 +71,6 @@ class MessageItemAdapter(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun calculateTimeDifference(dateString: String): String {
-
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = sdf.parse(dateString)
 
@@ -87,18 +87,22 @@ class MessageItemAdapter(
                 // 大于1天，返回"X天前"
                 "$days 天前"
             }
+
             days == 1L -> {
                 // 昨天，返回"昨天"
                 "昨天"
             }
+
             hours > 0 -> {
                 // 小于1天但大于0小时，返回"X小时前"
                 "$hours 小时前"
             }
+
             minutes > 0 -> {
                 // 小于1小时但大于0分钟，返回"X分钟前"
                 "$minutes 分钟前"
             }
+
             else -> {
                 // 小于1分钟，返回"刚刚"
                 "刚刚"

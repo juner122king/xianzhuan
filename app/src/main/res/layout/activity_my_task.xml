@@ -1,52 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.fragments.DashFragment">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_task_list"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/tab_h"
-        android:background="@color/white"
-        app:tabGravity="fill"
-        app:tabTextAppearance="@style/tabLayout"
-        app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicatorColor="@color/colorControlActivated"
-        app:tabIndicatorFullWidth="false"
-        app:tabRippleColor="@android:color/transparent"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/black"
-        app:tabTextColor="@color/text_s" >
+    <include layout="@layout/layout_tab_and_viewpager2" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/title_task_my1" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/title_task_my2" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/title_task_my3" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/task_tab_item4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/title_task_my4" />
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <include layout="@layout/rv_layout" />
-</LinearLayout>
+</FrameLayout>

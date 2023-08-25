@@ -17,7 +17,8 @@ data class TaskQuery(
     val lowPrice: Float? = null,
     val size: Int? = null,
     val taskStatus: Int? = null,
-    val taskTypeId: String? = null
+    val taskTypeId: String? = null,
+    val taskTitle: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -26,6 +27,7 @@ data class TaskQuery(
         parcel.readValue(Float::class.java.classLoader) as? Float,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
         parcel.readString()
     ) {
     }
@@ -42,6 +44,7 @@ data class TaskQuery(
         parcel.writeValue(size)
         parcel.writeValue(taskStatus)
         parcel.writeString(taskTypeId)
+        parcel.writeString(taskTitle)
     }
 
     companion object CREATOR : Parcelable.Creator<TaskQuery> {
