@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.provider.Settings
-import android.util.Log
-import cn.hutool.json.JSONUtil
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Register
@@ -22,6 +20,10 @@ object ShareUtil {
     private var sps: SharedPreferences? = null
 
     private const val APP_SHARED_PREFERENCES_KEY: String = "ApiPrefs"
+
+
+    const val APP_PRIVACY_AGREEMENT_AGREE: String = "PRIVACY_AGREEMENT"//是否同意隐私协议
+    const val APP_USER_AGREEMENT_AGREE: String = "USER_AGREEMENT"//是否同意用户协议
 
 
     //用户登录
@@ -52,7 +54,7 @@ object ShareUtil {
 
     private fun getSps(): SharedPreferences {
         if (sps == null) {
-            sps = applicationContext?.getSharedPreferences(
+            sps = applicationContext.getSharedPreferences(
                 APP_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE
             )
         }
@@ -173,6 +175,44 @@ object ShareUtil {
             APP_DEVICE_ANDROIDID,
             Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
         )
+    }
+
+
+    //同意隐私协议
+    fun agreePrivacy() {
+        putBoolean(APP_PRIVACY_AGREEMENT_AGREE, true)
+    }
+
+    //不同意隐私协议
+    fun disAgreePrivacy() {
+        putBoolean(APP_PRIVACY_AGREEMENT_AGREE, false)
+    }
+
+    //是否同意隐私协议
+    fun isAgreePrivacy(): Boolean {
+        return getBoolean(APP_PRIVACY_AGREEMENT_AGREE)
+    }
+
+
+    //同意用户协议
+    fun agreeAgreement() {
+        putBoolean(APP_USER_AGREEMENT_AGREE, true)
+    }
+
+    //不同意用户协议
+    fun disAgreeAgreement() {
+        putBoolean(APP_USER_AGREEMENT_AGREE, false)
+    }
+
+    //是否同意用户协议
+    private fun isAgreeUserAgreement(): Boolean {
+        return getBoolean(APP_USER_AGREEMENT_AGREE)
+    }
+
+
+    //是否同意用户协议与隐私协议
+    fun isAgreeUserAgreementAndPrivacy(): Boolean {
+        return isAgreeUserAgreement() && isAgreePrivacy()
     }
 
 

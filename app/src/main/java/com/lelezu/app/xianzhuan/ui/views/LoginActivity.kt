@@ -15,6 +15,11 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.utils.ShareUtil.agreeAgreement
+import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
+import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreeAgreement
+import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreePrivacy
+import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreeUserAgreementAndPrivacy
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 
@@ -22,8 +27,9 @@ import com.lelezu.app.xianzhuan.wxapi.WxLogin
 class LoginActivity : BaseActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
-    private lateinit var dialog: AlertDialog//协议弹
+    private lateinit var dialog: AlertDialog//协议弹窗
 
+    private var dialogType: Int = 1//弹窗的协议类型  1为隐私协议  2为用户协议
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +40,18 @@ class LoginActivity : BaseActivity(), OnClickListener {
         findViewById<TextView>(R.id.tv_agreement).setOnClickListener(this) //打开用户使用协议
         findViewById<TextView>(R.id.tv_agreement2).setOnClickListener(this) //打开《隐私政策》
 
+
+        //点击时自动保存同意状态
+        cbAgree.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                agreePrivacy()
+                agreeAgreement()
+            }
+        }
+
     }
+
+
 
 
     private fun wxLoginInit() {
@@ -83,6 +100,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
 
 
     private fun goToHomeActivity() {
+
         finish()
         startActivity(Intent(context, HomeActivity::class.java))
     }
@@ -134,6 +152,14 @@ class LoginActivity : BaseActivity(), OnClickListener {
         dialog.dismiss()
         // 取消勾选父Activity上的CheckBox
         cbAgree.isChecked = false
+
+        if (dialogType == 1) {
+            disAgreePrivacy()
+        } else {
+            disAgreeAgreement()
+        }
+
+
     }
 
     // 同意按钮点击事件
@@ -141,19 +167,36 @@ class LoginActivity : BaseActivity(), OnClickListener {
         // 在这里处理同意的逻辑
         // 关闭弹窗
         dialog.dismiss()
-        // 勾选父Activity上的CheckBox
-        cbAgree.isChecked = true
+
+        if (dialogType == 1) {
+            agreePrivacy()
+        } else {
+            agreeAgreement()
+        }
+
+        // 两项目同意才勾选父Activity上的CheckBox
+        if (isAgreeUserAgreementAndPrivacy()) cbAgree.isChecked = true
     }
 
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
-            R.id.tv_agreement -> showAgreementDialog(
-                getString(R.string.text_agreement), WebViewSettings.link100
-            ) // 显示《用户使用协议》
-            R.id.tv_agreement2 -> showAgreementDialog(
-                getString(R.string.text_agreement1), WebViewSettings.link101
-            ) // 显示《隐私政策》
+            R.id.tv_agreement -> {
+                //显示《用户使用协议》
+                showAgreementDialog(
+                    getString(R.string.text_agreement), WebViewSettings.link100
+                )
+                dialogType = 2
+            }
+
+            R.id.tv_agreement2 -> {
+                // 显示《隐私政策》
+                showAgreementDialog(
+                    getString(R.string.text_agreement1), WebViewSettings.link101
+                )
+                dialogType = 1
+            }
+
             R.id.bto_wx_login -> wxLoginInit() // 微信登录按钮
             R.id.bto_phome_login -> wxLoginInit() // 使用手机登录
         }
