@@ -18,6 +18,8 @@ import retrofit2.Call
 open class BaseRepository {
     protected val loginToken: String //访问值时执行get()
         get() = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+    protected val loginId: String //访问值时执行get()
+        get() = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)
 
     protected inline fun <reified T> executeApiCall(call: Call<ApiResponse<T>>): ApiResponse<T> {
         return try {

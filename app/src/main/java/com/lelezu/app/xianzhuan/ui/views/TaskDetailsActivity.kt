@@ -308,9 +308,16 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                         showLoading()
                         homeViewModel.getShuffle()
                     }//换个任务
-                    else -> Toast.makeText(
-                        this, "功能开发中...", Toast.LENGTH_SHORT
-                    ).show() //取系雇主
+                    else -> {
+//                        Toast.makeText(
+//                            this, "功能开发中...", Toast.LENGTH_SHORT
+//                        ).show() //取系雇主
+                        val intent = Intent(this, ChatActivity::class.java)
+                        intent.putExtra("userId", task.userId)
+                        startActivity(intent)
+                    }
+
+
                 }
 
             }

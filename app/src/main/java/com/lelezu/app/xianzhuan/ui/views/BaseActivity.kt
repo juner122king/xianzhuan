@@ -74,6 +74,11 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun logOut() {
+        ShareUtil.cleanInfo()
+        goToLoginView()
+    }
+
 
     protected fun backToHome(position: String) {
         LogUtils.d("进入主页:${position}")
@@ -137,13 +142,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-    public fun showBack(){
+    public fun showBack() {
         mBack!!.visibility = View.VISIBLE
     }
-    public fun hideBack(){
+
+    public fun hideBack() {
         mBack!!.visibility = View.GONE
     }
-
 
 
     fun showRightText(text: String) {

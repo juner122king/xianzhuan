@@ -76,6 +76,11 @@ class WebViewActivity : BaseActivity() {
             gotoTaskDetails(taskId)
         }
 
+        //注入退出登录的方法
+        wv.registerHandler("logOut") { _, _ ->
+            logOut()
+        }
+
 
         //处理返回键
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -86,8 +91,6 @@ class WebViewActivity : BaseActivity() {
 
         //返回监听
         super.mBack!!.setOnClickListener { backOrFinish() }
-
-
 
 
 

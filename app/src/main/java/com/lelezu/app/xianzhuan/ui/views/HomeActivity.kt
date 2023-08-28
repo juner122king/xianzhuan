@@ -123,7 +123,7 @@ class HomeActivity : BaseActivity() {
         return R.layout.activity_home
     }
 
-    override fun getContentTitle(): String? {
+    override fun getContentTitle(): String {
         return getString(R.string.title_activity_home)
     }
 

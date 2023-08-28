@@ -4,13 +4,22 @@ package com.lelezu.app.xianzhuan.data.repository
 import android.util.Log
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Earning
+import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
+import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * @author:Administrator
@@ -52,5 +61,72 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
         executeApiCall(call)
     }
 
+    //发送消息
+    suspend fun sendRecord(
+        receiveId: String, content: String, isImage: Boolean
+    ): ApiResponse<ListData<ChatMessage>> = withContext(Dispatchers.IO) {
+        val call = apiService.sendRecord(receiveId, content, isImage, loginToken)
+        executeApiCall(call)
+    }
+
+    //获取分页聊天信息
+
+    /**
+     *
+     * @param receiverUserId String 	收信人ID
+     * @return ApiResponse<Related>
+     */
+    suspend fun apiRecord(receiverUserId: String): MutableList<ChatMessage> =
+        withContext(Dispatchers.IO) {
+            val call1 = apiService.getRecord(receiverUserId, 999, loginToken)
+            val call2 = apiService.getRecord(loginId, 999, loginToken)
+
+            val mergedData = mutableListOf<ChatMessage>()
+
+
+            runBlocking {
+                val response1 = GlobalScope.launch(Dispatchers.IO) {
+                    val response = call1.execute()
+                    if (response.isSuccessful) {
+                        val data = response.body()?.data?.records
+                        data?.let {
+                            mergedData.addAll(it)
+                        }
+                    }
+                }
+
+                val response2 = GlobalScope.launch(Dispatchers.IO) {
+                    val response = call2.execute()
+                    if (response.isSuccessful) {
+                        val data = response.body()?.data?.records
+                        data?.let {
+                            mergedData.addAll(it)
+                        }
+                    }
+                }
+
+                // 等待两个请求都完成
+                response1.join()
+                response2.join()
+
+                // 在这里 mergedChatMessages 将包含合并后的聊天消息
+
+                putChatMessages(mergedData)
+            }
+
+
+        }
+
+    private fun putChatMessages(dataList: MutableList<ChatMessage>): MutableList<ChatMessage> {
+        var chatMessages = mutableListOf<ChatMessage>()
+
+        for (message in dataList) {
+            // 根据 senderUserId 是否等于 UserID 设置 isMe 的值
+            message.isMe = message.senderUserId == loginId
+            chatMessages.add(message)
+        }
+
+        return chatMessages
+    }
 
 }

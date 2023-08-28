@@ -31,8 +31,6 @@ class TaskCondAdapter(var context: Context, var datas: List<TaskType>) : BaseAda
         if (convertView == null) {
             myHolder = MyHolder()
 
-
-
             view = LayoutInflater.from(context).inflate(R.layout.item_grid_task_cond, null)
             myHolder.textView = view.findViewById(R.id.tv_task_type)
 

@@ -151,7 +151,7 @@ dependencies {
 
     implementation (name: 'zj_sdk_2.4.11', ext: 'aar')
     implementation (name: 'moku-planet-api-native-sdk-release-1.6.2', ext: 'aar')
-    implementation (name: 'zj-tasklibrary-release-1.1.9.5', ext: 'aar')
+    implementation (name: 'zj-tasklibrary-release-1.1.9.0', ext: 'aar')
     implementation (name: 'zj_ywsdk_1.1.7', ext: 'aar')
     // AndroidX 工程需要添加
     implementation 'androidx.appcompat:appcompat:1.2.0'
