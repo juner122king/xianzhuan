@@ -53,22 +53,28 @@ open class BaseViewModel : ViewModel() {
                 liveData.postValue(r.data)
                 if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对角为登录回应对象就保存
             }
+
             is ApiFailedResponse -> {
                 // 处理失败的响应
                 failedResponse(r, r.message)
             }
+
             is ApiEmptyResponse -> {
                 // 处理空的响应
                 failedResponse(r, "data为null!")
             }
+
             is ApiErrorResponse -> {
                 // 处理错误的响应
                 failedResponse(r, r.error!!.message)
             }
         }
     }
+
     protected fun <T> handleApiListResponse(
-        r: ApiResponse<ListData<T>>, liveData: MutableLiveData<MutableList<T>>
+        r: ApiResponse<ListData<T>>,
+        liveData: MutableLiveData<MutableList<T>>,
+        isObserve: Boolean = true
     ) {
         when (r) {
             is ApiSuccessResponse -> {
@@ -77,7 +83,7 @@ open class BaseViewModel : ViewModel() {
                     emptyListMessage.postValue(true)
                 } else {
                     // 处理非空列表的情况
-                    liveData.postValue(r.response.records)
+                    if (isObserve) liveData.postValue(r.response.records)
                 }
             }
 
@@ -107,7 +113,6 @@ open class BaseViewModel : ViewModel() {
         if (r.data is LoginReP || r.isTokenLose) onLoginFailed()
     }
     //Token失效
-
 
 
     private fun onLoginFailed() {

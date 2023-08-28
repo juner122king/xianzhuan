@@ -18,7 +18,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
         return R.layout.activity_auto_out
     }
 
-    override fun getContentTitle(): String? {
+    override fun getContentTitle(): String {
         return getString(R.string.title_activity_out)
     }
 

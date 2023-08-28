@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cn.hutool.core.codec.Base64
 import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
+import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
@@ -38,6 +39,8 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
     val related: MutableLiveData<Related> = MutableLiveData()
 
+    val chatMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
+    val sendMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
 
 
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -69,6 +72,29 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     fun getRelated() = viewModelScope.launch {
         val rep = userRepository.apiRelated()
         handleApiResponse(rep, related)
+    }
+
+
+    /**
+     *
+     * @param receiverUserId String 接收者（雇主）
+     * @return 合并双方的发送消息
+     */
+    fun apiRecord(receiverUserId: String) = viewModelScope.launch {
+        val rep = userRepository.apiRecord(receiverUserId)//我发送的消息
+        chatMessage.postValue(rep)
+    }
+
+
+    /**
+     *
+     * @param receiveId String 接收者（雇主）
+     * @return 合并双方的发送消息
+     */
+    fun apiSend(receiveId: String, content: String, isImage: Boolean) = viewModelScope.launch {
+        val rep = userRepository.sendRecord(receiveId, content, isImage)//我发送的消息
+
+        handleApiListResponse(rep, sendMessage)
     }
 
 

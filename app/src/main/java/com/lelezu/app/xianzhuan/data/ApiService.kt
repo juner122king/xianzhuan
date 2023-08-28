@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.data
 
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.ListData
@@ -46,6 +47,22 @@ interface ApiService {
 
     @GET("/dxz/app/user/task/related")  //个人中心任务相关的数据
     fun getRelated(@Header("Authorization") token: String): Call<ApiResponse<Related>>
+
+
+    @POST("/dxz/app/user/contact/record")  //发送消息
+    fun sendRecord(
+        @Query("receiveId") receiveId: String,
+        @Query("content") content: String,
+        @Query("isImage") isImage: Boolean = false,
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<ListData<ChatMessage>>>
+
+    @GET("/dxz/app/user/contact/record")  //获取分页聊天信息
+    fun getRecord(
+        @Query("receiverUserId") receiverUserId: String,
+        @Query("size") size: Int? = null,
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<ListData<ChatMessage>>>
 
 
     @GET("/dxz/app/task/page/details/")//获取任务详情

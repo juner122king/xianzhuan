@@ -19,8 +19,8 @@
             android:visibility="gone" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <include
-        layout="@layout/empty_layout" />
+
+    <include layout="@layout/empty_layout" />
 
 </FrameLayout>
 
