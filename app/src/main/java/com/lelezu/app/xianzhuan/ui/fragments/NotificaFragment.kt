@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,11 +16,12 @@ import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import java.lang.IllegalStateException
 
 class NotificaFragment : Fragment() {
 
     private lateinit var wv: BridgeWebView
-    private lateinit var link: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -36,8 +38,8 @@ class NotificaFragment : Fragment() {
         WebViewSettings.setDefaultWebSettings(wv)
         wv.addJavascriptInterface(MyJavaScriptInterface(requireActivity()), "Android")//注入方法
 
-        link = WebViewSettings.host + link3
-        wv.loadUrl(link)//最后才load
+        LogUtils.i("WebView______>", "加载Link:${link3}")
+        wv.loadUrl(link3)//最后才load
 
         wv.webViewClient = object : WebViewClient() {
             override fun onLoadResource(view: WebView?, url: String?) {
@@ -68,16 +70,19 @@ class NotificaFragment : Fragment() {
 
     fun backOrFinish() {
         if (wv.canGoBack()) {
-            if (wv.url.equals(link)) requireActivity().finish()
+            if (wv.url.equals(link3)) requireActivity().finish()
             else wv.goBack()
         } else requireActivity().finish()
     }
 
 
     fun onIsShowBack() {
-        if (wv.url.equals(WebViewSettings.host + link3)) (requireActivity() as HomeActivity).hideBack()
-        else (requireActivity() as HomeActivity).showBack()
-
+        try {
+            if (wv.url.equals(link3)) (requireActivity() as HomeActivity).hideBack()
+            else (requireActivity() as HomeActivity).showBack()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 
 

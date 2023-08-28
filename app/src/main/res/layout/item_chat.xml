@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
     android:layout_marginTop="10dp"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -21,15 +21,17 @@
 
         <ImageView
             android:id="@+id/iv_pic_1"
-            android:visibility="gone"
             android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:gravity="end">
 
@@ -37,8 +39,6 @@
                 android:id="@+id/talk_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 android:background="@drawable/chat_item_bg_me"
                 android:padding="10dp"
                 android:textColor="@color/white"
@@ -47,16 +47,16 @@
 
             <ImageView
                 android:id="@+id/talk_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="280dp"
                 android:visibility="gone" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_pic_2"
             android:layout_width="40dp"
-            android:visibility="gone"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,11 +1,14 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -64,6 +67,12 @@ abstract class BaseActivity : AppCompatActivity() {
         val loadingView = findViewById<View>(R.id.loadingView)
         setLoadingView(loadingView)
 
+
+        // 初始化并注册网络连接状态广播接收器
+        connectivityReceiver = ConnectivityReceiver()
+        registerReceiver(
+            connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
     }
     //监听token失效
 
@@ -75,6 +84,8 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun logOut() {
+        LogUtils.i("logOut", "logOut成功")
+        showToast("退出成功！")
         ShareUtil.cleanInfo()
         goToLoginView()
     }
@@ -275,4 +286,37 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // 取消注册广播接收器，以避免内存泄漏
+        unregisterReceiver(connectivityReceiver)
+    }
+
+    private lateinit var connectivityReceiver: ConnectivityReceiver
+
+    // 网络连接状态广播接收器
+    inner class ConnectivityReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ConnectivityManager.CONNECTIVITY_ACTION) {
+                val connectivityManager =
+                    getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val networkInfo = connectivityManager.activeNetworkInfo
+                val isConnected = networkInfo?.isConnectedOrConnecting == true
+
+                if (isConnected) {
+                    // 网络已连接
+                    // 在这里执行你需要的操作
+//                    if (!ShareUtil.isConnected()) showToast("网络已连接")
+                    ShareUtil.putConnected(true)
+
+                } else {
+                    // 网络未连接
+                    // 在这里执行你需要的操作
+                    showToast("网络未连接")
+                    ShareUtil.putConnected(false)
+                }
+            }
+        }
+    }
 }

@@ -18,15 +18,9 @@ Q.idea/sonarlint/securityhotspotstore/f/b/fbe448ebfc3eb2d4e308f6b8b043666f5b5723
 Å
 Q.idea/sonarlint/securityhotspotstore/a/8/a8a52112049d840217cfa586a3a399d9502f9b94,3\f\3ffc2b35597dce786ee8a1cc51b1cd1ce2cea9ce
 Å
-Q.idea/sonarlint/securityhotspotstore/2/a/2a45a911a8f1836b0b6c5b758962572012d8f8c3,1\0\1017d171139053a6ceaff055b7159ba14e80dc44
-Å
 Q.idea/sonarlint/securityhotspotstore/8/8/88a9255124c95bdc913197c120a8d560edc59c8e,9\0\909762385fc6eb20f922a91c6865741308b57f2c
-Å
-Q.idea/sonarlint/securityhotspotstore/0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca,2\e\2e86fb07c772c8a1f877dd80522b653bbbb01e65
 w
 G.idea/sonarlint/issuestore/1/9/195f9f08877339d93bc8a972079cc0e398461cdc,1\4\14f058472e326bf2de4cd9f017552b7d8d09a564
-w
-G.idea/sonarlint/issuestore/0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca,4\1\41b281c57948ff2524af98ff9da00edd5725922c
 w
 G.idea/sonarlint/issuestore/f/0/f07866736216be0ee2aba49e392191aeae700a35,b\f\bfb9453d49af9bc40f5f7a5f034be3c7ef8fa6bf
 Å
@@ -41,8 +35,6 @@ Q.idea/sonarlint/securityhotspotstore/f/0/f07866736216be0ee2aba49e392191aeae700a
 Q.idea/sonarlint/securityhotspotstore/e/0/e01702f574a68355c409613f006dad595d4bb339,5\2\527a73e5a4d74c863f6951a8edcbe80990db0832
 w
 G.idea/sonarlint/issuestore/a/8/a8a52112049d840217cfa586a3a399d9502f9b94,f\b\fb76a1bc912c98104e170de380a305bebd749082
-w
-G.idea/sonarlint/issuestore/2/a/2a45a911a8f1836b0b6c5b758962572012d8f8c3,9\a\9aed88f31eac276604c6355c1adcc0bce1f80fd6
 w
 G.idea/sonarlint/issuestore/8/8/88a9255124c95bdc913197c120a8d560edc59c8e,a\e\ae9ddf453f55affea2d6b9e3973cac1eb2efb4e1
 w
@@ -62,16 +54,10 @@ m
 =app/src/test/java/com/lelezu/app/xianzhuan/ExampleUnitTest.kt,d\9\d9973ee32d8d309d6b63254826ae87fd38b67dfd
 r
 Bapp/src/main/java/com/lelezu/app/xianzhuan/data/model/LoginInfo.kt,a\6\a6d4690ccd4214df9d6e2a71e035dddd4fedb2ed
-y
-Iapp/src/main/java/com/lelezu/app/xianzhuan/data/model/ApiErrorResponse.kt,c\9\c97942da49617573f56792603be06873c092b094
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/ListData.kt,d\5\d5e207bffbd1136c66a806cce97a3bac52a276a8
-Å
-Qapp/src/main/java/com/lelezu/app/xianzhuan/data/repository/SysInformRepository.kt,7\4\74fd2a60b2cd47df2db786c1694c2aaa33fac10a
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
-t
-Dapp/src/main/java/com/lelezu/app/xianzhuan/data/model/ErrResponse.kt,a\c\acf61d1aa39eaa80e5fd278a634d24d2a69901c7
 p
 @app/src/main/java/com/lelezu/app/xianzhuan/data/model/Message.kt,6\6\6656d4a41bf9fbb866bf6ebcbda52550e6750072
 y
@@ -106,8 +92,6 @@ n
 Napp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/ComplexViewAdapter.java,c\7\c71b9538a4cbc7f9695c6721d4befdfda69faf9c
 y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/h5/MyJavaScriptInterface.kt,3\a\3a524421996cf0d130c1413a2a694f97931eb7be
-s
-Capp/src/main/java/com/lelezu/app/xianzhuan/ui/h5/WebViewSettings.kt,3\0\30e2e18fbb5d10e076880ee866dd8bc677a8592a
 l
 <app/src/main/java/com/lelezu/app/xianzhuan/ui/theme/Color.kt,9\9\995155f09f1e9b856395c6c3b0baedc44dd7453a
 l
@@ -122,8 +106,6 @@ u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/CustomLogoView.kt,e\1\e1871d867dd9fc9ed5487b4914c11358f1343a16
 
 Oapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/TaskSearchResultActivity.kt,a\d\adbcc7ce91a02c404d3008d25f0989fa8ada62a8
-l
-<app/src/main/java/com/lelezu/app/xianzhuan/utils/LogUtils.kt,0\2\02ddfa7680050d53bca32d9e1106a8aebd19201d
 n
 >app/src/main/java/com/lelezu/app/xianzhuan/utils/ToastUtils.kt,4\8\48aa3a3d48180e9818f9ab3f44ddb61f57563dd9
 
@@ -134,16 +116,8 @@ o
 ?app/src/main/java/com/lelezu/app/xianzhuan/dun163api/extends.kt,5\2\52a47f2ab1bf84842f132bf33c971f2b6dbc8066
 m
 =app/src/main/java/com/lelezu/app/xianzhuan/utils/AesTool.java,a\2\a2db0b245baabad3bfac4ed828c045a1a727c716
-o
-?app/src/main/java/com/lelezu/app/xianzhuan/data/ApiConstants.kt,5\9\59f7456c2a3f4a9efb43f2da59c6628534ac645e
 m
 =app/src/main/java/com/lelezu/app/xianzhuan/data/ApiFactory.kt,2\7\273a62cdcf1a6feac254f4c68d7ab0425a18cbbb
-
-Oapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/TaskVerifyStepAdapter.kt,1\6\162a07dd47a08b7dc3c5a8b85858429f5e5693df
-s
-Capp/src/main/java/com/lelezu/app/xianzhuan/wxapi/WXEntryActivity.kt,6\f\6f614c78ed06e58cdee7c4f6fcd7ac6d5a00f7c7
-q
-Aapp/src/main/java/com/lelezu/app/xianzhuan/utils/ImageViewUtil.kt,8\c\8cfeff7ef5ee9715e8b0ef228b9a2753f35d7bce
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskType.kt,e\d\edcb57e2fa43944a620b14c47ec58ac275667eef
 |
@@ -158,5 +132,3 @@ Bapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskQuery.kt,8\d\8df2c74
 Kapp/src/main/java/com/lelezu/app/xianzhuan/ui/viewmodels/SingleLiveEvent.kt,6\d\6d69137930b8711c916c2f30054195c5f4ef008e
 u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/MyTaskActivity.kt,4\8\48508f97a4663d80c5fc709f79b1acaade4bd3c1
-{
-Kapp/src/main/java/com/lelezu/app/xianzhuan/ui/fragments/NotificaFragment.kt,3\7\375f231b9a49b6cf5abcf72cfa14a2b0f8892b9a

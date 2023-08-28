@@ -280,7 +280,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
         if (isMyTask) {  //接单规则是否显示
-            findViewById<View>(R.id.tv_agreement).visibility = View.GONE
+            findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
         } else {
             findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
         }

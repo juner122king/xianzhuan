@@ -1,7 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,9 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -42,7 +38,6 @@ class ChatActivity : BaseActivity() {
     private lateinit var editText: EditText
     private lateinit var enterPic: ImageView
 
-    private lateinit var sendButtonAnimator: ObjectAnimator
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -95,6 +90,7 @@ class ChatActivity : BaseActivity() {
             val textContent = editText.text.toString().trim()
 
             if (textContent.isNotEmpty()) {
+                showLoading()
                 loginViewModel.apiSend(userId, textContent, false)
                 // 清空EditText内容
 
@@ -111,8 +107,10 @@ class ChatActivity : BaseActivity() {
     }
 
     private fun initObserve() {
+        showLoading()
         loginViewModel.getUserInfo(userId)//获取商家信息
         loginViewModel.userInfo.observe(this) {
+
 
             ImageViewUtil.loadCircleCrop(
                 findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
@@ -139,9 +137,16 @@ class ChatActivity : BaseActivity() {
         //发送信息监听
         loginViewModel.sendMessage.observe(this) {
             LogUtils.i(it.toString())
+            showLoading()
             loginViewModel.apiRecord(userId)
         }
 
+
+        homeViewModel.upLink.observe(this) { link ->
+//            showToast( "图片上传成功")
+            hideLoading()
+            loginViewModel.apiSend(userId, link, true)
+        }
 
     }
 
@@ -196,7 +201,8 @@ class ChatActivity : BaseActivity() {
                 if (imageData != null && imageData.length > 1000 * 2000) showToast("图片不能超过2MB,请重新选择！")
                 else {
                     //执行上传动作
-                    loginViewModel.apiSend(userId, imageData!!, true)
+
+                    homeViewModel.apiUpload(it)
 
 
                 }

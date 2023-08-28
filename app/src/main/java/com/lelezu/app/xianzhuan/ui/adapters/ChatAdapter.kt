@@ -74,7 +74,7 @@ class ChatAdapter(private var items: List<ChatMessage>, private var context: Con
         if (item.isImage) {//是否图片内容
             holder.text.visibility = View.GONE
             holder.iv.visibility = View.VISIBLE
-            ImageViewUtil.load(holder.iv, item.contactContent)
+            ImageViewUtil.loadWH(holder.iv, item.contactContent)
         } else {
             holder.text.visibility = View.VISIBLE
             holder.iv.visibility = View.GONE

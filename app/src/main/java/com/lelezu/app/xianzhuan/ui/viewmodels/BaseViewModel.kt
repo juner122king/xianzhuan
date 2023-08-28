@@ -15,6 +15,8 @@ import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
+import com.lelezu.app.xianzhuan.utils.ShareUtil.getRegister
+import com.lelezu.app.xianzhuan.utils.ShareUtil.isConnected
 import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 
 /**
@@ -108,11 +110,13 @@ open class BaseViewModel : ViewModel() {
 
     //Token失效
     private fun <T> failedResponse(r: ApiResponse<T>, mes: String?) {
-        Log.i("BaseViewModel:", "r.code:${r.code},mes:${mes}")
-        errMessage.postValue(ErrResponse(r.code, mes))
+
+
+        if (isConnected()) errMessage.postValue(ErrResponse(r.code, mes))//有网络，正常报错
+        else errMessage.postValue(ErrResponse(null, "网络未连接"))//无网络，提示网络未连接
+
         if (r.data is LoginReP || r.isTokenLose) onLoginFailed()
     }
-    //Token失效
 
 
     private fun onLoginFailed() {

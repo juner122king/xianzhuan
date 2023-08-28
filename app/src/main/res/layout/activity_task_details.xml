@@ -90,7 +90,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:hint="看视频就拿钱"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -157,6 +156,7 @@
                     android:layout_marginBottom="5dp"
                     android:text="支持设备"
                     android:textSize="13sp"
+                    android:textColor="@color/black2"
                     app:layout_constraintBottom_toBottomOf="@id/tv_task_des"
                     app:layout_constraintEnd_toStartOf="@id/iv_and" />
 
@@ -184,9 +184,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:hint="新老用户不限，每月一次，请勿退款，毕竟看视频能获得88.88元的收入"
                     android:textColor="@color/black2"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     app:layout_constraintStart_toStartOf="@id/tv_task_des"
                     app:layout_constraintTop_toBottomOf="@id/tv_task_des" />
 

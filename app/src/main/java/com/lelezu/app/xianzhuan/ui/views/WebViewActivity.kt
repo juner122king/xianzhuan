@@ -49,7 +49,7 @@ class WebViewActivity : BaseActivity() {
                 }
             }
         }
-
+        LogUtils.i("WebView______>", "加载Link:${link}")
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
             //显示简单的用户协议页面
@@ -58,8 +58,7 @@ class WebViewActivity : BaseActivity() {
 
             return
         }
-
-        wv.loadUrl(WebViewSettings.host + link)
+        wv.loadUrl(link)
 
         //注入打开相册方法
         wv.registerHandler("chooseImage") { _, _ ->
@@ -133,7 +132,7 @@ class WebViewActivity : BaseActivity() {
 
     fun backOrFinish() {
         if (wv.canGoBack()) {
-            if (wv.url.equals(WebViewSettings.host + link)) finish()
+            if (wv.url.equals(link)) finish()
             else wv.goBack()
         } else finish()
     }

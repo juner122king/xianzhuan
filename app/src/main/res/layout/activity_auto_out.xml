@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:text="客服邮箱：fankui@zhongshoubang.com"
+            android:text="客服邮箱：kefu@zhongshoubang.com"
             android:textColor="@color/text_999"
             android:textSize="15sp" />
 

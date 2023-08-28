@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.h5
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -21,35 +20,26 @@ object WebViewSettings {
     var URL_TITLE = "URL_TITLE"
 
     var isProcessing = "isProcessing"
+    private var host = "$HOST/statics/dxz/h5/pages"
 
-    var link100 = "$HOST/statics/dxz/h5/pages/agreement/user"//《用户使用协议》
-    var link101 = "$HOST/statics/dxz/text/ysxy.html"//《隐私政策》
+    var link100 = "$host/agreement/user"//《用户使用协议》
+    var link101 = "$host/agreement/privacy"//《隐私政策》
 
-    var link14 = "$HOST/statics/dxz/text/jiedan.html" //接单规则
+    var link14 = "$host/agreement/order" //接单规则
 
-    var host = "$HOST/statics/dxz/h5"
-
-
-    var link1 = "/pages/index/dailyRewards/dailyRewards"
-    var link2 = "/pages/index/newcomerRewards/newcomerRewards"
-    var link3 = "/pages/apprentice/index"
-
-    var link4 = "/pages/apprentice/apprenticeIncome/index" //我的-收徒收益
-
-    var link5 = "/pages/publishTask/selectTaskClassification/index" //我的-发布任务
-
-    var link6 = "/pages/shop/list/index" //我的店铺
-
-    var link7 = "/pages/reportForms/index" //我的-流水报表
-    var link8 = "/pages/balance/index?pageType=recharge" //充值
-    var link9 = "/pages/balance/index?pageType=withdrawal" //提现
-    var link10 = "/pages/feedback/opinion/index?pageType=report" //举报维权
-
-    var link11 = "/pages/feedback/index" //客服与反馈
-
-    var link12 = "/pages/personalData/index" //设置个人资料
-
-    var link13 = "/pages/member/index" //开通会员
+    var link1 = "$host/index/dailyRewards/dailyRewards"
+    var link2 = "$host/index/newcomerRewards/newcomerRewards"
+    var link3 = "$host/apprentice/index"
+    var link4 = "$host/apprentice/apprenticeIncome/index" //我的-收徒收益
+    var link5 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务
+    var link6 = "$host/shop/list/index" //我的店铺
+    var link7 = "$host/reportForms/index" //我的-流水报表
+    var link8 = "$host/balance/index?pageType=recharge" //充值
+    var link9 = "$host/balance/index?pageType=withdrawal" //提现
+    var link10 = "$host/feedback/opinion/index?pageType=report" //举报维权
+    var link11 = "$host/feedback/index" //客服与反馈
+    var link12 = "$host/personalData/index" //设置个人资料
+    var link13 = "$host/member/index" //开通会员
 
 
     @SuppressLint("SetJavaScriptEnabled")

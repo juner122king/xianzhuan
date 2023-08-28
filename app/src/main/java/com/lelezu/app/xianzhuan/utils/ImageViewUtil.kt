@@ -1,7 +1,10 @@
 package com.lelezu.app.xianzhuan.utils
 
 import android.widget.ImageView
+import coil.Coil.imageLoader
 import coil.load
+import coil.request.ImageRequest
+import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
@@ -22,14 +25,20 @@ object ImageViewUtil {
                 crossfade(true)
                 transformations(
                     RoundedCornersTransformation(
-                        roundedCorners,
-                        roundedCorners,
-                        roundedCorners,
-                        roundedCorners
+                        roundedCorners, roundedCorners, roundedCorners, roundedCorners
                     )
                 )
             }
         }
+    }
+
+    fun loadWH(imageView: ImageView, any: Any) {
+
+        imageView.load(any) {
+            crossfade(true)
+            scale(Scale.FILL)
+        }
+
     }
 
     fun loadCircleCrop(imageView: ImageView, any: Any?) {
@@ -41,4 +50,7 @@ object ImageViewUtil {
             }
         }
     }
+
+
+
 }

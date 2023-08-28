@@ -77,7 +77,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:hint="隔壁老王"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@id/iv_user_pic"
@@ -88,7 +87,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:hint="UID:8888888"
                     app:layout_constraintStart_toStartOf="@id/tv_user_name"
                     app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
 

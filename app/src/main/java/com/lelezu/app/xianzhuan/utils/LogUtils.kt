@@ -37,6 +37,12 @@ object LogUtils {
         }
     }
 
+    fun i(tag:String,message: String) {
+        if (isLoggingEnabled) {
+            Log.i(tag, message)
+        }
+    }
+
     fun w(message: String) {
         if (isLoggingEnabled) {
             Log.w(getTag(), message)
