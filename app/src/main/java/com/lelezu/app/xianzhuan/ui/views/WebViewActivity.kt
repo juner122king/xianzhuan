@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
@@ -29,6 +30,8 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
 
 
 class WebViewActivity : BaseActivity() {
+
+    private var LOG_TAG = "WebView______>"
 
     private lateinit var context: Context
 
@@ -49,7 +52,7 @@ class WebViewActivity : BaseActivity() {
                 }
             }
         }
-        LogUtils.i("WebView______>", "加载Link:${link}")
+        LogUtils.i(LOG_TAG, "加载Link:${link}")
         if (!intent.getBooleanExtra(isProcessing, true)) {
 
             //显示简单的用户协议页面
@@ -94,12 +97,21 @@ class WebViewActivity : BaseActivity() {
 
 
         if (link == WebViewSettings.link8) {//充值页面才添加拦截
+
             wv.webViewClient = object : WebViewClient() {
                 @Deprecated("Deprecated in Java", ReplaceWith("false"))
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
 
+
+                    LogUtils.i(LOG_TAG, "url:${url}")
+
+
                     // ------  对alipays:相关的scheme处理 -------
                     if (url.startsWith("alipays:") || url.startsWith("alipay")) {
+
+                        hideView()
+
+
                         try {
                             startActivity(Intent("android.intent.action.VIEW", Uri.parse(url)))
                         } catch (e: Exception) {
@@ -117,10 +129,12 @@ class WebViewActivity : BaseActivity() {
                         }
                         return true
                     }
+
                     // ------- 处理结束 -------
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true
                     }
+                    showView()
                     view.loadUrl(url)
                     return true
                 }//拦截支付宝
@@ -130,6 +144,8 @@ class WebViewActivity : BaseActivity() {
 
     }
 
+
+
     fun backOrFinish() {
         if (wv.canGoBack()) {
             if (wv.url.equals(link)) finish()
@@ -138,9 +154,10 @@ class WebViewActivity : BaseActivity() {
     }
 
 
+
+
     private val rc: Int = 123
     private fun openPhoto() {
-        LogUtils.i("打开相册  android级别：${Build.VERSION.SDK_INT}")
         // 检查图片权限
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.READ_EXTERNAL_STORAGE

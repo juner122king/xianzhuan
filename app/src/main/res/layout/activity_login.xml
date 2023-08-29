@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="@color/white"
     tools:context=".ui.views.LaunchActivity">
 
     <TextView
@@ -69,61 +69,19 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
 
-        <CheckBox
-            android:id="@+id/cb_agree_agreement"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="我已阅读并同意"
-            android:textColor="@color/text_s"
-            android:textSize="@dimen/font_small" />
 
-        <TextView
-            android:id="@+id/tv_agreement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:paddingTop="18px"
-            android:paddingBottom="18px"
-            android:text="@string/text_agreement"
-            android:textColor="@color/text_check"
-            android:textSize="@dimen/font_small" />
-
-        <TextView
-            android:id="@+id/tv_agreement2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="18px"
-            android:paddingBottom="18px"
-            android:text="@string/text_agreement1"
-            android:textColor="@color/text_check"
-            android:textSize="@dimen/font_small" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="18px"
-            android:paddingBottom="18px"
-            android:text="协议"
-            android:textColor="@color/text_s"
-            android:textSize="@dimen/font_small" />
-
-    </LinearLayout>
+    <include layout="@layout/layout_login_p" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/bto_phome_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10px"
         android:padding="18px"
-        android:text="@string/bto_use_phone_login" />
+        android:text="@string/bto_use_phone_login"
+        android:visibility="visible" />
 
 
 </LinearLayout>

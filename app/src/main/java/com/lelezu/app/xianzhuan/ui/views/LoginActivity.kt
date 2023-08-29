@@ -52,14 +52,24 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
 
-
-
     private fun wxLoginInit() {
-
         when (cbAgree.isChecked) {
             true -> {
                 showLoading()
                 WxLogin.longWx()  //微信登录
+            }
+
+            else -> {
+                showToast("请同意隐私政策")
+            }
+        }
+    }
+
+    private fun phoneLoginInit() {
+        when (cbAgree.isChecked) {
+            true -> {
+
+                startActivity(Intent(this, LoginMobileActivity::class.java))
             }
 
             else -> {
@@ -198,7 +208,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
             }
 
             R.id.bto_wx_login -> wxLoginInit() // 微信登录按钮
-            R.id.bto_phome_login -> wxLoginInit() // 使用手机登录
+            R.id.bto_phome_login -> phoneLoginInit() // 使用手机登录
         }
 
     }

@@ -193,7 +193,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun showView() {
-        mRltBase?.visibility = View.VISIBLE
+        if (mRltBase?.visibility != View.VISIBLE) mRltBase?.visibility = View.VISIBLE
     }
 
     protected fun setLoadingView(view: View) {

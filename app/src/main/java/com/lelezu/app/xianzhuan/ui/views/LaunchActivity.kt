@@ -83,7 +83,7 @@ class LaunchActivity : AppCompatActivity() {
 
         initJPUSHSDK()//极光SDK初始化
 
-        initZJSDK()//任务墙SDK 初始化
+//        initZJSDK()//任务墙SDK 初始化
 
         ShareUtil.putAndroidID(this) //获取Android ID
 

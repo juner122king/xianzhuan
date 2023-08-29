@@ -82,7 +82,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         super.onResume()
 
         if (havePermission) {
-            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
+//            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
         } else {
             checkPermission()
         }
@@ -191,7 +191,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         private val createdIds = hashSetOf<Long>()
 
         override fun getItemCount(): Int {
-            return 3
+            return 1
         }
 
         override fun getItemId(position: Int): Long {
