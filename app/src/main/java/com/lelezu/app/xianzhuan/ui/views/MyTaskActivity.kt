@@ -21,6 +21,7 @@ class MyTaskActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tabTextList = arrayOf(
+            "全 部",
             getString(R.string.title_task_my1),
             getString(R.string.title_task_my2),
             getString(R.string.title_task_my3),
@@ -51,31 +52,35 @@ class MyTaskActivity : BaseActivity() {
     class TaskListFragmentPagerAdapter(activity: FragmentActivity) :
         FragmentStateAdapter(activity) {
         override fun getItemCount(): Int {
-            return 4
+            return 5
         }
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 //	提交完成任务状态(0-未报名 1-待提交 2-审核中 3-审核通过 4-审核被否 5-手动取消 6-超时取消)
-                0 -> TaskListFragment.newInstance(
+                1 -> TaskListFragment.newInstance(
                     getTaskQuery(1), true
                 )
 
-                1 -> TaskListFragment.newInstance(
+                2 -> TaskListFragment.newInstance(
                     getTaskQuery(2), true
                 )
 
-                2 -> TaskListFragment.newInstance(
+                3 -> TaskListFragment.newInstance(
                     getTaskQuery(3), true
                 )
 
-                else -> TaskListFragment.newInstance(
+                4 -> TaskListFragment.newInstance(
                     getTaskQuery(4), true
+                )
+
+                else -> TaskListFragment.newInstance(
+                    getTaskQuery(null), true
                 )
             }
         }
 
-        private fun getTaskQuery(status: Int): TaskQuery {
+        private fun getTaskQuery(status: Int?): TaskQuery {
             return TaskQuery(
                 null, 1, null, null, null, status, null
             )

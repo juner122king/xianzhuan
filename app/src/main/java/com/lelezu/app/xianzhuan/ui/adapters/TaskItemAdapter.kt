@@ -27,7 +27,13 @@ class TaskItemAdapter(
 ) : EmptyAdapter<RecyclerView.ViewHolder>() {
 
     private val statusMap = mapOf(
-        0 to "未报名", 1 to "待提交", 2 to "审核中", 3 to "审核通过", 4 to "审核被否", 5 to "已取消"
+        0 to "未报名",
+        1 to "待提交",
+        2 to "审核中",
+        3 to "审核通过",
+        4 to "审核被否",
+        5 to "手动取消",
+        6 to "超时取消"
         // 可以继续添加其他映射关系
     )
 
@@ -38,7 +44,8 @@ class TaskItemAdapter(
         2 to "提交时间：",
         3 to "通过时间：",
         4 to "审核时间：",
-        5 to "已取消"
+        5 to "手动取消",
+        6 to "超时取消"
         // 可以继续添加其他映射关系
     )
 
@@ -49,6 +56,7 @@ class TaskItemAdapter(
         3 to R.color.pass,
         4 to R.color.colorControlActivated,
         5 to R.color.colorControlActivated,
+        6 to R.color.colorControlActivated,
     )
 
 
@@ -59,6 +67,7 @@ class TaskItemAdapter(
         notifyDataSetChanged()
 
     }
+
     // 更新数据方法
     fun setEmpty() {
 
@@ -149,7 +158,8 @@ class TaskItemAdapter(
 
                 holder.lTopView.visibility = View.VISIBLE
                 holder.line.visibility = View.VISIBLE
-                holder.tvTime.text = statusTimeText + item.operateTime
+                if (item.auditStatus == 5 || item.auditStatus == 6) holder.tvTime.text = ""
+                else holder.tvTime.text = statusTimeText + item.operateTime
                 holder.tvTaskStatus.text = statusText
                 holder.tvTaskStatus.setTextColor(resolvedColor)
 

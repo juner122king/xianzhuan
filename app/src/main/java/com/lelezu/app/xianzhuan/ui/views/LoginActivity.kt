@@ -28,7 +28,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
 
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹窗
-
     private var dialogType: Int = 1//弹窗的协议类型  1为隐私协议  2为用户协议
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,16 +65,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
     private fun phoneLoginInit() {
-        when (cbAgree.isChecked) {
-            true -> {
-
-                startActivity(Intent(this, LoginMobileActivity::class.java))
-            }
-
-            else -> {
-                showToast("请同意隐私政策")
-            }
-        }
+        startActivity(Intent(this, LoginMobileActivity::class.java))
     }
 
     private fun getLogin(wxCode: String) {
@@ -109,11 +99,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
 
-    private fun goToHomeActivity() {
-
-        finish()
-        startActivity(Intent(context, HomeActivity::class.java))
-    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)

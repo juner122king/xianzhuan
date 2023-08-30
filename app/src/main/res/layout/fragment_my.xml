@@ -313,7 +313,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="我的任务"
+                    android:text="我领的任务"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -442,7 +442,39 @@
             </LinearLayout>
 
             <include layout="@layout/item_line" />
+            <LinearLayout
+                android:id="@+id/ll_l4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/my_icon_list4" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="充值"
+                    android:textColor="@color/black2"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/my_icon_enter" />
+
+            </LinearLayout>
+
+            <include layout="@layout/item_line" />
             <LinearLayout
                 android:id="@+id/ll_l2"
                 android:layout_width="match_parent"
@@ -512,39 +544,7 @@
 
             <include layout="@layout/item_line" />
 
-            <LinearLayout
-                android:id="@+id/ll_l4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="10dp">
 
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/my_icon_list4" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="充值"
-                    android:textColor="@color/black2"
-                    android:textSize="15sp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/my_icon_enter" />
-
-            </LinearLayout>
-
-            <include layout="@layout/item_line" />
 
             <LinearLayout
                 android:id="@+id/ll_l5"

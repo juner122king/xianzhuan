@@ -8,9 +8,12 @@
 
     <CheckBox
         android:id="@+id/cb_agree_agreement"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:checked="false"
+        android:drawablePadding="3dp"
+        android:button="@drawable/switch_drawable_selector2"
         android:text="我已阅读并同意"
         android:textColor="@color/text_s"
         android:textSize="@dimen/font_small" />

@@ -79,7 +79,7 @@ object ShareUtil {
         return ""
     }
 
-    private fun putBoolean(key: String, value: Boolean) {
+    public fun putBoolean(key: String, value: Boolean) {
 
         val editor: SharedPreferences.Editor = getSps().edit()
         editor.putBoolean(key, value)

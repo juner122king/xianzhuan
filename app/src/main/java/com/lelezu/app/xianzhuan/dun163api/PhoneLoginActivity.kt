@@ -8,6 +8,7 @@ import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.ApiConstants.DUN_PHONE_BUSINESS_ID
 import com.lelezu.app.xianzhuan.data.ApiConstants.DUN_RISK_BUSINESS_ID
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 import com.netease.htprotect.HTProtect
@@ -60,10 +61,9 @@ class PhoneLoginActivity : Activity() {
             }
 
             override fun onGetMobileNumberError(YDToken: String, msg: String) {
-                Log.d(
-                    "易盾号码认证Api", "预取号失败：${msg}"
-                )
-                ToastUtils.showToast(baseContext, "易盾号码认证:预取号失败：${msg}", 0)
+
+                LogUtils.i("易盾","预取号失败：${msg}")
+                ToastUtils.showToast(baseContext, "请打开流量联网后重试", 0)
                 finish()
 
             }

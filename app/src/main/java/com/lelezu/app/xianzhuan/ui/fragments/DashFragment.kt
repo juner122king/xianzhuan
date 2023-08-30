@@ -1,12 +1,15 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -33,6 +36,7 @@ class DashFragment : BaseFragment() {
     private lateinit var viewPager: ViewPager2
 
     private lateinit var ets: EditText
+    private lateinit var ll: View
     private lateinit var ivs: ImageView  //搜索
 
     // 定义一个包含Tab文字的List
@@ -57,6 +61,7 @@ class DashFragment : BaseFragment() {
 
         ets = view.findViewById(R.id.et_s)
         ivs = view.findViewById(R.id.view_s)
+        ll = view.findViewById(R.id.ll)
 
         ivs.setOnClickListener {
             val inputText = ets.text.toString().trim()
@@ -130,4 +135,23 @@ class DashFragment : BaseFragment() {
     }
 
 
+    override fun onStop() {
+        super.onStop()
+        close()
+    }
+
+    //清除搜索框焦点
+    private fun close() {
+        ets.text.clear()
+
+        val inputMethodManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(ll.windowToken, 0)
+
+        // 先 设置根视图获取焦点，以确保 EditText 失去焦点
+        ll.requestFocus()
+        // 再 让EditText 失去焦点 顺序不能乱
+        ets.clearFocus()
+
+    }
 }

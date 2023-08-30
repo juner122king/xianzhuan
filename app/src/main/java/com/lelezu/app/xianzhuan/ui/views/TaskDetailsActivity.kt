@@ -34,7 +34,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         1 to R.drawable.icon_head1, 2 to R.drawable.icon_head, 4 to R.drawable.icon_head2
         // 可以继续添加其他映射关系
     )
-    private lateinit var ivDialog: Dialog
 
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
     private lateinit var taskVerifyRV: RecyclerView //验证列表
@@ -60,13 +59,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
     private fun initView() {
-
-        //开始--示例图打开功能
-        ivDialog = Dialog(this, R.style.FullActivity)
-        val attributes = window.attributes
-        attributes.width = WindowManager.LayoutParams.MATCH_PARENT
-        attributes.height = WindowManager.LayoutParams.MATCH_PARENT
-        ivDialog.window?.attributes = attributes
 
 
         taskDetailsRV = findViewById(R.id.rv_task_step)
@@ -222,7 +214,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             ivDialog.dismiss()
             true
         }
-
     }
 
 

@@ -70,7 +70,6 @@
     </LinearLayout>
 
 
-
     <include layout="@layout/layout_login_p" />
 
     <TextView
@@ -78,9 +77,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10px"
-        android:padding="18px"
+        android:padding="10dp"
         android:text="@string/bto_use_phone_login"
+        android:textColor="#3685FE"
+        android:textSize="13sp"
         android:visibility="visible" />
 
 

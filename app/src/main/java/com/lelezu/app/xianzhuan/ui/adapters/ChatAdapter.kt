@@ -1,5 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
+import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -7,12 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 /**
  * @author:Administrator
@@ -20,8 +25,11 @@ import com.lelezu.app.xianzhuan.utils.ImageViewUtil
  * @description:
  *
  */
-class ChatAdapter(private var items: List<ChatMessage>, private var context: Context) :
-    RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
+class ChatAdapter(
+    private var items: List<ChatMessage>, private var ivDialog: Dialog, private var context: BaseActivity
+) : RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
+
+
     fun updateData(newItems: List<ChatMessage>) {
         val sortedMessages = newItems.sortedBy { it.createdDt }.reversed() //根据时间排序
 
@@ -75,12 +83,40 @@ class ChatAdapter(private var items: List<ChatMessage>, private var context: Con
             holder.text.visibility = View.GONE
             holder.iv.visibility = View.VISIBLE
             ImageViewUtil.loadWH(holder.iv, item.contactContent)
+            holder.iv.setOnClickListener {//图片全屏显示
+                ivDialog.setContentView(getImageView(item.contactContent))
+                ivDialog.show()
+            }
+
         } else {
             holder.text.visibility = View.VISIBLE
             holder.iv.visibility = View.GONE
             holder.text.text = item.contactContent
         }
 
-
     }
+
+    private fun getImageView(any: Any): ImageView {
+        val imageView = ImageView(context)
+        imageView.layoutParams = RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        ImageViewUtil.load(imageView, any)
+
+        imageView.setOnClickListener {
+            ivDialog.dismiss()
+        }
+
+        //1.注册菜单
+        context.registerForContextMenu(imageView)
+        imageView.setOnLongClickListener {
+            //显示选项  保存图
+            //2.打开菜单
+            context.openContextMenu(imageView)
+            ShareUtil.putString(ShareUtil.APP_TASK_PIC_DOWN_URL, any.toString())
+            true
+        }
+        return imageView
+    }
+
 }

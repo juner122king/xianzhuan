@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.ClipDescription
 import android.content.ClipboardManager
@@ -11,7 +12,9 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.View
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -73,6 +76,15 @@ abstract class BaseActivity : AppCompatActivity() {
         registerReceiver(
             connectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         )
+
+
+        //开始--示例图打开功能
+        ivDialog = Dialog(this, R.style.FullActivity)
+        val attributes = window.attributes
+        attributes.width = WindowManager.LayoutParams.MATCH_PARENT
+        attributes.height = WindowManager.LayoutParams.MATCH_PARENT
+        ivDialog.window?.attributes = attributes
+
     }
     //监听token失效
 
@@ -108,7 +120,13 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    protected fun goToHomeActivity() {
 
+        val intent = Intent(MyApplication.context, HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
     private fun initViewModel() {
 
         loginViewModel.errMessage.observe(this) {
@@ -317,6 +335,30 @@ abstract class BaseActivity : AppCompatActivity() {
                     ShareUtil.putConnected(false)
                 }
             }
+        }
+    }
+
+    protected lateinit var ivDialog: Dialog
+    override fun onCreateContextMenu(
+        menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menu?.add(0, 1, 0, "保存")
+        menu?.add(0, 2, 1, "取消")
+
+        menu!!.getItem(0).setOnMenuItemClickListener {
+            Toast.makeText(
+                this,
+                "保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}",
+                Toast.LENGTH_SHORT
+            ).show()
+            //进行保存图片操作
+            true
+        }
+
+        menu.getItem(1).setOnMenuItemClickListener {
+            ivDialog.dismiss()
+            true
         }
     }
 }

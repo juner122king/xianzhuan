@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -38,6 +40,7 @@ class ChatActivity : BaseActivity() {
     private lateinit var editText: EditText
     private lateinit var enterPic: ImageView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,6 +54,9 @@ class ChatActivity : BaseActivity() {
     }
 
     private fun initView() {
+
+
+
         findViewById<View>(R.id.tv_user_vip).visibility = View.GONE//隐藏vip等级
         editText = findViewById(R.id.et_s)
         ll = findViewById(R.id.ll)
@@ -58,7 +64,7 @@ class ChatActivity : BaseActivity() {
         enter = findViewById(R.id.enter)
 
         recyclerView = findViewById(R.id.recyclerView)
-        adapter = ChatAdapter(emptyList(), this)
+        adapter = ChatAdapter(emptyList(), ivDialog,this)
         recyclerView.adapter = adapter
 
         // 可以在这里设置 RecyclerView 的布局管理器，例如：

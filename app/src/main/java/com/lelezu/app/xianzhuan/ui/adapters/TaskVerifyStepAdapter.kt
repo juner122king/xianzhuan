@@ -216,8 +216,6 @@ class TaskVerifyStepAdapter(
 
     }
 
-
-
     private val pickImageContract = activity.registerForActivityResult(PickImageContract()) {
         if (it != null) {
             homeViewModel.apiUpload(it)
@@ -229,7 +227,6 @@ class TaskVerifyStepAdapter(
             }
         }
     }
-
     //处理选择图片的请求和结果
     inner class PickImageContract : ActivityResultContract<Unit, Uri?>() {
         override fun createIntent(context: Context, input: Unit): Intent {

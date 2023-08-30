@@ -165,19 +165,19 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             val intent = Intent(requireContext(), MyTaskActivity::class.java)
             when (p0.id) {
                 R.id.iv_my_task1, R.id.ll_my_task1 -> {
-                    intent.putExtra("selectedTab", 0)
-                }
-
-                R.id.iv_my_task2 -> {
                     intent.putExtra("selectedTab", 1)
                 }
 
-                R.id.iv_my_task3 -> {
+                R.id.iv_my_task2 -> {
                     intent.putExtra("selectedTab", 2)
                 }
 
-                R.id.iv_my_task4 -> {
+                R.id.iv_my_task3 -> {
                     intent.putExtra("selectedTab", 3)
+                }
+
+                R.id.iv_my_task4 -> {
+                    intent.putExtra("selectedTab", 4)
                 }
             }
             startActivity(intent)//我的任务
