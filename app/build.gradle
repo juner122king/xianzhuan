@@ -7,7 +7,6 @@ plugins {
 android {
     namespace 'com.lelezu.app.xianzhuan'
     compileSdk 34
-
     defaultConfig {
         applicationId "com.lelezu.app.xianzhuan"
         minSdk 21
@@ -43,12 +42,36 @@ android {
 
     }
 
+    //设置签名，debug release运行用正式签名
+    signingConfigs {
+        release {
+            storeFile file('dexianzhuan.keystore')
+            storePassword "dexianzhuan"
+            keyAlias "dexianzhuan"
+            keyPassword "dexianzhuan"
+        }
+
+        debug {
+            storeFile file('dexianzhuan.keystore')
+            storePassword "dexianzhuan"
+            keyAlias "dexianzhuan"
+            keyPassword "dexianzhuan"
+        }
+    }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+        //设置debug的签名
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles 'proguard-rules.pro'
+        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
