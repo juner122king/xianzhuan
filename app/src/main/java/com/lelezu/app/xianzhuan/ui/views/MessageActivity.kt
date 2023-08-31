@@ -14,9 +14,9 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
 class MessageActivity : BaseActivity() {
 
 
-    private val sysMessageViewModel: SysMessageViewModel by viewModels {
-        SysMessageViewModel.ViewFactory((application as MyApplication).sysInformRepository)
-    }
+//    private val sysMessageViewModel: SysMessageViewModel by viewModels {
+//        SysMessageViewModel.ViewFactory((application as MyApplication).sysInformRepository)
+//    }
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
     private lateinit var adapter: MessageItemAdapter

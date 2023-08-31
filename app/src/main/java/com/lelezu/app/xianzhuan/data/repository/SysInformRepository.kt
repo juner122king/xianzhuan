@@ -1,22 +1,16 @@
 package com.lelezu.app.xianzhuan.data.repository
 
-import android.content.Context.MODE_PRIVATE
-import android.util.Log
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.ListData
-import com.lelezu.app.xianzhuan.data.model.LoginInfo
-import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import rx.android.BuildConfig
 
 /**
  * @author:Administrator
@@ -30,7 +24,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     suspend fun apiGetList(current: Int, size: Int): ApiResponse<ListData<Message>> =
         withContext(Dispatchers.IO) {
             val call = apiService.getSysMessageList(
-                current, size, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+                current, size, loginToken
             )
             executeApiCall(call)
         }
@@ -39,6 +33,16 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //公告
     suspend fun apiAnnounce(): ApiResponse<List<Announce>> = withContext(Dispatchers.IO) {
         val call = apiService.getAnnounce(
+            loginToken
+        )
+        executeApiCall(call)
+    }
+
+    //新版本
+    suspend fun detection(): ApiResponse<Version> = withContext(Dispatchers.IO) {
+        val call = apiService.detection(
+            ShareUtil.getVersionCode().toString(),
+            ShareUtil.getVersionName(),
             ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         )
         executeApiCall(call)
@@ -49,7 +53,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     suspend fun markSysMessage(msgIds: List<String>): ApiResponse<Boolean> =
         withContext(Dispatchers.IO) {
             val call = apiService.getMarkSysMessage(
-                msgIds, ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+                msgIds, loginToken
             )
             executeApiCall(call)
         }
@@ -58,7 +62,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //获取用户未读信息数量
     suspend fun getSysMessageNum(): ApiResponse<Int> = withContext(Dispatchers.IO) {
         val call = apiService.getSysMessageNum(
-            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            loginToken
         )
         executeApiCall(call)
     }
@@ -70,7 +74,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
             val call = apiService.getConfig(
                 confType,
                 configKey,
-                ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+                loginToken
             )
             executeApiCall(call)
         }

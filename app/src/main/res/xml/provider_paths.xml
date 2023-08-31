@@ -17,6 +17,9 @@
         <external-files-path
             name="app"
             path="/" />
+        <external-path
+            name="external_files"
+            path="." />
     </path>
 
 </resources>

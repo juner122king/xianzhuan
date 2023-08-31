@@ -1,18 +1,55 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Button
+import androidx.core.content.FileProvider
+import androidx.core.widget.ContentLoadingProgressBar
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.versionCode
+import com.lelezu.app.xianzhuan.utils.ShareUtil.versionName
+import java.io.File
 
 class AutoOutActivity : BaseActivity(), OnClickListener {
+    private lateinit var dialog: Dialog
+
+    // 替换为你的 APK 下载链接和文件名
+    private lateinit var apkUrl: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
+        findViewById<View>(R.id.tv_newVersion).setOnClickListener(this)
+
+
+        sysMessageViewModel.version.observe(this) {
+            if (it.isNew) {
+                //有新版本
+                findViewById<View>(R.id.tv_newVersion).visibility = View.VISIBLE
+                apkUrl = it.download
+            }
+
+        }
+
+        val pInfo = packageManager.getPackageInfo(packageName, 0)
+        ShareUtil.putString(versionName, pInfo.versionName)
+        ShareUtil.putInt(versionCode, pInfo.versionCode)
     }
+
+    override fun onResume() {
+        super.onResume()
+        //检查新版本
+        sysMessageViewModel.detection()
+    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.activity_auto_out
@@ -36,6 +73,60 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
                 startActivity(intent)
             }
 
+            R.id.tv_newVersion -> {
+                //下载新版本
+                showDialog()
+            }
+
         }
     }
+
+    private fun showDialog() {
+        dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_download)
+
+        val progressBar: ContentLoadingProgressBar = dialog.findViewById(R.id.progressBar)
+        val btnDownload: Button = dialog.findViewById(R.id.btnDownload)
+        val btnDownloadNo: Button = dialog.findViewById(R.id.btnDownloadNo)
+
+        btnDownload.setOnClickListener {
+            // 在点击下载按钮时执行下载操作
+            startDownload()
+        }
+        btnDownloadNo.setOnClickListener {
+            // 在点击下载按钮时执行下载操作
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun startDownload() {
+        sysMessageViewModel.downloadApk(apkUrl)
+        sysMessageViewModel.downloadProgress.observe(this) {
+            // 更新进度条
+            val progressBar: ContentLoadingProgressBar = dialog.findViewById(R.id.progressBar)
+            progressBar.progress = it
+            if (it == 100) {
+                // 下载完成时，隐藏对话框
+                dialog.dismiss()
+
+            }
+        }
+        sysMessageViewModel.apkPath.observe(this) {
+            //安装apk
+            openFileWithFilePath(it)
+        }
+    }
+
+    private fun openFileWithFilePath(filePath: String) {
+        val file = File(filePath)
+        val uri = FileProvider.getUriForFile(this, "com.lelezu.app.xianzhuan.fileprovider", file)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, "application/vnd.android.package-archive")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(intent)
+    }
+
 }

@@ -28,8 +28,6 @@ object Base64Utils {
     }
 
 
-
-
     fun zipPic2(uri: Uri): String? {
         val mimeType = context?.contentResolver?.getType(uri)
         val bitmap = decodeUriToBitmap(uri)
@@ -40,14 +38,12 @@ object Base64Utils {
         return if (mimeType != null && mimeType.contains("jpeg")) {
             compressedBitmap?.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream)
             "image/jpeg;base64," + Base64.encodeToString(
-                byteArrayOutputStream.toByteArray(),
-                Base64.NO_WRAP
+                byteArrayOutputStream.toByteArray(), Base64.NO_WRAP
             )
         } else if (mimeType != null && mimeType.contains("png")) {
             compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream)
             "image/png;base64," + Base64.encodeToString(
-                byteArrayOutputStream.toByteArray(),
-                Base64.NO_WRAP
+                byteArrayOutputStream.toByteArray(), Base64.NO_WRAP
             )
         } else {
             // Unsupported image format
@@ -77,6 +73,11 @@ object Base64Utils {
             val scaledHeight = (height * scalingFactor).toInt()
             Bitmap.createScaledBitmap(it, scaledWidth, scaledHeight, true)
         }
+    }
+
+    fun encodeToString(originalData: String): String {
+
+        return Base64.encodeToString(originalData.toByteArray(Charsets.UTF_8), Base64.DEFAULT)
     }
 
 }

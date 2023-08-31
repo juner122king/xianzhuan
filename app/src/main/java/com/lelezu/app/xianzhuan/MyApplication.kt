@@ -9,6 +9,7 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.umeng.commonsdk.UMConfigure
 
+
 /**
  * @author:Administrator
  * @date:2023/7/19 0019
@@ -38,6 +39,8 @@ class MyApplication : Application() {
         //友盟开始
         //调用预初始化函数
         UMConfigure.preInit(this, UM_BUSINESS_NO, "正式")
+
+
     }
 
 

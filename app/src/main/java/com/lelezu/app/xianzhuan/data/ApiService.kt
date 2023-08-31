@@ -15,6 +15,7 @@ import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.UserInfo
+import com.lelezu.app.xianzhuan.data.model.Version
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -137,6 +138,15 @@ interface ApiService {
     fun taskSubmit(
         @Body taskSubmit: TaskSubmit, @Header("Authorization") token: String
     ): Call<ApiResponse<Boolean>>
+
+
+    @GET("/dxz/app/sys/config/apk/update/detection")//新版本检测
+    fun detection(
+        @Query("versionCode") versionCode: String,
+        @Query("versionName") versionName: String,
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Version>>
+
 
     @Multipart
     @POST("/dxz/app/sys/file/image/upload")//上传图片

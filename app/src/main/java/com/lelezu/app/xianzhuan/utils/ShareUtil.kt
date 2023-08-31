@@ -19,6 +19,9 @@ object ShareUtil {
 
     private var sps: SharedPreferences? = null
 
+    const val versionCode: String = "versionCode"
+    const val versionName: String = "versionName"
+
     private const val APP_SHARED_PREFERENCES_KEY: String = "ApiPrefs"
 
     private const val APP_NETWORK_IS_CONNECTED: String = "IS_CONNECTED"//网络是否连接
@@ -91,6 +94,20 @@ object ShareUtil {
 
         val sps: SharedPreferences = getSps()
         return sps.getBoolean(key, false)
+
+    }
+
+    private fun getInt(key: String): Int {
+
+        val sps: SharedPreferences = getSps()
+        return sps.getInt(key, -1)
+    }
+
+    fun putInt(key: String, value: Int) {
+
+        val editor: SharedPreferences.Editor = getSps().edit()
+        editor.putInt(key, value)
+        editor.apply()
 
     }
 
@@ -225,4 +242,13 @@ object ShareUtil {
     fun putConnected(b: Boolean) {
         putBoolean(APP_NETWORK_IS_CONNECTED, b)
     }
+
+    fun getVersionName(): String {
+        return getString(versionName)
+    }
+
+    fun getVersionCode(): Int {
+        return getInt(versionCode)
+    }
+
 }

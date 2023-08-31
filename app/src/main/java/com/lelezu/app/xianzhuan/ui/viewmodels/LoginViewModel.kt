@@ -16,6 +16,7 @@ import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.utils.AesTool
+import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import kotlinx.coroutines.Dispatchers

@@ -63,12 +63,16 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+
         }
         //设置debug的签名
         debug {
             minifyEnabled false
             signingConfig signingConfigs.debug
             proguardFiles 'proguard-rules.pro'
+
+
         }
 
     }
@@ -89,6 +93,7 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            exclude 'META-INF/INDEX.LIST'
         }
     }
 
@@ -154,7 +159,8 @@ dependencies {
     implementation 'cn.jiguang.sdk:joperate:2.0.2'
 
 
-    implementation 'cn.hutool:hutool-all:5.8.16'//工具包
+//    implementation 'cn.hutool:hutool-all:5.8.16'//工具包
+    implementation 'cn.hutool:hutool-crypto:5.8.18'//工具包
 
 
     //任务墙sdk 开始

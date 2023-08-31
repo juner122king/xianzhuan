@@ -24,11 +24,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
+import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
@@ -57,6 +59,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
+    }
+    protected val sysMessageViewModel: SysMessageViewModel by viewModels {
+        SysMessageViewModel.ViewFactory((application as MyApplication).sysInformRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,6 +132,7 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
     private fun initViewModel() {
 
         loginViewModel.errMessage.observe(this) {

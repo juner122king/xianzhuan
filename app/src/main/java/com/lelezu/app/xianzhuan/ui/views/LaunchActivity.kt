@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import cn.hutool.core.codec.Base64
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
@@ -18,6 +19,9 @@ import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.utils.AesTool
+import com.lelezu.app.xianzhuan.utils.Base64Utils
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
@@ -53,6 +57,8 @@ class LaunchActivity : AppCompatActivity() {
                 )
             }, 1000)//等1秒
         }
+
+
     }
 
     private fun preloadContent() {

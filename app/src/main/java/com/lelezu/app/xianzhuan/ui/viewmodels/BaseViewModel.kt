@@ -75,8 +75,7 @@ open class BaseViewModel : ViewModel() {
 
     protected fun <T> handleApiListResponse(
         r: ApiResponse<ListData<T>>,
-        liveData: MutableLiveData<MutableList<T>>,
-        isObserve: Boolean = true
+        liveData: MutableLiveData<MutableList<T>>
     ) {
         when (r) {
             is ApiSuccessResponse -> {
@@ -85,7 +84,7 @@ open class BaseViewModel : ViewModel() {
                     emptyListMessage.postValue(true)
                 } else {
                     // 处理非空列表的情况
-                    if (isObserve) liveData.postValue(r.response.records)
+                    liveData.postValue(r.response.records)
                 }
             }
 
