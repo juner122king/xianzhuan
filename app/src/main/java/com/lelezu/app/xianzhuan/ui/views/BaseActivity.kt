@@ -291,6 +291,8 @@ abstract class BaseActivity : AppCompatActivity() {
      * ！！Android 10以及以上版本限制了对剪贴板数据的访问  监听焦点变化再获取剪切板数据
      */
     protected fun getClipBoar() {
+        LogUtils.i("获取剪切板数据", "获取剪切板数据")
+
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         when {

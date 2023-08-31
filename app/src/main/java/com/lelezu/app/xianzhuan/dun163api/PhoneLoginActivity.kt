@@ -30,10 +30,10 @@ class PhoneLoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         QuickLogin.getInstance().init(MyApplication.context, DUN_PHONE_BUSINESS_ID)
         QuickLogin.getInstance().setDebugMode(true)
         QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
-
         HTProtect.getTokenAsync(
             3000, DUN_RISK_BUSINESS_ID
         ) {
@@ -59,19 +59,14 @@ class PhoneLoginActivity : Activity() {
                 )
                 onePass()
             }
-
             override fun onGetMobileNumberError(YDToken: String, msg: String) {
 
                 LogUtils.i("易盾","预取号失败：${msg}")
                 ToastUtils.showToast(baseContext, "请打开流量联网后重试", 0)
                 finish()
-
             }
         })
-
     }
-
-
     private fun onePass() {
 
         QuickLogin.getInstance().onePass(object : QuickLoginTokenListener() {

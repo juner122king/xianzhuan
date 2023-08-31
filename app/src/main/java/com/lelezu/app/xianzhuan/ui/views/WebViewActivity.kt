@@ -25,6 +25,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
 
@@ -43,12 +44,18 @@ class WebViewActivity : BaseActivity() {
         wv = findViewById(R.id.webView)
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
-        //设置标题
-        wv.webChromeClient = object : WebChromeClient() {
-            override fun onReceivedTitle(view: WebView?, title: String?) {
-                super.onReceivedTitle(view, title)
-                if (title != null) {
-                    setTitleText(title)
+
+
+
+        //客服与反馈才进行标题变化
+        if (link == link11) {
+            //设置标题
+            wv.webChromeClient = object : WebChromeClient() {
+                override fun onReceivedTitle(view: WebView?, title: String?) {
+                    super.onReceivedTitle(view, title)
+                    if (title != null) {
+                        setTitleText(title)
+                    }
                 }
             }
         }
@@ -145,15 +152,12 @@ class WebViewActivity : BaseActivity() {
     }
 
 
-
     fun backOrFinish() {
         if (wv.canGoBack()) {
             if (wv.url.equals(link)) finish()
             else wv.goBack()
         } else finish()
     }
-
-
 
 
     private val rc: Int = 123

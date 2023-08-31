@@ -171,7 +171,6 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
                         Handler(Looper.getMainLooper()).postDelayed({
                             hideLoading()
 
-
                             //登录Token，暂时写死
                             ShareUtil.putString(
                                 APP_SHARED_PREFERENCES_LOGIN_TOKEN,

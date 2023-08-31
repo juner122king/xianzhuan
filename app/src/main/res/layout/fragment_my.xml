@@ -257,7 +257,7 @@
                 android:background="@drawable/radius_border_sys_notin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="gone">
 
 
                 <ImageView

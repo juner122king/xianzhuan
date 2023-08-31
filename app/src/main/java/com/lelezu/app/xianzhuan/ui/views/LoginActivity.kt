@@ -10,17 +10,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.model.LoginReP
-import com.lelezu.app.xianzhuan.dun163api.PhoneLoginActivity
+import com.lelezu.app.xianzhuan.dun163api.UiConfigs
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreeAgreement
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreeAgreement
 import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreeUserAgreementAndPrivacy
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import com.netease.htprotect.HTProtect
+import com.netease.htprotect.result.AntiCheatResult
+import com.netease.nis.quicklogin.QuickLogin
+import com.netease.nis.quicklogin.listener.QuickLoginPreMobileListener
+import com.netease.nis.quicklogin.listener.QuickLoginTokenListener
 
 
 //登录页面
@@ -54,7 +61,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
     private fun wxLoginInit() {
         when (cbAgree.isChecked) {
             true -> {
-                showLoading()
+
                 WxLogin.longWx()  //微信登录
             }
 
@@ -79,6 +86,9 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
     private fun goToRegister() {
+        getClipBoar()//注册前获取剪切板是否有邀请码
+
+        showLoading()
         loginViewModel.getRegister()
         loginViewModel.registerLoginRePLiveData.observe(this) {
             hideLoading()
@@ -92,13 +102,92 @@ class LoginActivity : BaseActivity(), OnClickListener {
             "用户ID:${it.userId},token：${it.accessToken},新用户？：${it.isNewer}"
         )
         if (it.isNewer) {
-            startActivity(Intent(context, PhoneLoginActivity::class.java))
+            gotoPhoneRegister()
+
         } else {
             goToHomeActivity()
         }
     }
 
+    private fun gotoPhoneRegister() {
+        showToast("号码获取中，请稍等...")
+        showLoading()
 
+
+        QuickLogin.getInstance().init(this, ApiConstants.DUN_PHONE_BUSINESS_ID)
+        QuickLogin.getInstance().setDebugMode(true)
+        QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
+        HTProtect.getTokenAsync(
+            3000, ApiConstants.DUN_RISK_BUSINESS_ID
+        ) {
+            Log.d("易盾风控引擎Api  code:", it!!.code.toString());
+            if (it.code == AntiCheatResult.OK) {
+                // 调用成功，获取token
+                Log.d("易盾风控引擎Api  token:", it.token)
+                ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
+
+                initQuickLogin()
+            } else {
+                showToast("您的手机号或设备异常：${it.codeStr}")
+                hideLoading()
+
+            }
+
+
+        }
+
+    }
+
+    private fun initQuickLogin() {
+
+        QuickLogin.getInstance().prefetchMobileNumber(object : QuickLoginPreMobileListener() {
+            override fun onGetMobileNumberSuccess(YDToken: String, mobileNumber: String) {
+                LogUtils.i(
+                    "易盾号码认证Api", "预取号成功"
+                )
+                hideLoading()
+                onePass()
+            }
+
+            override fun onGetMobileNumberError(YDToken: String, msg: String) {
+
+                LogUtils.i("易盾号码认证Api", "预取号失败：${msg}")
+                showToast("请打开流量联网后重试")
+                hideLoading()
+            }
+        })
+    }
+
+    private fun onePass() {
+        QuickLogin.getInstance().onePass(object : QuickLoginTokenListener() {
+            override fun onGetTokenSuccess(token: String?, accessCode: String?) {
+                //保存token
+                ShareUtil.putString(
+                    ShareUtil.APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN, accessCode
+                )
+                ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_TOKEN, token)
+                QuickLogin.getInstance().quitActivity()
+                Log.d("易盾号码认证Api", "一键登录成功")
+                //请求注册接口
+                goToRegister()
+
+            }
+
+            override fun onGetTokenError(YDToken: String?, msg: String?) {
+
+                showToast("易盾号码认证Api:一键登录失败：${msg}")
+                QuickLogin.getInstance().quitActivity()
+
+            }
+
+            // 取消登录包括按物理返回键返回
+            override fun onCancelGetToken() {
+                QuickLogin.getInstance().quitActivity()
+                Log.d("易盾号码认证Api", "用户取消登录/包括物理返回")
+
+            }
+        })
+    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -106,11 +195,8 @@ class LoginActivity : BaseActivity(), OnClickListener {
             Log.i("LoginActivity上级页面：", "${intent.getStringExtra("type")}")
             //从微信授权页面返回
             if (intent.getStringExtra("type").equals("WX")) intent.getStringExtra("wx_code")?.let {
+                showLoading()
                 getLogin(it)
-            }
-            if (intent.getStringExtra("type").equals("163")) {
-                //请求注册接口
-                goToRegister()
             }
         }
     }
@@ -211,12 +297,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
 
-    /**
-     *    //监听焦点变化再获取剪切板数据 Android 10以及以上版本限制了对剪贴板数据的访问
-     * @param hasFocus Boolean
-     */
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) getClipBoar()
-    }
+
+
 }

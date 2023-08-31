@@ -76,16 +76,9 @@ class MainFragment : BaseFragment(), OnClickListener {
         initTaskTabLayout()//初始化TabLayout
 
 
-    }
+//        checkPermission()
 
-    override fun onResume() {
-        super.onResume()
-
-        if (havePermission) {
-//            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
-        } else {
-            checkPermission()
-        }
+        //initZjTask()
 
     }
 
@@ -119,6 +112,18 @@ class MainFragment : BaseFragment(), OnClickListener {
     }
 
     private fun initZjTask() {
+
+
+        if (havePermission) {
+//            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
+        } else {
+
+            //弹出询问权限窗口
+            checkPermission()
+            showToast("权限不足，任务墙未加载")
+        }
+
+
 
         isZjTaskLoading = true
         LogUtils.d("任务墙加载中")

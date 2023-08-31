@@ -130,6 +130,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                     intent.putExtra(WebViewSettings.isProcessing, false)
                     startActivity(intent)
                 }
+            }else
+            {
+                llNotice.visibility = View.GONE
             }
 
 

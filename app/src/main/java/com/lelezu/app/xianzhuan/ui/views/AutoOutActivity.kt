@@ -2,7 +2,6 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.app.Dialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
@@ -11,7 +10,6 @@ import androidx.core.content.FileProvider
 import androidx.core.widget.ContentLoadingProgressBar
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.versionCode
 import com.lelezu.app.xianzhuan.utils.ShareUtil.versionName
@@ -74,6 +72,11 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
             }
 
             R.id.tv_newVersion -> {
+
+
+                //询问权限
+
+
                 //下载新版本
                 showDialog()
             }
@@ -128,5 +131,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivity(intent)
     }
+
+
 
 }
