@@ -9,14 +9,12 @@ import cn.hutool.core.codec.Base64
 import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
-import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.utils.AesTool
-import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +34,6 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val registerLoginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
     val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
 
-    val earnings: MutableLiveData<Earning> = MutableLiveData()
 
     val related: MutableLiveData<Related> = MutableLiveData()
 
@@ -64,11 +61,6 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
         handleApiResponse(rep, userInfo)
     }
 
-
-    fun getEarnings() = viewModelScope.launch {
-        val rep = userRepository.apiEarnings()
-        handleApiResponse(rep, earnings)
-    }
 
     fun getRelated() = viewModelScope.launch {
         val rep = userRepository.apiRelated()

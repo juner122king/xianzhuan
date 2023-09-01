@@ -15,7 +15,6 @@ import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.versionCode
 import com.lelezu.app.xianzhuan.utils.ShareUtil.versionName
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 import java.io.File
 
 class AutoOutActivity : BaseActivity(), OnClickListener {

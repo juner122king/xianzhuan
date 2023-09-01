@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan
 
 import android.app.Application
 import android.content.Context
+import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.data.ApiConstants.UM_BUSINESS_NO
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
@@ -40,7 +41,8 @@ class MyApplication : Application() {
         //调用预初始化函数
         UMConfigure.preInit(this, UM_BUSINESS_NO, "正式")
 
-
+        // 初始化 Toast 框架
+        ToastUtils.init(this)
     }
 
 

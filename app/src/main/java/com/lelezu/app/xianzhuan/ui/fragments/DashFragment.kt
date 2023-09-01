@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -23,7 +22,6 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCo
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondSIMPLE
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository.Companion.queryCondTOP
 import com.lelezu.app.xianzhuan.ui.views.TaskSearchResultActivity
-import com.lelezu.app.xianzhuan.utils.LogUtils
 
 
 /**

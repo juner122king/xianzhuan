@@ -91,7 +91,6 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
     private fun loadDone(it: MutableList<Task>) {
 
-        LogUtils.i("loadDone:" + it.size.toString())
         // 停止刷新动画
         onStopSwiperRefreshing()
 

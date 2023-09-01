@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,7 +10,6 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -23,7 +21,6 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.ChatAdapter
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
-import com.lelezu.app.xianzhuan.utils.LogUtils
 
 class ChatActivity : BaseActivity() {
     //vip头像等级框图片
@@ -44,7 +41,6 @@ class ChatActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        LogUtils.i(intent.getStringExtra("userId").toString())
 
         userId = intent.getStringExtra("userId").toString()
 
@@ -133,7 +129,7 @@ class ChatActivity : BaseActivity() {
 
         loginViewModel.apiRecord(userId)
         loginViewModel.chatMessage.observe(this) {
-            LogUtils.i(it.toString())
+
             adapter.updateData(it)
 
             hideLoading()
@@ -142,7 +138,7 @@ class ChatActivity : BaseActivity() {
 
         //发送信息监听
         loginViewModel.sendMessage.observe(this) {
-            LogUtils.i(it.toString())
+
             showLoading()
             loginViewModel.apiRecord(userId)
         }

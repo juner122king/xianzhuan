@@ -17,13 +17,13 @@ object MyPermissionUtil {
 
     //申请保存图片权限
     fun saveImagesApply(context: Context, callback: OnPermissionCallback) {
-//        if (!XXPermissions.isGranted(context, permission))
+
         XXPermissions.with(context).permission(Permission.WRITE_EXTERNAL_STORAGE).request(callback)
     }
 
     //申请保存图片和打开相册权限
     fun saveImagesAndOpenAlbumApply(context: Context, callback: OnPermissionCallback) {
-//        if (!XXPermissions.isGranted(context, permission))
+
         XXPermissions.with(context)
             .permission(Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_MEDIA_IMAGES)
             .request(callback)
@@ -32,7 +32,7 @@ object MyPermissionUtil {
 
     //文件管理权限
     fun storageApply(context: Context, callback: OnPermissionCallback) {
-//        if (!XXPermissions.isGranted(context, permission))
+
         XXPermissions.with(context).permission(Permission.MANAGE_EXTERNAL_STORAGE).request(callback)
     }
 
@@ -40,7 +40,7 @@ object MyPermissionUtil {
     @SuppressLint("SuspiciousIndentation")
     fun openAlbumApply(context: Context, callback: OnPermissionCallback) {
         val permission = Permission.READ_MEDIA_IMAGES
-//        if (!XXPermissions.isGranted(context, permission))
+
         XXPermissions.with(context).permission(permission).request(callback)
     }
 

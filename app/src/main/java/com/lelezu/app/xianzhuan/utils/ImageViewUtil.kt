@@ -1,9 +1,7 @@
 package com.lelezu.app.xianzhuan.utils
 
 import android.widget.ImageView
-import coil.Coil.imageLoader
 import coil.load
-import coil.request.ImageRequest
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation

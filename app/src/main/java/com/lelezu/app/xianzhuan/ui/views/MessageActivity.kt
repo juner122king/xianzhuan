@@ -1,27 +1,18 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.MessageItemAdapter
-import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
-import com.lelezu.app.xianzhuan.utils.LogUtils
 
 class MessageActivity : BaseActivity() {
 
-
-//    private val sysMessageViewModel: SysMessageViewModel by viewModels {
-//        SysMessageViewModel.ViewFactory((application as MyApplication).sysInformRepository)
-//    }
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
     private lateinit var adapter: MessageItemAdapter
 
-    private lateinit var msgIds: List<String>//未读id集合
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +33,6 @@ class MessageActivity : BaseActivity() {
 
         sysMessageViewModel.liveData.observe(this) {
 
-            LogUtils.i(it.toString())
             // 停止刷新动画
             swiper.isRefreshing = false
             adapter.updateData(it)
@@ -57,11 +47,6 @@ class MessageActivity : BaseActivity() {
             sysMessageViewModel.getMessageList()
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        sysMessageViewModel.markSysMessage(msgIds)
     }
 
     override fun getLayoutId(): Int {

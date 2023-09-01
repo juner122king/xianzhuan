@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
-import com.lelezu.app.xianzhuan.utils.LogUtils
 import java.lang.IllegalStateException
 
 class NotificaFragment : Fragment() {
@@ -38,7 +36,6 @@ class NotificaFragment : Fragment() {
         WebViewSettings.setDefaultWebSettings(wv)
         wv.addJavascriptInterface(MyJavaScriptInterface(requireActivity()), "Android")//注入方法
 
-        LogUtils.i("WebView______>", "加载Link:${link3}")
         wv.loadUrl(link3)//最后才load
 
         wv.webViewClient = object : WebViewClient() {

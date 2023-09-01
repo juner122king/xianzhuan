@@ -15,7 +15,6 @@ import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
-import com.lelezu.app.xianzhuan.utils.ShareUtil.getRegister
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isConnected
 import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
 
@@ -36,7 +35,7 @@ open class BaseViewModel : ViewModel() {
         var filePath = ""
         val projection = arrayOf(MediaStore.Images.Media.DATA)
         val cursor =
-            MyApplication.context?.contentResolver?.query(uri, projection, null, null, null)
+            MyApplication.context.contentResolver?.query(uri, projection, null, null, null)
         cursor?.let {
             if (it.moveToFirst()) {
                 val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)

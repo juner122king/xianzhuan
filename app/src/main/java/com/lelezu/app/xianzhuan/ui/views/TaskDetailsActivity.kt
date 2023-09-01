@@ -20,7 +20,6 @@ import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
-import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
 
@@ -131,8 +130,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
     private fun setData(task: Task) {
 
-        LogUtils.d("auditStatus=${task.auditStatus}  ,taskStatus=${task.taskStatus}")
-        LogUtils.d(task.toString())
         putTask(task)
 
         changeView(task)//根据任务状态id改变页面
@@ -306,9 +303,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                         homeViewModel.getShuffle()
                     }//换个任务
                     else -> {
-//                        Toast.makeText(
-//                            this, "功能开发中...", Toast.LENGTH_SHORT
-//                        ).show() //取系雇主
                         val intent = Intent(this, ChatActivity::class.java)
                         intent.putExtra("userId", task.userId)
                         startActivity(intent)

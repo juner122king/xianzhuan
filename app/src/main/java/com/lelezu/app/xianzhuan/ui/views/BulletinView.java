@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 
-import com.lelezu.app.xianzhuan.data.model.Announce;
 
 import java.util.List;
 

@@ -78,8 +78,6 @@ class MainFragment : BaseFragment(), OnClickListener {
         initTaskTabLayout()//初始化TabLayout
 
 
-//        checkPermission()
-
         //initZjTask()
 
     }
@@ -123,7 +121,7 @@ class MainFragment : BaseFragment(), OnClickListener {
             val havePermission =
                 ShareUtil.getBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission)//是否拒绝过内部文件访问权限
             //如果拒绝过权限，就弹出询问权限窗口
-            if (!havePermission) checkPermission()
+//            if (!havePermission) checkPermission()
 
 
 //            showToast("权限不足，任务墙未加载")

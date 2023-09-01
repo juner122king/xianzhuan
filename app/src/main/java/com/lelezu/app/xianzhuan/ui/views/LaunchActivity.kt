@@ -10,18 +10,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import cn.hutool.core.codec.Base64
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.utils.AesTool
-import com.lelezu.app.xianzhuan.utils.Base64Utils
-import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
@@ -162,7 +157,7 @@ class LaunchActivity : AppCompatActivity() {
             Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
         }
-        HTProtect.init(MyApplication.context, ApiConstants.DUN_BUSINESS_NO, callback, config)
+        HTProtect.init(context, ApiConstants.DUN_BUSINESS_NO, callback, config)
         //易盾结束
 
     }

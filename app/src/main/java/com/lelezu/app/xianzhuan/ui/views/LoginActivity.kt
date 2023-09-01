@@ -2,7 +2,6 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.CheckBox
@@ -76,7 +75,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
     private fun getLogin(wxCode: String) {
-        Log.i("LoginActivity", "开始执行登录请求方法getLogin")
         loginViewModel.getLoginInfo(wxCode)
         loginViewModel.loginRePLiveData.observe(this) {
             hideLoading()
@@ -97,10 +95,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
     }
 
     private fun onLogin(it: LoginReP) {
-        Log.i(
-            "LoginActivity登录与注册",
-            "用户ID:${it.userId},token：${it.accessToken},新用户？：${it.isNewer}"
-        )
+
         if (it.isNewer) {
             gotoPhoneRegister()
 
@@ -120,10 +115,9 @@ class LoginActivity : BaseActivity(), OnClickListener {
         HTProtect.getTokenAsync(
             3000, ApiConstants.DUN_RISK_BUSINESS_ID
         ) {
-            Log.d("易盾风控引擎Api  code:", it!!.code.toString());
+            LogUtils.i("易盾风控引擎Api  code:", it!!.code.toString());
             if (it.code == AntiCheatResult.OK) {
                 // 调用成功，获取token
-                Log.d("易盾风控引擎Api  token:", it.token)
                 ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
 
                 initQuickLogin()
@@ -141,7 +135,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
     private fun initQuickLogin() {
 
         QuickLogin.getInstance().prefetchMobileNumber(object : QuickLoginPreMobileListener() {
-            override fun onGetMobileNumberSuccess(YDToken: String, mobileNumber: String) {
+            override fun onGetMobileNumberSuccess(token: String, mobileNumber: String) {
                 LogUtils.i(
                     "易盾号码认证Api", "预取号成功"
                 )
@@ -149,7 +143,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
                 onePass()
             }
 
-            override fun onGetMobileNumberError(YDToken: String, msg: String) {
+            override fun onGetMobileNumberError(token: String, msg: String) {
 
                 LogUtils.i("易盾号码认证Api", "预取号失败：${msg}")
                 showToast("请打开流量联网后重试")
@@ -167,13 +161,13 @@ class LoginActivity : BaseActivity(), OnClickListener {
                 )
                 ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_MOBILE_TOKEN, token)
                 QuickLogin.getInstance().quitActivity()
-                Log.d("易盾号码认证Api", "一键登录成功")
+                LogUtils.i("易盾号码认证Api", "一键登录成功")
                 //请求注册接口
                 goToRegister()
 
             }
 
-            override fun onGetTokenError(YDToken: String?, msg: String?) {
+            override fun onGetTokenError(token: String?, msg: String?) {
 
                 showToast("易盾号码认证Api:一键登录失败：${msg}")
                 QuickLogin.getInstance().quitActivity()
@@ -183,7 +177,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
             // 取消登录包括按物理返回键返回
             override fun onCancelGetToken() {
                 QuickLogin.getInstance().quitActivity()
-                Log.d("易盾号码认证Api", "用户取消登录/包括物理返回")
+                LogUtils.i("易盾号码认证Api", "用户取消登录/包括物理返回")
 
             }
         })
@@ -192,7 +186,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null) {
-            Log.i("LoginActivity上级页面：", "${intent.getStringExtra("type")}")
             //从微信授权页面返回
             if (intent.getStringExtra("type").equals("WX")) intent.getStringExtra("wx_code")?.let {
                 showLoading()

@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -9,10 +8,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.ContextMenu
@@ -26,9 +23,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
@@ -37,7 +32,6 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
 /**
@@ -49,7 +43,7 @@ import com.lelezu.app.xianzhuan.utils.ToastUtils
 abstract class BaseActivity : AppCompatActivity() {
 
 
-    public var mBack: LinearLayout? = null
+    var mBack: LinearLayout? = null
     private var mTvTitle: TextView? = null
     private var mTvRight: TextView? = null
     private var mRltBase: RelativeLayout? = null
@@ -105,7 +99,6 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun logOut() {
-        LogUtils.i("logOut", "logOut成功")
         showToast("退出成功！")
         ShareUtil.cleanInfo()
         goToLoginView()
@@ -113,7 +106,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     protected fun backToHome(position: String) {
-        LogUtils.d("进入主页:${position}")
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("FragmentPosition", position)
@@ -123,7 +115,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun gotoTaskDetails(taskId: String) {
 
-        LogUtils.d("进入任务详情:${taskId}")
+
         val intent = Intent(this, TaskDetailsActivity::class.java)
         intent.putExtra("taskId", taskId)
         startActivity(intent)
@@ -148,7 +140,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun onErrMessage(it: ErrResponse) {
-        LogUtils.d("ErrResponse:${it}")
+
         hideLoading()
         showToast(it.message)
         if (it.isTokenLose()) goToLoginView()    //重新打开登录页面
@@ -181,11 +173,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-    public fun showBack() {
+    fun showBack() {
         mBack!!.visibility = View.VISIBLE
     }
 
-    public fun hideBack() {
+     fun hideBack() {
         mBack!!.visibility = View.GONE
     }
 
@@ -255,7 +247,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     protected open fun showToast(message: String?) {
-        ToastUtils.showToast(this, message, Toast.LENGTH_SHORT)
+        ToastUtils.show(message)
     }
 
 
@@ -263,6 +255,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onStop()
         hideLoading()
     }
+
     /**
      * 首先，它检查剪贴板是否有主要剪贴内容，即剪贴板是否有数据。如果没有数据，pasteItem.isEnabled将被设置为false，禁用粘贴菜单项。
      * 接下来，它检查剪贴板的主要剪贴描述是否包含纯文本的 MIME 类型。如果剪贴板的内容不是纯文本，pasteItem.isEnabled将被设置为false，禁用粘贴菜单项。
@@ -312,8 +305,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
                 if (isConnected) {
                     // 网络已连接
-                    // 在这里执行你需要的操作
-//                    if (!ShareUtil.isConnected()) showToast("网络已连接")
+
                     ShareUtil.putConnected(true)
 
                 } else {
@@ -355,6 +347,7 @@ abstract class BaseActivity : AppCompatActivity() {
         override fun createIntent(context: Context, input: Unit): Intent {
             return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         }
+
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
             if (resultCode == Activity.RESULT_OK) {
                 return intent?.data

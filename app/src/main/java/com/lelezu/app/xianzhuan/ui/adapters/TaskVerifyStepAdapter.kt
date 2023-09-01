@@ -14,14 +14,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.hjq.permissions.OnPermissionCallback
+import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
-import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 /**
  * @author:Administrator
@@ -196,7 +195,7 @@ class TaskVerifyStepAdapter(
 
             override fun onDenied(permissions: MutableList<String>, never: Boolean) {
                 //权限失败
-                ToastUtils.showToast(activity, "您已拒绝授权，相册打开失败！", 0)
+                ToastUtils.show("您已拒绝授权，相册打开失败！")
             }
         })
     }
