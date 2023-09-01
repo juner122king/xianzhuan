@@ -1,13 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
-import android.Manifest
-import android.app.Activity
 import android.app.Dialog
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -17,15 +10,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
@@ -39,20 +33,12 @@ class TaskVerifyStepAdapter(
     private var items: List<TaskUploadVerify>,
     private var ivDialog: Dialog,
     private var activity: BaseActivity,
-
-    private val homeViewModel: HomeViewModel
+    private val pickImageContract: ActivityResultLauncher<Unit>,
 ) : RecyclerView.Adapter<TaskVerifyStepAdapter.ItemViewHolder>() {
 
     private var auditStatus = 0//任务状态，用改变UI
 
     private var mPosition: Int = -0 //当前选中的
-
-
-    private val permissions = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,//读取内部资源
-        Manifest.permission.READ_MEDIA_IMAGES//13更高版本的权限
-        // 添加其他需要的权限
-    )
 
     // 更新数据方法
     fun updateData(newItems: List<TaskUploadVerify>, status: Int) {
@@ -200,45 +186,26 @@ class TaskVerifyStepAdapter(
 
 
     private fun onPickImage() {
-        //判断是否有权限
-        // 检查是否已经有权限
-        val hasPermissions = permissions.any {
-            ContextCompat.checkSelfPermission(
-                activity, it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-        if (hasPermissions) {
-            //上传图片，打开相册
-            pickImageContract.launch(Unit)
-        } else {
-            ToastUtils.showToast(activity, "没有读取图片权限，请退出重试！", 0)
-        }
 
+        MyPermissionUtil.openAlbumApply(activity, object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                //获取权限成功
+                //打开相册
+                pickImageContract.launch(Unit)
+            }
+
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                //权限失败
+                ToastUtils.showToast(activity, "您已拒绝授权，相册打开失败！", 0)
+            }
+        })
     }
 
-    private val pickImageContract = activity.registerForActivityResult(PickImageContract()) {
-        if (it != null) {
-            homeViewModel.apiUpload(it)
-            homeViewModel.upLink.observe(activity) { link ->
-                ToastUtils.showToast(activity, "图片上传成功", 0)
-                items[mPosition].uploadValue = link
-                items[mPosition].uploadImage = link
-                notifyItemChanged(mPosition)
-            }
-        }
-    }
-    //处理选择图片的请求和结果
-    inner class PickImageContract : ActivityResultContract<Unit, Uri?>() {
-        override fun createIntent(context: Context, input: Unit): Intent {
-            return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        }
+    fun setLink(link: String) {
+        items[mPosition].uploadValue = link
+        items[mPosition].uploadImage = link
+        notifyItemChanged(mPosition)
 
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            if (resultCode == Activity.RESULT_OK) {
-                return intent?.data
-            }
-            return null
-        }
     }
 
     fun getItems(): List<TaskUploadVerify> {

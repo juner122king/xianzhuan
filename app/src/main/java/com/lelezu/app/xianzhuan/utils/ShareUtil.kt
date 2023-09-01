@@ -31,6 +31,11 @@ object ShareUtil {
     const val APP_USER_AGREEMENT_AGREE: String = "USER_AGREEMENT"//是否同意用户协议
 
 
+    const val APP_Permission_MANAGE_ALL_FILES_ACCESS: String = "Permission_MANAGE_ALL_FILES_ACCESS"//内部文件访问权限
+
+    const val APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission: String = "APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission"//是否拒绝过过内部文件访问权限？
+
+
     //用户登录
     const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"

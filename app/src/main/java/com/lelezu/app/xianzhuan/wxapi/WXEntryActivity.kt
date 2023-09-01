@@ -32,10 +32,12 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
 
     override fun onReq(req: BaseReq) {
         // 暂不处理请求回调
-        finish()
+
+
     }
 
     override fun onResp(baseResp: BaseResp) {
+
         when (baseResp.type) {
             ConstantsAPI.COMMAND_SENDAUTH -> {
                 val r = baseResp as SendAuth.Resp
@@ -68,6 +70,12 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                         finish()
                     }
                 }
+            }
+
+            else -> {
+                //分享回调
+                Log.i("微信回调baseResp：", "${baseResp.type}")
+                finish()
             }
         }
     }

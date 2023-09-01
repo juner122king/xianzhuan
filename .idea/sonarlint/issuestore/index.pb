@@ -88,8 +88,6 @@ n
 >app/src/main/java/com/lelezu/app/xianzhuan/jiguang/XService.kt,5\6\5676cd7b34cff69603fc5f94bb666c551cd899ca
 ~
 Napp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/ComplexViewAdapter.java,c\7\c71b9538a4cbc7f9695c6721d4befdfda69faf9c
-y
-Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/h5/MyJavaScriptInterface.kt,3\a\3a524421996cf0d130c1413a2a694f97931eb7be
 k
 ;app/src/main/java/com/lelezu/app/xianzhuan/ui/theme/Type.kt,b\e\be76667e644437ee695f695a9895e2ee4287b674
 l
@@ -118,8 +116,6 @@ y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/RefreshRecycleView.kt,2\2\220cd47889c99408aa827ab2408629ac80e0885e
 {
 Kapp/src/main/java/com/lelezu/app/xianzhuan/ui/viewmodels/SingleLiveEvent.kt,6\d\6d69137930b8711c916c2f30054195c5f4ef008e
-s
-Capp/src/main/java/com/lelezu/app/xianzhuan/wxapi/WXEntryActivity.kt,6\f\6f614c78ed06e58cdee7c4f6fcd7ac6d5a00f7c7
 |
 Lapp/src/main/java/com/lelezu/app/xianzhuan/data/repository/TaskRepository.kt,c\f\cf95b95ae11a8c93a9e39478ab9e88358630ed24
 y
@@ -142,8 +138,6 @@ s
 Capp/src/main/java/com/lelezu/app/xianzhuan/ui/views/ChatActivity.kt,0\0\00ba9c512bf32672c21b47f405b7456e700f9b4e
 u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/ChatAdapter.kt,2\a\2a1483a3ea20e55d620ba35d086237696545351a
-w
-Gapp/src/main/java/com/lelezu/app/xianzhuan/ui/fragments/DashFragment.kt,a\5\a5465ad7f2c4fcbbb1f1ea3ddb2ccc095faf9853
 u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/MyTaskActivity.kt,4\8\48508f97a4663d80c5fc709f79b1acaade4bd3c1
 y

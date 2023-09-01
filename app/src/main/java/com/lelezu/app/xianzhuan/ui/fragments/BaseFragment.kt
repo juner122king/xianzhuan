@@ -25,6 +25,9 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_Permission_MANAGE_ALL_FILES_ACCESS
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission
 import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
@@ -113,7 +116,13 @@ open class BaseFragment : Fragment() {
                 dialog = AlertDialog.Builder(requireContext()).setTitle("提示") //设置标题
                     .setMessage("请开启文件访问权限，否则无法正常使用本应用！").setNegativeButton(
                         "取消"
-                    ) { dialog, i -> dialog.dismiss() }.setPositiveButton(
+                    ) { dialog, i ->
+                        dialog.dismiss()
+                        ShareUtil.putBoolean(
+                            APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission, true
+                        )//已拒绝权限
+
+                    }.setPositiveButton(
                         "确定"
                     ) { dialog, _ ->
                         dialog.dismiss()
@@ -123,9 +132,11 @@ open class BaseFragment : Fragment() {
                 dialog!!.show()
             } else {
                 havePermission = true
-                ActivityCompat.requestPermissions(
-                    requireActivity(), permissions_READ_PHONE_STATE, 0
-                )
+
+                ShareUtil.putBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS, true)
+//                ActivityCompat.requestPermissions(
+//                    requireActivity(), permissions_READ_PHONE_STATE, 0
+//                )
 
                 Log.i("swyLog", "Android 11以上，当前已有权限")
             }
@@ -148,20 +159,30 @@ open class BaseFragment : Fragment() {
                             ActivityCompat.requestPermissions(
                                 requireActivity(), PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE
                             )
+                        }.setNegativeButton(
+                            "取消"
+                        ) { dialog, i ->
+                            dialog.dismiss()
+                            ShareUtil.putBoolean(
+                                APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission, true
+                            )//已拒绝权限
                         }.create()
                     dialog!!.show()
                 } else {
                     havePermission = true
-                    ActivityCompat.requestPermissions(
-                        requireActivity(), permissions_READ_PHONE_STATE, 0
-                    )
+
+                    ShareUtil.putBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS, true)
+//                    ActivityCompat.requestPermissions(
+//                        requireActivity(), permissions_READ_PHONE_STATE, 0
+//                    )
                     Log.i("swyLog", "Android 6.0以上，11以下，当前已有权限")
                 }
             } else {
                 havePermission = true
-                ActivityCompat.requestPermissions(
-                    requireActivity(), permissions_READ_PHONE_STATE, 0
-                )
+                ShareUtil.putBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS, true)
+//                ActivityCompat.requestPermissions(
+//                    requireActivity(), permissions_READ_PHONE_STATE, 0
+//                )
                 Log.i("swyLog", "Android 6.0以下，已获取权限")
             }
         }

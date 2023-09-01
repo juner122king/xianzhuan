@@ -1,6 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.provider.MediaStore
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -12,7 +18,9 @@ import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 import kotlinx.coroutines.launch
 
 /**
@@ -105,7 +113,6 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
     }
 
-
     class ViewFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
@@ -114,5 +121,6 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
             throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
+
 
 }

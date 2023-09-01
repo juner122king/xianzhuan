@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.Manifest
+import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.ClipDescription
@@ -10,8 +11,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.ContextMenu
 import android.view.View
 import android.view.WindowManager
@@ -20,6 +23,7 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -259,30 +263,6 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onStop()
         hideLoading()
     }
-
-    private val rc: Int = 123
-    protected fun checkPermissionRead() {
-
-        // 检查图片权限
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-
-            //13更高版本后的图片弹窗询问
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.READ_MEDIA_IMAGES), rc
-                )
-            } else {
-
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
-                )
-            }
-        }
-    }
-
     /**
      * 首先，它检查剪贴板是否有主要剪贴内容，即剪贴板是否有数据。如果没有数据，pasteItem.isEnabled将被设置为false，禁用粘贴菜单项。
      * 接下来，它检查剪贴板的主要剪贴描述是否包含纯文本的 MIME 类型。如果剪贴板的内容不是纯文本，pasteItem.isEnabled将被设置为false，禁用粘贴菜单项。
@@ -369,4 +349,19 @@ abstract class BaseActivity : AppCompatActivity() {
             true
         }
     }
+
+    //处理选择图片的请求和结果
+    inner class PickImageContract : ActivityResultContract<Unit, Uri?>() {
+        override fun createIntent(context: Context, input: Unit): Intent {
+            return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        }
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            if (resultCode == Activity.RESULT_OK) {
+                return intent?.data
+            }
+            return null
+        }
+    }
+
+
 }

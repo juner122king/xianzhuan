@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
@@ -28,6 +29,8 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 
 class WebViewActivity : BaseActivity() {
@@ -44,7 +47,6 @@ class WebViewActivity : BaseActivity() {
         wv = findViewById(R.id.webView)
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
-
 
 
         //客服与反馈才进行标题变化
@@ -151,7 +153,6 @@ class WebViewActivity : BaseActivity() {
 
     }
 
-
     fun backOrFinish() {
         if (wv.canGoBack()) {
             if (wv.url.equals(link)) finish()
@@ -159,46 +160,21 @@ class WebViewActivity : BaseActivity() {
         } else finish()
     }
 
-
-    private val rc: Int = 123
     private fun openPhoto() {
-        // 检查图片权限
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
 
-            //13更高版本后的图片弹窗询问
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.READ_MEDIA_IMAGES), rc
-                )
-            } else {
-
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
-                )
-            }
-        } else {
-            //上传图片，打开相册
-            pickImageContract.launch(Unit)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == rc) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 用户授予了权限，继续进行文件操作
-                //上传图片，打开相册
+        MyPermissionUtil.openAlbumApply(this, object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                //获取权限成功
+                //打开相册
                 pickImageContract.launch(Unit)
-            } else {
-                // 用户拒绝了权限，处理拒绝权限的情况
             }
-        }
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                //权限失败
+                showToast("您已拒绝授权，相册打开失败！")
+            }
+        })
     }
+
 
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
         if (it != null) {
@@ -216,21 +192,6 @@ class WebViewActivity : BaseActivity() {
             thread.start()
         }
     }
-
-    //处理选择图片的请求和结果
-    inner class PickImageContract : ActivityResultContract<Unit, Uri?>() {
-        override fun createIntent(context: Context, input: Unit): Intent {
-            return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        }
-
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            if (resultCode == Activity.RESULT_OK) {
-                return intent?.data
-            }
-            return null
-        }
-    }
-
 
     override fun getLayoutId(): Int {
         return R.layout.activity_web_view_stzqactivity

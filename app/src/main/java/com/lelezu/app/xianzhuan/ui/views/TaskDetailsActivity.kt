@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,7 +8,6 @@ import android.text.Html
 import android.view.ContextMenu
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -45,21 +43,24 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private var isMyTask: Boolean = false
 
+
+    //验证图片选取回调处理
+    private val pickImageContract = registerForActivityResult(PickImageContract()) {
+        if (it != null) {
+            homeViewModel.apiUpload(it)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initView()
-
         initObserve()
-
-        //检查图片权限
-        checkPermissionRead()
-
     }
 
 
     private fun initView() {
-
 
         taskDetailsRV = findViewById(R.id.rv_task_step)
         // 创建适配器，并将其绑定到 RecyclerView 上
@@ -71,7 +72,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         taskVerifyRV = findViewById(R.id.rv_task_verify)
         // 创建适配器，并将其绑定到 RecyclerView 上
-        adapterVerify = TaskVerifyStepAdapter(emptyList(), ivDialog, this, homeViewModel)
+        adapterVerify = TaskVerifyStepAdapter(emptyList(), ivDialog, this, pickImageContract)
         taskVerifyRV.adapter = adapterVerify
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         taskVerifyRV.layoutManager = LinearLayoutManager(this)
@@ -119,6 +120,11 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             }
         }
 
+        //验证图片选取监听
+        homeViewModel.upLink.observe(this) { link ->
+            showToast("图片上传成功")
+            adapterVerify.setLink(link)
+        }
     }
 
 

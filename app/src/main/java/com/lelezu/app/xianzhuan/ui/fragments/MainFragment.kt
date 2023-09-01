@@ -24,6 +24,8 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_Permission_MANAGE_ALL_FILES_ACCESS
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission
 import com.zj.zjsdk.ad.ZjAdError
 import com.zj.zjsdk.ad.ZjTaskAd
 import com.zj.zjsdk.ad.ZjTaskAdListener
@@ -113,14 +115,18 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     private fun initZjTask() {
 
+        val havePermission = ShareUtil.getBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS)//是否有文件权限
 
         if (havePermission) {
 //            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
         } else {
+            val havePermission =
+                ShareUtil.getBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission)//是否拒绝过内部文件访问权限
+            //如果拒绝过权限，就弹出询问权限窗口
+            if (!havePermission) checkPermission()
 
-            //弹出询问权限窗口
-            checkPermission()
-            showToast("权限不足，任务墙未加载")
+
+//            showToast("权限不足，任务墙未加载")
         }
 
 

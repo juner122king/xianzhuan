@@ -8,11 +8,14 @@ import android.view.View.OnClickListener
 import android.widget.Button
 import androidx.core.content.FileProvider
 import androidx.core.widget.ContentLoadingProgressBar
+import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.versionCode
 import com.lelezu.app.xianzhuan.utils.ShareUtil.versionName
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 import java.io.File
 
 class AutoOutActivity : BaseActivity(), OnClickListener {
@@ -72,16 +75,26 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
             }
 
             R.id.tv_newVersion -> {
-
-
                 //询问权限
-
-
-                //下载新版本
-                showDialog()
+                onUpData()
             }
 
         }
+    }
+
+    //询问权限
+    private fun onUpData() {
+        MyPermissionUtil.storageApply(this, object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                if (all) showDialog()
+                else showToast("获取部分权限成功，但部分权限未正常授予")
+            }
+
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                //权限失败
+                showToast("您已拒绝授权，更新失败！")
+            }
+        })
     }
 
     private fun showDialog() {
@@ -131,7 +144,6 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivity(intent)
     }
-
 
 
 }

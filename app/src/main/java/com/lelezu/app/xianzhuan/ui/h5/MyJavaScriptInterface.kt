@@ -1,17 +1,12 @@
 package com.lelezu.app.xianzhuan.ui.h5
 
-import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.webkit.JavascriptInterface
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
+import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
-import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
+import com.lelezu.app.xianzhuan.utils.ToastUtils
 
 /**
  * @author:Administrator
@@ -21,45 +16,36 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
  */
 class MyJavaScriptInterface(private val context: Activity) {
     @JavascriptInterface
-    public fun saveImage(imageUrl: String) {
-        toImage(imageUrl, false)
-    }
-
-    @JavascriptInterface
-    public fun shareFriends(imageUrl: String) {
-        toImage(imageUrl, true)
-    }
-
-    private val rc: Int = 321
-    private fun toImage(imageUrl: String, isShare: Boolean) {
-        LogUtils.i("打开相册  android级别：${Build.VERSION.SDK_INT}")
-        // 检查图片权限
-        if (ContextCompat.checkSelfPermission(
-                context, Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-
-            //13更高版本后的图片弹窗询问
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ActivityCompat.requestPermissions(
-                    context, arrayOf(Manifest.permission.READ_MEDIA_IMAGES), rc
-                )
-            } else {
-
-                ActivityCompat.requestPermissions(
-                    context, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), rc
-                )
-            }
-        } else {
-
-            if (isShare) {//是否微信分享
-                // 调用分享图片的方法
-                (context as HomeActivity).shareFriends(imageUrl)
-            } else {
+    fun saveImage(imageUrl: String) {
+        MyPermissionUtil.saveImagesApply(context, object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                //获取权限成功
                 // 调用保存图片的方法
                 Toast.makeText(context, "图片保存成功", Toast.LENGTH_SHORT).show()
                 (context as HomeActivity).saveImageToSystem(imageUrl)
             }
-        }
+
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                //权限失败
+                ToastUtils.showToast(context, "您已拒绝授权，图片保存失败！", 0)
+
+            }
+        })
     }
+
+    @JavascriptInterface
+    fun shareFriends(imageUrl: String) {
+        MyPermissionUtil.saveImagesAndOpenAlbumApply(context, object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                if (all) (context as HomeActivity).shareFriends(imageUrl) //获取权限成功
+                else ToastUtils.showToast(context, "获取部分权限成功，但部分权限未正常授予")
+            }
+
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                //权限失败
+                ToastUtils.showToast(context, "您已拒绝授权，图片分享失败！", 0)
+            }
+        })
+    }
+
 }
