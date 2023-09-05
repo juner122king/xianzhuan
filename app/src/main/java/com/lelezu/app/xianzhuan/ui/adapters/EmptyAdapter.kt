@@ -60,4 +60,7 @@ abstract class EmptyAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter
         super.onDetachedFromRecyclerView(recyclerView)
         unregisterAdapterDataObserver(observer)
     }
+
+
+
 }

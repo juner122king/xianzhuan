@@ -19,7 +19,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -105,6 +104,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 
+
     protected fun backToHome(position: String) {
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -177,7 +177,7 @@ abstract class BaseActivity : AppCompatActivity() {
         mBack!!.visibility = View.VISIBLE
     }
 
-     fun hideBack() {
+    fun hideBack() {
         mBack!!.visibility = View.GONE
     }
 
@@ -327,11 +327,7 @@ abstract class BaseActivity : AppCompatActivity() {
         menu?.add(0, 2, 1, "取消")
 
         menu!!.getItem(0).setOnMenuItemClickListener {
-            Toast.makeText(
-                this,
-                "保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}",
-                Toast.LENGTH_SHORT
-            ).show()
+            showToast("保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}")
             //进行保存图片操作
             true
         }

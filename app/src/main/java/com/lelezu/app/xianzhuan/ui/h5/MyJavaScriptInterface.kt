@@ -2,7 +2,6 @@ package com.lelezu.app.xianzhuan.ui.h5
 
 import android.app.Activity
 import android.webkit.JavascriptInterface
-import android.widget.Toast
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
@@ -21,7 +20,7 @@ class MyJavaScriptInterface(private val context: Activity) {
             override fun onGranted(permissions: MutableList<String>, all: Boolean) {
                 //获取权限成功
                 // 调用保存图片的方法
-                Toast.makeText(context, "图片保存成功", Toast.LENGTH_SHORT).show()
+                ToastUtils.show("图片保存成功")
                 (context as HomeActivity).saveImageToSystem(imageUrl)
             }
 

@@ -22,7 +22,6 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
  */
 class TaskItemAdapter(
     private var items: MutableList<Task>,
-    var activity: Context,
     private var isShowTopView: Boolean = false
 ) : EmptyAdapter<RecyclerView.ViewHolder>() {
 
@@ -83,7 +82,7 @@ class TaskItemAdapter(
 
 
     // 创建 ItemViewHolder，用于展示每个列表项的视图
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemViewHolder( context: Context,itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.tv_task_title)
         val shangJiTv: TextView = itemView.findViewById(R.id.tv_shang_ji)
         val tvTaskLabel: TextView = itemView.findViewById(R.id.tv_taskLabel)
@@ -97,6 +96,8 @@ class TaskItemAdapter(
         val tvTime: TextView = itemView.findViewById(R.id.tv_time)//时间
         val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
         val doneView: View = itemView.findViewById(R.id.tvv)//去完成按钮
+        var c = context
+
     }
 
     // 创建视图，并返回 ItemViewHolder
@@ -108,7 +109,7 @@ class TaskItemAdapter(
             parent,
             false
         )
-        return ItemViewHolder(view)
+        return ItemViewHolder(parent.context,view)
 
 
     }
@@ -138,11 +139,11 @@ class TaskItemAdapter(
 
             //整个itemView能点击
             holder.clickVIew.setOnClickListener {
-                val intent = Intent(activity, TaskDetailsActivity::class.java)
+                val intent = Intent(holder.c, TaskDetailsActivity::class.java)
                 intent.putExtra("taskId", items[position].taskId)
                 intent.putExtra("applyLogId", items[position].applyLogId)
                 intent.putExtra(TAGMYTASK, isShowTopView)
-                activity.startActivity(intent)
+                holder.c.startActivity(intent)
             }
 
             //处理topView显示
@@ -153,7 +154,7 @@ class TaskItemAdapter(
                 val statusTimeText = statusTimeMap[item.auditStatus] ?: "未知"
                 // 设置文本颜色
                 val statusColor = colorMap[item.auditStatus] ?: R.color.colorControlActivated
-                val resolvedColor = ContextCompat.getColor(activity, statusColor)
+                val resolvedColor = ContextCompat.getColor(holder.c, statusColor)
 
 
                 holder.lTopView.visibility = View.VISIBLE
@@ -179,4 +180,7 @@ class TaskItemAdapter(
 
         return items.size
     }
+
+
+
 }

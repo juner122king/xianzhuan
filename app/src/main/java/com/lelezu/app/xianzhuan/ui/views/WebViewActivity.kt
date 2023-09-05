@@ -19,16 +19,15 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.utils.Base64Utils
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 
 class WebViewActivity : BaseActivity() {
-    private lateinit var context: Context
     private lateinit var link: String
     private lateinit var wv: BridgeWebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context = this
         wv = findViewById(R.id.webView)
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
@@ -48,10 +47,16 @@ class WebViewActivity : BaseActivity() {
 
     private fun setWebViewTitle() {
         wv.webChromeClient = object : WebChromeClient() {
-            override fun onReceivedTitle(view: WebView?, title: String?) {
-                super.onReceivedTitle(view, title)
-                title?.let { setTitleText(it) }
+            override fun onReceivedTitle(view: WebView, title: String) {
+//                super.onReceivedTitle(view, title)
+
+                if (!view.url!!.contains(title)) {
+                    setTitleText(title)
+                }
+                LogUtils.i("WebView", title)
             }
+
+
         }
     }
 
@@ -71,7 +76,10 @@ class WebViewActivity : BaseActivity() {
         wv.registerHandler("backToHome") { fragmentPosition, _ -> backToHome(fragmentPosition) }
         wv.registerHandler("gotoTaskDetails") { taskId, _ -> gotoTaskDetails(taskId) }
         wv.registerHandler("logOut") { _, _ -> logOut() }
+        wv.registerHandler("gotoPermissionSettings") { _, _ -> gotoPermissionSettings() }
     }
+
+
 
     private fun setupWebViewClient() {
         if (link == WebViewSettings.link8) {
@@ -102,7 +110,7 @@ class WebViewActivity : BaseActivity() {
     }
 
     private fun showAlipayInstallDialog() {
-        AlertDialog.Builder(context).setMessage("未检测到支付宝客户端，请安装后重试。")
+        AlertDialog.Builder(this).setMessage("未检测到支付宝客户端，请安装后重试。")
             .setPositiveButton("立即安装") { _, _ -> startAlipayInstallation() }
             .setNegativeButton("取消", null).show()
     }
@@ -156,7 +164,10 @@ class WebViewActivity : BaseActivity() {
             thread.start()
         }
     }
-
+    private fun gotoPermissionSettings() {
+        val intent = Intent(this, PermissionsActivity::class.java)
+        startActivity(intent)
+    }
     override fun getLayoutId(): Int {
         return R.layout.activity_web_view_stzqactivity
     }

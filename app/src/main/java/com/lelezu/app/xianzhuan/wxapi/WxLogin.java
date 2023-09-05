@@ -12,7 +12,6 @@ import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-import java.io.File;
 
 
 public class WxLogin {
@@ -34,6 +33,15 @@ public class WxLogin {
 
     }
 
+    public static void onDestroy() {
+
+        if (mContext == null) {
+            return;
+        }
+        mContext = null;//置为null
+
+    }
+
     public static void longWx() {
         if (!api.isWXAppInstalled()) {
             Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
@@ -45,7 +53,7 @@ public class WxLogin {
         api.sendReq(req);
     }
 
-    public static void localWx( String path) {
+    public static void localWx(String path) {
         Log.i("微信分享", " path = " + path);
         if (!api.isWXAppInstalled()) {
             Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
@@ -78,9 +86,9 @@ public class WxLogin {
     }
 
 
-
     private static String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
+
 
 }

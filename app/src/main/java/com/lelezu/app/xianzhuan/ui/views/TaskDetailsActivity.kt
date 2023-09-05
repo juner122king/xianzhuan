@@ -204,11 +204,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         menu?.add(0, 2, 1, "取消")
 
         menu!!.getItem(0).setOnMenuItemClickListener {
-            Toast.makeText(
-                this,
-                "保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}",
-                Toast.LENGTH_SHORT
-            ).show()
+            showToast("保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}")
             //进行保存图片操作
             true
         }

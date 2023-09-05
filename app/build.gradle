@@ -202,4 +202,7 @@ dependencies {
     implementation('com.journeyapps:zxing-android-embedded:3.6.0') { transitive = false }
     //任务墙sdk 结束
 
+
+    // https://github.com/square/leakcanary  内存泄漏检测的工具
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 }

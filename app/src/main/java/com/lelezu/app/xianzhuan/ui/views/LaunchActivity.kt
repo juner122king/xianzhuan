@@ -90,6 +90,11 @@ class LaunchActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        WxLogin.onDestroy()//防止内存泄露
+    }
+
 
     // 显示协议弹窗
     private fun showAgreementDialog(title: String, link: String) {

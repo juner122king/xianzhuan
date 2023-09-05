@@ -58,7 +58,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         }
 
 
-        adapter = TaskItemAdapter(mutableListOf(), requireActivity(), isMyTask)
+        adapter = TaskItemAdapter(mutableListOf(),  isMyTask)
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
         recyclerView.adapter = adapter
 
@@ -159,16 +159,30 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     override fun onStop() {
         super.onStop()
         LogUtils.i("${taskQuery.taskStatus}onStop")
+
+
+
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         LogUtils.i("${taskQuery.taskStatus}onDestroyView")
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         LogUtils.i("${taskQuery.taskStatus}onDestroy")
+
+        if (::recyclerView.isInitialized) {
+            recyclerView.adapter = null // 解除 RecyclerView 的引用
+        }
+
+        if (::swiper.isInitialized) {
+            swiper.setOnRefreshListener(null) // 解除 SwipeRefreshLayout 的引用
+        }
+
     }
 
     override fun onDetach() {
