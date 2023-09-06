@@ -15,6 +15,7 @@ import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
+import com.lelezu.app.xianzhuan.ui.views.PermissionsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
@@ -194,6 +195,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
                 R.id.iv_message -> {
                     startActivity(Intent(activity, MessageActivity::class.java))//消息
+//                    startActivity(Intent(activity, PermissionsActivity::class.java))//消息
                 }
 
                 R.id.iv_log -> {

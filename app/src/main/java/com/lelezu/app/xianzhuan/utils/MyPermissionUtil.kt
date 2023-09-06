@@ -44,5 +44,13 @@ object MyPermissionUtil {
         XXPermissions.with(context).permission(permission).request(callback)
     }
 
+   //申请读取手机权限
+    @SuppressLint("SuspiciousIndentation")
+    fun readPhoneStateApply(context: Context, callback: OnPermissionCallback) {
+        val permission = Permission.READ_PHONE_STATE
+
+        XXPermissions.with(context).permission(permission).request(callback)
+    }
+
 
 }

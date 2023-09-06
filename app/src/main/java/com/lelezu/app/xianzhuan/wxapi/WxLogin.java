@@ -1,10 +1,11 @@
 package com.lelezu.app.xianzhuan.wxapi;
 
-import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.hjq.toast.ToastUtils;
+import com.lelezu.app.xianzhuan.MyApplication;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
@@ -13,38 +14,16 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 
-
 public class WxLogin {
-    private static final int THUMB_SIZE = 150;
 
     private static int mTargetScene = SendMessageToWX.Req.WXSceneSession;
-    public static IWXAPI api;
-    @SuppressLint("StaticFieldLeak")
-    public static Context mContext;
 
-    /**
-     * @param context
-     */
-    public static void initWx(Context context) {
 
-        mContext = context;
-        api = WXAPIFactory.createWXAPI(context, WxData.WEIXIN_APP_ID, true);
-        api.registerApp(WxData.WEIXIN_APP_ID);
+    public static void longWx(Application context) {
+        IWXAPI api = ((MyApplication) context).getApi();
 
-    }
-
-    public static void onDestroy() {
-
-        if (mContext == null) {
-            return;
-        }
-        mContext = null;//置为null
-
-    }
-
-    public static void longWx() {
         if (!api.isWXAppInstalled()) {
-            Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("您还未安装微信客户端");
             return;
         }
         final SendAuth.Req req = new SendAuth.Req();
@@ -53,14 +32,15 @@ public class WxLogin {
         api.sendReq(req);
     }
 
-    public static void localWx(String path) {
+    public static void localWx(Application context, String path) {
         Log.i("微信分享", " path = " + path);
+        IWXAPI api = ((MyApplication) context).getApi();
         if (!api.isWXAppInstalled()) {
-            Toast.makeText(mContext, "您还未安装微信客户端", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("您还未安装微信客户端");
             return;
         }
         if (path.isEmpty()) {
-            Toast.makeText(mContext, "分享失败，请检验图片链接是否正确！", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("分享失败，请检验图片链接是否正确！");
             return;
         }
         try {
@@ -80,7 +60,7 @@ public class WxLogin {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(mContext, "分享失败，请检验图片链接是否正确！", Toast.LENGTH_SHORT).show();
+            ToastUtils.show("分享失败，请检验图片链接是否正确！");
 
         }
     }

@@ -204,5 +204,5 @@ dependencies {
 
 
     // https://github.com/square/leakcanary  内存泄漏检测的工具
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 }

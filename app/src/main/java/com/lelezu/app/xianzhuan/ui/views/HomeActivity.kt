@@ -101,7 +101,6 @@ class HomeActivity : BaseActivity() {
         }
 
 
-
     }
 
     private fun initData() {
@@ -187,7 +186,7 @@ class HomeActivity : BaseActivity() {
                     cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
 
                 Log.i("下载完成", "imageUrl：${localUri}")
-                WxLogin.localWx(localUri)
+                WxLogin.localWx(application, localUri)
             } else {
                 // 下载失败的处理
                 val reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))

@@ -8,6 +8,9 @@ import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
+import com.lelezu.app.xianzhuan.wxapi.WxData
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.umeng.commonsdk.UMConfigure
 
 
@@ -26,6 +29,10 @@ class MyApplication : Application() {
     val taskRepository by lazy { TaskRepository(apiService) }
 
     val sysInformRepository by lazy { SysInformRepository(apiService) }
+
+    val api by lazy {
+        WXAPIFactory.createWXAPI(this, WxData.WEIXIN_APP_ID, true)
+    }
 
 
     //声明公共变量

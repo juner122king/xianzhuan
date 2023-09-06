@@ -90,7 +90,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
                     handleApiResponse(r, isUp)
 
                 } else {
-                    errMessage.postValue(ErrResponse(null, "验证内容不完整！"))
+                    errMessage.postValue(ErrResponse(null, "您未填写信息，请填写后提交"))
                 }
             }
 

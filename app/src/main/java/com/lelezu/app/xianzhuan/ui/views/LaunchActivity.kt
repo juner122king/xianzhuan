@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
@@ -20,10 +22,12 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
+import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.umeng.commonsdk.UMConfigure
 import com.zj.zjsdk.ZjSdk
 
@@ -78,7 +82,7 @@ class LaunchActivity : AppCompatActivity() {
 
         init163SDK()//网易SDK初始化
 
-        WxLogin.initWx(this) //微信SDK初始化
+        initWx() //微信SDK初始化
 
         initUMSDK()//友盟SDK初始化
 
@@ -88,11 +92,6 @@ class LaunchActivity : AppCompatActivity() {
 
         ShareUtil.putAndroidID(this) //获取Android ID
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        WxLogin.onDestroy()//防止内存泄露
     }
 
 
@@ -152,6 +151,10 @@ class LaunchActivity : AppCompatActivity() {
         finish()
     }
 
+
+   private fun initWx() {
+        (application as MyApplication).api.registerApp(WxData.WEIXIN_APP_ID)
+    }
 
     private fun init163SDK() {
         val config = HTProtectConfig().apply {

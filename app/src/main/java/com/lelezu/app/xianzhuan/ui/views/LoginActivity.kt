@@ -61,7 +61,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
         when (cbAgree.isChecked) {
             true -> {
 
-                WxLogin.longWx()  //微信登录
+                WxLogin.longWx(application)  //微信登录
             }
 
             else -> {

@@ -71,4 +71,8 @@
     <string name="action_settings">Settings</string>
 
 
+    <string name="opened">已开启</string>
+    <string name="closed">已关闭</string>
+
+
 </resources>

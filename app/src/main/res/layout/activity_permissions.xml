@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".ui.views.PermissionsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <ImageView
             android:id="@+id/iv1"
@@ -75,7 +76,7 @@
         android:id="@+id/cl2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <ImageView
             android:id="@+id/iv2"
@@ -139,7 +140,7 @@
         android:id="@+id/cl3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <ImageView
             android:id="@+id/iv3"
