@@ -186,7 +186,7 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
                     } else showToast("账号或密码不正确!")
                 }
 
-                else -> showToast("请输入完整的信息!")
+                else -> showToast("账号或密码不能为空!")
             }
         } else showToast("请同意隐私政策!")
 

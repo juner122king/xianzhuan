@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +17,8 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link13
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link8
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
@@ -45,6 +46,11 @@ class WebViewActivity : BaseActivity() {
         setupBackButtonListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        showView()
+    }
+
     private fun setWebViewTitle() {
         wv.webChromeClient = object : WebChromeClient() {
             override fun onReceivedTitle(view: WebView, title: String) {
@@ -53,7 +59,7 @@ class WebViewActivity : BaseActivity() {
                 if (!view.url!!.contains(title)) {
                     setTitleText(title)
                 }
-                LogUtils.i("WebView", title)
+//                LogUtils.i("WebView", title)
             }
 
 
@@ -80,12 +86,12 @@ class WebViewActivity : BaseActivity() {
     }
 
 
-
     private fun setupWebViewClient() {
-        if (link == WebViewSettings.link8) {
+        if (link == link8 || link == link13) {
             wv.webViewClient = object : WebViewClient() {
                 @Deprecated("Deprecated in Java", ReplaceWith("false"))
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                    LogUtils.i("webview", url)
                     handleAlipayScheme(url)
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true
@@ -164,10 +170,12 @@ class WebViewActivity : BaseActivity() {
             thread.start()
         }
     }
+
     private fun gotoPermissionSettings() {
         val intent = Intent(this, PermissionsActivity::class.java)
         startActivity(intent)
     }
+
     override fun getLayoutId(): Int {
         return R.layout.activity_web_view_stzqactivity
     }

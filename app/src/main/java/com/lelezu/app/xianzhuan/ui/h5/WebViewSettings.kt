@@ -35,6 +35,7 @@ object WebViewSettings {
     var link6 = "$host/shop/list/index" //我的店铺
     var link7 = "$host/reportForms/index" //我的-流水报表
     var link8 = "$host/balance/index?pageType=recharge" //充值
+
     var link9 = "$host/balance/index?pageType=withdrawal" //提现
     var link10 = "$host/feedback/opinion/index?pageType=report" //举报维权
     var link11 = "$host/feedback/index" //客服与反馈
