@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.core.widget.ContentLoadingProgressBar
 import com.hjq.permissions.OnPermissionCallback
@@ -22,12 +23,14 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
 
     // 替换为你的 APK 下载链接和文件名
     private lateinit var apkUrl: String
+    private lateinit var progressBar: ContentLoadingProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
         findViewById<View>(R.id.tv_newVersion).setOnClickListener(this)
+        findViewById<View>(R.id.tv_url).setOnClickListener(this)
 
 
         sysMessageViewModel.version.observe(this) {
@@ -35,6 +38,8 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
                 //有新版本
                 findViewById<View>(R.id.tv_newVersion).visibility = View.VISIBLE
                 apkUrl = it.download
+
+                showDialog()
             }
 
         }
@@ -44,12 +49,12 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
         ShareUtil.putInt(versionCode, pInfo.versionCode)
     }
 
-    override fun onResume() {
-        super.onResume()
+
+    override fun onStart() {
+        super.onStart()
         //检查新版本
         sysMessageViewModel.detection()
     }
-
 
     override fun getLayoutId(): Int {
         return R.layout.activity_auto_out
@@ -75,7 +80,16 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
 
             R.id.tv_newVersion -> {
                 //询问权限
-                onUpData()
+                showDialog()
+            }
+
+            R.id.tv_url -> {
+                //跳到备案网站
+
+                val intent = Intent(this, WebViewActivity::class.java)
+                intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link15)
+                intent.putExtra(WebViewSettings.isProcessing, false)
+                startActivity(intent)
             }
 
         }
@@ -85,7 +99,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
     private fun onUpData() {
         MyPermissionUtil.storageApply(this, object : OnPermissionCallback {
             override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) showDialog()
+                if (all) startDownload()
                 else showToast("获取部分权限成功，但部分权限未正常授予")
             }
 
@@ -98,15 +112,18 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
 
     private fun showDialog() {
         dialog = Dialog(this)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setContentView(R.layout.dialog_download)
 
-        val progressBar: ContentLoadingProgressBar = dialog.findViewById(R.id.progressBar)
-        val btnDownload: Button = dialog.findViewById(R.id.btnDownload)
-        val btnDownloadNo: Button = dialog.findViewById(R.id.btnDownloadNo)
+        progressBar = dialog.findViewById(R.id.progressBar)
+        val btnDownload: TextView = dialog.findViewById(R.id.btnDownload)
+        val btnDownloadNo: TextView = dialog.findViewById(R.id.btnDownloadNo)
 
         btnDownload.setOnClickListener {
             // 在点击下载按钮时执行下载操作
-            startDownload()
+
+            onUpData()
+
         }
         btnDownloadNo.setOnClickListener {
             // 在点击下载按钮时执行下载操作
@@ -117,18 +134,15 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
     }
 
     private fun startDownload() {
+        progressBar.visibility = View.VISIBLE
         sysMessageViewModel.downloadApk(apkUrl)
         sysMessageViewModel.downloadProgress.observe(this) {
             // 更新进度条
-            val progressBar: ContentLoadingProgressBar = dialog.findViewById(R.id.progressBar)
             progressBar.progress = it
-            if (it == 100) {
-                // 下载完成时，隐藏对话框
-                dialog.dismiss()
 
-            }
         }
         sysMessageViewModel.apkPath.observe(this) {
+            dialog.dismiss()
             //安装apk
             openFileWithFilePath(it)
         }

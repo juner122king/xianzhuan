@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +17,8 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link13
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link8
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
@@ -45,6 +46,11 @@ class WebViewActivity : BaseActivity() {
         setupBackButtonListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        showView()
+    }
+
     private fun setWebViewTitle() {
         wv.webChromeClient = object : WebChromeClient() {
             override fun onReceivedTitle(view: WebView, title: String) {
@@ -53,7 +59,7 @@ class WebViewActivity : BaseActivity() {
                 if (!view.url!!.contains(title)) {
                     setTitleText(title)
                 }
-                LogUtils.i("WebView", title)
+//                LogUtils.i("WebView", title)
             }
 
 
@@ -80,12 +86,12 @@ class WebViewActivity : BaseActivity() {
     }
 
 
-
     private fun setupWebViewClient() {
-        if (link == WebViewSettings.link8) {
+        if (link == link8 || link == link13) {
             wv.webViewClient = object : WebViewClient() {
                 @Deprecated("Deprecated in Java", ReplaceWith("false"))
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                    LogUtils.i("webview", url)
                     handleAlipayScheme(url)
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true
@@ -152,11 +158,16 @@ class WebViewActivity : BaseActivity() {
         if (result != null) {
             val thread = Thread {
                 val imageData = Base64Utils.zipPic(result)
-                if (imageData != null && imageData.length > 1000 * 2000) {
-                    showToast("图片不能超过2MB,请重新选择！")
+                if (imageData == null) {
+                    // 如果 imageData 为 null，执行处理空值的操作
+                    // 例如，显示一个提示消息或采取其他适当的操作
+                    showToast("图片不支持，请重新选择！")
+                } else if (imageData.length > 1000 * 2000) {
+                    // 如果 imageData 不为 null 且其长度大于2MB（2 * 1000 * 2000字节），则执行以下操作：
+                    showToast("图片不能超过2MB，请重新选择！")
                 } else {
                     wv.post {
-                        Log.i("H5调原生:", "图片字节码长度:${imageData?.length}")
+                        Log.i("H5调原生:", "图片字节码长度:${imageData.length}")
                         wv.callHandler("showSelectedImage", imageData) {}
                     }
                 }
@@ -164,10 +175,12 @@ class WebViewActivity : BaseActivity() {
             thread.start()
         }
     }
+
     private fun gotoPermissionSettings() {
         val intent = Intent(this, PermissionsActivity::class.java)
         startActivity(intent)
     }
+
     override fun getLayoutId(): Int {
         return R.layout.activity_web_view_stzqactivity
     }

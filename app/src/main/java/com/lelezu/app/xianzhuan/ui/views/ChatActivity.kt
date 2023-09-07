@@ -200,13 +200,17 @@ class ChatActivity : BaseActivity() {
             // 获取内容URI对应的文件路径
             val thread = Thread {
                 val imageData = Base64Utils.zipPic(it)
-                if (imageData != null && imageData.length > 1000 * 2000) showToast("图片不能超过2MB,请重新选择！")
-                else {
-                    //执行上传动作
-
+                if (imageData == null) {
+                    // 如果 imageData 为 null，执行处理空值的操作
+                    // 例如，显示一个提示消息或采取其他适当的操作
+                    showToast("图片不支持，请重新选择！")
+                } else if (imageData.length > 1000 * 2000) {
+                    // 如果 imageData 不为 null 且其长度大于2MB（2 * 1000 * 2000字节），则执行以下操作：
+                    showToast("图片不能超过2MB，请重新选择！")
+                } else {
+                    // 否则，执行以下操作：
+                    // 执行上传动作，传递参数 it
                     homeViewModel.apiUpload(it)
-
-
                 }
             }
             thread.start()

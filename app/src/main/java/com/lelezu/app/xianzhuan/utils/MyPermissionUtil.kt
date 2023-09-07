@@ -47,8 +47,7 @@ object MyPermissionUtil {
    //申请读取手机权限
     @SuppressLint("SuspiciousIndentation")
     fun readPhoneStateApply(context: Context, callback: OnPermissionCallback) {
-        val permission = Permission.READ_PHONE_STATE
-
+        val permission = Permission.NEARBY_WIFI_DEVICES
         XXPermissions.with(context).permission(permission).request(callback)
     }
 

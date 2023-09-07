@@ -6,6 +6,7 @@ import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.ListData
+import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
@@ -153,6 +154,10 @@ interface ApiService {
     fun upload(
         @Part image: MultipartBody.Part, @Header("Authorization") token: String
     ): Call<ApiResponse<String>>
+
+    @GET("/dxz/app/sys/config/SYSTEM/LOGIN_CONFIG")//登录页面控制
+    fun loginConfig(): Call<ApiResponse<LoginConfig>>
+
 
 
 }

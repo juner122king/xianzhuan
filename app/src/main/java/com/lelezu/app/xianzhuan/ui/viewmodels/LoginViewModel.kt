@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import cn.hutool.core.codec.Base64
 import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
+import com.lelezu.app.xianzhuan.data.ApiConstants.MOBILE_PASSWORD
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
+import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
@@ -39,6 +41,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
     val chatMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
     val sendMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
+    val loginConfig: MutableLiveData<LoginConfig> = MutableLiveData()
 
 
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -46,6 +49,22 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
             userRepository.apiLogin(loginInfo(ApiConstants.LOGIN_METHOD_WX, wxCode, "", ""))
         handleApiResponse(loginReP, loginRePLiveData)
     }
+
+
+    //手机号与密码登录方式
+    fun getLoginInfo(mobilePhone: String, encryptPwd: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val o64 = Base64.encode(encryptPwd, "UTF-8")
+            val en64Pwd = AesTool.encryptStr(o64)
+
+            val loginReP = userRepository.apiLogin(
+                LoginInfo(
+                    "", MOBILE_PASSWORD, "", "", "", "", mobilePhone, en64Pwd
+                )
+            )
+            handleApiResponse(loginReP, loginRePLiveData)
+        }
 
     private fun loginInfo(
         loginMethod: String, wxCode: String?, mobileToken: String?, mobileAccessToken: String?
@@ -103,6 +122,14 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
         handleApiResponse(apiListResponse, registerLoginRePLiveData)
     }
 
+
+    //获取登录配置，
+    fun getLoginConfig()= viewModelScope.launch {
+
+
+        val apiListResponse = userRepository.loginConfig()
+        handleApiResponse(apiListResponse, loginConfig)
+    }
 
     class LoginViewFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

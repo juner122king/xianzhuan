@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.Manifest.permission.ACCESS_WIFI_STATE
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -9,16 +10,27 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.Permission.MANAGE_EXTERNAL_STORAGE
+import com.hjq.permissions.Permission.NEARBY_WIFI_DEVICES
+import com.hjq.permissions.Permission.READ_EXTERNAL_STORAGE
+import com.hjq.permissions.Permission.WRITE_EXTERNAL_STORAGE
+import com.hjq.permissions.XXPermissions
+import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
@@ -29,7 +41,9 @@ import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.umeng.commonsdk.UMConfigure
+import com.zj.task.sdk.b.f
 import com.zj.zjsdk.ZjSdk
+import java.util.Properties
 
 /**  APP启动屏
 1.登录/注册判断：在启动app时，直接通过本地存储判断用户是否已登录，处于已登录时调用登录接口判断账号是否正常状态，正常则直接到启动屏后跳转到首页；
@@ -38,11 +52,12 @@ import com.zj.zjsdk.ZjSdk
 4.在校验自动登录没问题后，则跳转到广告页，用户未登录状态下，则需要登录成功后方进行首页数据加载；
 5.广告页：需要在对应的时间内加载首页的数据；*/
 @SuppressLint("CustomSplashScreen")
-class LaunchActivity : AppCompatActivity() {
+class LaunchActivity : BaseActivity() {
     private lateinit var dialog: AlertDialog//协议弹
+
+    private var LOGTAG: String = "SDK_INIT"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_launch)
 
 
 
@@ -57,13 +72,23 @@ class LaunchActivity : AppCompatActivity() {
             }, 1000)//等1秒
         }
 
-
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
+
     private fun preloadContent() {
+        //弹出系统权限,判断 ACCESS_WIFI_STATE ，READ_EXTERNAL_STORAGE/WRITE_EXTERNAL_STORAGE是否授权
+
+        onInitSDK()
+    }
+
+    private fun onInitSDK() {
 
         initSDK()//初始化第三方SDK ，等待2秒
-
         Handler(Looper.getMainLooper()).postDelayed({
             //判断是否已登录APP
             if (checkUserLoginStatus()) {
@@ -74,23 +99,20 @@ class LaunchActivity : AppCompatActivity() {
                 toLogin()
             }
         }, 2000) // 延迟 2000 毫秒（即 2 秒）
-
     }
 
     private fun initSDK() {
 
-
         init163SDK()//网易SDK初始化
-
         initWx() //微信SDK初始化
-
-        initUMSDK()//友盟SDK初始化
-
-        initJPUSHSDK()//极光SDK初始化
+//        initUMSDK()//友盟SDK初始化
 
 //        initZJSDK()//任务墙SDK 初始化
 
-        ShareUtil.putAndroidID(this) //获取Android ID
+
+        //TX审核 去掉
+//        ShareUtil.putAndroidID(this) //获取Android ID
+//        initJPUSHSDK()//极光SDK初始化
 
     }
 
@@ -127,6 +149,10 @@ class LaunchActivity : AppCompatActivity() {
         // 处理同意的逻辑
         dialog.dismiss()
         agreePrivacy()
+
+        //配置文件设置同意
+        setUserAgreed()
+
         preloadContent()
     }
 
@@ -137,10 +163,24 @@ class LaunchActivity : AppCompatActivity() {
 
     private fun toLogin() {
 
-        // 跳转到登录页面
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
+        showLoading()
+        loginViewModel.getLoginConfig()
+        loginViewModel.loginConfig.observe(this) {
+            hideLoading()
+            if (it.confValue.page == 0) {
+                // 跳转到登录页面
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            } else {
+                // 跳转到登录页面
+                val intent = Intent(this, LoginMobileActivity::class.java)
+                startActivity(intent)
+            }
+            finish()
+
+        }
+
+
     }
 
     private fun toHome() {
@@ -152,11 +192,15 @@ class LaunchActivity : AppCompatActivity() {
     }
 
 
-   private fun initWx() {
+    private fun initWx() {
         (application as MyApplication).api.registerApp(WxData.WEIXIN_APP_ID)
     }
 
     private fun init163SDK() {
+
+        LogUtils.i(LOGTAG, "163SDK初始化开始")
+
+
         val config = HTProtectConfig().apply {
             var serverType = 2
             var channel = "testchannel"
@@ -165,12 +209,20 @@ class LaunchActivity : AppCompatActivity() {
             Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
         }
-        HTProtect.init(context, ApiConstants.DUN_BUSINESS_NO, callback, config)
+        HTProtect.init(this, ApiConstants.DUN_BUSINESS_NO, callback, config)
         //易盾结束
 
     }
 
     private fun initUMSDK() {
+
+        LogUtils.i(LOGTAG, "友盟SDK初始化开始")
+
+
+        //友盟开始
+        //调用预初始化函数
+        UMConfigure.preInit(this, ApiConstants.UM_BUSINESS_NO, "正式")
+
 
         //正式初始化函数
         UMConfigure.init(
@@ -187,22 +239,22 @@ class LaunchActivity : AppCompatActivity() {
 
     private fun initJPUSHSDK() {
 
-        //极光SDK开始
+        if (isUserAgreed() == 0) { //没有权限
+            return
+        }
+
+
+        LogUtils.i(LOGTAG, "极光SDK初始化开始")
         JPushInterface.setDebugMode(false)
-        // 调整点一：初始化代码前增加setAuth调用
-//        val isPrivacyReady// app根据是否已弹窗获取隐私授权来赋值
-//        if(!isPrivacyReady){
-//            JCollectionAuth.setAuth(context, false); // 后续初始化过程将被拦截
-//        }
         JPushInterface.init(this)
         // 调整点二：隐私政策授权获取成功后调用
-        JCollectionAuth.setAuth(context, true) //如初始化被拦截过，将重试初始化过程
-        //极光SDK结束
+        JCollectionAuth.setAuth(this, true) //如初始化被拦截过，将重试初始化过程
+
     }
 
 
     private fun initZJSDK() {
-
+        LogUtils.i(LOGTAG, "任务墙SDK初始化开始")
         // 任务墙SDK 初始化
         ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
             override fun initSuccess() {
@@ -215,4 +267,33 @@ class LaunchActivity : AppCompatActivity() {
         })
 
     }
+
+    override fun getLayoutId(): Int {
+
+        return R.layout.activity_launch
+    }
+
+    override fun getContentTitle(): String? {
+        return null
+    }
+
+    override fun isShowBack(): Boolean {
+        return false
+    }
+
+
+    //检查配置文件是否已同意思隐私政策
+    private fun isUserAgreed(): Int {
+        var props = Properties()
+        props.load(classLoader.getResourceAsStream("/common/setting.properties"))
+        return Integer.parseInt(props.getProperty("user_is_agreed"))
+    }
+
+    //同意隐私政策
+    private fun setUserAgreed() {
+        var props = Properties()
+        props.load(classLoader.getResourceAsStream("/common/setting.properties"))
+        props.setProperty("user_is_agreed","1")
+    }
+
 }

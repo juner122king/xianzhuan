@@ -60,7 +60,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
     private fun wxLoginInit() {
         when (cbAgree.isChecked) {
             true -> {
-
                 WxLogin.longWx(application)  //微信登录
             }
 

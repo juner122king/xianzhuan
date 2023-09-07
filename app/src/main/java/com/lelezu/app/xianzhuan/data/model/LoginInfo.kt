@@ -9,14 +9,18 @@ package com.lelezu.app.xianzhuan.data.model
  * @property mobileToken String? 前端SDK获取的accessToken，手机号登录时必传
  * @property mobileAccessToken String? 	前端SDK获取的token，手机号登录时必传
  * @property wxCode String? 	微信授权code，微信一键登录时必传
- * @property
+ * @property mobilePhone    手机密码登录方式, 若 loginMethod 为 MOBILE_PASSWORD 时必传, 将密码转成base64再加密
+ * @property encryptPwd    手机密码登录方式, 若 loginMethod 为 MOBILE_PASSWORD 时必传
+ *
  * @constructor
  */
 data class LoginInfo(
-    var appId: String,
+    var appId: String?,
     var loginMethod: String,
     var mobileToken: String?,
     var mobileAccessToken: String?,
     var wxCode: String?,
-    var encryptStr: String? = ""
+    var encryptStr: String? = "",
+    var mobilePhone: String? = "",
+    var encryptPwd: String? = ""
 )

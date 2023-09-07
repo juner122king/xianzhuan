@@ -37,6 +37,16 @@
             android:textColor="@color/text_999"
             android:textSize="15sp" />
 
+        <TextView
+            android:id="@+id/tv_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="App备案号：粤ICP备2023064737号-3A"
+            android:textColor="@color/text_999"
+            android:textSize="15sp" />
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -52,7 +62,6 @@
                 android:id="@+id/tv_newVersion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginStart="15dp"
                 android:background="@drawable/radius_border_button"
                 android:paddingStart="5dp"
@@ -61,7 +70,8 @@
                 android:paddingBottom="2dp"
                 android:text="有新版本"
                 android:textColor="@color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 

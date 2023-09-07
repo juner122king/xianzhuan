@@ -7,6 +7,7 @@ import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.ListData
+import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
@@ -58,6 +59,12 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
     //个人中心任务相关的数据
     suspend fun apiRelated(): ApiResponse<Related> = withContext(Dispatchers.IO) {
         val call = apiService.getRelated(loginToken)
+        executeApiCall(call)
+    }
+
+    //获取登录配置
+    suspend fun loginConfig(): ApiResponse<LoginConfig> = withContext(Dispatchers.IO) {
+        val call = apiService.loginConfig()
         executeApiCall(call)
     }
 

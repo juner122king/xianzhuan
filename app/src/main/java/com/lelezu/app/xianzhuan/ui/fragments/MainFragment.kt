@@ -221,7 +221,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                 fid5 -> zjTask.loadCPLFragmentAd()
                 else -> TaskListFragment.newInstance(
                     TaskQuery(
-                        TaskRepository.queryCondLATEST
+                        TaskRepository.queryCondTOP
                     )
                 )
             }

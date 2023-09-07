@@ -31,9 +31,11 @@ object ShareUtil {
     const val APP_USER_AGREEMENT_AGREE: String = "USER_AGREEMENT"//是否同意用户协议
 
 
-    const val APP_Permission_MANAGE_ALL_FILES_ACCESS: String = "Permission_MANAGE_ALL_FILES_ACCESS"//内部文件访问权限
+    const val APP_Permission_MANAGE_ALL_FILES_ACCESS: String =
+        "Permission_MANAGE_ALL_FILES_ACCESS"//内部文件访问权限
 
-    const val APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission: String = "APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission"//是否拒绝过过内部文件访问权限？
+    const val APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission: String =
+        "APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission"//是否拒绝过过内部文件访问权限？
 
 
     //用户登录
@@ -195,9 +197,14 @@ object ShareUtil {
 
     @SuppressLint("HardwareIds")
     fun putAndroidID(context: Context) {
+//        putString(
+//            APP_DEVICE_ANDROIDID,
+//            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+//        )
+
         putString(
             APP_DEVICE_ANDROIDID,
-            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            "222222"
         )
     }
 
@@ -205,6 +212,7 @@ object ShareUtil {
     //同意隐私协议
     fun agreePrivacy() {
         putBoolean(APP_PRIVACY_AGREEMENT_AGREE, true)
+
     }
 
     //不同意隐私协议

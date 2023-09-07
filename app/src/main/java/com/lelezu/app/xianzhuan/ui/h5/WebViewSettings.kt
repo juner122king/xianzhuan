@@ -19,7 +19,7 @@ object WebViewSettings {
     var LINK_KEY = "URL_LINK"
     var URL_TITLE = "URL_TITLE"
 
-    var isProcessing = "isProcessing"
+    var isProcessing = "isProcessing·"
     private var host = "$HOST/statics/dxz/h5/pages"
 
     var link100 = "$host/agreement/user"//《用户使用协议》
@@ -35,11 +35,14 @@ object WebViewSettings {
     var link6 = "$host/shop/list/index" //我的店铺
     var link7 = "$host/reportForms/index" //我的-流水报表
     var link8 = "$host/balance/index?pageType=recharge" //充值
+
     var link9 = "$host/balance/index?pageType=withdrawal" //提现
     var link10 = "$host/feedback/opinion/index?pageType=report" //举报维权
     var link11 = "$host/feedback/index" //客服与反馈
     var link12 = "$host/personalData/index" //设置个人资料
     var link13 = "$host/member/index" //开通会员
+
+    var link15 = "https://beian.miit.gov.cn/" //公安备案网站
 
 
     @SuppressLint("SetJavaScriptEnabled")

@@ -22,6 +22,14 @@ import com.umeng.commonsdk.UMConfigure
  */
 class MyApplication : Application() {
 
+
+    //声明公共变量
+    companion object {
+        lateinit var context: Context
+
+
+    }
+
     private val apiService by lazy { ApiFactory.create() }
 
     val userRepository by lazy { UserRepository(apiService) }
@@ -35,18 +43,11 @@ class MyApplication : Application() {
     }
 
 
-    //声明公共变量
-    companion object {
-        lateinit var context: Context
-    }
 
     override fun onCreate() {
         super.onCreate()
         context = this
 
-        //友盟开始
-        //调用预初始化函数
-        UMConfigure.preInit(this, UM_BUSINESS_NO, "正式")
 
         // 初始化 Toast 框架
         ToastUtils.init(this)
