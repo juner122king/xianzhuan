@@ -58,9 +58,9 @@
   "unCheckedImageName": "yd_checkbox_unchecked",
   "privacyTextStart": "登录即同意",
   "protocolText": "服务条款一",
-  "protocolLink": "https://www.baidu.com",
+  "protocolLink": "https://app.zhongshoubang.com/statics/dxz/h5/pages/agreement/user",
   "protocol2Text": "服务条款二",
-  "protocol2Link": "https://www.baidu.com",
+  "protocol2Link": "https://app.zhongshoubang.com/statics/dxz/h5/pages/agreement/privacy",
   "privacyTextEnd": "且授权易盾一键登录SDK使用本机号码",
 
   "protocolNavTitle": "易盾一键登录SDK服务条款",
