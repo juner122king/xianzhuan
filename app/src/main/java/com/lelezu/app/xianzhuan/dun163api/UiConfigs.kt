@@ -14,6 +14,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link100
 import com.netease.nis.quicklogin.QuickLogin
 import com.netease.nis.quicklogin.helper.UnifyUiConfig
 import com.netease.nis.quicklogin.listener.LoginListener
@@ -289,7 +290,7 @@ object UiConfigs {
             .setLoginBtnTopYOffset(130)
             .setPrivacyTextStart("我已阅读并同意")
             .setProtocolText("用户协议")
-            .setProtocolLink("https://www.baidu.com")
+            .setProtocolLink(link100)
             .setPrivacyTextEnd("")
             .setPrivacyTextColor(Color.parseColor("#292929"))
             .setPrivacyProtocolColor(Color.parseColor("#3F51B5"))
@@ -302,6 +303,8 @@ object UiConfigs {
             .setPrivacyTextLayoutGravity(Gravity.CENTER)
             .setPrivacyCheckBoxWidth(20)
             .setPrivacyCheckBoxHeight(20)
+            .setPrivacyState(false)//设置隐私栏协议复选框勾选状态
+
             .setHidePrivacySmh(true)
             .setCheckedImageName("login_demo_check_cus")
             .setUnCheckedImageName("login_demo_uncheck_cus")
