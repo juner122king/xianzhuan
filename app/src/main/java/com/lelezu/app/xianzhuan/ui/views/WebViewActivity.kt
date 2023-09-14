@@ -10,6 +10,8 @@ import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.github.lzyzsd.jsbridge.CallBackFunction
+import com.google.gson.Gson
 import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
@@ -18,10 +20,12 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link13
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link5
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link8
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
+
 
 class WebViewActivity : BaseActivity() {
     private lateinit var link: String
@@ -33,7 +37,7 @@ class WebViewActivity : BaseActivity() {
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
 
-        if (link == link11) {
+        if (link == link11 || link == link5) {  //link5：发布任务
             setWebViewTitle()
         }
 
@@ -83,6 +87,11 @@ class WebViewActivity : BaseActivity() {
         wv.registerHandler("gotoTaskDetails") { taskId, _ -> gotoTaskDetails(taskId) }
         wv.registerHandler("logOut") { _, _ -> logOut() }
         wv.registerHandler("gotoPermissionSettings") { _, _ -> gotoPermissionSettings() }
+
+
+        //发布任务页面需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法，然后不论是否都跑原生方法 backOrFinish()
+        wv.registerHandler("goBack") { _, _ -> backOrFinish() }
+
     }
 
 
@@ -102,6 +111,7 @@ class WebViewActivity : BaseActivity() {
                 }
             }
         }
+
     }
 
     private fun handleAlipayScheme(url: String) {
@@ -138,7 +148,16 @@ class WebViewActivity : BaseActivity() {
     private fun backOrFinish() {
         if (wv.canGoBack()) {
             if (wv.url == link) finish()
-            else wv.goBack()
+            else {//次级页面
+                //如果是发布任务的次级页面，则需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法
+                if (link == link5) {
+                    showToast("返回拦截成功，已调用H5弹出窗口方法:showDraftModal")
+                    wv.callHandler("showDraftModal", "Android", null)
+                } else {
+                    wv.goBack()
+                }
+            }
+
         } else finish()
     }
 
