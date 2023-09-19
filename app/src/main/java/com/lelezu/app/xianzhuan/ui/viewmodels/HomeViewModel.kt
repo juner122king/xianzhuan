@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
+import com.lelezu.app.xianzhuan.data.model.Partner
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
@@ -34,7 +35,12 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     val isApply: MutableLiveData<Boolean> = MutableLiveData() //是否报名成功
     val isUp: MutableLiveData<Boolean> = MutableLiveData() //是否提交成功
 
+    val isBind: MutableLiveData<Boolean> = MutableLiveData() //是否绑定师傅成功
+
     val upLink: MutableLiveData<String> = MutableLiveData() //图片上传成功的返回Link
+
+    val partnerLiveData: MutableLiveData<Partner> = MutableLiveData() //合伙人后台
+    val partnerListLiveData: MutableLiveData<MutableList<Partner>> = MutableLiveData() //合伙人后台结算记录
 
 
     // 获取任务列表数据 简单查询条件
@@ -72,6 +78,25 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     fun apiTaskApply(taskId: String) = viewModelScope.launch {
         val r = taskRepository.apiTaskApply(taskId)
         handleApiResponse(r, isApply)
+    }
+
+
+    // 添加我的师傅
+    fun apiGetMater(userId:String) = viewModelScope.launch {
+        val r = taskRepository.apiGetMater(userId)
+        handleApiResponse(r, isBind)
+    }
+
+    // 合伙人后台数据
+    fun apiPartnerBack() = viewModelScope.launch {
+        val r = taskRepository.apiPartnerBack()
+        handleApiResponse(r, partnerLiveData)
+    }
+
+ // 合伙人后台结算记录
+    fun apiPartnerBackList() = viewModelScope.launch {
+        val r = taskRepository.apiPartnerBackList()
+        handleApiListResponse(r, partnerListLiveData)
     }
 
 

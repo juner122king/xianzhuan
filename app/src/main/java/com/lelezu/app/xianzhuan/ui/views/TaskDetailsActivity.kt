@@ -11,9 +11,11 @@ import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
@@ -42,6 +44,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private var isMyTask: Boolean = false
 
+    private lateinit var dialog: AlertDialog//协议弹窗
 
     //验证图片选取回调处理
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
@@ -81,6 +84,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         findViewById<TextView>(R.id.tv_btm2).setOnClickListener(this)
 
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
+        findViewById<View>(R.id.tv_agreement2).setOnClickListener(this)
 
         //获取上个页面返回的TaskId再请求一次
         taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
@@ -178,7 +182,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<TextView>(R.id.tv_name).text = it!!.nickname
         }
 
-        //支持设备 ["0"]-安卓, ["1"]-苹果, []-全部
+       // 支持设备 ["0"]-安卓, ["1"]-苹果, []-全部
         if (task.supportDevices.size == 1) {
             when (task.supportDevices[0]) {
                 "0" -> findViewById<View>(R.id.iv_and).visibility = View.VISIBLE
@@ -188,7 +192,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<View>(R.id.iv_and).visibility = View.VISIBLE
             findViewById<View>(R.id.iv_ios).visibility = View.VISIBLE
         }
-
 
     }
 
@@ -230,6 +233,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                 findViewById<View>(R.id.ll_status).visibility = View.GONE
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
+
             }
 
             2 -> {
@@ -237,6 +241,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 setStatusText("状态：审核中")
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
+
             }
 
             3 -> {
@@ -258,6 +263,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 findViewById<TextView>(R.id.tv_status_text).visibility = View.VISIBLE
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+
             }
 
             5 -> {
@@ -265,6 +271,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
                 findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+
             }
         }
 
@@ -303,8 +310,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                         intent.putExtra("userId", task.userId)
                         startActivity(intent)
                     }
-
-
                 }
 
             }
@@ -328,9 +333,36 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 intent.putExtra(WebViewSettings.isProcessing, false)
                 startActivity(intent)
             }
+
+            R.id.tv_agreement2 -> {//打开《悬赏任务发布者声明》
+                showAgreementDialog()
+            }
         }
     }
 
+
+    // 显示用户协议弹窗
+    private fun showAgreementDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_agreement, null)
+
+        // 创建弹窗
+        val builder = AlertDialog.Builder(this, R.style.backDialog)
+        builder.setView(dialogView)
+        dialog = builder.create()
+
+        // 显示弹窗
+        dialog.show()
+
+    }
+
+
+    // 同意按钮点击事件
+    fun onAgreeButtonClick(view: View) {
+        // 在这里处理同意的逻辑
+        // 关闭弹窗
+        dialog.dismiss()
+
+    }
 
     private fun putTask(t: Task) {
         task = t//

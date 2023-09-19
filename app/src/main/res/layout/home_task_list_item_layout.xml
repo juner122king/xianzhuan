@@ -98,11 +98,13 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginEnd="5dp"
+            android:visibility="visible"
             android:src="@drawable/icon_task_item1" />
 
         <TextView
             android:id="@+id/tv_task_earnedCount"
             android:layout_width="wrap_content"
+            android:visibility="visible"
             android:layout_height="wrap_content"
             android:textSize="11sp" />
 

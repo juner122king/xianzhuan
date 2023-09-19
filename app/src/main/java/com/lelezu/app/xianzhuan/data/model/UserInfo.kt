@@ -18,6 +18,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property headImageUrl String 	头像
  * @property createdDt String 注册时间
  * @property balanceAmount Float 	可用金额
+ * @property recommendUserId String  师傅ID
  * @constructor
  */
 data class UserInfo(
@@ -31,6 +32,7 @@ data class UserInfo(
     val lastLoginDt: String,
     val headImageUrl: String,
     val createdDt: String,
+    val recommendUserId: String?,
     val balanceAmount: Float
 
 

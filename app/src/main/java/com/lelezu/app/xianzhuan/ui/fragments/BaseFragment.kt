@@ -1,5 +1,9 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.content.ClipData
+import android.content.ClipDescription
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,6 +16,8 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 
 /**
@@ -73,5 +79,16 @@ open class BaseFragment : Fragment() {
         startActivity(intent)
     }
 
+    protected fun copyText(text: String) {
+        LogUtils.i("复制文字到剪切板", "复制文字到剪切板")
+
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        val mClipData = ClipData.newPlainText("Label", text)
+
+        clipboard.setPrimaryClip(mClipData)
+
+    }
 
 }

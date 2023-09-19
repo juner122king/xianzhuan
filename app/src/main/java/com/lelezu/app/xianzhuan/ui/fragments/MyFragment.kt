@@ -14,7 +14,9 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
+import com.lelezu.app.xianzhuan.ui.views.MyMaterActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
+import com.lelezu.app.xianzhuan.ui.views.PartnerCenterActivity
 import com.lelezu.app.xianzhuan.ui.views.PermissionsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
@@ -47,6 +49,8 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.ll_l7).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l8).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l9).setOnClickListener(this)
+
+        view.findViewById<View>(R.id.ll_l11).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_my_task).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_my_task1).setOnClickListener(this)
         view.findViewById<View>(R.id.iv_my_task1).setOnClickListener(this)
@@ -61,6 +65,8 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.tv_my_text2).setOnClickListener(this)
         view.findViewById<View>(R.id.tv_my_text4).setOnClickListener(this)
 
+
+
         bulletinView = view.findViewById(R.id.bv)
         llNotice = view.findViewById(R.id.ll_notice)
 
@@ -72,6 +78,16 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text2).text = it.balanceAmount.toString()
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.rechargeAmount.toString()
             ImageViewUtil.loadCircleCrop(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
+
+
+            val id = it.userId
+
+            view.findViewById<TextView>(R.id.tv_user_id).setOnLongClickListener {
+                showToast("ID已复制到剪切板:${id}")
+                copyText(id)
+                false
+            }
+
 
             when (it.vipLevel) {
                 0 -> {
@@ -88,6 +104,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                     view.findViewById<ImageView>(R.id.btm_vip)
                         .setImageResource(R.drawable.my_icon_get_vip2)
                 }
+
                 3 -> {
                 }   //忽略
                 4 -> {
@@ -98,6 +115,22 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 }
             }
 
+
+            val materID = it.recommendUserId
+            //判断是否有师傅
+            if ("0" == materID) {
+                view.findViewById<View>(R.id.iv_10).visibility = View.VISIBLE
+                view.findViewById<TextView>(R.id.masterId).text = "无"
+                view.findViewById<View>(R.id.ll_l10).setOnClickListener(this)
+
+            } else {
+                view.findViewById<View>(R.id.iv_10).visibility = View.GONE
+                view.findViewById<TextView>(R.id.masterId).text = "ID:$materID"
+
+                view.findViewById<View>(R.id.ll_l10).setOnClickListener {
+                    showToast("您师傅ID:$materID")
+                }
+            }
         }
 
         loginViewModel.related.observe(requireActivity()) {
@@ -122,20 +155,31 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             if (it.isNotEmpty()) {
                 llNotice.visibility = View.VISIBLE
                 bulletinView.setAdapter(ComplexViewAdapter(it))
-                bulletinView.setOnItemClickListener { itemData, _, _ ->
-                    val intent = Intent(requireContext(), WebViewActivity::class.java)
-                    intent.putExtra(
-                        WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
-                    )
-                    intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
-                    intent.putExtra(WebViewSettings.isProcessing, false)
-                    startActivity(intent)
-                }
-            }else
-            {
+//                bulletinView.setOnItemClickListener { itemData, _, _ ->
+//                    val intent = Intent(requireContext(), WebViewActivity::class.java)
+//                    intent.putExtra(
+//                        WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
+//                    )
+//                    intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
+//                    intent.putExtra(WebViewSettings.isProcessing, false)
+//                    startActivity(intent)
+//                }
+            } else {
                 llNotice.visibility = View.GONE
             }
 
+        }
+
+
+        loginViewModel.earning.observe(requireActivity()) {
+
+            if (it.subCount > 0) {
+                view.findViewById<View>(R.id.ll_l11).visibility = View.VISIBLE
+                view.findViewById<View>(R.id.line11).visibility = View.VISIBLE
+            } else {
+                view.findViewById<View>(R.id.ll_l11).visibility = View.GONE
+                view.findViewById<View>(R.id.line11).visibility = View.GONE
+            }
 
         }
 
@@ -154,6 +198,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         //获取公告
         sysMessageViewModel.getAnnounce()
 
+        loginViewModel.apiEarnings()//获取收徒功能页面数据
     }
 
 
@@ -193,6 +238,14 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                     startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
                 }
 
+                R.id.ll_l10 -> {
+                    startActivity(Intent(activity, MyMaterActivity::class.java))//我的师傅
+                }
+
+                R.id.ll_l11 -> {
+                    startActivity(Intent(activity, PartnerCenterActivity::class.java))//合伙人后台
+                }
+
                 R.id.iv_message -> {
                     startActivity(Intent(activity, MessageActivity::class.java))//消息
 //                    startActivity(Intent(activity, PermissionsActivity::class.java))//消息
@@ -210,7 +263,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
                         R.id.ll_l1 -> {
                             intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "发布任务")
+                            intent.putExtra(WebViewSettings.URL_TITLE, "选择任务分类")
                         }
 
                         R.id.ll_l2 -> {

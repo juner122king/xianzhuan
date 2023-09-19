@@ -59,6 +59,7 @@ class WebViewActivity : BaseActivity() {
         wv.webChromeClient = object : WebChromeClient() {
             override fun onReceivedTitle(view: WebView, title: String) {
 //                super.onReceivedTitle(view, title)
+                LogUtils.i("WebView", view.url!!)
 
                 if (!view.url!!.contains(title)) {
                     setTitleText(title)
@@ -88,6 +89,9 @@ class WebViewActivity : BaseActivity() {
         wv.registerHandler("logOut") { _, _ -> logOut() }
         wv.registerHandler("gotoPermissionSettings") { _, _ -> gotoPermissionSettings() }
 
+        wv.registerHandler("wxPay") { rechargeAmount, _ -> onWXPay(rechargeAmount) }//打开原生微信支付
+
+        wv.registerHandler("toSysMessage") { _, _ -> toSysMessage() }//注销申请
 
         //发布任务页面需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法，然后不论是否都跑原生方法 backOrFinish()
         wv.registerHandler("goBack") { _, _ -> backOrFinish() }
@@ -149,8 +153,8 @@ class WebViewActivity : BaseActivity() {
         if (wv.canGoBack()) {
             if (wv.url == link) finish()
             else {//次级页面
-                //如果是发布任务的次级页面，则需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法
-                if (link == link5) {
+                //如果是发布任务的次级页面，则需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法 publishTask/index为发布编辑页面url
+                if (wv.url!!.contains("publishTask/index")) {
                     showToast("返回拦截成功，已调用H5弹出窗口方法:showDraftModal")
                     wv.callHandler("showDraftModal", "Android", null)
                 } else {
@@ -199,6 +203,7 @@ class WebViewActivity : BaseActivity() {
         val intent = Intent(this, PermissionsActivity::class.java)
         startActivity(intent)
     }
+
 
     override fun getLayoutId(): Int {
         return R.layout.activity_web_view_stzqactivity

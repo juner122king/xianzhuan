@@ -61,8 +61,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp">
 
                 <ImageView
                     android:id="@+id/iv_user_pic"
@@ -118,7 +118,7 @@
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tv_my_text2"
@@ -144,7 +144,8 @@
                     android:text="0.0"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_my_text4"
@@ -187,7 +188,7 @@
                     android:text="预估金额"
                     android:textColor="@color/black"
                     android:textSize="12sp"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -205,7 +206,8 @@
                     android:gravity="center"
                     android:text="徒弟进贡"
                     android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -263,8 +265,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
                     android:layout_marginStart="12dp"
+                    android:layout_marginEnd="5dp"
                     android:background="@drawable/icon_notice2" />
 
                 <com.lelezu.app.xianzhuan.ui.views.BulletinView
@@ -279,7 +281,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                android:paddingBottom="10dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_log"
@@ -417,7 +420,8 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="visible">
 
 
                 <ImageView
@@ -441,8 +445,13 @@
 
             </LinearLayout>
 
-            <include layout="@layout/item_line" />
+            <include
+                layout="@layout/item_line"
+                android:visibility="visible" />
+
+
             <LinearLayout
+
                 android:id="@+id/ll_l4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -450,7 +459,8 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="visible">
 
 
                 <ImageView
@@ -474,7 +484,10 @@
 
             </LinearLayout>
 
-            <include layout="@layout/item_line" />
+            <include
+                layout="@layout/item_line"
+                android:visibility="visible" />
+
             <LinearLayout
                 android:id="@+id/ll_l2"
                 android:layout_width="match_parent"
@@ -483,7 +496,8 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="visible">
 
 
                 <ImageView
@@ -507,7 +521,48 @@
 
             </LinearLayout>
 
-            <include layout="@layout/item_line" />
+            <include
+
+                layout="@layout/item_line"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/ll_l11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone">
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_partner" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/btm_hhr"
+                    android:textColor="@color/black2"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/my_icon_enter" />
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/line11"
+                layout="@layout/item_line"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/ll_l3"
@@ -545,16 +600,16 @@
             <include layout="@layout/item_line" />
 
 
-
             <LinearLayout
                 android:id="@+id/ll_l5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <ImageView
@@ -580,8 +635,56 @@
 
             <include
                 layout="@layout/item_line"
+                android:visibility="visible" />
 
-                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/ll_l10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="visible">
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_master" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="我的师傅"
+                    android:textColor="@color/black2"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/masterId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textColor="@color/text_999"
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:id="@+id/iv_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/my_icon_enter" />
+
+            </LinearLayout>
+
+            <include
+                layout="@layout/item_line"
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/ll_l6"
@@ -591,7 +694,8 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="visible">
 
 
                 <ImageView
@@ -615,7 +719,9 @@
 
             </LinearLayout>
 
-            <include layout="@layout/item_line" />
+            <include
+                layout="@layout/item_line"
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/ll_l7"
@@ -716,6 +822,7 @@
                     android:src="@drawable/my_icon_enter" />
 
             </LinearLayout>
+
 
         </LinearLayout>
     </ScrollView>

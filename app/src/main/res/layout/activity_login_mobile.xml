@@ -91,11 +91,12 @@
             android:textColorHint="#999999"
             android:textSize="14sp" />
 
-        <ImageView
+        <CheckBox
             android:id="@+id/iv_pwd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/switch_drawable_selector" />
+            android:checked="false"
+            android:button="@drawable/switch_drawable_selector" />
     </LinearLayout>
 
     <ImageView

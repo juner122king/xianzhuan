@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiConstants.MOBILE_PASSWORD
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
+import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
@@ -35,6 +36,8 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val loginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
     val registerLoginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
     val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
+
+    val earning: MutableLiveData<Earning> = MutableLiveData()
 
 
     val related: MutableLiveData<Related> = MutableLiveData()
@@ -78,6 +81,11 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     fun getUserInfo(userId: String) = viewModelScope.launch {
         val rep = userRepository.apiUserInfo(userId)
         handleApiResponse(rep, userInfo)
+    }
+
+    fun apiEarnings() = viewModelScope.launch {
+        val rep = userRepository.apiEarnings()
+        handleApiResponse(rep, earning)
     }
 
 

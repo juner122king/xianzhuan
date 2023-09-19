@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
+//import cn.jiguang.api.utils.JCollectionAuth
+//import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission.MANAGE_EXTERNAL_STORAGE
@@ -41,8 +43,10 @@ import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.umeng.commonsdk.UMConfigure
-import com.zj.task.sdk.b.f
 import com.zj.zjsdk.ZjSdk
+//import com.umeng.commonsdk.UMConfigure
+//import com.zj.task.sdk.b.f
+//import com.zj.zjsdk.ZjSdk
 import java.util.Properties
 
 /**  APP启动屏
@@ -105,14 +109,15 @@ class LaunchActivity : BaseActivity() {
 
         init163SDK()//网易SDK初始化
         initWx() //微信SDK初始化
-//        initUMSDK()//友盟SDK初始化
+        initJPUSHSDK()//极光SDK初始化
+        initUMSDK()//友盟SDK初始化
 
-//        initZJSDK()//任务墙SDK 初始化
+        initZJSDK()//任务墙SDK 初始化
 
 
         //TX审核 去掉
-//        ShareUtil.putAndroidID(this) //获取Android ID
-//        initJPUSHSDK()//极光SDK初始化
+        ShareUtil.putAndroidID(this) //获取Android ID
+//
 
     }
 
@@ -149,10 +154,6 @@ class LaunchActivity : BaseActivity() {
         // 处理同意的逻辑
         dialog.dismiss()
         agreePrivacy()
-
-        //配置文件设置同意
-        setUserAgreed()
-
         preloadContent()
     }
 
@@ -239,10 +240,6 @@ class LaunchActivity : BaseActivity() {
 
     private fun initJPUSHSDK() {
 
-        if (isUserAgreed() == 0) { //没有权限
-            return
-        }
-
 
         LogUtils.i(LOGTAG, "极光SDK初始化开始")
         JPushInterface.setDebugMode(false)
@@ -255,7 +252,7 @@ class LaunchActivity : BaseActivity() {
 
     private fun initZJSDK() {
         LogUtils.i(LOGTAG, "任务墙SDK初始化开始")
-        // 任务墙SDK 初始化
+        //任务墙SDK 初始化
         ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
             override fun initSuccess() {
                 Log.i("任务墙SDK", "初始化成功！")
@@ -282,18 +279,5 @@ class LaunchActivity : BaseActivity() {
     }
 
 
-    //检查配置文件是否已同意思隐私政策
-    private fun isUserAgreed(): Int {
-        var props = Properties()
-        props.load(classLoader.getResourceAsStream("/common/setting.properties"))
-        return Integer.parseInt(props.getProperty("user_is_agreed"))
-    }
-
-    //同意隐私政策
-    private fun setUserAgreed() {
-        var props = Properties()
-        props.load(classLoader.getResourceAsStream("/common/setting.properties"))
-        props.setProperty("user_is_agreed","1")
-    }
 
 }

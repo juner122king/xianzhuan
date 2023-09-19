@@ -17,7 +17,7 @@ data class TaskQuery(
     val lowPrice: Float? = null,
     val size: Int? = 100,//默认100条
     val taskStatus: Int? = null,
-    val taskTypeId: String? = null,
+    var taskTypeId: String? = null,
     val taskTitle: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

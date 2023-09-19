@@ -125,7 +125,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:background="@drawable/radius_border_bg_f0f0f0"
-        android:hint="请输入用户ID"
         android:paddingStart="18dp"
         android:paddingTop="8dp"
         android:paddingEnd="8dp"

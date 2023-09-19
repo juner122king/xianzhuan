@@ -32,6 +32,7 @@ object WebViewSettings {
     var link3 = "$host/apprentice/index"
     var link4 = "$host/apprentice/apprenticeIncome/index" //我的-收徒收益
     var link5 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务
+    var link51 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务-编辑任务
     var link6 = "$host/shop/list/index" //我的店铺
     var link7 = "$host/reportForms/index" //我的-流水报表
     var link8 = "$host/balance/index?pageType=recharge" //充值

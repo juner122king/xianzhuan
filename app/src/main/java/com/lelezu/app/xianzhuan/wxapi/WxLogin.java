@@ -6,10 +6,12 @@ import android.util.Log;
 
 import com.hjq.toast.ToastUtils;
 import com.lelezu.app.xianzhuan.MyApplication;
+import com.lelezu.app.xianzhuan.data.model.RechargeRes;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -68,6 +70,31 @@ public class WxLogin {
 
     private static String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
+
+
+    /**
+     * 调起支付
+     */
+    public static void onPrePay(Application context, RechargeRes.PrepayPaymentResp resp) {
+        IWXAPI api = ((MyApplication) context).getApi();
+        PayReq request = new PayReq();
+
+        request.appId = resp.getAppId();
+
+        request.partnerId = resp.getPartnerId();
+
+        request.prepayId = resp.getPrepayId();
+
+        request.packageValue = "Sign=WXPay";
+
+        request.nonceStr = resp.getNonceStr();
+
+        request.timeStamp = resp.getTimestamp();
+
+        request.sign = resp.getSign();
+
+        api.sendReq(request);
     }
 
 

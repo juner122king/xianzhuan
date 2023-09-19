@@ -172,7 +172,7 @@ class ChatActivity : BaseActivity() {
     }
 
     override fun getContentTitle(): String {
-        return getString(R.string.chat_title)
+        return getString(R.string.btm_lxgz)
     }
 
     override fun isShowBack(): Boolean {

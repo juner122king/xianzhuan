@@ -10,6 +10,9 @@ import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.Partner
+import com.lelezu.app.xianzhuan.data.model.Recharge
+import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -89,7 +92,7 @@ interface ApiService {
 
 
     /**
-     * //获取我的任务列表
+     * 获取我的任务列表
      */
     @GET("/dxz/app/task/mine/apply/page")
     fun getMyTaskList(
@@ -159,5 +162,25 @@ interface ApiService {
     fun loginConfig(): Call<ApiResponse<LoginConfig>>
 
 
+    @POST("/dxz/app/user/recharge")//用户充值
+    fun recharge(
+        @Body recharge: Recharge, @Header("Authorization") token: String
+    ): Call<ApiResponse<RechargeRes>>
+
+
+    @POST("/dxz/app/user/bind/master")// 绑定师傅
+    fun bindMaster(
+        @Query("userId") userId: String, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
+
+    @GET("/dxz/app/partner/back")// 合伙人后台
+    fun partnerBack(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Partner>>
+
+    @GET("/dxz/app/partner/list")// 合伙人后台结算记录
+    fun partnerBackList(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<ListData<Partner>>>
 
 }

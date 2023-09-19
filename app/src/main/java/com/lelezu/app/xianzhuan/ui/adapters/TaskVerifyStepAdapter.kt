@@ -102,6 +102,7 @@ class TaskVerifyStepAdapter(
             }
         } else {
             holder.idEt.visibility = View.VISIBLE
+            holder.idEt.hint = item.verifyDesc
             holder.idEt.setText(item.uploadImage)
             holder.fCasePic.visibility = View.GONE
             holder.ivUserPic.visibility = View.GONE
@@ -110,6 +111,7 @@ class TaskVerifyStepAdapter(
                 holder.idEt.isEnabled = false
             } else {
                 holder.idEt.isEnabled = true
+
                 holder.idEt.addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(
                         s: CharSequence?, start: Int, count: Int, after: Int

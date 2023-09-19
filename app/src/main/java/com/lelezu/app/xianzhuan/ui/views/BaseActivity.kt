@@ -31,6 +31,7 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 
 /**
@@ -104,8 +105,8 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 
-
     protected fun backToHome(position: String) {
+        ToastUtils.show("页面：$position")
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("FragmentPosition", position)
@@ -125,6 +126,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
         val intent = Intent(MyApplication.context, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+    protected fun goToSysMessageActivity() {
+
+        val intent = Intent(MyApplication.context, MessageActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -350,6 +357,38 @@ abstract class BaseActivity : AppCompatActivity() {
             }
             return null
         }
+    }
+
+
+    /**
+     * H5执行方法：进行微信支付
+     * @param rechargeAmount String 充值金额，需要在H5页面返回
+     */
+    protected fun onWXPay(rechargeAmount: String) {
+
+        showLoading()
+        sysMessageViewModel.rechargeResLiveData.observe(this) {
+
+            hideLoading()
+            LogUtils.i("WX支付", it.toString())
+            //获取预支付订单信息
+            val payment = it.prepayPaymentResp
+            WxLogin.onPrePay(application, payment)
+
+        }
+        sysMessageViewModel.recharge(rechargeAmount, 0, 1)
+    }
+
+
+    /**
+     * H5执行方法：跳转系统信息页面
+     */
+    protected fun toSysMessage() {
+
+        LogUtils.i("跳转系统信息页面")
+        goToSysMessageActivity()
+
+
     }
 
 

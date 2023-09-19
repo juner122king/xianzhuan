@@ -3,6 +3,7 @@ package com.lelezu.app.xianzhuan.data.repository
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
+import com.lelezu.app.xianzhuan.data.model.Partner
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
@@ -65,6 +66,26 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
     //任务报名
     suspend fun apiTaskApply(taskId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
         val call = apiService.taskApply(Req(taskId), loginToken)
+        executeApiCall(call)
+
+    }
+    //添加我的师傅
+    suspend fun apiGetMater(userId:String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        val call = apiService.bindMaster(userId,loginToken)
+        executeApiCall(call)
+
+    }
+
+    //合伙人后台
+    suspend fun apiPartnerBack(): ApiResponse<Partner> = withContext(Dispatchers.IO) {
+        val call = apiService.partnerBack(loginToken)
+        executeApiCall(call)
+
+    }
+
+    //合伙人后台结算记录
+    suspend fun apiPartnerBackList(): ApiResponse<ListData<Partner>> = withContext(Dispatchers.IO) {
+        val call = apiService.partnerBackList(loginToken)
         executeApiCall(call)
 
     }

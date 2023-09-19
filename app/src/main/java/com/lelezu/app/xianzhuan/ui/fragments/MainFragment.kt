@@ -12,6 +12,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
@@ -23,9 +26,8 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_Permission_MANAGE_ALL_FILES_ACCESS
-import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission
 import com.zj.zjsdk.ad.ZjAdError
 import com.zj.zjsdk.ad.ZjTaskAd
 import com.zj.zjsdk.ad.ZjTaskAdListener
@@ -78,7 +80,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         initTaskTabLayout()//初始化TabLayout
 
 
-        //initZjTask()
+        initZjTask()
 
     }
 
@@ -113,22 +115,22 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     private fun initZjTask() {
 
-        val havePermission = ShareUtil.getBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS)//是否有文件权限
-
-        if (havePermission) {
-//            if (!isZjTaskLoadDone && !isZjTaskLoading) initZjTask()//执行广告sdk
+        if (XXPermissions.isGranted(requireActivity(), Permission.READ_PHONE_STATE)) {
+            onInitZjTask()
         } else {
-            val havePermission =
-                ShareUtil.getBoolean(APP_Permission_MANAGE_ALL_FILES_ACCESS_IS_no_Permission)//是否拒绝过内部文件访问权限
-            //如果拒绝过权限，就弹出询问权限窗口
-//            if (!havePermission) checkPermission()
+            MyPermissionUtil.readPhoneStateApply(requireActivity(), object : OnPermissionCallback {
+                override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                    onInitZjTask()
+                }
 
-
-//            showToast("权限不足，任务墙未加载")
+                override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                    showToast("您已拒绝授权，任务墙将不进行加载！")
+                }
+            })
         }
+    }
 
-
-
+    private fun onInitZjTask() {
         isZjTaskLoading = true
         LogUtils.d("任务墙加载中")
         zjTask = ZjTaskAd(requireActivity(),
@@ -200,7 +202,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         private val createdIds = hashSetOf<Long>()
 
         override fun getItemCount(): Int {
-            return 1
+            return 3
         }
 
         override fun getItemId(position: Int): Long {

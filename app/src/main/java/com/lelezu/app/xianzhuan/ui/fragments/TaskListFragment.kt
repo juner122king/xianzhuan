@@ -103,6 +103,12 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
 
     private fun loadData() {
         onShowSwiperRefreshing()
+
+//        //暂时写死，只获取问卷调查类型的任务
+//        taskQuery.taskTypeId = "1664884054041391104"
+
+
+
         homeViewModel.getTaskList(
             taskQuery, isMyTask
         )

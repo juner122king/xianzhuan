@@ -6,11 +6,12 @@ import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.Recharge
+import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.android.BuildConfig
 
 /**
  * @author:Administrator
@@ -74,6 +75,27 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
             val call = apiService.getConfig(
                 confType,
                 configKey,
+                loginToken
+            )
+            executeApiCall(call)
+        }
+
+
+    /**
+     * 用户充值
+     * @param rechargeAmount String 	充值金额，必须为大于10元的整数，最高限制9999, 单位: 元
+     * @param type Int 支付方式，0-微信，1-支付宝，默认：0-微信
+     * @param quitUrlType Int 退出返回的页面, 1-充值页面(默认) 2-会员页面
+     * @return ApiResponse<Config>
+     */
+    suspend fun recharge(
+        rechargeAmount: String,
+        type: Int,
+        quitUrlType: Int
+    ): ApiResponse<RechargeRes> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.recharge(
+                Recharge(rechargeAmount, quitUrlType, type),
                 loginToken
             )
             executeApiCall(call)

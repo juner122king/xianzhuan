@@ -90,6 +90,9 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
                 intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link15)
                 intent.putExtra(WebViewSettings.isProcessing, false)
                 startActivity(intent)
+
+//                onWXPay("100")
+
             }
 
         }

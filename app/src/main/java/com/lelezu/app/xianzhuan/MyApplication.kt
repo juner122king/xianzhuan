@@ -3,15 +3,12 @@ package com.lelezu.app.xianzhuan
 import android.app.Application
 import android.content.Context
 import com.hjq.toast.ToastUtils
-import com.lelezu.app.xianzhuan.data.ApiConstants.UM_BUSINESS_NO
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.wxapi.WxData
-import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
-import com.umeng.commonsdk.UMConfigure
 
 
 /**

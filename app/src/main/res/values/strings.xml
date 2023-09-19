@@ -12,6 +12,7 @@
 
 
     <string name="text_agreement3">《接单规则》</string>
+    <string name="text_agreement4">《悬赏任务发布者声明》</string>
     <string name="text_agreement">《用户使用协议》</string>
     <string name="text_agreement1">《隐私政策》</string>
     <string name="text_agreement2">聚赚隐私政策与用户协议</string>
@@ -35,7 +36,8 @@
     <string name="dashboard_tab4_text">最新</string>
     <string name="dashboard_tab5_text">筛选</string>
 
-    <string name="title_task_details">任务详情</string>
+    <string name="title_task_details2">任务详情</string>
+    <string name="title_task_details">问卷详情</string>
 
 
     <string name="title_task_my">我的任务</string>
@@ -47,6 +49,7 @@
 
 
     <string name="btm_hgrw">换个任务</string>
+
     <string name="btm_lxgz">联系雇主</string>
     <string name="btm_ljtj">立即提交</string>
     <string name="btm_ljbm">立即报名</string>
@@ -57,7 +60,9 @@
     <string name="btm_xrjl">新人奖励</string>
     <string name="btm_zq">收徒赚钱</string>
 
-    <string name="chat_title">联系雇主</string>
+
+    <string name="btm_hhr">合伙人业绩</string>
+
 
     <string name="l_task">置顶任务</string>
     <string name="app_task">热门任务</string>
@@ -73,6 +78,14 @@
 
     <string name="opened">已开启</string>
     <string name="closed">已关闭</string>
+
+    <string name="task_agreement2">众手帮APP中的悬赏均为第三方悬赏主自主发布，平台会对其进行形式审查。帮忙过程中遇到任何悬赏相关问题，请直接与悬赏主联系。
+赏金托管于众手帮，平台只对赏金范围内做出担保，如产生额外费用或纠纷、私下交易被骗，众手帮不承担责任。\n
+1.对于悬赏中需要额外支付及跳出本平台需另行完成其他任务的，请小心谨慎，平台无法做任何担保。投资理财有风险，请勿与他人私下交易，谨防上当。\n
+2.发布同类平台以及违规违法任务，举报有奖；\n
+3.请先报名再做任务，否则无赏金；\n
+4.请勿乱提交完成任务验证信息，否则会封号；\n
+5.当您报名做悬赏任务即表明已同意此规则。</string>
 
 
 </resources>

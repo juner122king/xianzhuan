@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.utils.LogUtils
@@ -39,6 +40,20 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val downloadProgress: MutableLiveData<Int> = MutableLiveData()//apk下载进度
 
     val apkPath: MutableLiveData<String> = MutableLiveData()//apk下载文件路径
+
+
+    val rechargeResLiveData: MutableLiveData<RechargeRes> = MutableLiveData()//支付返回
+
+
+    //获取系统消息列表
+    fun recharge(
+        rechargeAmount: String, type: Int, quitUrlType: Int
+    ) = viewModelScope.launch {
+        val list = sysInformRepository.recharge(
+            rechargeAmount, type, quitUrlType
+        )
+        handleApiResponse(list, rechargeResLiveData)
+    }
 
 
     //获取系统消息列表
@@ -103,7 +118,7 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
                     // 文件已经存在，根据需要处理
                     // 例如，你可以跳过下载或删除现有文件再重新下载
                     progressCallback(100, destinationFile.path)
-                            return@withContext
+                    return@withContext
                 }
 
                 val request = Request.Builder().url(apkUrl).build()

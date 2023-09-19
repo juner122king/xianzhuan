@@ -109,7 +109,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
 
 
         QuickLogin.getInstance().init(this, ApiConstants.DUN_PHONE_BUSINESS_ID)
-        QuickLogin.getInstance().setDebugMode(true)
+        QuickLogin.getInstance().setDebugMode(false)
         QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
         HTProtect.getTokenAsync(
             3000, ApiConstants.DUN_RISK_BUSINESS_ID
@@ -247,8 +247,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
             agreeAgreement()
         }
 
-        // 两项目同意才勾选父Activity上的CheckBox
-        if (isAgreeUserAgreementAndPrivacy()) cbAgree.isChecked = true
     }
 
 

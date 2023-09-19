@@ -21,8 +21,6 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOK
 
 class LoginMobileActivity : BaseActivity(), View.OnClickListener {
 
-
-    private var isPasswordVisible = false
     private lateinit var textPwd: EditText
     private lateinit var textNum: EditText
 
@@ -30,6 +28,8 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
     private lateinit var cbAgree: CheckBox//是否同意思协议按钮
     private lateinit var dialog: AlertDialog//协议弹窗
     private var dialogType: Int = 1//弹窗的协议类型  1为隐私协议  2为用户协议
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
@@ -42,40 +42,30 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
         textNum = findViewById(R.id.tv_num)
 
         cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
-        //点击时自动保存同意状态
-        cbAgree.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                ShareUtil.agreePrivacy()
-                ShareUtil.agreeAgreement()
-            }
+
+
+        //密码显示监听
+        findViewById<CheckBox>(R.id.iv_pwd).setOnCheckedChangeListener { _, b ->
+            if (b) showPassword()
+            else hidePassword()
         }
-        findViewById<ImageView>(R.id.iv_pwd).setOnTouchListener { _, event ->
-            handleTouch(event)
-        }
+
+
         findViewById<View>(R.id.iv_back_wx).setOnClickListener(this)
         findViewById<View>(R.id.tv_login).setOnClickListener(this)
 
         findViewById<TextView>(R.id.tv_agreement).setOnClickListener(this) //打开用户使用协议
         findViewById<TextView>(R.id.tv_agreement2).setOnClickListener(this) //打开《隐私政策》
-    }
 
 
-    //切换密码显示
-    private fun handleTouch(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> showPassword()
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> hidePassword()
-        }
-        return true
     }
+
 
     private fun showPassword() {
-        isPasswordVisible = true
         textPwd.transformationMethod = null
     }
 
     private fun hidePassword() {
-        isPasswordVisible = false
         textPwd.transformationMethod = PasswordTransformationMethod()
     }
 
@@ -132,8 +122,6 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
             ShareUtil.agreeAgreement()
         }
 
-        // 两项目同意才勾选父Activity上的CheckBox
-        if (ShareUtil.isAgreeUserAgreementAndPrivacy()) cbAgree.isChecked = true
     }
 
     override fun onClick(p0: View?) {

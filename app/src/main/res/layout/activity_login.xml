@@ -79,7 +79,7 @@
         android:layout_centerHorizontal="true"
         android:padding="10dp"
         android:text="@string/bto_use_phone_login"
-        android:textColor="#3685FE"
+        android:textColor="@color/text_s"
         android:textSize="13sp"
         android:visibility="visible" />
 
