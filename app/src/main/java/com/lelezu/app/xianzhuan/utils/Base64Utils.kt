@@ -17,11 +17,11 @@ import java.io.ByteArrayOutputStream
 object Base64Utils {
 
 
-    fun zipPic(uri: Uri): String? {
+    fun zipPic(uri: Uri, quality: Int): String? {
         return try {
             val bitmap = decodeUriToBitmap(uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
             bitmap?.recycle()
             val byteArray = byteArrayOutputStream.toByteArray()
             Log.i("H5调原生:", "byteArray长度:${byteArray.size}")
@@ -29,33 +29,8 @@ object Base64Utils {
         } catch (e: Exception) {
             null
         }
-
-
     }
 
-
-    fun zipPic2(uri: Uri): String? {
-        val mimeType = context?.contentResolver?.getType(uri)
-        val bitmap = decodeUriToBitmap(uri)
-        val compressedBitmap = compressBitmap(bitmap)
-        bitmap?.recycle()
-        val byteArrayOutputStream = ByteArrayOutputStream()
-
-        return if (mimeType != null && mimeType.contains("jpeg")) {
-            compressedBitmap?.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream)
-            "image/jpeg;base64," + Base64.encodeToString(
-                byteArrayOutputStream.toByteArray(), Base64.NO_WRAP
-            )
-        } else if (mimeType != null && mimeType.contains("png")) {
-            compressedBitmap?.compress(Bitmap.CompressFormat.PNG, 30, byteArrayOutputStream)
-            "image/png;base64," + Base64.encodeToString(
-                byteArrayOutputStream.toByteArray(), Base64.NO_WRAP
-            )
-        } else {
-            // Unsupported image format
-            null
-        }
-    }
 
     private fun decodeUriToBitmap(uri: Uri): Bitmap? {
         return try {
@@ -67,23 +42,60 @@ object Base64Utils {
         }
     }
 
-    fun compressBitmap(bitmap: Bitmap?): Bitmap? {
-        return bitmap?.let {
-            val width = it.width
-            val height = it.height
-            val maxWidth = 600
-            val maxHeight = 800
-            val scalingFactor =
-                (maxWidth.toFloat() / width).coerceAtMost(maxHeight.toFloat() / height)
-            val scaledWidth = (width * scalingFactor).toInt()
-            val scaledHeight = (height * scalingFactor).toInt()
-            Bitmap.createScaledBitmap(it, scaledWidth, scaledHeight, true)
+    fun zipPic2(uri: Uri, quality: Int): String? {
+        return try {
+            val bitmap = decodeUriToBitmap(uri)
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
+            bitmap?.recycle()
+            val byteArray = byteArrayOutputStream.toByteArray()
+            Log.i("zipPic:", "处理前的长度:${byteArray.size},质量:${quality}%")
+
+            // 如果大于2MB，就压缩成2MB
+            if (byteArray.size > 2 * 1024 * 1024) {
+                val compressedByteArray = compressTo2MB(byteArray, quality)
+                if (compressedByteArray != null) {
+                    Log.i("zipPic:", "大于2MB压缩后长度:${compressedByteArray.size}")
+
+                    Base64.encodeToString(compressedByteArray, Base64.NO_WRAP)
+                } else {
+                    null
+                }
+            } else {
+                // 否则，将压缩后的图像进行Base64编码并返回
+                Log.i("zipPic:", "小2MB,不进行压缩的长度:${byteArray.size}")
+                Base64.encodeToString(byteArray, Base64.NO_WRAP)
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
-    fun encodeToString(originalData: String): String {
+    private fun compressTo2MB(inputByteArray: ByteArray, quality: Int): ByteArray? {
+        val targetSize = 2 * 1024 * 1024 // 目标大小为2MB
 
-        return Base64.encodeToString(originalData.toByteArray(Charsets.UTF_8), Base64.DEFAULT)
+        var compressedByteArray: ByteArray? = null
+        var scaleFactor = 1.0f
+
+        while (scaleFactor >= 0.1f) {
+            val scaledBitmap = scaleBitmap(inputByteArray, scaleFactor)
+            val outputStream = ByteArrayOutputStream()
+            scaledBitmap?.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            val scaledByteArray = outputStream.toByteArray()
+            if (scaledByteArray.size <= targetSize) {
+                compressedByteArray = scaledByteArray
+                break
+            }
+            scaleFactor -= 0.1f
+        }
+
+        return compressedByteArray
+    }
+
+    private fun scaleBitmap(inputByteArray: ByteArray, scaleFactor: Float): Bitmap? {
+        val options = BitmapFactory.Options()
+        options.inSampleSize = (1 / scaleFactor).toInt()
+        return BitmapFactory.decodeByteArray(inputByteArray, 0, inputByteArray.size, options)
     }
 
 }

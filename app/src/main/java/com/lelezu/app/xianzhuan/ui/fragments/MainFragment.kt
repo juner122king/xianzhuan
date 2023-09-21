@@ -115,16 +115,25 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     private fun initZjTask() {
 
-        if (XXPermissions.isGranted(requireActivity(), Permission.READ_PHONE_STATE)) {
+        if (XXPermissions.isGranted(
+                requireActivity(),
+                Permission.READ_PHONE_STATE,
+                Permission.MANAGE_EXTERNAL_STORAGE
+            )
+        ) {
             onInitZjTask()
         } else {
             MyPermissionUtil.readPhoneStateApply(requireActivity(), object : OnPermissionCallback {
                 override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                    onInitZjTask()
+
+                    if (all) onInitZjTask()
+                    else{
+                        showToast("您授权的权限不全，热门任务和游戏试玩将不能加载！")
+                    }
                 }
 
                 override fun onDenied(permissions: MutableList<String>, never: Boolean) {
-                    showToast("您已拒绝授权，任务墙将不进行加载！")
+                    showToast("您已拒绝授权，热门任务和游戏试玩将不能加载！")
                 }
             })
         }

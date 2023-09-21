@@ -154,30 +154,29 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
         if (cbAgree.isChecked) {
             when {
                 pwdText.isNotEmpty() && numText.isNotEmpty() -> {
-                    if (isValidCredentials(numText, pwdText)) {
-                        showLoading()
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            hideLoading()
-
-
-                            //平台审核，暂时写死
-                            //登录Token，暂时写死
-                            ShareUtil.putString(
-                                APP_SHARED_PREFERENCES_LOGIN_TOKEN, "202308301696712724567953408"
-                            )
-                            ShareUtil.putBoolean(APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
-                            goToHomeActivity()
-
-
-                        }, 2000) // 延迟 2000 毫秒（即 2 秒）
-
-                    } else showToast("账号或密码不正确!")
+//                    if (isValidCredentials(numText, pwdText)) {
+//                        showLoading()
+//                        Handler(Looper.getMainLooper()).postDelayed({
+//                            hideLoading()
+//
+//
+//                            //平台审核，暂时写死
+//                            //登录Token，暂时写死
+//                            ShareUtil.putString(
+//                                APP_SHARED_PREFERENCES_LOGIN_TOKEN, "202308301696712724567953408"
+//                            )
+//                            ShareUtil.putBoolean(APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
+//                            goToHomeActivity()
+//
+//
+//                        }, 2000) // 延迟 2000 毫秒（即 2 秒）
+//
+//                    } else showToast("账号或密码不正确!")
 
                     //实际登录
-//                    getLogin(numText, pwdText)//
+                    getLogin(numText, pwdText)//
 
                 }
-
                 else -> showToast("账号或密码不能为空!")
             }
         } else showToast("请同意隐私政策!")

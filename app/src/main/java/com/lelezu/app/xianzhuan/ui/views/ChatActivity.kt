@@ -21,6 +21,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.ChatAdapter
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
 
 class ChatActivity : BaseActivity() {
     //vip头像等级框图片
@@ -199,15 +200,13 @@ class ChatActivity : BaseActivity() {
         if (it != null) {
             // 获取内容URI对应的文件路径
             val thread = Thread {
-                val imageData = Base64Utils.zipPic(it)
+                val imageData = Base64Utils.zipPic2(it,60)
                 if (imageData == null) {
                     // 如果 imageData 为 null，执行处理空值的操作
                     // 例如，显示一个提示消息或采取其他适当的操作
                     showToast("图片不支持，请重新选择！")
-                } else if (imageData.length > 1000 * 2000) {
-                    // 如果 imageData 不为 null 且其长度大于2MB（2 * 1000 * 2000字节），则执行以下操作：
-                    showToast("图片不能超过2MB，请重新选择！")
-                } else {
+                }  else {
+                    LogUtils.i("图片字节码长度:${imageData.length}")
                     // 否则，执行以下操作：
                     // 执行上传动作，传递参数 it
                     homeViewModel.apiUpload(it)

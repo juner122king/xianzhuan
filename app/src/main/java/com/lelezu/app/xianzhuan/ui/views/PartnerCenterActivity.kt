@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -39,6 +40,10 @@ class PartnerCenterActivity : BaseActivity() {
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        findViewById<View>(R.id.tv_info).setOnClickListener{//打开规则说明
+            //todo 打开规则说明H5页面
+        }
 
     }
 

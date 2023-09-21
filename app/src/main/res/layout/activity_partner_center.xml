@@ -15,12 +15,36 @@
         android:orientation="vertical"
         android:padding="18dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="本月业绩"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="本月业绩"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_info" />
+
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="规则说明"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/tv_num1"
@@ -44,7 +68,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="本月新增（人）"
-
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +120,6 @@
                 android:id="@+id/tv_lv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LV.1"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -129,9 +151,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dip_10"
             android:text="结算记录"
-            android:textStyle="bold"
             android:textColor="@color/black2"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <include layout="@layout/rv_layout" />

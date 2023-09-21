@@ -21,7 +21,9 @@ import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
 
@@ -49,7 +51,20 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     //验证图片选取回调处理
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
         if (it != null) {
-            homeViewModel.apiUpload(it)
+            // 获取内容URI对应的文件路径
+            val thread = Thread {
+                val imageData = Base64Utils.zipPic2(it,90)
+                if (imageData == null) {
+                    // 如果 imageData 为 null，执行处理空值的操作
+                    // 例如，显示一个提示消息或采取其他适当的操作
+                    showToast("图片不支持，请重新选择！")
+                }  else {
+                    // 否则，执行以下操作：
+                    // 执行上传动作，传递参数 it
+                    homeViewModel.apiUpload(it)
+                }
+            }
+            thread.start()
         }
     }
 
@@ -199,24 +214,24 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         homeViewModel.getTaskDetails(taskId, applyId)
     }
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        menu?.add(0, 1, 0, "保存")
-        menu?.add(0, 2, 1, "取消")
-
-        menu!!.getItem(0).setOnMenuItemClickListener {
-            showToast("保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}")
-            //进行保存图片操作
-            true
-        }
-
-        menu.getItem(1).setOnMenuItemClickListener {
-            ivDialog.dismiss()
-            true
-        }
-    }
+//    override fun onCreateContextMenu(
+//        menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?
+//    ) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//        menu?.add(0, 1, 0, "保存")
+//        menu?.add(0, 2, 1, "取消")
+//
+//        menu!!.getItem(0).setOnMenuItemClickListener {
+//            showToast("保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}")
+//            //进行保存图片操作
+//            true
+//        }
+//
+//        menu.getItem(1).setOnMenuItemClickListener {
+//            ivDialog.dismiss()
+//            true
+//        }
+//    }
 
 
     private fun changeView(task: Task) {

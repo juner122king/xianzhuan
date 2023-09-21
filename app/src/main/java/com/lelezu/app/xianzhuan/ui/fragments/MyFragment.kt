@@ -21,6 +21,7 @@ import com.lelezu.app.xianzhuan.ui.views.PermissionsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class MyFragment : BaseFragment(), View.OnClickListener {
@@ -70,13 +71,16 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         bulletinView = view.findViewById(R.id.bv)
         llNotice = view.findViewById(R.id.ll_notice)
 
-        val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
+
 
         loginViewModel.userInfo.observe(requireActivity()) {
+            val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
+
             view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
             view.findViewById<TextView>(R.id.tv_user_id).text = "UID:${it.userId}"
             view.findViewById<TextView>(R.id.tv_my_text2).text = it.balanceAmount.toString()
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.rechargeAmount.toString()
+            LogUtils.i("头像LINK:",it.headImageUrl)
             ImageViewUtil.loadCircleCrop(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
 
 
@@ -171,17 +175,17 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         }
 
 
-        loginViewModel.earning.observe(requireActivity()) {
-
-            if (it.subCount > 0) {
-                view.findViewById<View>(R.id.ll_l11).visibility = View.VISIBLE
-                view.findViewById<View>(R.id.line11).visibility = View.VISIBLE
-            } else {
-                view.findViewById<View>(R.id.ll_l11).visibility = View.GONE
-                view.findViewById<View>(R.id.line11).visibility = View.GONE
-            }
-
-        }
+//        loginViewModel.earning.observe(requireActivity()) {
+//
+//            if (it.subCount > 0) {
+//                view.findViewById<View>(R.id.ll_l11).visibility = View.VISIBLE
+//                view.findViewById<View>(R.id.line11).visibility = View.VISIBLE
+//            } else {
+//                view.findViewById<View>(R.id.ll_l11).visibility = View.GONE
+//                view.findViewById<View>(R.id.line11).visibility = View.GONE
+//            }
+//
+//        }
 
     }
 

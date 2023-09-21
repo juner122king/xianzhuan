@@ -282,7 +282,7 @@
                 android:orientation="horizontal"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/iv_log"
@@ -535,7 +535,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <ImageView
@@ -562,7 +562,7 @@
             <include
                 android:id="@+id/line11"
                 layout="@layout/item_line"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/ll_l3"

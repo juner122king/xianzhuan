@@ -180,17 +180,14 @@ class WebViewActivity : BaseActivity() {
     private val pickImageContract = registerForActivityResult(PickImageContract()) { result ->
         if (result != null) {
             val thread = Thread {
-                val imageData = Base64Utils.zipPic(result)
+                val imageData = Base64Utils.zipPic2(result, 90)//
                 if (imageData == null) {
                     // 如果 imageData 为 null，执行处理空值的操作
                     // 例如，显示一个提示消息或采取其他适当的操作
                     showToast("图片不支持，请重新选择！")
-                } else if (imageData.length > 1000 * 2000) {
-                    // 如果 imageData 不为 null 且其长度大于2MB（2 * 1000 * 2000字节），则执行以下操作：
-                    showToast("图片不能超过2MB，请重新选择！")
                 } else {
                     wv.post {
-                        Log.i("H5调原生:", "图片字节码长度:${imageData.length}")
+                        LogUtils.i("图片字节码长度:${imageData.length}")
                         wv.callHandler("showSelectedImage", imageData) {}
                     }
                 }
