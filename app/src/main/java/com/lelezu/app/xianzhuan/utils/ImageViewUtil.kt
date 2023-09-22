@@ -45,6 +45,7 @@ object ImageViewUtil {
                 crossfade(true)
                 //placeholder(R.drawable.placeholder) 设置占位图
                 transformations(CircleCropTransformation())//圆形切图
+                scale(Scale.FILL)
             }
         }
     }

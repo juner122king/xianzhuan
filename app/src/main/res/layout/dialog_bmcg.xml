@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/radius_border_dialog"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="报名成功"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:padding="15dp"
+        android:text="请在6小时内完成任务,提交验收信息,以免超时导致无法提交"
+        android:textColor="@color/black2"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000">
+
+
+        <Button
+            android:id="@+id/btnAgree"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radius_end_border"
+            android:gravity="center"
+            android:onClick="onButtonClick"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
+            android:text="立即开始"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

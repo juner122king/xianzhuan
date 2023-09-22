@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.view.ContextMenu
 import android.view.View
@@ -26,9 +29,20 @@ import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
+    private val statusMap = mapOf(
+        1 to "每日1次",
+        2 to "每人1次",
+        3 to "每人3次",
+        // 可以继续添加其他映射关系
+    )
+
+
+    private lateinit var countDownTimer: CountDownTimer //提交时间倒计时
 
     //vip头像等级框图片
     private var pic = mapOf(
@@ -47,18 +61,21 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private var isMyTask: Boolean = false
 
     private lateinit var dialog: AlertDialog//协议弹窗
+    private lateinit var dialog2: AlertDialog//报名成功弹窗
+
+    private lateinit var comdown: TextView//任务提交倒计时
 
     //验证图片选取回调处理
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
         if (it != null) {
             // 获取内容URI对应的文件路径
             val thread = Thread {
-                val imageData = Base64Utils.zipPic2(it,90)
+                val imageData = Base64Utils.zipPic2(it, 90)
                 if (imageData == null) {
                     // 如果 imageData 为 null，执行处理空值的操作
                     // 例如，显示一个提示消息或采取其他适当的操作
                     showToast("图片不支持，请重新选择！")
-                }  else {
+                } else {
                     // 否则，执行以下操作：
                     // 执行上传动作，传递参数 it
                     homeViewModel.apiUpload(it)
@@ -104,6 +121,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //获取上个页面返回的TaskId再请求一次
         taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
         isMyTask = intent.getBooleanExtra(TAGMYTASK, false)//是否为我的任务详情，默认不是
+
+
+        comdown = findViewById(R.id.tv_comdown)
     }
 
     private fun initObserve() {
@@ -121,11 +141,13 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //报名监听
         homeViewModel.isApply.observe(this) {
             hideLoading()
-            showToast(if (it) "报名成功" else "报名失败")
+
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
                 taskDetails(task.taskId, task.applyLogId)
-            }
+
+                showBmDialog("${task.deadlineTime}小时")//弹窗显示
+            } else showToast("报名失败")
         }
 
         //任务提交监听
@@ -160,7 +182,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         val text2 =
             "<font color='#999999'>剩余</font><font color='#FF5431'>${task.rest}</font><font color='#999999'>单</font>"
 
-        val string = "${task.earnedCount}人已完成任务，任务可报名${task.limitTimes}次"
+        val string = "${task.earnedCount}人已完成任务，${statusMap[task.limitTimes]}"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             findViewById<TextView>(R.id.tv_time).text =
@@ -197,7 +219,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<TextView>(R.id.tv_name).text = it!!.nickname
         }
 
-       // 支持设备 ["0"]-安卓, ["1"]-苹果, []-全部
+        // 支持设备 ["0"]-安卓, ["1"]-苹果, []-全部
         if (task.supportDevices.size == 1) {
             when (task.supportDevices[0]) {
                 "0" -> findViewById<View>(R.id.iv_and).visibility = View.VISIBLE
@@ -208,31 +230,64 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<View>(R.id.iv_ios).visibility = View.VISIBLE
         }
 
+
+        if (task.operateTime != null) {
+
+            // 开始定时任务
+            startCountdown()
+            comdown.visibility = View.VISIBLE
+        } else comdown.visibility = View.GONE
     }
 
     private fun taskDetails(taskId: String, applyId: String? = null) {
         homeViewModel.getTaskDetails(taskId, applyId)
     }
 
-//    override fun onCreateContextMenu(
-//        menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?
-//    ) {
-//        super.onCreateContextMenu(menu, v, menuInfo)
-//        menu?.add(0, 1, 0, "保存")
-//        menu?.add(0, 2, 1, "取消")
-//
-//        menu!!.getItem(0).setOnMenuItemClickListener {
-//            showToast("保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}")
-//            //进行保存图片操作
-//            true
-//        }
-//
-//        menu.getItem(1).setOnMenuItemClickListener {
-//            ivDialog.dismiss()
-//            true
-//        }
-//    }
+    private fun startCountdown() {
+        // 设置目标日期时间
+        val targetDateTime = task.operateTime
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val targetDate = dateFormat.parse(targetDateTime).time
 
+        // 计算倒计时时间差（毫秒）
+        val currentTime = System.currentTimeMillis()
+        val timeDifference = targetDate - currentTime
+        // 创建并启动倒计时
+        countDownTimer = object : CountDownTimer(timeDifference, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                //添加完成任务提交验收倒计时
+                comdown.text =
+                    "完成任务提交验收剩余：" + calculateRemainingTime(task.operateTime.toString())
+            }
+
+            override fun onFinish() {
+                comdown.visibility = View.GONE
+            }
+        }
+
+        countDownTimer.start()
+
+    }
+
+
+
+    //计算剩余时间
+    private fun calculateRemainingTime(targetDateTime: String): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val currentDate = Date()
+        val targetDate = dateFormat.parse(targetDateTime)
+
+        if (currentDate.before(targetDate)) {
+            val timeDifference = targetDate.time - currentDate.time
+            val hours = timeDifference / 3600000
+            val minutes = (timeDifference % 3600000) / 60000
+            val seconds = ((timeDifference % 3600000) % 60000) / 1000
+
+            return "${hours}小时${minutes}分${seconds}秒"
+        } else {
+            return "已过期"
+        }
+    }
 
     private fun changeView(task: Task) {
 
@@ -370,12 +425,40 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     }
 
+    // 显示报名成功弹窗
+
+    private fun showBmDialog(time: String) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_bmcg, null)
+
+        dialogView.findViewById<TextView>(R.id.tv_content).text =
+            "请在${time}内完成任务,提交验收信息,以免超时导致无法提交"
+
+
+        // 创建弹窗
+        val builder = AlertDialog.Builder(this, R.style.backDialog)
+        builder.setView(dialogView)
+        dialog2 = builder.create()
+
+        // 显示弹窗
+        dialog2.show()
+
+    }
+
 
     // 同意按钮点击事件
     fun onAgreeButtonClick(view: View) {
         // 在这里处理同意的逻辑
         // 关闭弹窗
+
         dialog.dismiss()
+
+    }
+
+    // 同意按钮点击事件
+    fun onButtonClick(view: View) {
+        // 在这里处理同意的逻辑
+        // 关闭弹窗
+        dialog2.dismiss()
 
     }
 
