@@ -7,27 +7,48 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Announce
+import com.lelezu.app.xianzhuan.data.model.ChatList
 import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
+import com.lelezu.app.xianzhuan.ui.views.ChatListActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
 import com.lelezu.app.xianzhuan.ui.views.MyMaterActivity
 import com.lelezu.app.xianzhuan.ui.views.MyTaskActivity
 import com.lelezu.app.xianzhuan.ui.views.PartnerCenterActivity
-import com.lelezu.app.xianzhuan.ui.views.PermissionsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.ui.views.ZJTaskHistoryActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class MyFragment : BaseFragment(), View.OnClickListener {
 
+
+    //vip等级图片
+    private var vippic = mapOf(
+        "V0" to R.drawable.icon_vip0,
+        "V1" to R.drawable.icon_vip1,
+        "V2" to R.drawable.icon_vip2,
+        "V3" to R.drawable.icon_vip3,
+        "V4" to R.drawable.icon_vip4,
+        "V5" to R.drawable.icon_vip4,
+        "V6" to R.drawable.icon_vip5,
+        "V7" to R.drawable.icon_vip6,
+        "V8" to R.drawable.icon_vip8,
+        "V9" to R.drawable.icon_vip9,
+    )
+
+
     private lateinit var bulletinView: BulletinView//公告栏View
     private lateinit var llNotice: View//公告栏区域
+    private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
+    private lateinit var vipLevel: ImageView//vip等级icon
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,12 +58,13 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        vipLevel = view.findViewById(R.id.iv_vip_level)
 
         view.findViewById<View>(R.id.iv_op).setOnClickListener(this)
         view.findViewById<View>(R.id.iv_message).setOnClickListener(this)
 
         view.findViewById<View>(R.id.ll_l1).setOnClickListener(this)
-        view.findViewById<View>(R.id.ll_l2).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l2).setOnClickListener(this)//收徒赚钱
         view.findViewById<View>(R.id.ll_l3).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l4).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l5).setOnClickListener(this)
@@ -52,12 +74,12 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.ll_l9).setOnClickListener(this)
 
         view.findViewById<View>(R.id.ll_l11).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l12).setOnClickListener(this)
+
+        view.findViewById<View>(R.id.customer).setOnClickListener(this)
+
+
         view.findViewById<View>(R.id.ll_my_task).setOnClickListener(this)
-        view.findViewById<View>(R.id.ll_my_task1).setOnClickListener(this)
-        view.findViewById<View>(R.id.iv_my_task1).setOnClickListener(this)
-        view.findViewById<View>(R.id.iv_my_task2).setOnClickListener(this)
-        view.findViewById<View>(R.id.iv_my_task3).setOnClickListener(this)
-        view.findViewById<View>(R.id.iv_my_task4).setOnClickListener(this)
         view.findViewById<View>(R.id.btm_vip).setOnClickListener(this)
 
         view.findViewById<View>(R.id.iv_log).setOnClickListener(this)
@@ -71,16 +93,25 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         bulletinView = view.findViewById(R.id.bv)
         llNotice = view.findViewById(R.id.ll_notice)
 
-
+        swiper = view.findViewById(R.id.swiper)
+        swiper.setColorSchemeResources(R.color.colorControlActivated)
+        swiper.setOnRefreshListener {
+            // 执行刷新操作
+            loadData()
+        }
+        val messageIv = view.findViewById<ImageView>(R.id.iv_message)
 
         loginViewModel.userInfo.observe(requireActivity()) {
+            // 停止刷新动画
+            swiper.isRefreshing = false
+
             val ivVipPic = view.findViewById<ImageView>(R.id.iv_user_vip)
 
             view.findViewById<TextView>(R.id.tv_user_name).text = it!!.nickname
             view.findViewById<TextView>(R.id.tv_user_id).text = "UID:${it.userId}"
             view.findViewById<TextView>(R.id.tv_my_text2).text = it.balanceAmount.toString()
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.rechargeAmount.toString()
-            LogUtils.i("头像LINK:",it.headImageUrl)
+            LogUtils.i("头像LINK:", it.headImageUrl)
             ImageViewUtil.loadCircleCrop(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
 
 
@@ -91,6 +122,11 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 copyText(id)
                 false
             }
+
+            //处理用户vip等级icon
+
+            vippic[it.level]?.let { it1 -> vipLevel.setImageResource(it1) }
+
 
 
             when (it.vipLevel) {
@@ -123,13 +159,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             val materID = it.recommendUserId
             //判断是否有师傅
             if ("0" == materID) {
-                view.findViewById<View>(R.id.iv_10).visibility = View.VISIBLE
-                view.findViewById<TextView>(R.id.masterId).text = "无"
                 view.findViewById<View>(R.id.ll_l10).setOnClickListener(this)
 
             } else {
-                view.findViewById<View>(R.id.iv_10).visibility = View.GONE
-                view.findViewById<TextView>(R.id.masterId).text = "ID:$materID"
 
                 view.findViewById<View>(R.id.ll_l10).setOnClickListener {
                     showToast("您师傅ID:$materID")
@@ -138,15 +170,18 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         }
 
         loginViewModel.related.observe(requireActivity()) {
+            // 停止刷新动画
+            swiper.isRefreshing = false
             view.findViewById<TextView>(R.id.tv_my_text3).text = it.apprenticeTribute.toString()
             view.findViewById<TextView>(R.id.tv_my_text5).text = it.rewardTaskCount.toString()
             view.findViewById<TextView>(R.id.tv_my_text1).text = it.taskEstimatedAmount.toString()
         }
 
-        val messageIv = view.findViewById<ImageView>(R.id.iv_message)
 
         //消息数量
         sysMessageViewModel.msgNum.observe(requireActivity()) {
+            // 停止刷新动画
+            swiper.isRefreshing = false
             if (it > 0) messageIv.setImageResource(R.drawable.icon_message)
             else messageIv.setImageResource(R.drawable.icon_message2)
         }
@@ -155,19 +190,20 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
         sysMessageViewModel.announce.observe(requireActivity()) {
             //处理公告滚动
-
+            // 停止刷新动画
+            swiper.isRefreshing = false
             if (it.isNotEmpty()) {
                 llNotice.visibility = View.VISIBLE
                 bulletinView.setAdapter(ComplexViewAdapter(it))
-//                bulletinView.setOnItemClickListener { itemData, _, _ ->
-//                    val intent = Intent(requireContext(), WebViewActivity::class.java)
-//                    intent.putExtra(
-//                        WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
-//                    )
-//                    intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
-//                    intent.putExtra(WebViewSettings.isProcessing, false)
-//                    startActivity(intent)
-//                }
+                bulletinView.setOnItemClickListener { itemData, _, _ ->
+                    val intent = Intent(requireContext(), WebViewActivity::class.java)
+                    intent.putExtra(
+                        WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
+                    )
+                    intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
+                    intent.putExtra(WebViewSettings.isProcessing, false)
+                    startActivity(intent)
+                }
             } else {
                 llNotice.visibility = View.GONE
             }
@@ -191,6 +227,11 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        loadData()
+    }
+
+
+    private fun loadData() {
         //获取系统消息数量
         sysMessageViewModel.getSysMessageNum()
         //执行获取用户信息接口
@@ -205,7 +246,6 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         loginViewModel.apiEarnings()//获取收徒功能页面数据
     }
 
-
     companion object {
 
         @JvmStatic
@@ -213,112 +253,104 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        //我的任务
-        if (p0?.tag == getString(R.string.tag_my_task)) {
-            val intent = Intent(requireContext(), MyTaskActivity::class.java)
-            when (p0.id) {
-                R.id.iv_my_task1, R.id.ll_my_task1 -> {
-                    intent.putExtra("selectedTab", 1)
-                }
 
-                R.id.iv_my_task2 -> {
-                    intent.putExtra("selectedTab", 2)
-                }
+        when (p0?.id) {
 
-                R.id.iv_my_task3 -> {
-                    intent.putExtra("selectedTab", 3)
-                }
-
-                R.id.iv_my_task4 -> {
-                    intent.putExtra("selectedTab", 4)
-                }
+            R.id.ll_my_task -> {
+                startActivity(Intent(activity, MyTaskActivity::class.java))
             }
-            startActivity(intent)//我的任务
+
+            R.id.ll_l9 -> {
+                startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
+            }
+
+            R.id.ll_l10 -> {
+                startActivity(Intent(activity, MyMaterActivity::class.java))//我的师傅
+            }
+
+            R.id.ll_l11 -> {
+                startActivity(Intent(activity, PartnerCenterActivity::class.java))//合伙人后台
+            }
+
+            R.id.ll_l12 -> {
+
+                startActivity(Intent(activity, ChatListActivity::class.java))//雇主列表
+            }
+
+            R.id.iv_message -> {
+                startActivity(Intent(activity, MessageActivity::class.java))//消息
 
 
-        } else {
-            when (p0?.id) {
-                R.id.ll_l9 -> {
-                    startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
-                }
+            }
 
-                R.id.ll_l10 -> {
-                    startActivity(Intent(activity, MyMaterActivity::class.java))//我的师傅
-                }
+            R.id.customer -> {
+                WxLogin.customer(requireActivity().application)
+            }
 
-                R.id.ll_l11 -> {
-                    startActivity(Intent(activity, PartnerCenterActivity::class.java))//合伙人后台
-                }
-
-                R.id.iv_message -> {
-                    startActivity(Intent(activity, MessageActivity::class.java))//消息
-//                    startActivity(Intent(activity, PermissionsActivity::class.java))//消息
-                }
-
-                R.id.iv_log -> {
-                    startActivity(Intent(activity, ZJTaskHistoryActivity::class.java))//任务墙领奖记录
-                }
+            R.id.iv_log -> {
+                startActivity(Intent(activity, ZJTaskHistoryActivity::class.java))//任务墙领奖记录
+            }
 
 
-                else -> {
-                    val intent = Intent(requireContext(), WebViewActivity::class.java)
-                    when (p0?.id) {
+            else -> {
+                val intent = Intent(requireContext(), WebViewActivity::class.java)
+                when (p0?.id) {
 
 
-                        R.id.ll_l1 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "选择任务分类")
-                        }
-
-                        R.id.ll_l2 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link4)
-                            intent.putExtra(WebViewSettings.URL_TITLE, getString(R.string.btm_zq))
-                        }
-
-                        R.id.ll_l3 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link6)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "我的店铺")
-                        }
-
-                        R.id.ll_l4, R.id.tv_my_text4 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link8)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "充值")
-                        }
-
-                        R.id.ll_l5, R.id.tv_my_text2, R.id.iv_cash -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link9)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "提现")
-                        }
-
-                        R.id.ll_l6 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link7)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "流水报表")
-                        }
-
-                        R.id.ll_l7 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link10)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "举报维权")
-                        }
-
-                        R.id.ll_l8 -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link11)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "客服与反馈")
-                        }
-
-                        R.id.iv_op -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link12)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "设置个人资料")
-                        }
-
-                        R.id.btm_vip -> {
-                            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link13)
-                            intent.putExtra(WebViewSettings.URL_TITLE, "开通会员")
-                        }
+                    R.id.ll_l1 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "选择任务分类")
                     }
-                    startActivity(intent)
+
+                    R.id.ll_l2 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link4)
+                        intent.putExtra(WebViewSettings.URL_TITLE, getString(R.string.btm_zq))
+                    }
+
+                    R.id.ll_l3 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link6)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "我的店铺")
+                    }
+
+                    R.id.ll_l4, R.id.tv_my_text4 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link8)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "充值")
+                    }
+
+                    R.id.ll_l5, R.id.tv_my_text2, R.id.iv_cash -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link9)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "提现")
+                    }
+
+                    R.id.ll_l6 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link7)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "流水报表")
+                    }
+
+                    R.id.ll_l7 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link10)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "举报维权")
+                    }
+
+                    R.id.ll_l8 -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link11)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "客服与反馈")
+                    }
+
+                    R.id.iv_op -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link12)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "设置个人资料")
+                    }
+
+                    R.id.btm_vip -> {
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link13)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "开通会员")
+                    }
                 }
+                startActivity(intent)
             }
         }
+
     }
 
 }

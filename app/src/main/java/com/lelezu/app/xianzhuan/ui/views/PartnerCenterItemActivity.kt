@@ -9,6 +9,12 @@ import com.lelezu.app.xianzhuan.data.model.Partner
 
 private const val ARG_PARAM = "Partner"
 
+/**
+ *  合伙人业绩-结算明细
+ * @property statusMap Map<Int, String>
+ * @property colorMap Map<Int, Int>
+ * @property partnerItem Partner
+ */
 class PartnerCenterItemActivity : BaseActivity() {
     private val statusMap = mapOf(
         0 to "待结算",

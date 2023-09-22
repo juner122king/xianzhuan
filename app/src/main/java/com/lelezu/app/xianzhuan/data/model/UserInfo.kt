@@ -19,6 +19,9 @@ package com.lelezu.app.xianzhuan.data.model
  * @property createdDt String 注册时间
  * @property balanceAmount Float 	可用金额
  * @property recommendUserId String  师傅ID
+ * @property level String  用户等级
+ * @property taskAward String 累计任
+ * @property hasRewardNewerAward Boolean 是否领取了新人奖励
  * @constructor
  */
 data class UserInfo(
@@ -32,8 +35,11 @@ data class UserInfo(
     val lastLoginDt: String,
     val headImageUrl: String,
     val createdDt: String,
+    val level: String,
+    val taskAward: String,
     val recommendUserId: String?,
-    val balanceAmount: Float
+    val balanceAmount: Float,
+    val hasRewardNewerAward: Boolean
 
 
 )

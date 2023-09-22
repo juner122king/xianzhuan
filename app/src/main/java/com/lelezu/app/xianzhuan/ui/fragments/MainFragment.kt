@@ -22,6 +22,7 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
@@ -73,9 +74,12 @@ class MainFragment : BaseFragment(), OnClickListener {
         view.findViewById<View>(R.id.ll_top_btm1).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm2).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
+//        view.findViewById<View>(R.id.iv_banner_item1).setOnClickListener(this)
+        view.findViewById<View>(R.id.iv_banner_item2).setOnClickListener(this)
         //Banner图初始化
         val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
-//        viewFlipper.startFlipping()
+        viewFlipper.startFlipping()
+
 
         initTaskTabLayout()//初始化TabLayout
 
@@ -108,6 +112,11 @@ class MainFragment : BaseFragment(), OnClickListener {
                 intent.putExtra(LINK_KEY, link3)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_zq))
             }
+
+            R.id.iv_banner_item2 -> {
+                intent.putExtra(LINK_KEY, link102)
+                intent.putExtra(URL_TITLE, "规则说明")
+            }
         }
         startActivity(intent)
 
@@ -127,7 +136,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                 override fun onGranted(permissions: MutableList<String>, all: Boolean) {
 
                     if (all) onInitZjTask()
-                    else{
+                    else {
                         showToast("您授权的权限不全，热门任务和游戏试玩将不能加载！")
                     }
                 }
@@ -154,7 +163,8 @@ class MainFragment : BaseFragment(), OnClickListener {
                 }
 
                 override fun onZjAdError(zjAdError: ZjAdError) {
-                    showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+//                    showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+                    showToast("游戏任务列表数据加载缓慢")
                 }
             })
     }

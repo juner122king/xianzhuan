@@ -40,7 +40,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
         super.onCreate(savedInstanceState)
 
         cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
-        findViewById<TextView>(R.id.bto_phome_login).setOnClickListener(this)//‘使用手机登录’按钮
+        findViewById<View>(R.id.bto_phome_login).setOnClickListener(this)//‘使用手机登录’按钮
         findViewById<ImageView>(R.id.bto_wx_login).setOnClickListener(this)//微信登录按钮
         findViewById<TextView>(R.id.tv_agreement).setOnClickListener(this) //打开用户使用协议
         findViewById<TextView>(R.id.tv_agreement2).setOnClickListener(this) //打开《隐私政策》

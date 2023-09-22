@@ -15,7 +15,7 @@ data class TaskQuery(
     var current: Int = 1,
     val highPrice: Float? = null,
     val lowPrice: Float? = null,
-    val size: Int? = 100,//默认100条
+    val size: Int? = 1000,//默认100条
     val taskStatus: Int? = null,
     var taskTypeId: String? = null,
     val taskTitle: String? = null

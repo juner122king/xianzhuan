@@ -46,6 +46,23 @@ class MessageActivity : BaseActivity() {
             sysMessageViewModel.getMessageList()
         }
 
+        sysMessageViewModel.isLogout.observe(this) {
+
+
+            if (it) {//确认注销成功 退出到登录页面
+                showToast("注销成功！")
+                cancelOut()
+
+            } else {//取消注销成功
+
+                showToast("取消注销成功！")
+                swiper.isRefreshing = true
+                sysMessageViewModel.getMessageList()
+
+            }
+        }
+
+
     }
 
     override fun getLayoutId(): Int {

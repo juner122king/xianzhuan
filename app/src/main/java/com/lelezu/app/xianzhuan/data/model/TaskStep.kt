@@ -15,6 +15,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property stepType Int? 	步骤类型 （1-图文，2-网址，3-小程序关联ID，4-小程序搜索场景值，5-搜索应用示例图）
  * @property hasComplete Boolean	是否已关注小程序
  * @property userName String	小程序原始id
+ * @property searchAppName String	小程序名字
  * @constructor
  */
 data class TaskStep(
@@ -25,4 +26,5 @@ data class TaskStep(
     val stepType: Int?,
     val hasComplete: Boolean,
     val userName: String,
+    val searchAppName: String,
 )

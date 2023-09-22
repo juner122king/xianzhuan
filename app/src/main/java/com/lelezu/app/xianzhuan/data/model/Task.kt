@@ -35,6 +35,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property shareAmount Float  分享赚
  * @property updatedDt String?  	更新时间
  * @property userId String?  	发布者ID
+ * @property taskType String?  	任务分类（1：APP端注册用户发布的任务，2：官方任务(小程序任务)）
  * @constructor
  */
 
@@ -65,6 +66,6 @@ data class Task(
     val unitPrice: Float,
     val shareAmount: Float,
     val updatedDt: String?,
+    val taskType: String?,
     val userId: String
-
 )

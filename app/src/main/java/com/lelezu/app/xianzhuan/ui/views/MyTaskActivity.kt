@@ -82,7 +82,7 @@ class MyTaskActivity : BaseActivity() {
 
         private fun getTaskQuery(status: Int?): TaskQuery {
             return TaskQuery(
-                null, 1, null, null, null, status, null
+                null, 1, null, null, 999, status, null
             )
         }
     }

@@ -8,7 +8,8 @@ package com.lelezu.app.xianzhuan.data.model
  */
 data class ConfValue(
 
-    val pics: List<String>
-
+    val pics: List<String>,
+    val isEnabled: Boolean,
+    val type: Int
 
 )

@@ -35,41 +35,27 @@
             android:textColor="@color/colorControlActivated" />
 
     </LinearLayout>
+
     <View
         android:id="@+id/line"
-        android:background="@color/line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:background="@color/line"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/ll_top_view" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/iv_main_src"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:background="@drawable/radius_border_bg_f0f0f0"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_top_view">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_shang" />
-
-        <TextView
-            android:id="@+id/tv_shang_ji"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="@color/colorControlActivated"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+        <include layout="@layout/layout_task_pic" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_task_title"
@@ -98,15 +84,15 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginEnd="5dp"
-            android:visibility="visible"
-            android:src="@drawable/icon_task_item1" />
+            android:src="@drawable/icon_task_item1"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/tv_task_earnedCount"
             android:layout_width="wrap_content"
-            android:visibility="visible"
             android:layout_height="wrap_content"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/tv_task_rest_icon"
@@ -158,13 +144,13 @@
         android:id="@+id/tv_taskLabel2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:background="@drawable/radius_border_stroke"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:textColor="@color/text_999"
         android:textSize="12sp"
         android:visibility="gone"
-        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/tv_taskLabel"
         app:layout_constraintTop_toTopOf="@+id/tv_taskLabel" />
 </androidx.constraintlayout.widget.ConstraintLayout>

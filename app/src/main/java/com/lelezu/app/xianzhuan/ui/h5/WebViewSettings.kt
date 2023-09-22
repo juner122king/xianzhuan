@@ -19,11 +19,12 @@ object WebViewSettings {
     var LINK_KEY = "URL_LINK"
     var URL_TITLE = "URL_TITLE"
 
-    var isProcessing = "isProcessing·"
+    var isProcessing = "isProcessing"
     private var host = "$HOST/statics/dxz/h5/pages"
 
     var link100 = "$host/agreement/user"//《用户使用协议》
     var link101 = "$host/agreement/privacy"//《隐私政策》
+    var link102 = "$host/apprentice/apprenticeRule/index"//合伙人规则页面
 
     var link14 = "$host/agreement/order" //接单规则
 
@@ -42,6 +43,8 @@ object WebViewSettings {
     var link11 = "$host/feedback/index" //客服与反馈
     var link12 = "$host/personalData/index" //设置个人资料
     var link13 = "$host/member/index" //开通会员
+
+    var link16 = "$host/followGzhOrWechat/index" //新人奖励页面
 
     var link15 = "https://beian.miit.gov.cn/" //公安备案网站
 

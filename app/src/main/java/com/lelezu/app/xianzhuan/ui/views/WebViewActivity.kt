@@ -2,16 +2,19 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.content.Intent
 import android.net.Uri
+import android.net.http.SslError
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.view.View
+import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.github.lzyzsd.jsbridge.CallBackFunction
-import com.google.gson.Gson
+import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
@@ -20,6 +23,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link13
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link16
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link5
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link8
 import com.lelezu.app.xianzhuan.utils.Base64Utils
@@ -30,10 +34,17 @@ import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 class WebViewActivity : BaseActivity() {
     private lateinit var link: String
     private lateinit var wv: BridgeWebView
+    private lateinit var err_view: View
+    private lateinit var iv_but_re: View //刷新按钮
+
+    private var isWebViewloadError = false //记录webView是否已经加载出错
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         wv = findViewById(R.id.webView)
+        err_view = findViewById(R.id.err_view)
+        iv_but_re = findViewById(R.id.iv_but_re)
+
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
 
@@ -58,15 +69,24 @@ class WebViewActivity : BaseActivity() {
     private fun setWebViewTitle() {
         wv.webChromeClient = object : WebChromeClient() {
             override fun onReceivedTitle(view: WebView, title: String) {
-//                super.onReceivedTitle(view, title)
                 LogUtils.i("WebView", view.url!!)
-
                 if (!view.url!!.contains(title)) {
                     setTitleText(title)
                 }
-//                LogUtils.i("WebView", title)
             }
 
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+                if (newProgress == 100) {
+                    LogUtils.i("WebView", "加载100%")
+                    //加载100%
+                    if (!isWebViewloadError && View.VISIBLE == err_view.visibility) {
+                        err_view.visibility = View.GONE//隐藏失败页面
+                        showWebView()
+                    }
+                }
+
+            }
 
         }
     }
@@ -78,14 +98,19 @@ class WebViewActivity : BaseActivity() {
 
     private fun setupWebView() {
         wv.loadUrl(link)
-        registerJavaScriptHandlers()
+
         setupWebViewClient()
+        registerJavaScriptHandlers()
+
     }
 
     private fun registerJavaScriptHandlers() {
         wv.registerHandler("chooseImage") { _, _ -> openPhoto() }
         wv.registerHandler("backToHome") { fragmentPosition, _ -> backToHome(fragmentPosition) }
+
+
         wv.registerHandler("gotoTaskDetails") { taskId, _ -> gotoTaskDetails(taskId) }
+
         wv.registerHandler("logOut") { _, _ -> logOut() }
         wv.registerHandler("gotoPermissionSettings") { _, _ -> gotoPermissionSettings() }
 
@@ -96,25 +121,74 @@ class WebViewActivity : BaseActivity() {
         //发布任务页面需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法，然后不论是否都跑原生方法 backOrFinish()
         wv.registerHandler("goBack") { _, _ -> backOrFinish() }
 
+        //打开公告
+        wv.registerHandler("goAnnouncement") { _, _ -> backOrFinish() }
+
     }
 
 
     private fun setupWebViewClient() {
-        if (link == link8 || link == link13) {
-            wv.webViewClient = object : WebViewClient() {
-                @Deprecated("Deprecated in Java", ReplaceWith("false"))
-                override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                    LogUtils.i("webview", url)
+
+        wv.webViewClient = object : BridgeWebViewClient(wv) {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                super.shouldOverrideUrlLoading(view, url)
+                LogUtils.i("webview", url)
+                //支付页面需要处理支付宝调转判断
+                if (link == link8 || link == link13) {
                     handleAlipayScheme(url)
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true
                     }
                     showView()
                     view.loadUrl(url)
-                    return true
                 }
+                return false
             }
+
+            override fun onReceivedError(
+                view: WebView?, errorCode: Int, description: String?, failingUrl: String?
+            ) {
+                super.onReceivedError(view, errorCode, description, failingUrl)
+                showERRView()
+            }
+
+            override fun onReceivedSslError(
+                view: WebView?, handler: SslErrorHandler?, error: SslError?
+            ) {
+//                super.onReceivedSslError(view, handler, error)
+
+                handler!!.proceed()
+
+                showERRView()
+            }
+
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                super.onPageFinished(view, url)
+//                //页面加载成功
+//                LogUtils.i("webview", "页面加载成功url:$url")
+//                showWebView()
+//            }
+
         }
+
+    }
+
+    fun showERRView() {
+        LogUtils.i("webview", "网页加载失败！")
+        showToast("网页加载失败！请检查网络！")
+        isWebViewloadError = true
+        err_view.visibility = View.VISIBLE
+        wv.visibility = View.GONE
+
+        iv_but_re.setOnClickListener {
+
+            Handler().postDelayed(Runnable { wv.reload() }, 500)
+        }
+    }
+
+    private fun showWebView() {
+        err_view.visibility = View.GONE
+        wv.visibility = View.VISIBLE
 
     }
 
@@ -155,7 +229,7 @@ class WebViewActivity : BaseActivity() {
             else {//次级页面
                 //如果是发布任务的次级页面，则需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法 publishTask/index为发布编辑页面url
                 if (wv.url!!.contains("publishTask/index")) {
-                    showToast("返回拦截成功，已调用H5弹出窗口方法:showDraftModal")
+//                    showToast("返回拦截成功，已调用H5弹出窗口方法:showDraftModal")
                     wv.callHandler("showDraftModal", "Android", null)
                 } else {
                     wv.goBack()
@@ -180,7 +254,7 @@ class WebViewActivity : BaseActivity() {
     private val pickImageContract = registerForActivityResult(PickImageContract()) { result ->
         if (result != null) {
             val thread = Thread {
-                val imageData = Base64Utils.zipPic2(result, 90)//
+                val imageData = Base64Utils.zipPic2(result, 100)//
                 if (imageData == null) {
                     // 如果 imageData 为 null，执行处理空值的操作
                     // 例如，显示一个提示消息或采取其他适当的操作
@@ -214,4 +288,10 @@ class WebViewActivity : BaseActivity() {
         return true
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (link == link16) {
+            finish()
+        }
+    }
 }

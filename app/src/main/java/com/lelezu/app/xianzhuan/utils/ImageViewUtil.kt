@@ -36,7 +36,6 @@ object ImageViewUtil {
             crossfade(true)
             scale(Scale.FILL)
         }
-
     }
 
     fun loadCircleCrop(imageView: ImageView, any: Any?) {

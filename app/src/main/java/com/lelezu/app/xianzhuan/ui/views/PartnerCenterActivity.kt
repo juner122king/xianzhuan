@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.PartnerReItemAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 
 class PartnerCenterActivity : BaseActivity() {
 
@@ -41,8 +43,16 @@ class PartnerCenterActivity : BaseActivity() {
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        findViewById<View>(R.id.tv_info).setOnClickListener{//打开规则说明
-            //todo 打开规则说明H5页面
+        findViewById<View>(R.id.tv_info).setOnClickListener {//打开规则说明
+            //
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link102)
+            intent.putExtra(WebViewSettings.URL_TITLE, "规则说明")
+            startActivity(intent)
+        }
+        findViewById<View>(R.id.cl_but).setOnClickListener {//团队列表
+            val intent = Intent(this, PartnerTeamActivity::class.java)
+            startActivity(intent)
         }
 
     }

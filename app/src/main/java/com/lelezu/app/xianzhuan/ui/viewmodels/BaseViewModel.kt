@@ -31,21 +31,6 @@ open class BaseViewModel : ViewModel() {
 
     val emptyListMessage: MutableLiveData<Boolean> = MutableLiveData() //接口列表数据为空的错误信息
 
-    protected fun getFilePathFromUri(uri: Uri): String {
-        var filePath = ""
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor =
-            MyApplication.context.contentResolver?.query(uri, projection, null, null, null)
-        cursor?.let {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                filePath = it.getString(columnIndex)
-            }
-            cursor.close()
-        }
-        return filePath
-    }
-
     protected fun <T> handleApiResponse(r: ApiResponse<T>, liveData: MutableLiveData<T>) {
         when (r) {
             is ApiSuccessResponse -> {
@@ -62,7 +47,7 @@ open class BaseViewModel : ViewModel() {
 
             is ApiEmptyResponse -> {
                 // 处理空的响应
-                failedResponse(r, "data为null!")
+                failedResponse(r, "获取数据异常，请稍候再试。!")
             }
 
             is ApiErrorResponse -> {
@@ -95,7 +80,7 @@ open class BaseViewModel : ViewModel() {
             is ApiEmptyResponse -> {
 
                 // 处理空的响应
-                failedResponse(r, "data为null!")
+                failedResponse(r, "获取数据异常，请稍候再试!")
             }
 
             is ApiErrorResponse -> {
@@ -110,8 +95,11 @@ open class BaseViewModel : ViewModel() {
     private fun <T> failedResponse(r: ApiResponse<T>, mes: String?) {
 
 
-        if (isConnected()) errMessage.postValue(ErrResponse(r.code, mes))//有网络，正常报错
-        else errMessage.postValue(ErrResponse(null, "网络未连接"))//无网络，提示网络未连接
+        if (isConnected()) {
+
+            errMessage.postValue(ErrResponse(r.code, mes))//有网络，正常报错
+
+        } else errMessage.postValue(ErrResponse(null, "网络未连接"))//无网络，提示网络未连接
 
         if (r.data is LoginReP || r.isTokenLose) onLoginFailed()
     }

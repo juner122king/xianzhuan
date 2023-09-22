@@ -10,321 +10,316 @@
     android:paddingBottom="10dp"
     tools:context=".ui.views.TaskDetailsActivity">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
 
-        <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiper"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include
-                layout="@layout/layout_user_top_view"
-                android:visibility="visible" />
+           >
 
             <LinearLayout
-                android:id="@+id/ll_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/radius_border"
-                android:orientation="vertical"
-                android:padding="10dp"
-                android:visibility="visible">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/red"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_status_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/red"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-
-            </LinearLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/radius_border"
-                android:padding="10dp">
+                <include
+                    layout="@layout/layout_user_top_view"
+                    android:visibility="visible" />
 
                 <LinearLayout
-                    android:id="@+id/iv_main_src"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:background="@drawable/radius_border_bg_f0f0f0"
-                    android:gravity="center_horizontal"
+                    android:id="@+id/ll_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radius_border"
                     android:orientation="vertical"
                     android:padding="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_shang" />
+                    android:visibility="visible">
 
                     <TextView
-                        android:id="@+id/tv_shang_ji"
+                        android:id="@+id/tv_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/colorControlActivated"
+                        android:textColor="@color/red"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_status_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/red"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/radius_border"
+                    android:padding="10dp">
+
+                    <FrameLayout
+                        android:id="@+id/iv_main_src"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/radius_border_bg_f0f0f0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <include layout="@layout/layout_task_pic" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tv_task_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/iv_main_src"
+                        app:layout_constraintTop_toTopOf="@id/iv_main_src" />
+
+                    <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/text_s"
+                        android:textSize="13sp"
+                        app:layout_constraintStart_toStartOf="@id/tv_task_title"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_title" />
+
+                    <TextView
+                        android:id="@+id/tv_nub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/text_s"
+                        android:textSize="13sp"
+                        app:layout_constraintStart_toEndOf="@id/tv_time"
+                        app:layout_constraintTop_toTopOf="@id/tv_time" />
+
+                    <TextView
+                        android:id="@+id/tv_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/text_s"
+                        android:textSize="13sp"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="@id/tv_task_title"
+                        app:layout_constraintTop_toBottomOf="@id/tv_time" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/radius_border"
+                    android:padding="8dp">
+
+
+                    <TextView
+                        android:id="@+id/tv_task_des"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="任务说明"
+                        android:textColor="@color/black"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_t1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="支持设备"
+                        android:textColor="@color/black2"
+                        android:textSize="13sp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_task_des"
+                        app:layout_constraintEnd_toStartOf="@id/iv_and" />
+
+                    <ImageView
+
+                        android:id="@+id/iv_and"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/icon_android"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@id/iv_ios"
+                        app:layout_constraintTop_toTopOf="@id/tv_t1" />
+
+                    <ImageView
+                        android:id="@+id/iv_ios"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_ios"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_t1" />
+
+                    <TextView
+                        android:id="@+id/tv_task_des_c"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/black2"
+                        android:textSize="13sp"
+                        app:layout_constraintStart_toStartOf="@id/tv_task_des"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_des" />
+
+                    <View
+                        android:id="@+id/line"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/line"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_des_c" />
+
+                    <TextView
+                        android:id="@+id/tv_task_step_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="任务步骤"
+                        android:textColor="@color/black"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/line" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_task_step"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/radius_border"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_step_text" />
+
+                    <View
+                        android:id="@+id/line2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/line"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/rv_task_step" />
+
+
+                    <TextView
+                        android:id="@+id/tv_task_verify_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="完成任务验证"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_task_verify"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/radius_border"
+                        app:layout_constraintTop_toBottomOf="@id/tv_task_verify_text" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/tv_agreement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="我已经阅读并同意"
+                        android:textColor="@color/text_s"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="18px"
+                        android:paddingBottom="18px"
+                        android:text="@string/text_agreement3"
+                        android:textColor="@color/text_check"
+                        android:textSize="@dimen/font_small" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tv_agreement2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="请知晓"
+                        android:textColor="@color/text_s"
+                        android:textSize="@dimen/font_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="18px"
+                        android:text="@string/text_agreement4"
+                        android:textColor="@color/text_check"
+                        android:textSize="@dimen/font_small" />
 
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_task_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@id/iv_main_src"
-                    app:layout_constraintTop_toTopOf="@id/iv_main_src" />
-
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/text_s"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toStartOf="@id/tv_task_title"
-                    app:layout_constraintTop_toBottomOf="@id/tv_task_title" />
-
-                <TextView
-                    android:id="@+id/tv_nub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/text_s"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toEndOf="@id/tv_time"
-                    app:layout_constraintTop_toTopOf="@id/tv_time" />
-
-                <TextView
-                    android:id="@+id/tv_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/text_s"
-                    android:textSize="13sp"
-                    android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="@id/tv_task_title"
-                    app:layout_constraintTop_toBottomOf="@id/tv_time" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/radius_border"
-                android:padding="8dp">
-
-
-                <TextView
-                    android:id="@+id/tv_task_des"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="任务说明"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_t1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="支持设备"
-                    android:textColor="@color/black2"
-                    android:textSize="13sp"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_task_des"
-                    app:layout_constraintEnd_toStartOf="@id/iv_and" />
-
-                <ImageView
-
-                    android:id="@+id/iv_and"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:src="@drawable/icon_android"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toStartOf="@id/iv_ios"
-                    app:layout_constraintTop_toTopOf="@id/tv_t1" />
-
-                <ImageView
-                    android:id="@+id/iv_ios"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_ios"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_t1" />
-
-                <TextView
-                    android:id="@+id/tv_task_des_c"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/black2"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toStartOf="@id/tv_task_des"
-                    app:layout_constraintTop_toBottomOf="@id/tv_task_des" />
-
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/line"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_task_des_c" />
-
-                <TextView
-                    android:id="@+id/tv_task_step_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="任务步骤"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_task_step"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/radius_border"
-                    app:layout_constraintTop_toBottomOf="@id/tv_task_step_text" />
-
-                <View
-                    android:id="@+id/line2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/line"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rv_task_step" />
-
-
-                <TextView
-                    android:id="@+id/tv_task_verify_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="完成任务验证"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line2" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_task_verify"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/radius_border"
-                    app:layout_constraintTop_toBottomOf="@id/tv_task_verify_text" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <LinearLayout
-                android:id="@+id/tv_agreement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:text="我已经阅读并同意"
+                    android:paddingBottom="10dp"
+                    android:text="投资理财有风险，请勿与他人私下交易，谨防上当。"
                     android:textColor="@color/text_s"
                     android:textSize="@dimen/font_small" />
 
                 <TextView
+                    android:id="@+id/tv_comdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="18px"
-                    android:paddingBottom="18px"
-                    android:text="@string/text_agreement3"
-                    android:textColor="@color/text_check"
-                    android:textSize="@dimen/font_small" />
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/text_s"
+                    android:textSize="@dimen/font_medium" />
 
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/tv_agreement2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+        </androidx.core.widget.NestedScrollView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="请知晓"
-                    android:textColor="@color/text_s"
-                    android:textSize="@dimen/font_small" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="18px"
-                    android:text="@string/text_agreement4"
-                    android:textColor="@color/text_check"
-                    android:textSize="@dimen/font_small" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:text="投资理财有风险，请勿与他人私下交易，谨防上当。"
-                android:textColor="@color/text_s"
-                android:textSize="@dimen/font_small" />
-
-            <TextView
-                android:id="@+id/tv_comdown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:textColor="@color/text_s"
-                android:textSize="@dimen/font_small" />
-
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/ll_btm"

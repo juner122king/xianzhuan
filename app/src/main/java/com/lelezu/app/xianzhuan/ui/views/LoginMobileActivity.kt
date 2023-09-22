@@ -154,24 +154,6 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
         if (cbAgree.isChecked) {
             when {
                 pwdText.isNotEmpty() && numText.isNotEmpty() -> {
-//                    if (isValidCredentials(numText, pwdText)) {
-//                        showLoading()
-//                        Handler(Looper.getMainLooper()).postDelayed({
-//                            hideLoading()
-//
-//
-//                            //平台审核，暂时写死
-//                            //登录Token，暂时写死
-//                            ShareUtil.putString(
-//                                APP_SHARED_PREFERENCES_LOGIN_TOKEN, "202308301696712724567953408"
-//                            )
-//                            ShareUtil.putBoolean(APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
-//                            goToHomeActivity()
-//
-//
-//                        }, 2000) // 延迟 2000 毫秒（即 2 秒）
-//
-//                    } else showToast("账号或密码不正确!")
 
                     //实际登录
                     getLogin(numText, pwdText)//
@@ -190,12 +172,6 @@ class LoginMobileActivity : BaseActivity(), View.OnClickListener {
             goToHomeActivity()
         }
 
-    }
-
-    private fun isValidCredentials(username: String, password: String): Boolean {
-        // 在这里添加账号密码验证的逻辑
-        // 返回 true 表示验证通过，返回 false 表示验证失败
-        return username == "123" && password == "123"
     }
 
 

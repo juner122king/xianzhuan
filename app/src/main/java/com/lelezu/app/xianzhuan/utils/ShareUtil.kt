@@ -41,6 +41,7 @@ object ShareUtil {
     //用户登录
     const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
+    const val APP_hasRewardNewerAward: Boolean = false
     const val APP_SHARED_PREFERENCES_RECOMMEND_USERID: String = "recommendUserId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
 
@@ -129,15 +130,19 @@ object ShareUtil {
     //保存登录信息
     fun saveInfo(loginReP: LoginReP) {
 
-        //保存登录信息
+        //保存登录Token
         putString(
             APP_SHARED_PREFERENCES_LOGIN_TOKEN, loginReP.accessToken
-        ) //保存登录TOKEN
+        )
+        //保存登录id
         putString(APP_SHARED_PREFERENCES_LOGIN_ID, loginReP.userId) //保存用户id
 
+
+
+        //保存登录状态
         if (loginReP.isNewer) putBoolean(
             APP_SHARED_PREFERENCES_LOGIN_STATUS, false
-        ) //保存登录状态
+        )
         else putBoolean(APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
     }
 
@@ -203,8 +208,7 @@ object ShareUtil {
 //        )
 
         putString(
-            APP_DEVICE_ANDROIDID,
-            "222222"
+            APP_DEVICE_ANDROIDID, "222222"
         )
     }
 

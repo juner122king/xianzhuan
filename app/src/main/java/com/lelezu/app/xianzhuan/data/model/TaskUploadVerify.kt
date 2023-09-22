@@ -9,9 +9,8 @@ package com.lelezu.app.xianzhuan.data.model
 
 /**
  *
- * @property verifyType Int? 	验证类型（1-收集截图，2-收集信息）
+ * @property verifyType Int? 	验证类型（1-收集截图，2-收集信息,0-无需验证）
  * @property useCaseImage 例图
- * @property uploadImage 用户上传图片   负责显示
  * @property verifyDesc String? 验证说明
  * @property verifyId String?   验证项ID
  * @property uploadValue String?   	上传图片/收集信息，需根据verifyType区分  负责上传
@@ -22,6 +21,5 @@ data class TaskUploadVerify(
     val useCaseImage: String,
     val verifyDesc: String?,
     val verifyId: String?,
-    var uploadImage: String,
     var uploadValue: String?
 )

@@ -24,12 +24,14 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
  *
  */
 class ChatAdapter(
-    private var items: List<ChatMessage>, private var ivDialog: Dialog, private var context: BaseActivity
+    private var items: List<ChatMessage>,
+    private var ivDialog: Dialog,
+    private var context: BaseActivity
 ) : RecyclerView.Adapter<ChatAdapter.ItemViewHolder>() {
 
 
     fun updateData(newItems: List<ChatMessage>) {
-        val sortedMessages = newItems.sortedBy { it.createdDt }.reversed() //根据时间排序
+        val sortedMessages = newItems.sortedBy { it.createdDt }//根据时间排序
 
         items = sortedMessages  //任务步骤集合
         notifyDataSetChanged()
@@ -76,20 +78,28 @@ class ChatAdapter(
         }
 
 
+        when (item.type) {
 
-        if (item.isImage) {//是否图片内容
-            holder.text.visibility = View.GONE
-            holder.iv.visibility = View.VISIBLE
-            ImageViewUtil.loadWH(holder.iv, item.contactContent)
-            holder.iv.setOnClickListener {//图片全屏显示
-                ivDialog.setContentView(getImageView(item.contactContent))
-                ivDialog.show()
+            0 -> { //文本消息
+                holder.text.visibility = View.VISIBLE
+                holder.iv.visibility = View.GONE
+                holder.text.text = item.contactContent
             }
 
-        } else {
-            holder.text.visibility = View.VISIBLE
-            holder.iv.visibility = View.GONE
-            holder.text.text = item.contactContent
+            1 -> {//图片消息
+                holder.text.visibility = View.GONE
+                holder.iv.visibility = View.VISIBLE
+                ImageViewUtil.loadWH(holder.iv, item.contactContent)
+                holder.iv.setOnClickListener {//图片全屏显示
+                    ivDialog.setContentView(getImageView(item.contactContent))
+                    ivDialog.show()
+                }
+            }
+
+            2 -> {//任务消息
+
+            }
+
         }
 
     }

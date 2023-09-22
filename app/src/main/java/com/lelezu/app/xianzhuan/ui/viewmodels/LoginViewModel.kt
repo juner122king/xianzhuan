@@ -9,8 +9,10 @@ import cn.hutool.core.codec.Base64
 import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiConstants.MOBILE_PASSWORD
+import com.lelezu.app.xianzhuan.data.model.ChatList
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Earning
+import com.lelezu.app.xianzhuan.data.model.Follows
 import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
@@ -41,10 +43,16 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
 
     val related: MutableLiveData<Related> = MutableLiveData()
+    val follow: MutableLiveData<Follows> = MutableLiveData()
+    val isFollow: MutableLiveData<Boolean> = MutableLiveData()
+
+    val isLogOut: MutableLiveData<Boolean> = MutableLiveData()
 
     val chatMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
     val sendMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
     val loginConfig: MutableLiveData<LoginConfig> = MutableLiveData()
+
+    val chatList: MutableLiveData<List<ChatList>> = MutableLiveData()
 
 
     fun getLoginInfo(wxCode: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -95,14 +103,46 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     }
 
 
+
+
+
+    /**
+     *
+     * @param userId String 用户iD
+     * @return Job 获取关注与粉丝数
+     */
+    fun follows(userId:String) = viewModelScope.launch {
+        val rep = userRepository.apiFollows(userId)
+        handleApiResponse(rep, follow)
+    }
+  /**
+     *
+     * @param userId String 用户iD
+     * @return Job 获取关注与粉丝数
+     */
+    fun onFollows(userId:String) = viewModelScope.launch {
+        val rep = userRepository.onFollows(userId)
+        handleApiResponse(rep, isFollow)
+    }
+
+
     /**
      *
      * @param receiverUserId String 接收者（雇主）
      * @return 合并双方的发送消息
      */
     fun apiRecord(receiverUserId: String) = viewModelScope.launch {
-        val rep = userRepository.apiRecord(receiverUserId)//我发送的消息
+        val rep = userRepository.apiRecord(receiverUserId)
         chatMessage.postValue(rep)
+    }
+
+  /**
+     *
+     * @return 雇主列表
+     */
+    fun apiContactors() = viewModelScope.launch {
+        val rep = userRepository.apiContactors()
+      handleApiResponse(rep, chatList)
     }
 
 
@@ -111,10 +151,21 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
      * @param receiveId String 接收者（雇主）
      * @return 合并双方的发送消息
      */
-    fun apiSend(receiveId: String, content: String, isImage: Boolean) = viewModelScope.launch {
-        val rep = userRepository.sendRecord(receiveId, content, isImage)//我发送的消息
+    fun apiSend(receiveId: String, content: String, type: Int) = viewModelScope.launch {
+        val rep = userRepository.sendRecord(receiveId, content, type)//我发送的消息
 
         handleApiListResponse(rep, sendMessage)
+    }
+
+    /**
+     *
+     * @param receiveId String 接收者（雇主）
+     * @return 用户退出登录
+     */
+    fun logout() = viewModelScope.launch {
+        val rep = userRepository.logout()//
+
+        handleApiResponse(rep, isLogOut)
     }
 
 

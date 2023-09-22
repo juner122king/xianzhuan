@@ -2,9 +2,12 @@ package com.lelezu.app.xianzhuan.data
 
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.ChatList
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
+import com.lelezu.app.xianzhuan.data.model.Complete
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Earning
+import com.lelezu.app.xianzhuan.data.model.Follows
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
@@ -27,6 +30,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -58,7 +62,7 @@ interface ApiService {
     fun sendRecord(
         @Query("receiveId") receiveId: String,
         @Query("content") content: String,
-        @Query("isImage") isImage: Boolean = false,
+        @Query("type") type: Int = 0,
         @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<ChatMessage>>>
 
@@ -107,6 +111,15 @@ interface ApiService {
     fun shuffle(@Header("Authorization") token: String): Call<ApiResponse<MutableList<Task>>>
 
 
+    @GET("/dxz/app/task/mine/store/page")//获取雇主发布的任务
+    fun masterTask(
+        @Query("queryCond") queryCond: String,
+        @Query("taskStatus") taskStatus: String,
+        @Query("userId") userId: String,
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<ListData<Task>>>
+
+
     @GET("/dxz/app/sys/inform/page")//获取系统消息
     fun getSysMessageList(
         @Query("current") current: Int,
@@ -122,6 +135,14 @@ interface ApiService {
     @POST("/dxz/app/sys/inform/mark/read")//标记已读系统消息
     fun getMarkSysMessage(
         @Body msgIds: List<String>, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
+
+
+    @PUT("/dxz/app/user/account/cancel/confirm/{informId}/{status}")//用户确认-取消注销账户
+    fun markLogout(
+        @Path("informId") informId: String,
+        @Path("status") status: String,
+        @Header("Authorization") token: String
     ): Call<ApiResponse<Boolean>>
 
     @GET("/dxz/app/sys/config")//获取系统配置信息
@@ -143,6 +164,11 @@ interface ApiService {
         @Body taskSubmit: TaskSubmit, @Header("Authorization") token: String
     ): Call<ApiResponse<Boolean>>
 
+    @POST("/dxz/app/task/complete")//小程序任务完成校验
+    fun miniTaskComplete(
+        @Body applyLogId: Complete, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
+
 
     @GET("/dxz/app/sys/config/apk/update/detection")//新版本检测
     fun detection(
@@ -160,6 +186,25 @@ interface ApiService {
 
     @GET("/dxz/app/sys/config/SYSTEM/LOGIN_CONFIG")//登录页面控制
     fun loginConfig(): Call<ApiResponse<LoginConfig>>
+
+    @GET("/dxz/app/user/contact/record/contactors")//联系人列表
+    fun apiContactors(@Header("Authorization") token: String): Call<ApiResponse<List<ChatList>>>
+
+
+    @GET("/dxz/app/user/follows")//关注和粉丝数
+    fun follows(
+        @Query("userId") userId: String, @Header("Authorization") token: String
+    ): Call<ApiResponse<Follows>>
+
+    @POST("/dxz/app/user/follows")//关注-取关
+    fun onFollows(
+        @Query("userId") userId: String, @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
+
+    @POST("/dxz/app/user/logout")//退出登录
+    fun logout(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
 
 
     @POST("/dxz/app/user/recharge")//用户充值
@@ -182,5 +227,22 @@ interface ApiService {
     fun partnerBackList(
         @Header("Authorization") token: String
     ): Call<ApiResponse<ListData<Partner>>>
+
+    @GET("/dxz/app/partner/apprentice/list")// 合伙人团队
+    fun partnerTeamList(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<ListData<Partner>>>
+
+
+    @GET("/dxz/app/sys/config/SYSTEM/REGISTRY_CONCERN_CONFIG")// 关注企业微信配置信息
+    fun REGISTR_CONFIG(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Config>>
+
+
+    @GET("/dxz/app/sys/config/SYSTEM/AD")// 关注企业微信配置信息
+    fun apiADConfig(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Config>>
 
 }

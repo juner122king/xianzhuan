@@ -59,6 +59,15 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
             executeApiCall(call)
         }
 
+    //用户确认-取消注销账户
+    suspend fun markLogout(informId: String, status: String): ApiResponse<Boolean> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.markLogout(
+                informId, status, loginToken
+            )
+            executeApiCall(call)
+        }
+
 
     //获取用户未读信息数量
     suspend fun getSysMessageNum(): ApiResponse<Int> = withContext(Dispatchers.IO) {
@@ -69,12 +78,19 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     }
 
 
-    //获取系统配置信息
-    suspend fun apiConfig(confType: String, configKey: String): ApiResponse<Config> =
+    //获取企业微信配置信息
+    suspend fun apiRegistrConfig(): ApiResponse<Config> =
         withContext(Dispatchers.IO) {
-            val call = apiService.getConfig(
-                confType,
-                configKey,
+            val call = apiService.REGISTR_CONFIG(
+                loginToken
+            )
+            executeApiCall(call)
+        }
+
+    //获取广告配置信息
+    suspend fun apiADConfig(): ApiResponse<Config> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.apiADConfig(
                 loginToken
             )
             executeApiCall(call)
@@ -89,16 +105,12 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
      * @return ApiResponse<Config>
      */
     suspend fun recharge(
-        rechargeAmount: String,
-        type: Int,
-        quitUrlType: Int
-    ): ApiResponse<RechargeRes> =
-        withContext(Dispatchers.IO) {
-            val call = apiService.recharge(
-                Recharge(rechargeAmount, quitUrlType, type),
-                loginToken
-            )
-            executeApiCall(call)
-        }
+        rechargeAmount: String, type: Int, quitUrlType: Int
+    ): ApiResponse<RechargeRes> = withContext(Dispatchers.IO) {
+        val call = apiService.recharge(
+            Recharge(rechargeAmount, quitUrlType, type), loginToken
+        )
+        executeApiCall(call)
+    }
 
 }

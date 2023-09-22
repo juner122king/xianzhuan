@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -32,6 +33,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
+import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
@@ -58,29 +60,39 @@ import java.util.Properties
 @SuppressLint("CustomSplashScreen")
 class LaunchActivity : BaseActivity() {
     private lateinit var dialog: AlertDialog//协议弹
+    private lateinit var aDView: ImageView//协议弹
 
     private var LOGTAG: String = "SDK_INIT"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        aDView = findViewById(R.id.fl_ad_view)
+
+        sysMessageViewModel.apiADConfig()
 
 
-
-        if (isAgreePrivacy()) {//是否同意了隐私协议
-            preloadContent()//进行页面跳转
-        } else {
-            Handler(Looper.getMainLooper()).postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (isAgreePrivacy()) {//是否同意了隐私协议
+                showTaskView()//显示广告
+            } else {
                 //未同意，弹出隐私协议询问窗口
                 showAgreementDialog(
                     getString(R.string.text_agreement1), WebViewSettings.link101
                 )
-            }, 1000)//等1秒
-        }
+            }
+        }, 1000)
+
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finish()
             }
         })
+
+
+        //加载广告页面
+        sysMessageViewModel.adconfig.observe(this) {
+            ImageViewUtil.load(aDView, it.confValue.pics[0])
+        }
     }
 
 
@@ -97,7 +109,7 @@ class LaunchActivity : BaseActivity() {
             //判断是否已登录APP
             if (checkUserLoginStatus()) {
                 // 用户已登录， 跳转到主页登录页面
-                toHome()
+                goToHomeActivity()
             } else {
                 // 用户未登录，跳转到登录页面
                 toLogin()
@@ -118,6 +130,18 @@ class LaunchActivity : BaseActivity() {
         //TX审核 去掉
         ShareUtil.putAndroidID(this) //获取Android ID
 //
+
+    }
+
+
+    //显示广告页面{
+    private fun showTaskView() {
+
+        findViewById<View>(R.id.fl_launch_view).visibility = View.INVISIBLE
+        Handler(Looper.getMainLooper()).postDelayed({
+            preloadContent()//进行页面跳转
+        }, 500)//显示3秒广告
+
 
     }
 
@@ -182,14 +206,6 @@ class LaunchActivity : BaseActivity() {
         }
 
 
-    }
-
-    private fun toHome() {
-
-        // 用户已登录， 跳转到主页登录页面
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 
 
@@ -277,7 +293,6 @@ class LaunchActivity : BaseActivity() {
     override fun isShowBack(): Boolean {
         return false
     }
-
 
 
 }

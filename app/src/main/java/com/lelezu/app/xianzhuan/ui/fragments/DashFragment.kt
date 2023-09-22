@@ -105,11 +105,11 @@ class DashFragment : BaseFragment() {
                 )
 
                 1 -> TaskListFragment.newInstance(
-                    getTaskQuery(queryCondSIMPLE, 1f)
+                    getTaskQuery(queryCondSIMPLE, 10f)
                 )
 
                 2 -> TaskListFragment.newInstance(
-                    getTaskQuery(queryCondHIGHER, null, 1f)
+                    getTaskQuery(queryCondHIGHER, null, 10f)
                 )
 
                 else -> TaskListFragment.newInstance(

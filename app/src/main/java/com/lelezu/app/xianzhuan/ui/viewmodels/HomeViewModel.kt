@@ -35,12 +35,18 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     val isApply: MutableLiveData<Boolean> = MutableLiveData() //是否报名成功
     val isUp: MutableLiveData<Boolean> = MutableLiveData() //是否提交成功
 
+    val isCompleteMini: MutableLiveData<Boolean> = MutableLiveData() //是否成功校验小程序
+
     val isBind: MutableLiveData<Boolean> = MutableLiveData() //是否绑定师傅成功
 
     val upLink: MutableLiveData<String> = MutableLiveData() //图片上传成功的返回Link
 
     val partnerLiveData: MutableLiveData<Partner> = MutableLiveData() //合伙人后台
     val partnerListLiveData: MutableLiveData<MutableList<Partner>> = MutableLiveData() //合伙人后台结算记录
+
+    val teamLiveData: MutableLiveData<MutableList<Partner>> = MutableLiveData() //合伙人团队
+
+
 
 
     // 获取任务列表数据 简单查询条件
@@ -82,7 +88,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
 
     // 添加我的师傅
-    fun apiGetMater(userId:String) = viewModelScope.launch {
+    fun apiGetMater(userId: String) = viewModelScope.launch {
         val r = taskRepository.apiGetMater(userId)
         handleApiResponse(r, isBind)
     }
@@ -93,10 +99,22 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
         handleApiResponse(r, partnerLiveData)
     }
 
- // 合伙人后台结算记录
+    // 合伙人团队
+    fun apiPartnerTeam() = viewModelScope.launch {
+        val r = taskRepository.apiPartnerTeam()
+        handleApiListResponse(r, teamLiveData)
+    }
+
+    // 合伙人后台结算记录
     fun apiPartnerBackList() = viewModelScope.launch {
         val r = taskRepository.apiPartnerBackList()
         handleApiListResponse(r, partnerListLiveData)
+    }
+
+    // 合伙人后台结算记录
+    fun miniTaskComplete(applyLogId: String) = viewModelScope.launch {
+        val r = taskRepository.miniTaskComplete(applyLogId)
+        handleApiResponse(r, isCompleteMini)
     }
 
 
@@ -118,15 +136,19 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
                     errMessage.postValue(ErrResponse(null, "您未填写信息，请填写后提交"))
                 }
             }
-
-
         }
 
     // 上传图片接口
     fun apiUpload(uri: Uri) = viewModelScope.launch {
-        val r = taskRepository.apiUpload(getFilePathFromUri(uri))
+        val r = taskRepository.apiUpload(uri)
         handleApiResponse(r, upLink)
+    }
 
+
+    // 获取雇主发布的任务列表
+    fun getMasterTaskList(userId: String) = viewModelScope.launch {
+        val apiListResponse = taskRepository.apiMasterTask(userId)
+        handleApiListResponse(apiListResponse, taskList)
     }
 
     class ViewFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {

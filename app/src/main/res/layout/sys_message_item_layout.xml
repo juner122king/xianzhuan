@@ -85,6 +85,7 @@
                 android:background="@drawable/radius_border_button2"
                 android:paddingStart="@dimen/dip_25"
                 android:paddingTop="5dp"
+                android:layout_marginStart="@dimen/dip_15"
                 android:paddingEnd="@dimen/dip_25"
                 android:paddingBottom="5dp"
                 android:text="确认"

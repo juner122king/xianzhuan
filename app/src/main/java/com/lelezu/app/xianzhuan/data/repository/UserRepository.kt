@@ -4,8 +4,10 @@ package com.lelezu.app.xianzhuan.data.repository
 import android.util.Log
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.ChatList
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Earning
+import com.lelezu.app.xianzhuan.data.model.Follows
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
@@ -62,17 +64,41 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
         executeApiCall(call)
     }
 
+    //关注和粉丝数
+    suspend fun apiFollows(userid: String): ApiResponse<Follows> = withContext(Dispatchers.IO) {
+        val call = apiService.follows(userid, loginToken)
+        executeApiCall(call)
+    }
+
+    //用户退出登录
+    suspend fun logout(): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        val call = apiService.logout(loginToken)
+        executeApiCall(call)
+    }
+
+    //关注-取关
+    suspend fun onFollows(userid: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        val call = apiService.onFollows(userid, loginToken)
+        executeApiCall(call)
+    }
+
     //获取登录配置
     suspend fun loginConfig(): ApiResponse<LoginConfig> = withContext(Dispatchers.IO) {
         val call = apiService.loginConfig()
         executeApiCall(call)
     }
 
+    //获取联系人列表
+    suspend fun apiContactors(): ApiResponse<List<ChatList>> = withContext(Dispatchers.IO) {
+        val call = apiService.apiContactors(loginToken)
+        executeApiCall(call)
+    }
+
     //发送消息
     suspend fun sendRecord(
-        receiveId: String, content: String, isImage: Boolean
+        receiveId: String, content: String, type: Int
     ): ApiResponse<ListData<ChatMessage>> = withContext(Dispatchers.IO) {
-        val call = apiService.sendRecord(receiveId, content, isImage, loginToken)
+        val call = apiService.sendRecord(receiveId, content, type, loginToken)
         executeApiCall(call)
     }
 

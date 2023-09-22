@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -38,6 +39,8 @@ class ChatActivity : BaseActivity() {
     private lateinit var editText: EditText
     private lateinit var enterPic: ImageView
 
+    private lateinit var tv_sub: TextView //关注数
+    private lateinit var tv_fan: TextView //粉丝数
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,20 +55,23 @@ class ChatActivity : BaseActivity() {
 
     private fun initView() {
 
-
-
         findViewById<View>(R.id.tv_user_vip).visibility = View.GONE//隐藏vip等级
         editText = findViewById(R.id.et_s)
         ll = findViewById(R.id.ll)
         enterPic = findViewById(R.id.icon_pic)
         enter = findViewById(R.id.enter)
 
+
+        tv_sub = findViewById(R.id.tv_sub)
+        tv_fan = findViewById(R.id.tv_fan)
+
+
         recyclerView = findViewById(R.id.recyclerView)
-        adapter = ChatAdapter(emptyList(), ivDialog,this)
+        adapter = ChatAdapter(emptyList(), ivDialog, this)
         recyclerView.adapter = adapter
 
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
-        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         //关闭软键盘
         recyclerView.setOnTouchListener { v, _ ->
             close(v)
@@ -94,7 +100,7 @@ class ChatActivity : BaseActivity() {
 
             if (textContent.isNotEmpty()) {
                 showLoading()
-                loginViewModel.apiSend(userId, textContent, false)
+                loginViewModel.apiSend(userId, textContent, 0)
                 // 清空EditText内容
 
             }
@@ -112,6 +118,7 @@ class ChatActivity : BaseActivity() {
     private fun initObserve() {
         showLoading()
         loginViewModel.getUserInfo(userId)//获取商家信息
+
         loginViewModel.userInfo.observe(this) {
 
 
@@ -132,7 +139,7 @@ class ChatActivity : BaseActivity() {
         loginViewModel.chatMessage.observe(this) {
 
             adapter.updateData(it)
-
+            recyclerView.scrollToPosition(adapter.itemCount - 1)//此句为设置显示最底部
             hideLoading()
             close(recyclerView)
         }
@@ -148,9 +155,19 @@ class ChatActivity : BaseActivity() {
         homeViewModel.upLink.observe(this) { link ->
 //            showToast( "图片上传成功")
             hideLoading()
-            loginViewModel.apiSend(userId, link, true)
+            showLoading()
+            loginViewModel.apiSend(userId, link, 1)
         }
 
+        //获取关注和粉丝数
+        loginViewModel.follows(userId)
+        loginViewModel.follow.observe(this) {
+            hideLoading()
+
+            tv_fan.text = "${it.fanCnt}粉丝"
+            tv_sub.text = "${it.concernCnt}关注"
+
+        }
     }
 
 
@@ -200,17 +217,7 @@ class ChatActivity : BaseActivity() {
         if (it != null) {
             // 获取内容URI对应的文件路径
             val thread = Thread {
-                val imageData = Base64Utils.zipPic2(it,60)
-                if (imageData == null) {
-                    // 如果 imageData 为 null，执行处理空值的操作
-                    // 例如，显示一个提示消息或采取其他适当的操作
-                    showToast("图片不支持，请重新选择！")
-                }  else {
-                    LogUtils.i("图片字节码长度:${imageData.length}")
-                    // 否则，执行以下操作：
-                    // 执行上传动作，传递参数 it
-                    homeViewModel.apiUpload(it)
-                }
+                homeViewModel.apiUpload(it)
             }
             thread.start()
         }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.Announce
+import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Version
@@ -31,6 +32,9 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val liveData: MutableLiveData<MutableList<Message>> = MutableLiveData()
 
     val isMark: MutableLiveData<Boolean> = MutableLiveData()
+
+    val isLogout: MutableLiveData<Boolean> = MutableLiveData()//是否确认成功注销信息
+
     val msgNum: MutableLiveData<Int> = MutableLiveData()
 
     val version: MutableLiveData<Version> = MutableLiveData()
@@ -43,6 +47,9 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
 
 
     val rechargeResLiveData: MutableLiveData<RechargeRes> = MutableLiveData()//支付返回
+
+    val registrconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
+    val adconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
 
 
     //获取系统消息列表
@@ -76,10 +83,29 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     }
 
 
+    //确认注销信息
+    fun markLogout(informId: String, status: String) = viewModelScope.launch {
+        val call = sysInformRepository.markLogout(informId, status)
+        handleApiResponse(call, isLogout)
+    }
+
+
     //获取用户未读信息数量
     fun getSysMessageNum() = viewModelScope.launch {
         val call = sysInformRepository.getSysMessageNum()
         handleApiResponse(call, msgNum)
+
+    }
+    //获取用户未读信息数量
+    fun apiRegistrConfig() = viewModelScope.launch {
+        val call = sysInformRepository.apiRegistrConfig()
+        handleApiResponse(call, registrconfig)
+
+    }
+   //获取广告配置
+    fun apiADConfig() = viewModelScope.launch {
+        val call = sysInformRepository.apiADConfig()
+        handleApiResponse(call, adconfig)
 
     }
 

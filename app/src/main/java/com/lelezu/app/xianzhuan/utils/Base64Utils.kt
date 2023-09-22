@@ -7,6 +7,8 @@ import android.util.Base64
 import android.util.Log
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
 
 /**
  * @author:Administrator
@@ -17,15 +19,31 @@ import java.io.ByteArrayOutputStream
 object Base64Utils {
 
 
-    fun zipPic(uri: Uri, quality: Int): String? {
+    fun zipPic(uri: Uri, quality: Int): ByteArray? {
         return try {
             val bitmap = decodeUriToBitmap(uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap?.compress(Bitmap.CompressFormat.JPEG, quality, byteArrayOutputStream)
             bitmap?.recycle()
             val byteArray = byteArrayOutputStream.toByteArray()
-            Log.i("H5调原生:", "byteArray长度:${byteArray.size}")
-            Base64.encodeToString(byteArray, Base64.NO_WRAP)
+            Log.i("zipPic:", "处理前的长度:${byteArray.size},质量:${quality}%")
+
+            // 如果大于500kb，就压缩压缩50%
+            if (byteArray.size > 1024 * 500) {
+                val compressedByteArray = compressTo2MB(byteArray, quality)
+                if (compressedByteArray != null) {
+                    Log.i("zipPic:", "大于500kb压缩50%后的长度:${compressedByteArray.size}")
+
+                    compressedByteArray
+                } else {
+                    null
+                }
+            } else {
+                // 否则，不进行压缩
+                Log.i("zipPic:", "小500kb,不进行压缩的长度:${byteArray.size}")
+
+                byteArray
+            }
         } catch (e: Exception) {
             null
         }
@@ -42,7 +60,7 @@ object Base64Utils {
         }
     }
 
-    fun zipPic2(uri: Uri, quality: Int): String? {
+    fun zipPic2(uri: Uri, quality: Int = 100): String? {
         return try {
             val bitmap = decodeUriToBitmap(uri)
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -51,19 +69,19 @@ object Base64Utils {
             val byteArray = byteArrayOutputStream.toByteArray()
             Log.i("zipPic:", "处理前的长度:${byteArray.size},质量:${quality}%")
 
-            // 如果大于2MB，就压缩成2MB
-            if (byteArray.size > 2 * 1024 * 1024) {
+            // 如果大于500kb，就压缩压缩50%
+            if (byteArray.size > 1024 * 500) {
                 val compressedByteArray = compressTo2MB(byteArray, quality)
                 if (compressedByteArray != null) {
-                    Log.i("zipPic:", "大于2MB压缩后长度:${compressedByteArray.size}")
+                    Log.i("zipPic:", "大于500kb压缩50%后的长度:${compressedByteArray.size}")
 
                     Base64.encodeToString(compressedByteArray, Base64.NO_WRAP)
                 } else {
                     null
                 }
             } else {
-                // 否则，将压缩后的图像进行Base64编码并返回
-                Log.i("zipPic:", "小2MB,不进行压缩的长度:${byteArray.size}")
+                // 否则，不进行压缩
+                Log.i("zipPic:", "小500kb,不进行压缩的长度:${byteArray.size}")
                 Base64.encodeToString(byteArray, Base64.NO_WRAP)
             }
         } catch (e: Exception) {
@@ -71,8 +89,9 @@ object Base64Utils {
         }
     }
 
+
     private fun compressTo2MB(inputByteArray: ByteArray, quality: Int): ByteArray? {
-        val targetSize = 2 * 1024 * 1024 // 目标大小为2MB
+        val targetSize = 1024 * 500 // 目标大小为1MB
 
         var compressedByteArray: ByteArray? = null
         var scaleFactor = 1.0f
@@ -96,6 +115,40 @@ object Base64Utils {
         val options = BitmapFactory.Options()
         options.inSampleSize = (1 / scaleFactor).toInt()
         return BitmapFactory.decodeByteArray(inputByteArray, 0, inputByteArray.size, options)
+    }
+
+
+    fun compressIfNeeded(imagePath: String): ByteArray {
+        val inputFile = File(imagePath)
+        val maxSizeBytes = 500 * 1024 // 500KB
+        Log.i("zipPic:", "压缩前大小file:${inputFile.length()}")
+
+        if (inputFile.length() > maxSizeBytes) {
+            // 文件大小超过500KB，需要进行压缩
+            val outputStream = ByteArrayOutputStream()
+            val inputStream = inputFile.inputStream()
+            val buffer = ByteArray(4096)
+            var bytesRead: Int
+            var totalBytesRead: Long = 0
+
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                totalBytesRead += bytesRead
+                if (totalBytesRead > maxSizeBytes) {
+                    val remainingBytes = totalBytesRead - maxSizeBytes
+                    val bytesToWrite = bytesRead - remainingBytes.toInt()
+                    outputStream.write(buffer, 0, bytesToWrite)
+                    break
+                }
+                outputStream.write(buffer, 0, bytesRead)
+            }
+            inputStream.close()
+            outputStream.close()
+
+            return outputStream.toByteArray()
+        }
+
+        // 文件大小小于等于500KB，不需要压缩
+        return inputFile.readBytes()
     }
 
 }

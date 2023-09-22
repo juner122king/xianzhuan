@@ -5,20 +5,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
 import android.text.Html
-import android.view.ContextMenu
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.lzyzsd.jsbridge.BridgeWebView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
@@ -26,8 +22,6 @@ import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
-import com.lelezu.app.xianzhuan.utils.LogUtils
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,30 +50,32 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
     private lateinit var adapterVerify: TaskVerifyStepAdapter//验证列表
 
+    private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
+
+
     private lateinit var task: Task
 
     private var isMyTask: Boolean = false
+
+    private var isDoneTask: Boolean = false//是否加载完成任务页面
 
     private lateinit var dialog: AlertDialog//协议弹窗
     private lateinit var dialog2: AlertDialog//报名成功弹窗
 
     private lateinit var comdown: TextView//任务提交倒计时
 
+    private lateinit var tv_sub: TextView //关注数
+    private lateinit var tv_fan: TextView //粉丝数
+
+
     //验证图片选取回调处理
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
         if (it != null) {
             // 获取内容URI对应的文件路径
             val thread = Thread {
-                val imageData = Base64Utils.zipPic2(it, 90)
-                if (imageData == null) {
-                    // 如果 imageData 为 null，执行处理空值的操作
-                    // 例如，显示一个提示消息或采取其他适当的操作
-                    showToast("图片不支持，请重新选择！")
-                } else {
-                    // 否则，执行以下操作：
-                    // 执行上传动作，传递参数 it
-                    homeViewModel.apiUpload(it)
-                }
+
+                homeViewModel.apiUpload(it)
+
             }
             thread.start()
         }
@@ -93,8 +89,24 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         initObserve()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (checkMiniSub()) {//是否加载完成任务页面 且该任务是小程序任务 且已经报名 且已关注小程序
+            homeViewModel.miniTaskComplete(getTask().applyLogId)//校验小程序任务是否完成
+        }
+
+    }
+
 
     private fun initView() {
+
+        swiper = findViewById(R.id.swiper)
+        swiper.setColorSchemeResources(R.color.colorControlActivated)
+        swiper.setOnRefreshListener {
+            // 执行刷新操作
+            refresh()
+        }
 
         taskDetailsRV = findViewById(R.id.rv_task_step)
         // 创建适配器，并将其绑定到 RecyclerView 上
@@ -118,17 +130,27 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
         findViewById<View>(R.id.tv_agreement2).setOnClickListener(this)
 
+        findViewById<View>(R.id.tv_user_vip).setOnClickListener(this)
+
+        tv_sub = findViewById(R.id.tv_sub)
+        tv_fan = findViewById(R.id.tv_fan)
+
+
         //获取上个页面返回的TaskId再请求一次
         taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
         isMyTask = intent.getBooleanExtra(TAGMYTASK, false)//是否为我的任务详情，默认不是
 
 
         comdown = findViewById(R.id.tv_comdown)
+
     }
 
     private fun initObserve() {
         //监听任务信息变化
         homeViewModel.task.observe(this) {
+
+            // 停止刷新动画
+            swiper.isRefreshing = false
             //初始化页面数据
             setData(it)
         }
@@ -144,9 +166,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
-                taskDetails(task.taskId, task.applyLogId)
+                taskDetails(getTask().taskId, getTask().applyLogId)
 
-                showBmDialog("${task.deadlineTime}小时")//弹窗显示
+                showBmDialog("${getTask().deadlineTime}小时")//弹窗显示
             } else showToast("报名失败")
         }
 
@@ -164,6 +186,14 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         homeViewModel.upLink.observe(this) { link ->
             showToast("图片上传成功")
             adapterVerify.setLink(link)
+        }
+
+        loginViewModel.follow.observe(this) {
+            hideLoading()
+
+            tv_fan.text = "${it.fanCnt}粉丝"
+            tv_sub.text = "${it.concernCnt}关注"
+
         }
     }
 
@@ -231,12 +261,28 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         }
 
 
-        if (task.operateTime != null) {
+        if (task.operateTime != null && task.operateTime != "null") {
 
             // 开始定时任务
             startCountdown()
             comdown.visibility = View.VISIBLE
         } else comdown.visibility = View.GONE
+
+
+        //点击雇主头像
+        findViewById<View>(R.id.f_user_pic).setOnClickListener {
+
+            val intent = Intent(this, MasterActivity::class.java)
+            intent.putExtra("userId", task.userId)
+            startActivity(intent)
+
+        }
+        //获取关注和粉丝数
+        loginViewModel.follows(task.userId)
+
+//        //校验小程序任务是否完成
+//        homeViewModel.miniTaskComplete(getTask().applyLogId)
+
     }
 
     private fun taskDetails(taskId: String, applyId: String? = null) {
@@ -245,7 +291,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun startCountdown() {
         // 设置目标日期时间
-        val targetDateTime = task.operateTime
+        val targetDateTime = getTask().operateTime
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val targetDate = dateFormat.parse(targetDateTime).time
 
@@ -257,7 +303,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             override fun onTick(millisUntilFinished: Long) {
                 //添加完成任务提交验收倒计时
                 comdown.text =
-                    "完成任务提交验收剩余：" + calculateRemainingTime(task.operateTime.toString())
+                    "完成任务提交验收剩余：" + calculateRemainingTime(getTask().operateTime.toString())
             }
 
             override fun onFinish() {
@@ -268,7 +314,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         countDownTimer.start()
 
     }
-
 
 
     //计算剩余时间
@@ -341,7 +386,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
                 findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-
             }
         }
 
@@ -351,6 +395,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         } else {
             findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
         }
+    }
+
+
+    private fun refresh() {
+        //获取上个页面返回的TaskId再请求一次
+        taskDetails(getTask().taskId, getTask().applyLogId)
     }
 
 
@@ -377,7 +427,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     }//换个任务
                     else -> {
                         val intent = Intent(this, ChatActivity::class.java)
-                        intent.putExtra("userId", task.userId)
+                        intent.putExtra("userId", getTask().userId)
                         startActivity(intent)
                     }
                 }
@@ -406,6 +456,10 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             R.id.tv_agreement2 -> {//打开《悬赏任务发布者声明》
                 showAgreementDialog()
+            }
+
+            R.id.tv_user_vip -> {//H5收徒页面
+                backToHome("3")
             }
         }
     }
@@ -464,10 +518,19 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun putTask(t: Task) {
         task = t//
+        isDoneTask = true
     }
 
     private fun getTask(): Task {
         return task
+    }
+
+
+    //判断是否已关注小程序
+    private fun checkMiniSub(): Boolean {
+        return isDoneTask && getTask().taskType == "2" && getTask().auditStatus != 0 && getTask().taskStepList.any { it.stepType == 3 && it.hasComplete }
+
+
     }
 
 

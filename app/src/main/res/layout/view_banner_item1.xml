@@ -4,8 +4,8 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/iv_banner_item"
-        android:background="@drawable/banner2"
+        android:id="@+id/iv_banner_item1"
+        android:background="@drawable/banner1"
         android:layout_width="match_parent"
         android:layout_height="130dp"/>
 

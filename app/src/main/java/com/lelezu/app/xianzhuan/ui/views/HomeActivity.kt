@@ -19,6 +19,8 @@ import com.lelezu.app.xianzhuan.ui.fragments.DashFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class HomeActivity : BaseActivity() {
@@ -27,9 +29,26 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        LogUtils.i(
+            "HomeActivity",
+            "LOGIN_ID:" + ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)
+        )
+
+
+        showHomeView()
+    }
+
+
+    //已领取了新人奖励，直接显示主页面
+    private fun showHomeView() {
+        initHomeView()
+    }
+
+    private fun initHomeView() {
+
+
         val viewPager = findViewById<ViewPager2>(R.id.main_vp)
         viewPager.isUserInputEnabled = false//禁止滑动
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
         initData()
         val adapter = HomeActivityAdapter(supportFragmentManager, lifecycle, fragmentList)
@@ -99,8 +118,6 @@ class HomeActivity : BaseActivity() {
                 "4" -> viewPager.currentItem = 3
             }
         }
-
-
     }
 
     private fun initData() {
@@ -133,8 +150,6 @@ class HomeActivity : BaseActivity() {
 
     //保存图片方法
     fun saveImageToSystem(imageUrl: String) {
-        Log.i("H5保存图片", "成功  imageUrl：${imageUrl}")
-
 
         val imageName = "lelezu_pic"
 

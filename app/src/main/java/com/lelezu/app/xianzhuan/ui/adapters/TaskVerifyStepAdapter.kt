@@ -75,68 +75,79 @@ class TaskVerifyStepAdapter(
         holder.title.text = item.verifyDesc
         holder.step.text = ("${position + 1}").toString()
         holder.viewUrl.visibility = View.GONE
-        if (item.verifyType == 1) {//验证步骤是否为图片类型
 
-            holder.fCasePic.visibility = View.VISIBLE
-            holder.ivUserPic.visibility = View.VISIBLE
-            holder.idEt.visibility = View.GONE
-            ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
-            ImageViewUtil.load(holder.ivUserPic, item.uploadImage)
-            holder.ivCasePic.setOnClickListener {//图片全屏显示
-                ivDialog.setContentView(getImageView(item.useCaseImage))
-                ivDialog.show()
-            }
-            if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
-                holder.btmUpPic.visibility = View.GONE
-                holder.ivUserPic.visibility = View.GONE
+        when (item.verifyType) {//验证步骤类型
 
-            } else {
+            1 -> {
+                holder.fCasePic.visibility = View.VISIBLE
                 holder.ivUserPic.visibility = View.VISIBLE
-                holder.btmUpPic.visibility = View.VISIBLE
-                holder.btmUpPic.setOnClickListener {
-                    mPosition = holder.adapterPosition//保存选中的Position
+                holder.idEt.visibility = View.GONE
+                ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
+                ImageViewUtil.load(holder.ivUserPic, item.uploadValue)
+                holder.ivCasePic.setOnClickListener {//图片全屏显示
+                    ivDialog.setContentView(getImageView(item.useCaseImage))
+                    ivDialog.show()
+                }
+                if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
+                    holder.btmUpPic.visibility = View.GONE
+                    holder.ivUserPic.visibility = View.GONE
 
-                    onPickImage()
+                } else {
+                    holder.ivUserPic.visibility = View.VISIBLE
+                    holder.btmUpPic.visibility = View.VISIBLE
+                    holder.btmUpPic.setOnClickListener {
+                        mPosition = holder.adapterPosition//保存选中的Position
 
+                        onPickImage()
+
+                    }
                 }
             }
-        } else {
-            holder.idEt.visibility = View.VISIBLE
-            holder.idEt.hint = item.verifyDesc
-            holder.idEt.setText(item.uploadImage)
-            holder.fCasePic.visibility = View.GONE
-            holder.ivUserPic.visibility = View.GONE
 
-            if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
-                holder.idEt.isEnabled = false
-            } else {
-                holder.idEt.isEnabled = true
+            2 -> {
+                holder.idEt.visibility = View.VISIBLE
+                holder.idEt.hint = item.verifyDesc
+                holder.idEt.setText(item.uploadValue)
+                holder.fCasePic.visibility = View.GONE
+                holder.ivUserPic.visibility = View.GONE
 
-                holder.idEt.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(
-                        s: CharSequence?, start: Int, count: Int, after: Int
-                    ) {
-                        // 在文本改变之前调用
-                    }
+                if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
+                    holder.idEt.isEnabled = false
+                } else {
+                    holder.idEt.isEnabled = true
 
-                    override fun onTextChanged(
-                        s: CharSequence?, start: Int, before: Int, count: Int
-                    ) {
-                        // 在文本改变时调用
-                    }
-
-                    override fun afterTextChanged(s: Editable?) {
-                        // 在文本改变之后调用
-                        if (s != null) {
-                            val text = s.toString()
-                            item.uploadValue = text
+                    holder.idEt.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            s: CharSequence?, start: Int, count: Int, after: Int
+                        ) {
+                            // 在文本改变之前调用
                         }
-                    }
-                })
+
+                        override fun onTextChanged(
+                            s: CharSequence?, start: Int, before: Int, count: Int
+                        ) {
+                            // 在文本改变时调用
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+                            // 在文本改变之后调用
+                            if (s != null) {
+                                val text = s.toString()
+                                item.uploadValue = text
+                            }
+                        }
+                    })
+                }
+
             }
 
-
+            0 -> {
+                holder.idEt.visibility = View.GONE
+                holder.fCasePic.visibility = View.GONE
+                holder.ivUserPic.visibility = View.GONE
+            }
         }
+
 
         // 判断是否为整个 RecyclerView 的最后一个项
         if (position == itemCount - 1) {
@@ -204,7 +215,6 @@ class TaskVerifyStepAdapter(
 
     fun setLink(link: String) {
         items[mPosition].uploadValue = link
-        items[mPosition].uploadImage = link
         notifyItemChanged(mPosition)
 
     }

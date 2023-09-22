@@ -25,9 +25,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="本月业绩"
-                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
 
             <ImageView
@@ -39,8 +39,8 @@
                 android:id="@+id/tv_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="规则说明"
                 android:padding="5dp"
+                android:text="规则说明"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -59,6 +59,7 @@
         <include layout="@layout/item_line" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_but"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -88,7 +89,7 @@
                 android:id="@+id/tv_t3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="当前等级"
+                android:text="上月等级"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"

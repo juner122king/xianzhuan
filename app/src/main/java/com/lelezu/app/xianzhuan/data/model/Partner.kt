@@ -23,6 +23,7 @@ import android.os.Parcelable
  * @property teamNewCount String 	团队新增人数
  * @property earning String 	结算金额
  * @property performanceId String 	团队ID
+ * @property avatar String 	头像
  * @constructor
  */
 
@@ -39,7 +40,8 @@ data class Partner(
     val teamNewCount: String? = "0",
     val earning: String?,
 
-    val performanceId:String?
+    val performanceId: String?,
+    val avatar: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -47,6 +49,7 @@ data class Partner(
         parcel.readString(),
         parcel.readString(),
         parcel.readValue(Int::class.java.classLoader) as Int,
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -72,6 +75,7 @@ data class Partner(
         parcel.writeString(teamNewCount)
         parcel.writeString(earning)
         parcel.writeString(performanceId)
+        parcel.writeString(avatar)
     }
 
     companion object CREATOR : Parcelable.Creator<Partner> {

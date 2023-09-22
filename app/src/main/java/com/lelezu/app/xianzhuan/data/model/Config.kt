@@ -16,7 +16,7 @@ data class Config(
     val confDesc: String,
     val confKey: String,
     val confName: String,
-    val confType: ConfValue,
-    val confValue: String
+    val confType: String,
+    val confValue: ConfValue
 
 )

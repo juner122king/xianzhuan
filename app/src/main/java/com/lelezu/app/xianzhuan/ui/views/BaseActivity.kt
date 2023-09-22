@@ -26,6 +26,7 @@ import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
@@ -93,20 +94,33 @@ abstract class BaseActivity : AppCompatActivity() {
 
     //重新打开登录页面
     private fun goToLoginView() {
+        ShareUtil.cleanInfo()
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 
+    //退出登录
     fun logOut() {
-        showToast("退出成功！")
-        ShareUtil.cleanInfo()
+
+        showLoading()
+        loginViewModel.logout()
+        loginViewModel.isLogOut.observe(this) {
+            hideLoading()
+            if (it) {
+                goToLoginView()
+            } else showToast("退出登录失败！")
+        }
+    }
+
+    //注销账号
+    fun cancelOut() {
         goToLoginView()
     }
 
 
     protected fun backToHome(position: String) {
-        ToastUtils.show("页面：$position")
+//        ToastUtils.show("页面：$position")
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         intent.putExtra("FragmentPosition", position)
@@ -123,12 +137,43 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected fun goToHomeActivity() {
+        showLoading()
+        //获取 是否需要关注企业微信的配置信息
+        sysMessageViewModel.apiRegistrConfig()
 
+        sysMessageViewModel.registrconfig.observe(this) {
+
+            hideLoading()
+            if (!it.confValue.isEnabled) {//开启新用户注册关注
+                //执行获取用户信息接口
+                loginViewModel.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
+                loginViewModel.userInfo.observe(this) { it2 ->
+                    if (it2.hasRewardNewerAward) {
+                        toHome()
+                    } else {
+//                showToast("未领取新人奖励")
+                        val intent = Intent(this, WebViewActivity::class.java)
+                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link16)
+                        intent.putExtra(WebViewSettings.URL_TITLE, "新人奖励")
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+            } else {
+                toHome()
+            }
+        }
+    }
+
+    private fun toHome() {
         val intent = Intent(MyApplication.context, HomeActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
+
+
     protected fun goToSysMessageActivity() {
 
         val intent = Intent(MyApplication.context, MessageActivity::class.java)
@@ -139,6 +184,8 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun initViewModel() {
 
         loginViewModel.errMessage.observe(this) {
+
+
             onErrMessage(it)
         }
         homeViewModel.errMessage.observe(this) {
@@ -149,7 +196,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun onErrMessage(it: ErrResponse) {
 
         hideLoading()
-        showToast(it.message)
+        if (it.message != "Token不存在或已失效") showToast(it.message)
         if (it.isTokenLose()) goToLoginView()    //重新打开登录页面
     }
 
@@ -334,7 +381,7 @@ abstract class BaseActivity : AppCompatActivity() {
         menu?.add(0, 2, 1, "取消")
 
         menu!!.getItem(0).setOnMenuItemClickListener {
-            showToast("保存图片：${ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL)}")
+            showToast("保存图片")
             //进行保存图片操作
             true
         }

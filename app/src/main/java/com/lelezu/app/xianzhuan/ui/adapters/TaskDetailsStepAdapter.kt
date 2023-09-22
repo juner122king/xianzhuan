@@ -56,11 +56,18 @@ class TaskDetailsStepAdapter(
         val viewUrl: View = itemView.findViewById(R.id.tv_web_url)//链接区域
         val llminiP: View = itemView.findViewById(R.id.ll_mini_p)//小程序关联区域
 
+        val view_type5: View = itemView.findViewById(R.id.view_type5)//搜索应用示例图区域
+
+        val iv_miniapp_pic: ImageView = itemView.findViewById(R.id.iv_miniapp_pic)//搜索应用示例图区域
+        val tv_miniapp_name: TextView = itemView.findViewById(R.id.tv_miniapp_name)//搜索应用示例图区域
+
         val tvGoLink: TextView = itemView.findViewById(R.id.tv_go_link)//
         val tvCopyLink: TextView = itemView.findViewById(R.id.tv_copy_link)
 
         val tv_mini_p: ImageView = itemView.findViewById(R.id.tv_mini_p)//关联小程序按钮
         val tv_mini_2: ImageView = itemView.findViewById(R.id.tv_mini_2)// 已关联小程序按钮
+
+
     }
 
     // 创建视图，并返回 ItemViewHolder
@@ -81,9 +88,10 @@ class TaskDetailsStepAdapter(
         holder.step.text = ("${position + 1}").toString()
 
         when (item.stepType) {
-            1, 4, 5 -> { //图文步骤
+            1, 4 -> { //图文步骤
                 holder.viewUrl.visibility = View.GONE
                 holder.llminiP.visibility = View.GONE
+                holder.view_type5.visibility = View.GONE
                 if (item.useCaseImage != null) {
                     holder.fCasePic.visibility = View.VISIBLE
                     ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
@@ -98,6 +106,7 @@ class TaskDetailsStepAdapter(
                 holder.fCasePic.visibility = View.GONE
                 holder.llminiP.visibility = View.GONE
                 holder.viewUrl.visibility = View.VISIBLE
+                holder.view_type5.visibility = View.GONE
                 holder.tvGoLink.setOnClickListener {
                     val intent = Intent(activity, WebViewActivity::class.java)
                     intent.putExtra(WebViewSettings.LINK_KEY, item.webUrl)
@@ -121,6 +130,7 @@ class TaskDetailsStepAdapter(
             3 -> { //关联小程序步骤
                 holder.fCasePic.visibility = View.GONE
                 holder.viewUrl.visibility = View.GONE
+                holder.view_type5.visibility = View.GONE
                 holder.llminiP.visibility = View.VISIBLE
 
                 if (!item.hasComplete) {//未关注
@@ -133,8 +143,16 @@ class TaskDetailsStepAdapter(
                 } else {
                     holder.tv_mini_p.visibility = View.GONE
                     holder.tv_mini_2.visibility = View.VISIBLE
-
                 }
+            }
+            5 -> {
+                holder.fCasePic.visibility = View.GONE
+                holder.viewUrl.visibility = View.GONE
+                holder.llminiP.visibility = View.GONE
+                holder.view_type5.visibility = View.VISIBLE
+
+                ImageViewUtil.load(holder.iv_miniapp_pic, item.useCaseImage)
+                holder.tv_miniapp_name.text = item.searchAppName
             }
 
         }

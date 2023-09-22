@@ -35,6 +35,10 @@ class MessageItemAdapter(
         val content: TextView = itemView.findViewById(R.id.tv_content)
         val tip: View = itemView.findViewById(R.id.v_tip)
         val time: TextView = itemView.findViewById(R.id.tv_message_time)
+
+        val tv_cancel: TextView = itemView.findViewById(R.id.tv_cancel)
+        val tv_enter: TextView = itemView.findViewById(R.id.tv_enter)
+        val ll: View = itemView.findViewById(R.id.ll)
     }
 
     // 创建视图，并返回 ItemViewHolder
@@ -62,6 +66,30 @@ class MessageItemAdapter(
             if (!item.isRead)//未读才读
                 sysMessageViewModel.markSysMessage(listOf(item.msgId))
         }
+
+        when (item.type) {
+            1 -> {//注销类型
+                holder.ll.visibility = View.GONE
+            }
+
+            2 -> {//需要确认类型
+                holder.ll.visibility = View.VISIBLE
+
+                holder.tv_cancel.setOnClickListener {
+                    sysMessageViewModel.markLogout(item.msgId, "false")
+                }
+
+                holder.tv_enter.setOnClickListener {
+                    sysMessageViewModel.markLogout(item.msgId, "true")
+                }
+            }
+
+            0 -> {//正常
+                holder.ll.visibility = View.GONE
+            }
+        }
+
+
     }
 
     // 返回数据项数量

@@ -40,14 +40,36 @@
         app:layout_constraintTop_toTopOf="@id/f_user_pic" />
 
     <TextView
-        android:id="@+id/tv_fan"
+        android:id="@+id/tv_sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:hint="888粉丝"
-        android:textSize="11dp"
+        android:text="关注"
+        android:textColor="@color/text_s"
+        android:textSize="12dp"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/tv_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_name" />
+    <View
+        android:id="@+id/line1"
+        android:layout_width="0.5dp"
+        android:layout_height="15dp"
+        android:background="#999999"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sub"
+        app:layout_constraintEnd_toStartOf="@id/tv_fan"
+        app:layout_constraintStart_toEndOf="@id/tv_sub"
+        app:layout_constraintTop_toTopOf="@id/tv_sub" />
+    <TextView
+        android:id="@+id/tv_fan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:text="粉丝"
+        android:textColor="@color/text_s"
+        android:textSize="12dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@id/tv_sub"
         app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
     <View
@@ -66,12 +88,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
-        android:hint="好评100%"
-        android:textSize="11dp"
+        android:text="好评100%"
+        android:textColor="@color/text_s"
+        android:textSize="12dp"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@id/tv_fan"
         app:layout_constraintTop_toBottomOf="@id/tv_name" />
-
     <TextView
         android:id="@+id/tv_user_vip"
         android:layout_width="wrap_content"
