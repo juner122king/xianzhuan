@@ -22,6 +22,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 
 /**
@@ -53,9 +54,13 @@ class TaskDetailsStepAdapter(
 
 
         val viewUrl: View = itemView.findViewById(R.id.tv_web_url)//链接区域
+        val llminiP: View = itemView.findViewById(R.id.ll_mini_p)//小程序关联区域
 
         val tvGoLink: TextView = itemView.findViewById(R.id.tv_go_link)//
         val tvCopyLink: TextView = itemView.findViewById(R.id.tv_copy_link)
+
+        val tv_mini_p: ImageView = itemView.findViewById(R.id.tv_mini_p)//关联小程序按钮
+        val tv_mini_2: ImageView = itemView.findViewById(R.id.tv_mini_2)// 已关联小程序按钮
     }
 
     // 创建视图，并返回 ItemViewHolder
@@ -75,19 +80,63 @@ class TaskDetailsStepAdapter(
         holder.ivUserPic.visibility = View.GONE
         holder.step.text = ("${position + 1}").toString()
 
-        if (item.stepType == 1) {
-            holder.viewUrl.visibility = View.GONE
-            if (item.useCaseImage != null) {
-                holder.fCasePic.visibility = View.VISIBLE
-                ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
-                holder.ivCasePic.setOnClickListener {//图片全屏显示
-                    ivDialog.setContentView(getImageView(item.useCaseImage))
-                    ivDialog.show()
+        when (item.stepType) {
+            1, 4, 5 -> { //图文步骤
+                holder.viewUrl.visibility = View.GONE
+                holder.llminiP.visibility = View.GONE
+                if (item.useCaseImage != null) {
+                    holder.fCasePic.visibility = View.VISIBLE
+                    ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
+                    holder.ivCasePic.setOnClickListener {//图片全屏显示
+                        ivDialog.setContentView(getImageView(item.useCaseImage))
+                        ivDialog.show()
+                    }
                 }
             }
-        } else {
-            holder.fCasePic.visibility = View.GONE
-            holder.viewUrl.visibility = View.VISIBLE
+
+            2 -> { //链接步骤
+                holder.fCasePic.visibility = View.GONE
+                holder.llminiP.visibility = View.GONE
+                holder.viewUrl.visibility = View.VISIBLE
+                holder.tvGoLink.setOnClickListener {
+                    val intent = Intent(activity, WebViewActivity::class.java)
+                    intent.putExtra(WebViewSettings.LINK_KEY, item.webUrl)
+                    intent.putExtra(WebViewSettings.isProcessing, false)
+                    activity.startActivity(intent)
+
+                }
+                holder.tvCopyLink.setOnClickListener {
+                    val textToCopy = item.webUrl
+
+                    val clipboardManager =
+                        activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipData = ClipData.newPlainText("Label", textToCopy)
+                    clipboardManager.setPrimaryClip(clipData)
+
+                    // 可以在这里显示一个提示，表示文本已经复制到剪贴板
+                    Toast.makeText(activity, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            3 -> { //关联小程序步骤
+                holder.fCasePic.visibility = View.GONE
+                holder.viewUrl.visibility = View.GONE
+                holder.llminiP.visibility = View.VISIBLE
+
+                if (!item.hasComplete) {//未关注
+                    holder.tv_mini_p.visibility = View.VISIBLE
+                    holder.tv_mini_2.visibility = View.GONE
+
+                    holder.tv_mini_p.setOnClickListener {
+                        WxLogin.subscribeMiniProgram(activity.application,item.webUrl,item.userName)
+                    }
+                } else {
+                    holder.tv_mini_p.visibility = View.GONE
+                    holder.tv_mini_2.visibility = View.VISIBLE
+
+                }
+            }
+
         }
 
 
@@ -108,29 +157,16 @@ class TaskDetailsStepAdapter(
             holder.line.requestLayout()
         }
 
-        holder.tvGoLink.setOnClickListener {
 
-            val intent = Intent(activity, WebViewActivity::class.java)
-            intent.putExtra(WebViewSettings.LINK_KEY, item.webUrl)
-            intent.putExtra(WebViewSettings.isProcessing, false)
-            activity.startActivity(intent)
+    }
 
-        }
-        holder.tvCopyLink.setOnClickListener {
-            val textToCopy = item.webUrl
+    //关注小程序
 
-            val clipboardManager =
-                activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText("Label", textToCopy)
-            clipboardManager.setPrimaryClip(clipData)
-
-            // 可以在这里显示一个提示，表示文本已经复制到剪贴板
-            Toast.makeText(activity, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
-
-        }
+    fun wx() {
 
 
     }
+
 
     // 返回数据项数量
     override fun getItemCount(): Int {

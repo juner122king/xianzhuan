@@ -32,11 +32,10 @@ class MessageActivity : BaseActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         sysMessageViewModel.liveData.observe(this) {
-
             // 停止刷新动画
             swiper.isRefreshing = false
             adapter.updateData(it)
-//            msgIds = it.filter { !it.isRead }.map { it.msgId }
+
         }
         sysMessageViewModel.getMessageList()
 

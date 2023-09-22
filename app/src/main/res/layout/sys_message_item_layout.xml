@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:padding="8dp"
     android:background="@color/ll_bg"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="8dp">
 
 
     <TextView
@@ -54,6 +54,44 @@
             android:background="@drawable/radius_border_tik"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_content">
+
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radius_border_bg"
+                android:paddingStart="@dimen/dip_25"
+                android:paddingTop="5dp"
+                android:paddingEnd="@dimen/dip_25"
+                android:paddingBottom="5dp"
+                android:text="取消"
+                android:textColor="@color/black2" />
+
+            <TextView
+                android:id="@+id/tv_enter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radius_border_button2"
+                android:paddingStart="@dimen/dip_25"
+                android:paddingTop="5dp"
+                android:paddingEnd="@dimen/dip_25"
+                android:paddingBottom="5dp"
+                android:text="确认"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

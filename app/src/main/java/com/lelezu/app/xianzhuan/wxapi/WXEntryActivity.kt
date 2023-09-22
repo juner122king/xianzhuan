@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
@@ -39,7 +40,7 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
     override fun onResp(baseResp: BaseResp) {
 
         when (baseResp.type) {
-            ConstantsAPI.COMMAND_SENDAUTH -> {
+            ConstantsAPI.COMMAND_SENDAUTH -> { //登录
                 val r = baseResp as SendAuth.Resp
                 when (baseResp.errCode) {
                     BaseResp.ErrCode.ERR_OK -> {
@@ -70,6 +71,11 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
                         finish()
                     }
                 }
+            }
+            ConstantsAPI.COMMAND_LAUNCH_WX_MINIPROGRAM -> { //小程序返回
+
+                ToastUtils.show("小程序返回")
+
             }
 
             else -> {
