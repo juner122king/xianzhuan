@@ -126,8 +126,6 @@ p
 Lapp/src/main/java/com/lelezu/app/xianzhuan/ui/adapters/MessageItemAdapter.kt,a\1\a12a108f0437b044dd1ff2da41f6804a6c3d37b5
 m
 =app/src/main/java/com/lelezu/app/xianzhuan/data/ApiFactory.kt,2\7\273a62cdcf1a6feac254f4c68d7ab0425a18cbbb
-v
-Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/AutoOutActivity.kt,5\d\5da8cf7f4f609c5d65b7e54aaacbcbad0f8d6b4e
 p
 @app/src/main/java/com/lelezu/app/xianzhuan/data/model/Follows.kt,1\0\108c7233ff749d65a7662861ecb1161e8ee0e919
 w
