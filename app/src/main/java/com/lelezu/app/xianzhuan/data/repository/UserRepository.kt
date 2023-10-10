@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.data.repository
 
 
-import android.util.Log
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.ChatList
@@ -13,16 +12,12 @@ import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
-import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 /**
  * @author:Administrator
@@ -91,6 +86,12 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
     //获取联系人列表
     suspend fun apiContactors(): ApiResponse<List<ChatList>> = withContext(Dispatchers.IO) {
         val call = apiService.apiContactors(loginToken)
+        executeApiCall(call)
+    }
+
+    //消息标记已读
+    suspend fun isRecord(senderUserId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        val call = apiService.isRecord(senderUserId, loginToken)
         executeApiCall(call)
     }
 

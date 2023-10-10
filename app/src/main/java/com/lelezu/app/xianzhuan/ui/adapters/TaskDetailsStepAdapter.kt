@@ -35,9 +35,13 @@ class TaskDetailsStepAdapter(
     private var items: List<TaskStep>, private var ivDialog: Dialog, private var activity: Activity
 ) : RecyclerView.Adapter<TaskDetailsStepAdapter.ItemViewHolder>() {
 
+    private var isSignUp: Boolean = false ////根据任务报名与否，区别显示
+
     // 更新数据方法
-    fun updateData(newItems: List<TaskStep>) {
+    fun updateData(newItems: List<TaskStep>, auditStatus: Int) {
         items = newItems  //任务步骤集合
+        isSignUp = auditStatus != 0
+
         notifyDataSetChanged()
     }
 
@@ -67,6 +71,8 @@ class TaskDetailsStepAdapter(
         val tv_mini_p: ImageView = itemView.findViewById(R.id.tv_mini_p)//关联小程序按钮
         val tv_mini_2: ImageView = itemView.findViewById(R.id.tv_mini_2)// 已关联小程序按钮
 
+        val iv_no_sign_up: ImageView = itemView.findViewById(R.id.iv_no_sign_up)// 未报名时显示的图片
+
 
     }
 
@@ -87,75 +93,92 @@ class TaskDetailsStepAdapter(
         holder.ivUserPic.visibility = View.GONE
         holder.step.text = ("${position + 1}").toString()
 
-        when (item.stepType) {
-            1, 4 -> { //图文步骤
-                holder.viewUrl.visibility = View.GONE
-                holder.llminiP.visibility = View.GONE
-                holder.view_type5.visibility = View.GONE
-                if (item.useCaseImage != null) {
-                    holder.fCasePic.visibility = View.VISIBLE
-                    ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
-                    holder.ivCasePic.setOnClickListener {//图片全屏显示
-                        ivDialog.setContentView(getImageView(item.useCaseImage))
-                        ivDialog.show()
+
+        //根据任务报名未报名的情况，区别显示,且只处理第一步骤
+        if (!isSignUp && position == 0) {//
+            holder.iv_no_sign_up.visibility = View.VISIBLE
+
+            holder.fCasePic.visibility = View.GONE
+            holder.viewUrl.visibility = View.GONE
+            holder.llminiP.visibility = View.GONE
+            holder.view_type5.visibility = View.GONE
+        }else{
+            holder.iv_no_sign_up.visibility = View.GONE
+            //根据步骤类型，区别显示
+            when (item.stepType) {
+                1, 4 -> { //图文步骤
+                    holder.viewUrl.visibility = View.GONE
+                    holder.llminiP.visibility = View.GONE
+                    holder.view_type5.visibility = View.GONE
+                    if (item.useCaseImage != null) {
+                        holder.fCasePic.visibility = View.VISIBLE
+                        ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
+                        holder.ivCasePic.setOnClickListener {//图片全屏显示
+                            ivDialog.setContentView(getImageView(item.useCaseImage))
+                            ivDialog.show()
+                        }
                     }
                 }
-            }
 
-            2 -> { //链接步骤
-                holder.fCasePic.visibility = View.GONE
-                holder.llminiP.visibility = View.GONE
-                holder.viewUrl.visibility = View.VISIBLE
-                holder.view_type5.visibility = View.GONE
-                holder.tvGoLink.setOnClickListener {
-                    val intent = Intent(activity, WebViewActivity::class.java)
-                    intent.putExtra(WebViewSettings.LINK_KEY, item.webUrl)
-                    intent.putExtra(WebViewSettings.isProcessing, false)
-                    activity.startActivity(intent)
+                2 -> { //链接步骤
+                    holder.fCasePic.visibility = View.GONE
+                    holder.llminiP.visibility = View.GONE
+                    holder.viewUrl.visibility = View.VISIBLE
+                    holder.view_type5.visibility = View.GONE
+                    holder.tvGoLink.setOnClickListener {
+                        val intent = Intent(activity, WebViewActivity::class.java)
+                        intent.putExtra(WebViewSettings.LINK_KEY, item.webUrl)
+                        intent.putExtra(WebViewSettings.isProcessing, false)
+                        activity.startActivity(intent)
 
-                }
-                holder.tvCopyLink.setOnClickListener {
-                    val textToCopy = item.webUrl
-
-                    val clipboardManager =
-                        activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clipData = ClipData.newPlainText("Label", textToCopy)
-                    clipboardManager.setPrimaryClip(clipData)
-
-                    // 可以在这里显示一个提示，表示文本已经复制到剪贴板
-                    Toast.makeText(activity, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            3 -> { //关联小程序步骤
-                holder.fCasePic.visibility = View.GONE
-                holder.viewUrl.visibility = View.GONE
-                holder.view_type5.visibility = View.GONE
-                holder.llminiP.visibility = View.VISIBLE
-
-                if (!item.hasComplete) {//未关注
-                    holder.tv_mini_p.visibility = View.VISIBLE
-                    holder.tv_mini_2.visibility = View.GONE
-
-                    holder.tv_mini_p.setOnClickListener {
-                        WxLogin.subscribeMiniProgram(activity.application,item.webUrl,item.userName)
                     }
-                } else {
-                    holder.tv_mini_p.visibility = View.GONE
-                    holder.tv_mini_2.visibility = View.VISIBLE
+                    holder.tvCopyLink.setOnClickListener {
+                        val textToCopy = item.webUrl
+
+                        val clipboardManager =
+                            activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clipData = ClipData.newPlainText("Label", textToCopy)
+                        clipboardManager.setPrimaryClip(clipData)
+
+                        // 可以在这里显示一个提示，表示文本已经复制到剪贴板
+                        Toast.makeText(activity, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            5 -> {
-                holder.fCasePic.visibility = View.GONE
-                holder.viewUrl.visibility = View.GONE
-                holder.llminiP.visibility = View.GONE
-                holder.view_type5.visibility = View.VISIBLE
 
-                ImageViewUtil.load(holder.iv_miniapp_pic, item.useCaseImage)
-                holder.tv_miniapp_name.text = item.searchAppName
-            }
+                3 -> { //关联小程序步骤
+                    holder.fCasePic.visibility = View.GONE
+                    holder.viewUrl.visibility = View.GONE
+                    holder.view_type5.visibility = View.GONE
+                    holder.llminiP.visibility = View.VISIBLE
 
+                    if (!item.hasComplete) {//未关注
+                        holder.tv_mini_p.visibility = View.VISIBLE
+                        holder.tv_mini_2.visibility = View.GONE
+
+                        holder.tv_mini_p.setOnClickListener {
+                            WxLogin.subscribeMiniProgram(
+                                activity.application, item.webUrl, item.userName
+                            )
+                        }
+                    } else {
+                        holder.tv_mini_p.visibility = View.GONE
+                        holder.tv_mini_2.visibility = View.VISIBLE
+                    }
+                }
+
+                5 -> {
+                    holder.fCasePic.visibility = View.GONE
+                    holder.viewUrl.visibility = View.GONE
+                    holder.llminiP.visibility = View.GONE
+                    holder.view_type5.visibility = View.VISIBLE
+
+                    ImageViewUtil.load(holder.iv_miniapp_pic, item.useCaseImage)
+                    holder.tv_miniapp_name.text = item.searchAppName
+                }
+
+            }
         }
+
 
 
         // 判断是否为整个 RecyclerView 的最后一个项
@@ -174,14 +197,6 @@ class TaskDetailsStepAdapter(
             holder.line.layoutParams = layoutParams
             holder.line.requestLayout()
         }
-
-
-    }
-
-    //关注小程序
-
-    fun wx() {
-
 
     }
 
@@ -207,7 +222,7 @@ class TaskDetailsStepAdapter(
         imageView.setOnLongClickListener {
             //显示选项  保存图
             //2.打开菜单
-            activity.openContextMenu(imageView);
+            activity.openContextMenu(imageView)
 
 
             ShareUtil.putString(ShareUtil.APP_TASK_PIC_DOWN_URL, any.toString())//保存图片url

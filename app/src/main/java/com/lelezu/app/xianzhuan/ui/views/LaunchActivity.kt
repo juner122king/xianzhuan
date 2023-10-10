@@ -1,10 +1,9 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.Manifest.permission.ACCESS_WIFI_STATE
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -12,44 +11,25 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
-//import cn.jiguang.api.utils.JCollectionAuth
-//import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
-import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission.MANAGE_EXTERNAL_STORAGE
-import com.hjq.permissions.Permission.NEARBY_WIFI_DEVICES
-import com.hjq.permissions.Permission.READ_EXTERNAL_STORAGE
-import com.hjq.permissions.Permission.WRITE_EXTERNAL_STORAGE
-import com.hjq.permissions.XXPermissions
-import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
-import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
 import com.lelezu.app.xianzhuan.wxapi.WxData
-import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
-import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import com.umeng.commonsdk.UMConfigure
 import com.zj.zjsdk.ZjSdk
-//import com.umeng.commonsdk.UMConfigure
-//import com.zj.task.sdk.b.f
-//import com.zj.zjsdk.ZjSdk
-import java.util.Properties
 
 /**  APP启动屏
 1.登录/注册判断：在启动app时，直接通过本地存储判断用户是否已登录，处于已登录时调用登录接口判断账号是否正常状态，正常则直接到启动屏后跳转到首页；
@@ -61,15 +41,62 @@ import java.util.Properties
 class LaunchActivity : BaseActivity() {
     private lateinit var dialog: AlertDialog//协议弹
     private lateinit var aDView: ImageView//协议弹
+    private lateinit var tvCd: TextView//倒计时
+
+    private var cd1 = 7000L//广告倒计时
+    private var cd2 = 2000L//logo显示时间
+
+    private lateinit var countDownTimer: CountDownTimer
 
     private var LOGTAG: String = "SDK_INIT"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        hideView()
+        initSDK()//初始化第三方SDK
+        initView()
+        initData()
+        showLogo()
+
+        //拦截返回键
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
+    }
+
+
+    private fun initSDK() {
+
+        init163SDK()//网易SDK初始化
+        initWx() //微信SDK初始化
+        initJPUSHSDK()//极光SDK初始化
+        initUMSDK()//友盟SDK初始化
+        initZJSDK()//任务墙SDK 初始化
+        //TX审核 去掉
+        ShareUtil.putAndroidID(this) //获取Android ID
+//
+
+    }
+
+    private fun initView() {
         aDView = findViewById(R.id.fl_ad_view)
+        tvCd = findViewById(R.id.tv_comdown)
+        tvCd.setOnClickListener {
+            preloadContent()//点击跳过广告
+        }
 
+    }
+
+    private fun initData() {
         sysMessageViewModel.apiADConfig()
+        //加载广告页面
+        sysMessageViewModel.adconfig.observe(this) {
+            ImageViewUtil.load(aDView, it.confValue.pics[0])
+        }
 
-
+    }
+    private fun showLogo(){
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
                 showTaskView()//显示广告
@@ -79,70 +106,33 @@ class LaunchActivity : BaseActivity() {
                     getString(R.string.text_agreement1), WebViewSettings.link101
                 )
             }
-        }, 1000)
-
-
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        })
-
-
-        //加载广告页面
-        sysMessageViewModel.adconfig.observe(this) {
-            ImageViewUtil.load(aDView, it.confValue.pics[0])
-        }
-    }
-
-
-    private fun preloadContent() {
-        //弹出系统权限,判断 ACCESS_WIFI_STATE ，READ_EXTERNAL_STORAGE/WRITE_EXTERNAL_STORAGE是否授权
-
-        onInitSDK()
-    }
-
-    private fun onInitSDK() {
-
-        initSDK()//初始化第三方SDK ，等待2秒
-        Handler(Looper.getMainLooper()).postDelayed({
-            //判断是否已登录APP
-            if (checkUserLoginStatus()) {
-                // 用户已登录， 跳转到主页登录页面
-                goToHomeActivity()
-            } else {
-                // 用户未登录，跳转到登录页面
-                toLogin()
-            }
-        }, 2000) // 延迟 2000 毫秒（即 2 秒）
-    }
-
-    private fun initSDK() {
-
-        init163SDK()//网易SDK初始化
-        initWx() //微信SDK初始化
-        initJPUSHSDK()//极光SDK初始化
-        initUMSDK()//友盟SDK初始化
-
-        initZJSDK()//任务墙SDK 初始化
-
-
-        //TX审核 去掉
-        ShareUtil.putAndroidID(this) //获取Android ID
-//
+        }, cd2)//显示一秒logo
 
     }
 
-
-    //显示广告页面{
+    //显示广告页面
     private fun showTaskView() {
-
+        tvCd.text = "跳过广告 (${cd1 / 1000})"
+        // 开始倒计时
+        startCountdown(cd1) // 6秒广告
         findViewById<View>(R.id.fl_launch_view).visibility = View.INVISIBLE
-        Handler(Looper.getMainLooper()).postDelayed({
-            preloadContent()//进行页面跳转
-        }, 500)//显示3秒广告
+    }
 
+    private fun startCountdown(totalMillis: Long) {
+        countDownTimer = object : CountDownTimer(totalMillis, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1001
+                LogUtils.i("CD", secondsRemaining.toString() + "秒")
+                tvCd.text = "跳过广告 ($secondsRemaining)"
+            }
 
+            override fun onFinish() {
+                // 倒计时完成后执行你的页面跳转操作
+                preloadContent()
+            }
+        }
+
+        countDownTimer.start()
     }
 
 
@@ -179,6 +169,18 @@ class LaunchActivity : BaseActivity() {
         dialog.dismiss()
         agreePrivacy()
         preloadContent()
+    }
+
+    private fun preloadContent() {
+
+        //判断是否已登录APP
+        if (checkUserLoginStatus()) {
+            // 用户已登录， 跳转到主页登录页面
+            goToHomeActivity()
+        } else {
+            // 用户未登录，跳转到登录页面
+            toLogin()
+        }
     }
 
 
@@ -294,5 +296,10 @@ class LaunchActivity : BaseActivity() {
         return false
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // 在Activity销毁时停止倒计时，避免内存泄漏
+        countDownTimer.cancel()
+    }
 
 }

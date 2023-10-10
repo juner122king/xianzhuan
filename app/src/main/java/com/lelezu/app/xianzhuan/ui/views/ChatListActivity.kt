@@ -16,6 +16,11 @@ class ChatListActivity : BaseActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        showLoading()
+        loginViewModel.apiContactors()
+    }
 
     private fun initView() {
         recyclerView = findViewById(R.id.rv)
@@ -24,19 +29,16 @@ class ChatListActivity : BaseActivity() {
         recyclerView.adapter = adapter
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         recyclerView.layoutManager = LinearLayoutManager(this)
-
+        recyclerView.setRefreshEnable(false)
+        recyclerView.setLoadMoreEnable(false)
     }
 
     private fun initObserve() {
 
-        showLoading()
-        loginViewModel.apiContactors()
         loginViewModel.chatList.observe(this) {
             adapter.updateData(it)
             hideLoading()
         }
-
-
     }
 
     override fun getLayoutId(): Int {

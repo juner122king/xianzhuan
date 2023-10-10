@@ -20,7 +20,6 @@ import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
 import java.text.SimpleDateFormat
@@ -175,7 +174,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //任务提交监听
         homeViewModel.isUp.observe(this) {
             if (it) {
-                showToast("提交成功")
+                showToast("提交成功，雇主将在24小时内审核。")
                 finish()
             } else {
                 showToast("提交失败！")
@@ -231,7 +230,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         findViewById<TextView>(R.id.tv_info).text = string
 
 
-        adapterDetails.updateData(task.taskStepList)
+        adapterDetails.updateData(task.taskStepList,task.auditStatus)
         adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
 
         loginViewModel.getUserInfo(task.userId)//获取商家信息

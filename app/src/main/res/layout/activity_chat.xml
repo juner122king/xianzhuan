@@ -147,6 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
+            android:maxLength="250"
             android:background="@drawable/radius_border_bg"
             android:hint="请输入消息内容"
             android:paddingStart="15dp"

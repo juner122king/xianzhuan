@@ -144,7 +144,7 @@ abstract class BaseActivity : AppCompatActivity() {
         sysMessageViewModel.registrconfig.observe(this) {
 
             hideLoading()
-            if (!it.confValue.isEnabled) {//开启新用户注册关注
+            if (it.confValue.isEnabled) {//开启新用户注册关注
                 //执行获取用户信息接口
                 loginViewModel.getUserInfo(ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID))
                 loginViewModel.userInfo.observe(this) { it2 ->

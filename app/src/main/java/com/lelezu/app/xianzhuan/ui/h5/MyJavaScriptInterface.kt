@@ -47,4 +47,11 @@ class MyJavaScriptInterface(private val context: Activity) {
         })
     }
 
+    @JavascriptInterface
+    fun openApprenticeRule() {
+
+        ToastUtils.show("跳转合伙人规则页面")
+
+    }
+
 }

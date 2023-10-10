@@ -48,6 +48,8 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
     val isLogOut: MutableLiveData<Boolean> = MutableLiveData()
 
+    val isRecord: MutableLiveData<Boolean> = MutableLiveData()//是否已读成功
+
     val chatMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
     val sendMessage: MutableLiveData<MutableList<ChatMessage>> = MutableLiveData()
     val loginConfig: MutableLiveData<LoginConfig> = MutableLiveData()
@@ -148,12 +150,21 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
     /**
      *
+     * @param senderUserId String 接收者（雇主）
+     * @return 是否成功已读
+     */
+    fun isRecord(senderUserId: String) = viewModelScope.launch {
+        val rep = userRepository.isRecord(senderUserId)//标记已读消息
+        handleApiResponse(rep, isRecord)
+    }
+
+    /**
+     *
      * @param receiveId String 接收者（雇主）
      * @return 合并双方的发送消息
      */
     fun apiSend(receiveId: String, content: String, type: Int) = viewModelScope.launch {
         val rep = userRepository.sendRecord(receiveId, content, type)//我发送的消息
-
         handleApiListResponse(rep, sendMessage)
     }
 

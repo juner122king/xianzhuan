@@ -74,6 +74,19 @@ interface ApiService {
     ): Call<ApiResponse<ListData<ChatMessage>>>
 
 
+    /**
+     *
+     * @param senderUserId String 消息发送人ID
+     * @param token String
+     * @return Call<ApiResponse<ListData<ChatMessage>>>
+     */
+    @PUT("/dxz/app/user/contact/record")  //消息标记已读
+    fun isRecord(
+        @Query("senderUserId") senderUserId: String,
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Boolean>>
+
+
     @GET("/dxz/app/task/page/details/")//获取任务详情
     fun getTaskInfo(
         @Query("taskId") id: String,
@@ -240,7 +253,7 @@ interface ApiService {
     ): Call<ApiResponse<Config>>
 
 
-    @GET("/dxz/app/sys/config/SYSTEM/AD")// 关注企业微信配置信息
+    @GET("/dxz/app/sys/config/SYSTEM/AD")// 广告配置信息
     fun apiADConfig(
         @Header("Authorization") token: String
     ): Call<ApiResponse<Config>>

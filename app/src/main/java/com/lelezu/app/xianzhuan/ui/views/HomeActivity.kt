@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -118,6 +119,14 @@ class HomeActivity : BaseActivity() {
                 "4" -> viewPager.currentItem = 3
             }
         }
+
+        //去掉长按吐司
+
+        val bottomNavView: View = bottomNavigationView.getChildAt(0)
+        bottomNavView.findViewById<View>(R.id.navigation_home).setOnLongClickListener { true }
+        bottomNavView.findViewById<View>(R.id.navigation_dashboard).setOnLongClickListener { true }
+        bottomNavView.findViewById<View>(R.id.navigation_notifications).setOnLongClickListener { true }
+        bottomNavView.findViewById<View>(R.id.navigation_my).setOnLongClickListener { true }
     }
 
     private fun initData() {

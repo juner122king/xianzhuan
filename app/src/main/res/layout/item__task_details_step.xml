@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
-        android:text="进去页面后右上角三条杠，分享二维码点进去。"
+        android:text=""
         android:textColor="@color/black2"
         android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@id/tv_step"
@@ -189,10 +189,10 @@
         android:id="@+id/view_type5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-
         android:layout_marginTop="10dp"
+
         android:layout_marginBottom="10dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
         app:layout_constraintTop_toBottomOf="@id/tv_step_text">
 
@@ -228,5 +228,16 @@
             app:layout_constraintStart_toStartOf="@id/tv_miniapp_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/iv_no_sign_up"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_task_no_signup"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/tv_step_text"
+        app:layout_constraintTop_toBottomOf="@id/tv_step_text" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

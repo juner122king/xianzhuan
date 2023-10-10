@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -20,9 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.ChatAdapter
-import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
-import com.lelezu.app.xianzhuan.utils.LogUtils
 
 class ChatActivity : BaseActivity() {
     //vip头像等级框图片
@@ -118,7 +115,6 @@ class ChatActivity : BaseActivity() {
     private fun initObserve() {
         showLoading()
         loginViewModel.getUserInfo(userId)//获取商家信息
-
         loginViewModel.userInfo.observe(this) {
 
 
@@ -135,7 +131,7 @@ class ChatActivity : BaseActivity() {
         }
 
 
-        loginViewModel.apiRecord(userId)
+        loginViewModel.apiRecord(userId)//获取双方聊天记录
         loginViewModel.chatMessage.observe(this) {
 
             adapter.updateData(it)
@@ -168,6 +164,9 @@ class ChatActivity : BaseActivity() {
             tv_sub.text = "${it.concernCnt}关注"
 
         }
+
+
+        loginViewModel.isRecord(userId)//标记消息已读
     }
 
 
