@@ -3,13 +3,11 @@ package com.lelezu.app.xianzhuan.ui.views
 import android.content.Intent
 import android.net.Uri
 import android.net.http.SslError
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
-import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
