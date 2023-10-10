@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.hjq.toast.ToastUtils;
+import com.lelezu.app.xianzhuan.ui.views.WebViewActivity;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
@@ -18,7 +19,6 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
  * @description:
  */
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
-
     private IWXAPI api;
 
     @Override
@@ -43,19 +43,22 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onResp(BaseResp resp) {
 
-
-        if (resp.errCode != 0 && resp.errCode != -2) {
-            ToastUtils.show("微信支付失败, errCode：" + resp.errCode);
-        }
-
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 
             if (resp.errCode == 0) {
                 // PaySuccess(this);	// 可在此处，添加应用自己的支付结果统计相关逻辑
-                ToastUtils.show("微信支付成功");
-            } else if (resp.errCode == -2) ToastUtils.show("用户取消支付");
-            else ToastUtils.show("支付失败，其他异常情形");
+                ToastUtils.show("微信支付成功！type:" + resp.errCode);
+            } else if (resp.errCode == -2) {
+                ToastUtils.show("用户取消支付 type:" + resp.errCode);
+            } else {
+                ToastUtils.show("支付失败，其他异常情形 type:" + resp.errCode);
+            }
+            Intent intent = new Intent(this, WebViewActivity.class);
+            intent.putExtra("type", resp.errCode);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         }
+
 
         this.finish();
 

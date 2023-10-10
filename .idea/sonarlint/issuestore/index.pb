@@ -118,8 +118,6 @@ l
 <app/src/main/java/com/lelezu/app/xianzhuan/wxapi/WxData.java,7\3\731e71d36993e1d98be08865d8187ff5d2701033
 k
 ;app/src/main/java/com/lelezu/app/xianzhuan/MyApplication.kt,3\8\38d9059c3d7dc67ec6a7fcb1792072f8f2379998
-s
-Capp/src/main/java/com/lelezu/app/xianzhuan/wxapi/WXEntryActivity.kt,6\f\6f614c78ed06e58cdee7c4f6fcd7ac6d5a00f7c7
 
 Oapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/TaskSearchResultActivity.kt,a\d\adbcc7ce91a02c404d3008d25f0989fa8ada62a8
 p
@@ -144,8 +142,6 @@ w
 Gapp/src/main/java/com/lelezu/app/xianzhuan/ui/fragments/MainFragment.kt,5\9\5964de3425c92694046985d063feb287c18b7554
 y
 Iapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskUploadVerify.kt,c\3\c3505fe5441dcd789b6da9ad70cd1fb46d7651ed
-m
-=app/src/main/java/com/lelezu/app/xianzhuan/wxapi/WxLogin.java,c\b\cbdf872b8e7730778d86c057f57db8dc5a64dd8c
 u
 Eapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/CustomLogoView.kt,e\1\e1871d867dd9fc9ed5487b4914c11358f1343a16
 }

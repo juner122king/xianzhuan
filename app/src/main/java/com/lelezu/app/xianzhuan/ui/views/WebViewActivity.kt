@@ -294,4 +294,26 @@ class WebViewActivity : BaseActivity() {
             finish()
         }
     }
+
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        LogUtils.i("webview", "onNewIntent")
+        // 处理WX支付结果
+        handleIntent(intent)
+
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        intent?.let {
+            val extraData = it.getStringExtra("type")
+            LogUtils.i("webview", "type:$extraData")
+            if (!extraData.isNullOrEmpty()) {
+                // 处理 extraData，执行相应的操作
+                wv.callHandler("onWXPay", extraData, null)
+            }
+        }
+    }
+
+
 }
