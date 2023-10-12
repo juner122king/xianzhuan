@@ -18,11 +18,13 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isDataUrl
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link13
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link16
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link5
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link6
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link8
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
@@ -37,6 +39,7 @@ class WebViewActivity : BaseActivity() {
 
     private var isWebViewloadError = false //记录webView是否已经加载出错
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         wv = findViewById(R.id.webView)
@@ -46,7 +49,7 @@ class WebViewActivity : BaseActivity() {
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
 
-        if (link == link11 || link == link5) {  //link5：发布任务
+        if (link == link11 || link == link5|| link == link6) {  //link5：发布任务
             setWebViewTitle()
         }
 
@@ -90,8 +93,14 @@ class WebViewActivity : BaseActivity() {
     }
 
     private fun loadSimplePage() {
-        wv.setInitialScale(200)
-        wv.loadUrl(link)
+        if (intent.getBooleanExtra(isDataUrl, false)) {
+            //加载富文本
+            wv.setInitialScale(200)
+            wv.loadDataWithBaseURL(null, link, "text/html", "utf-8", null);
+        } else {
+            wv.setInitialScale(200)
+            wv.loadUrl(link)
+        }
     }
 
     private fun setupWebView() {

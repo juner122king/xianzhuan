@@ -102,7 +102,7 @@ class TaskDetailsStepAdapter(
             holder.viewUrl.visibility = View.GONE
             holder.llminiP.visibility = View.GONE
             holder.view_type5.visibility = View.GONE
-        }else{
+        } else {
             holder.iv_no_sign_up.visibility = View.GONE
             //根据步骤类型，区别显示
             when (item.stepType) {
@@ -180,7 +180,6 @@ class TaskDetailsStepAdapter(
         }
 
 
-
         // 判断是否为整个 RecyclerView 的最后一个项
         if (position == itemCount - 1) {
             // 针对最后一个项进行特殊处理
@@ -211,7 +210,7 @@ class TaskDetailsStepAdapter(
         imageView.layoutParams = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        ImageViewUtil.load(imageView, any)
+        ImageViewUtil.loadFall(imageView, any)
 
         imageView.setOnClickListener {
             ivDialog.dismiss()

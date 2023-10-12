@@ -12,7 +12,7 @@ class MessageActivity : BaseActivity() {
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
     private lateinit var adapter: MessageItemAdapter
-
+    private lateinit var msgIds: List<String>//未读id集合
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class MessageActivity : BaseActivity() {
             // 停止刷新动画
             swiper.isRefreshing = false
             adapter.updateData(it)
-
+            msgIds = it.filter { !it.isRead }.map { it.msgId }
         }
         sysMessageViewModel.getMessageList()
 
@@ -63,6 +63,11 @@ class MessageActivity : BaseActivity() {
         }
 
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        sysMessageViewModel.markSysMessage(msgIds)
     }
 
     override fun getLayoutId(): Int {

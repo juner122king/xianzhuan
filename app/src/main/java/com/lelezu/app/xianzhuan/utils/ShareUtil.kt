@@ -27,6 +27,9 @@ object ShareUtil {
     private const val APP_NETWORK_IS_CONNECTED: String = "IS_CONNECTED"//网络是否连接
 
 
+     const val CHECKED_NEW_VISON: String = "CHECKED_NEW_VISON"//是否询问过更新版本
+
+
     const val APP_PRIVACY_AGREEMENT_AGREE: String = "PRIVACY_AGREEMENT"//是否同意隐私协议
     const val APP_USER_AGREEMENT_AGREE: String = "USER_AGREEMENT"//是否同意用户协议
 
@@ -136,7 +139,6 @@ object ShareUtil {
         )
         //保存登录id
         putString(APP_SHARED_PREFERENCES_LOGIN_ID, loginReP.userId) //保存用户id
-
 
 
         //保存登录状态

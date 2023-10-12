@@ -20,6 +20,7 @@ object WebViewSettings {
     var URL_TITLE = "URL_TITLE"
 
     var isProcessing = "isProcessing"
+    var isDataUrl = "isDataUrl"//是否富文本
     private var host = "$HOST/statics/dxz/h5/pages"
 
     var link100 = "$host/agreement/user"//《用户使用协议》
@@ -30,7 +31,7 @@ object WebViewSettings {
 
     var link1 = "$host/index/dailyRewards/dailyRewards"
     var link2 = "$host/index/newcomerRewards/newcomerRewards"
-    var link3 = "$host/apprentice/index"
+    var link3 = "$host/apprentice/index"//收徒赚钱
     var link4 = "$host/apprentice/apprenticeIncome/index" //我的-收徒收益
     var link5 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务
     var link51 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务-编辑任务

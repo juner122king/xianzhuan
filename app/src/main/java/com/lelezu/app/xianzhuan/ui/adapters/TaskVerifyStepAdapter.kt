@@ -178,7 +178,7 @@ class TaskVerifyStepAdapter(
         imageView.layoutParams = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        ImageViewUtil.load(imageView, any)
+        ImageViewUtil.loadFall(imageView, any)
 
         imageView.setOnClickListener {
             ivDialog.dismiss()

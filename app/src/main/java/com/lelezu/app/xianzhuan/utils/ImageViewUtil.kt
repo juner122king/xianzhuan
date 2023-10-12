@@ -1,7 +1,9 @@
 package com.lelezu.app.xianzhuan.utils
 
 import android.widget.ImageView
+import coil.ImageLoader
 import coil.load
+import coil.request.CachePolicy
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
@@ -26,9 +28,21 @@ object ImageViewUtil {
                         roundedCorners, roundedCorners, roundedCorners, roundedCorners
                     )
                 )
+                scale(Scale.FIT)
             }
         }
     }
+
+    //任务详情里的全屏图加载
+    fun loadFall(imageView: ImageView, any: Any) {
+            imageView.load(any) {
+                crossfade(true)//淡出淡入
+            }
+
+    }
+
+
+
 
     fun loadWH(imageView: ImageView, any: Any) {
 
@@ -38,17 +52,27 @@ object ImageViewUtil {
         }
     }
 
-    fun loadCircleCrop(imageView: ImageView, any: Any?) {
-        if (any != null) {
-            imageView.load(any) {
-                crossfade(true)
-                //placeholder(R.drawable.placeholder) 设置占位图
-                transformations(CircleCropTransformation())//圆形切图
-                scale(Scale.FILL)
-            }
-        }
-    }
+    /**
+     *
+     * @param imageView ImageView
+     * @param any Any
+     * @param enableCache Boolean 是否开启缓存
+     */
+    fun loadCircleCrop(imageView: ImageView, any: Any?, enableCache: Boolean = true) {
 
+        val imageLoader = ImageLoader.Builder(imageView.context)
+            .memoryCachePolicy(if (enableCache) CachePolicy.ENABLED else CachePolicy.DISABLED)
+            .diskCachePolicy(if (enableCache) CachePolicy.ENABLED else CachePolicy.DISABLED).build()
+
+
+        imageView.load(any, imageLoader = imageLoader) {
+            crossfade(true)
+            //placeholder(R.drawable.placeholder) 设置占位图
+            transformations(CircleCropTransformation())//圆形切图
+            scale(Scale.FILL)
+        }
+
+    }
 
 
 }

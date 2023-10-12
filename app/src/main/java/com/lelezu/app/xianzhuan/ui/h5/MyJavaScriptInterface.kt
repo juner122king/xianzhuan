@@ -21,7 +21,7 @@ class MyJavaScriptInterface(private val context: Activity) {
                 //获取权限成功
                 // 调用保存图片的方法
                 ToastUtils.show("图片保存成功")
-                (context as HomeActivity).saveImageToSystem(imageUrl)
+                (context as HomeActivity).saveImageToSystem(imageUrl,"dxz_share_pic")
             }
 
             override fun onDenied(permissions: MutableList<String>, never: Boolean) {
@@ -49,9 +49,7 @@ class MyJavaScriptInterface(private val context: Activity) {
 
     @JavascriptInterface
     fun openApprenticeRule() {
-
         ToastUtils.show("跳转合伙人规则页面")
-
     }
 
 }

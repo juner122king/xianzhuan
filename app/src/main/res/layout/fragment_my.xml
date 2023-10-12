@@ -104,10 +104,37 @@
                     <ImageView
                         android:id="@+id/iv_vip_level"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="11dp"
                         android:layout_marginTop="5dp"
                         app:layout_constraintStart_toStartOf="@id/tv_user_id"
                         app:layout_constraintTop_toBottomOf="@id/tv_user_id" />
+
+                    <FrameLayout
+                        android:id="@+id/pb_v"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_vip_level"
+                        app:layout_constraintStart_toEndOf="@id/iv_vip_level"
+                        app:layout_constraintTop_toTopOf="@id/iv_vip_level">
+
+                        <ProgressBar
+                            android:id="@+id/pb"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="80dp"
+                            android:layout_height="11dp"
+                            android:progressDrawable="@drawable/custom_progress_bar" />
+
+                        <TextView
+                            android:id="@+id/tv_pb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:textColor="@color/white"
+                            android:textSize="8sp" />
+
+                    </FrameLayout>
+
 
                     <ImageView
                         android:id="@+id/iv_user_vip"

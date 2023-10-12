@@ -37,6 +37,9 @@ class HomeActivity : BaseActivity() {
 
 
         showHomeView()
+
+        //检查新版本
+        checkNewV()
     }
 
 
@@ -125,7 +128,8 @@ class HomeActivity : BaseActivity() {
         val bottomNavView: View = bottomNavigationView.getChildAt(0)
         bottomNavView.findViewById<View>(R.id.navigation_home).setOnLongClickListener { true }
         bottomNavView.findViewById<View>(R.id.navigation_dashboard).setOnLongClickListener { true }
-        bottomNavView.findViewById<View>(R.id.navigation_notifications).setOnLongClickListener { true }
+        bottomNavView.findViewById<View>(R.id.navigation_notifications)
+            .setOnLongClickListener { true }
         bottomNavView.findViewById<View>(R.id.navigation_my).setOnLongClickListener { true }
     }
 
@@ -157,20 +161,6 @@ class HomeActivity : BaseActivity() {
         return false
     }
 
-    //保存图片方法
-    fun saveImageToSystem(imageUrl: String) {
-
-        val imageName = "lelezu_pic"
-
-
-        val request = DownloadManager.Request(Uri.parse(imageUrl))
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$imageName.jpg")
-
-        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        downloadManager.enqueue(request)
-    }
-
 
     private val downloadReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -188,7 +178,7 @@ class HomeActivity : BaseActivity() {
         // 注册广播接收器
         val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         registerReceiver(downloadReceiver, intentFilter)
-        saveImageToSystem(imageUrl)
+        saveImageToSystem(imageUrl, "dxz_share_pic")
 
 
     }
@@ -224,4 +214,10 @@ class HomeActivity : BaseActivity() {
     }
 
 
+    private fun checkNewV() {
+        if (!ShareUtil.getBoolean(ShareUtil.CHECKED_NEW_VISON)) {//未询问过更新版本
+            //检查新版本
+            sysMessageViewModel.detection()
+        }
+    }
 }

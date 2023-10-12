@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
@@ -37,11 +38,25 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         "V2" to R.drawable.icon_vip2,
         "V3" to R.drawable.icon_vip3,
         "V4" to R.drawable.icon_vip4,
-        "V5" to R.drawable.icon_vip4,
-        "V6" to R.drawable.icon_vip5,
-        "V7" to R.drawable.icon_vip6,
+        "V5" to R.drawable.icon_vip5,
+        "V6" to R.drawable.icon_vip6,
+        "V7" to R.drawable.icon_vip7,
         "V8" to R.drawable.icon_vip8,
         "V9" to R.drawable.icon_vip9,
+    )
+
+    //vip等级经验值区间最大值
+    private var vipLevel_max_l = mapOf(
+        "V0" to 500,
+        "V1" to 1500,
+        "V2" to 3000,
+        "V3" to 5000,
+        "V4" to 8000,
+        "V5" to 12000,
+        "V6" to 17000,
+        "V7" to 30000,
+        "V8" to 40000,
+        "V9" to 50000,
     )
 
 
@@ -49,6 +64,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     private lateinit var llNotice: View//公告栏区域
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
     private lateinit var vipLevel: ImageView//vip等级icon
+
+    private lateinit var pb: ProgressBar//经验进度条
+    private lateinit var tv_pb: TextView//经验值显示
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -59,6 +77,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vipLevel = view.findViewById(R.id.iv_vip_level)
+
+        pb = view.findViewById(R.id.pb)
+        tv_pb = view.findViewById(R.id.tv_pb)
 
         view.findViewById<View>(R.id.iv_op).setOnClickListener(this)
         view.findViewById<View>(R.id.iv_message).setOnClickListener(this)
@@ -112,7 +133,9 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text2).text = it.balanceAmount.toString()
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.rechargeAmount.toString()
             LogUtils.i("头像LINK:", it.headImageUrl)
-            ImageViewUtil.loadCircleCrop(view.findViewById(R.id.iv_user_pic), it.headImageUrl)
+            ImageViewUtil.loadCircleCrop(
+                view.findViewById(R.id.iv_user_pic), it.headImageUrl, false
+            )
 
 
             val id = it.userId
@@ -124,11 +147,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             }
 
             //处理用户vip等级icon
-
             vippic[it.level]?.let { it1 -> vipLevel.setImageResource(it1) }
-
-
-
             when (it.vipLevel) {
                 0 -> {
                     view.findViewById<ImageView>(R.id.btm_vip)
@@ -154,6 +173,15 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
                 }
             }
+
+
+            //处理用户vip等级经验值进度
+            val userAward = it.taskAward//用户当前经验值
+            val maxAward = vipLevel_max_l[it.level]//当前用户等级的最大经验值
+            val progress = (userAward * 100 / maxAward!!).toInt() // 计算进度百分比
+            pb.progress = progress
+
+            tv_pb.text = "${userAward}/${maxAward}"
 
 
             val materID = it.recommendUserId
@@ -202,6 +230,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                     )
                     intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
                     intent.putExtra(WebViewSettings.isProcessing, false)
+                    intent.putExtra(WebViewSettings.isDataUrl, true)
                     startActivity(intent)
                 }
             } else {
@@ -309,7 +338,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
                     R.id.ll_l3 -> {
                         intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link6)
-                        intent.putExtra(WebViewSettings.URL_TITLE, "我的店铺")
+                        intent.putExtra(WebViewSettings.URL_TITLE, "我的店铺")//我的店铺
                     }
 
                     R.id.ll_l4, R.id.tv_my_text4 -> {

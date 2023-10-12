@@ -38,15 +38,8 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
                 //有新版本
                 findViewById<View>(R.id.tv_newVersion).visibility = View.VISIBLE
                 apkUrl = it.download
-
-                showDialog()
             }
-
         }
-
-        val pInfo = packageManager.getPackageInfo(packageName, 0)
-        ShareUtil.putString(versionName, pInfo.versionName)
-        ShareUtil.putInt(versionCode, pInfo.versionCode)
     }
 
 
@@ -80,7 +73,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
 
             R.id.tv_newVersion -> {
                 //询问权限
-                showDialog()
+                showDownDialog()
             }
 
             R.id.tv_url -> {
@@ -91,74 +84,8 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
                 intent.putExtra(WebViewSettings.isProcessing, false)
                 startActivity(intent)
 
-//                onWXPay("100")
-
             }
-
         }
-    }
-
-    //询问权限
-    private fun onUpData() {
-        MyPermissionUtil.storageApply(this, object : OnPermissionCallback {
-            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) startDownload()
-                else showToast("获取部分权限成功，但部分权限未正常授予")
-            }
-
-            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
-                //权限失败
-                showToast("您已拒绝授权，更新失败！")
-            }
-        })
-    }
-
-    private fun showDialog() {
-        dialog = Dialog(this)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.setContentView(R.layout.dialog_download)
-
-        progressBar = dialog.findViewById(R.id.progressBar)
-        val btnDownload: TextView = dialog.findViewById(R.id.btnDownload)
-        val btnDownloadNo: TextView = dialog.findViewById(R.id.btnDownloadNo)
-
-        btnDownload.setOnClickListener {
-            // 在点击下载按钮时执行下载操作
-
-            onUpData()
-
-        }
-        btnDownloadNo.setOnClickListener {
-            // 在点击下载按钮时执行下载操作
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    private fun startDownload() {
-        progressBar.visibility = View.VISIBLE
-        sysMessageViewModel.downloadApk(apkUrl)
-        sysMessageViewModel.downloadProgress.observe(this) {
-            // 更新进度条
-            progressBar.progress = it
-
-        }
-        sysMessageViewModel.apkPath.observe(this) {
-            dialog.dismiss()
-            //安装apk
-            openFileWithFilePath(it)
-        }
-    }
-
-    private fun openFileWithFilePath(filePath: String) {
-        val file = File(filePath)
-        val uri = FileProvider.getUriForFile(this, "com.lelezu.app.xianzhuan.fileprovider", file)
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(uri, "application/vnd.android.package-archive")
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivity(intent)
     }
 
 

@@ -10,6 +10,7 @@ import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
@@ -38,7 +39,7 @@ class NotificaFragment : Fragment() {
 
         wv.loadUrl(link3)//最后才load
 
-        wv.webViewClient = object : WebViewClient() {
+        wv.webViewClient = object : BridgeWebViewClient(wv) {
             override fun onLoadResource(view: WebView?, url: String?) {
                 super.onLoadResource(view, url)
                 onIsShowBack()

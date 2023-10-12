@@ -46,15 +46,14 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 
             if (resp.errCode == 0) {
-                // PaySuccess(this);	// 可在此处，添加应用自己的支付结果统计相关逻辑
-                ToastUtils.show("微信支付成功！type:" + resp.errCode);
+//                ToastUtils.show("微信支付成功！type:" + resp.errCode);
             } else if (resp.errCode == -2) {
-                ToastUtils.show("用户取消支付 type:" + resp.errCode);
+//                ToastUtils.show("用户取消支付 type:" + resp.errCode);
             } else {
-                ToastUtils.show("支付失败，其他异常情形 type:" + resp.errCode);
+//                ToastUtils.show("支付失败，其他异常情形 type:" + resp.errCode);
             }
             Intent intent = new Intent(this, WebViewActivity.class);
-            intent.putExtra("type", resp.errCode);
+            intent.putExtra("type", String.valueOf(resp.errCode));
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         }

@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.app.Activity
 import android.app.Dialog
+import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.ClipDescription
 import android.content.ClipboardManager
@@ -11,6 +12,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.ContextMenu
 import android.view.View
@@ -22,6 +24,9 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import androidx.core.widget.ContentLoadingProgressBar
+import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
@@ -31,8 +36,10 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import java.io.File
 
 
 /**
@@ -63,6 +70,12 @@ abstract class BaseActivity : AppCompatActivity() {
         SysMessageViewModel.ViewFactory((application as MyApplication).sysInformRepository)
     }
 
+    private lateinit var dialog: Dialog
+
+    // 替换为你的 APK 下载链接和文件名
+    private lateinit var apkUrl: String
+    private lateinit var progressBar: ContentLoadingProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootView = View.inflate(this, R.layout.activity_title, null)
@@ -89,8 +102,87 @@ abstract class BaseActivity : AppCompatActivity() {
         attributes.height = WindowManager.LayoutParams.MATCH_PARENT
         ivDialog.window?.attributes = attributes
 
+
+        sysMessageViewModel.version.observe(this) {
+            if (it.isNew) {
+                //有新版本
+                apkUrl = it.download
+
+                showDownDialog()
+            }
+
+        }
+
+        val pInfo = packageManager.getPackageInfo(packageName, 0)
+        ShareUtil.putString(ShareUtil.versionName, pInfo.versionName)
+        ShareUtil.putInt(ShareUtil.versionCode, pInfo.versionCode)
+
     }
-    //监听token失效
+
+    protected fun showDownDialog() {
+        dialog = Dialog(this)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_download)
+
+        progressBar = dialog.findViewById(R.id.progressBar)
+        val btnDownload: TextView = dialog.findViewById(R.id.btnDownload)
+        val btnDownloadNo: TextView = dialog.findViewById(R.id.btnDownloadNo)
+
+        btnDownload.setOnClickListener {
+            // 在点击下载按钮时执行下载操作
+
+            onUpData()
+
+        }
+        btnDownloadNo.setOnClickListener {
+            // 在点击下载按钮时执行下载操作
+            dialog.dismiss()
+            ShareUtil.putBoolean(ShareUtil.CHECKED_NEW_VISON, true)
+        }
+
+        dialog.show()
+    }
+
+    //询问权限
+    private fun onUpData() {
+        MyPermissionUtil.storageApply(this, object : OnPermissionCallback {
+            override fun onGranted(permissions: MutableList<String>, all: Boolean) {
+                if (all) startDownload()
+                else showToast("获取部分权限成功，但部分权限未正常授予")
+            }
+
+            override fun onDenied(permissions: MutableList<String>, never: Boolean) {
+                //权限失败
+                showToast("您已拒绝授权，更新失败！")
+            }
+        })
+    }
+
+    private fun startDownload() {
+        progressBar.visibility = View.VISIBLE
+        sysMessageViewModel.downloadApk(apkUrl)
+        sysMessageViewModel.downloadProgress.observe(this) {
+            // 更新进度条
+            progressBar.progress = it
+
+        }
+        sysMessageViewModel.apkPath.observe(this) {
+            dialog.dismiss()
+            //安装apk
+            openFileWithFilePath(it)
+        }
+    }
+
+    private fun openFileWithFilePath(filePath: String) {
+        val file = File(filePath)
+        val uri = FileProvider.getUriForFile(this, "com.lelezu.app.xianzhuan.fileprovider", file)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, "application/vnd.android.package-archive")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(intent)
+    }
+
 
     //重新打开登录页面
     private fun goToLoginView() {
@@ -167,8 +259,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun toHome() {
         val intent = Intent(MyApplication.context, HomeActivity::class.java)
-        intent.flags =
-            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
@@ -381,8 +472,9 @@ abstract class BaseActivity : AppCompatActivity() {
         menu?.add(0, 2, 1, "取消")
 
         menu!!.getItem(0).setOnMenuItemClickListener {
-            showToast("保存图片")
+            showToast("保存成功")
             //进行保存图片操作
+            saveImageToSystem(ShareUtil.getString(ShareUtil.APP_TASK_PIC_DOWN_URL), "dxz_task_pic")
             true
         }
 
@@ -435,8 +527,16 @@ abstract class BaseActivity : AppCompatActivity() {
         LogUtils.i("跳转系统信息页面")
         goToSysMessageActivity()
 
-
     }
 
+    fun saveImageToSystem(imageUrl: String, imageName: String) {
 
+
+        val request = DownloadManager.Request(Uri.parse(imageUrl))
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$imageName.jpg")
+
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)
+    }
 }

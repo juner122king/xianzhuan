@@ -52,7 +52,7 @@ open class BaseViewModel : ViewModel() {
 
             is ApiErrorResponse -> {
                 // 处理错误的响应
-                failedResponse(r, r.error!!.message)
+//                failedResponse(r, r.error!!.message)
             }
         }
     }
@@ -85,7 +85,7 @@ open class BaseViewModel : ViewModel() {
 
             is ApiErrorResponse -> {
                 // 处理错误的响应
-                failedResponse(r, r.error!!.message)
+//                failedResponse(r, r.error!!.message)
             }
         }
     }

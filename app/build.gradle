@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         ndk {
-            abiFilters  "armeabi-v7a","arm64-v8a","x86"
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86"
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -122,7 +122,8 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"//下拉刷新的界面模式
 
     ////三方SDK
-    implementation 'com.github.lzyzsd:jsbridge:1.0.4'//jsbridge H5交互 https://juejin.cn/post/6844903885555892232#heading-12
+    implementation 'com.github.lzyzsd:jsbridge:1.0.4'
+//jsbridge H5交互 https://juejin.cn/post/6844903885555892232#heading-12
 
 
     api 'com.tencent.mm.opensdk:wechat-sdk-android:+'//微信 SDK
@@ -167,7 +168,12 @@ dependencies {
 
     implementation(name: 'zj_sdk_2.4.15', ext: 'aar')
     implementation(name: 'moku-planet-api-native-sdk-release-1.6.2', ext: 'aar')
+
     implementation(name: 'zj-tasklibrary-release-1.1.9.0', ext: 'aar')
+
+    // 2023/10/11 供应商要求替换掉zj-tasklibrary-release-1.1.9.0
+//    implementation(name: 'zj-task-1.1.10.0', ext: 'aar')
+
     implementation(name: 'zj_ywsdk_1.1.7', ext: 'aar')
 //    // AndroidX 工程需要添加
     implementation 'androidx.appcompat:appcompat:1.2.0'

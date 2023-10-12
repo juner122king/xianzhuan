@@ -27,13 +27,13 @@ class RefreshRecycleView @JvmOverloads constructor(
 
 
     private var isLoadMore //加载更多标志
-            : Boolean? = null
+            : Boolean = false
     private var isLoadEnd //加载到最后的标志
-            : Boolean? = null
+            : Boolean = false
     private var isLoadStart //顶部的标志
-            : Boolean? = null
+            : Boolean = false
     private var isRefresh //下拉刷新标志
-            : Boolean? = null
+            : Boolean = false
     private var listener //事件监听
             : IOnScrollListener? = null
     private var mLastY //监听移动的位置
@@ -97,9 +97,9 @@ class RefreshRecycleView @JvmOverloads constructor(
      * 加载数据
      */
     private fun loadData() {
-        if (isLoadEnd!!) {
+        if (isLoadEnd) {
             // 判断是否已加载所有数据
-            if (isLoadMore!!) { //未加载完所有数据，加载数据，并且还原isLoadEnd值为false，重新定位列表底部
+            if (isLoadMore) { //未加载完所有数据，加载数据，并且还原isLoadEnd值为false，重新定位列表底部
                 if (getListener() != null) {
                     getListener()!!.onLoadMore()
                     nowAction = mORELoad
@@ -111,8 +111,8 @@ class RefreshRecycleView @JvmOverloads constructor(
                 }
             }
             isLoadEnd = false
-        } else if (isLoadStart!!) {
-            if (isRefresh!!) {
+        } else if (isLoadStart) {
+            if (isRefresh) {
                 if (getListener() != null) {
                     getListener()!!.onRefresh()
                     nowAction = mEFRESHLoad
@@ -165,28 +165,15 @@ class RefreshRecycleView @JvmOverloads constructor(
         this.listener = listener
     }
 
-    fun getLoadMore(): Boolean? {
-        return isLoadMore
-    }
-
     //设置是否支持加载更多
-    fun setLoadMoreEnable(loadMore: Boolean?) {
+    fun setLoadMoreEnable(loadMore: Boolean) {
         isLoadMore = loadMore
     }
 
-    fun getRefresh(): Boolean? {
-        return isRefresh
-    }
-
     //设置是否支持下拉刷新
-    fun setRefreshEnable(refresh: Boolean?) {
+    fun setRefreshEnable(refresh: Boolean) {
         isRefresh = refresh
     }
-
-    fun isLoadMore(): Boolean { //是否是加载动作
-        return nowAction == mORELoad
-    }
-
     fun isRefresh(): Boolean {//是否是刷新动作
         return nowAction == mEFRESHLoad
     }
