@@ -23,6 +23,7 @@ import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.model.Version
+import com.lelezu.app.xianzhuan.data.model.Vip
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -257,5 +258,10 @@ interface ApiService {
     fun apiADConfig(
         @Header("Authorization") token: String
     ): Call<ApiResponse<Config>>
+
+    @GET("/dxz/app/user/vip/rest")// 会员过期时间
+    fun vipRest(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Vip>>
 
 }

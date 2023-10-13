@@ -63,7 +63,7 @@ abstract class BaseActivity : AppCompatActivity() {
         LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
     }
 
-    protected val homeViewModel: HomeViewModel by viewModels {
+    val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
     }
     protected val sysMessageViewModel: SysMessageViewModel by viewModels {
@@ -170,6 +170,8 @@ abstract class BaseActivity : AppCompatActivity() {
             dialog.dismiss()
             //安装apk
             openFileWithFilePath(it)
+            ShareUtil.cleanInfo()
+
         }
     }
 

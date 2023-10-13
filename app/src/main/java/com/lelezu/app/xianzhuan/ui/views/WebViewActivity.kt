@@ -162,19 +162,11 @@ class WebViewActivity : BaseActivity() {
             override fun onReceivedSslError(
                 view: WebView?, handler: SslErrorHandler?, error: SslError?
             ) {
-//                super.onReceivedSslError(view, handler, error)
 
                 handler!!.proceed()
 
                 showERRView()
             }
-
-//            override fun onPageFinished(view: WebView?, url: String?) {
-//                super.onPageFinished(view, url)
-//                //页面加载成功
-//                LogUtils.i("webview", "页面加载成功url:$url")
-//                showWebView()
-//            }
 
         }
 

@@ -29,6 +29,8 @@ object ShareUtil {
 
      const val CHECKED_NEW_VISON: String = "CHECKED_NEW_VISON"//是否询问过更新版本
 
+     const val CHECKED_FXTS: String = "CHECKED_FXTS"//是否询问过风险提示
+
 
     const val APP_PRIVACY_AGREEMENT_AGREE: String = "PRIVACY_AGREEMENT"//是否同意隐私协议
     const val APP_USER_AGREEMENT_AGREE: String = "USER_AGREEMENT"//是否同意用户协议
@@ -44,6 +46,7 @@ object ShareUtil {
     //用户登录
     const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
+    const val APP_SHARED_PREFERENCES_DEVICE_ID: String = "deviceId"
     const val APP_hasRewardNewerAward: Boolean = false
     const val APP_SHARED_PREFERENCES_RECOMMEND_USERID: String = "recommendUserId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"

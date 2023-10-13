@@ -6,6 +6,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN
 
 
@@ -46,6 +47,8 @@ object WebViewSettings {
     var link13 = "$host/member/index" //开通会员
 
     var link16 = "$host/followGzhOrWechat/index" //新人奖励页面
+    var link17 = "$host/pages/shareToProfit/index" //接单规则2
+
 
     var link15 = "https://beian.miit.gov.cn/" //公安备案网站
 
@@ -83,9 +86,17 @@ object WebViewSettings {
         cookieManager.setAcceptCookie(true)     // 允许接受 Cookie
         // 跨域cookie读取
         cookieManager.setAcceptThirdPartyCookies(webView, true)
-        cookieManager.setCookie(
-            host, ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
-        )
+
+        // 设置第一个 cookie
+        val host1 = host
+        val cookie1 = ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+        val cookie2= "Device="+ShareUtil.getString(APP_SHARED_PREFERENCES_DEVICE_ID)
+        cookieManager.setCookie(host1, cookie1)
+        cookieManager.setCookie(host1, cookie2)
+
+
+
+
         cookieManager.flush()
 
 

@@ -18,4 +18,6 @@ open class ApiResponse<T>(
         get() = code == "000000"
     val isTokenLose: Boolean
         get() = code == "300002" || code == "300003" || code == "300004"
+    val isRepeatLogin: Boolean //重复登录
+        get() = code == "300005"
 }

@@ -44,7 +44,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
         val call = apiService.detection(
             ShareUtil.getVersionCode().toString(),
             ShareUtil.getVersionName(),
-            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            loginToken
         )
         executeApiCall(call)
     }
