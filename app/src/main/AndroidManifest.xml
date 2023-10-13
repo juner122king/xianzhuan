@@ -85,6 +85,7 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".ui.views.MyTaskActivity"
             android:exported="false"

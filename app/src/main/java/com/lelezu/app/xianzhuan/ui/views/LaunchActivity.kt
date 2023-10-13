@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -56,6 +57,7 @@ class LaunchActivity : BaseActivity() {
         initView()
         initData()
         showLogo()
+        getDeviceID()
 
         //拦截返回键
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -92,11 +94,23 @@ class LaunchActivity : BaseActivity() {
         sysMessageViewModel.apiADConfig()
         //加载广告页面
         sysMessageViewModel.adconfig.observe(this) {
-            ImageViewUtil.load(aDView, it.confValue.pics[0])
+            ImageViewUtil.load(aDView, it.confValue.images[0])
         }
 
     }
-    private fun showLogo(){
+
+    private fun getDeviceID() {
+        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+
+        //保存登录androidId
+        ShareUtil.putString(
+            ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID, androidId
+        )
+    }
+
+
+    private fun showLogo() {
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
                 showTaskView()//显示广告
@@ -109,6 +123,7 @@ class LaunchActivity : BaseActivity() {
         }, cd2)//显示一秒logo
 
     }
+
 
     //显示广告页面
     private fun showTaskView() {
@@ -299,7 +314,9 @@ class LaunchActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // 在Activity销毁时停止倒计时，避免内存泄漏
-        countDownTimer.cancel()
+        if (::countDownTimer.isInitialized) {
+            countDownTimer.cancel()
+        }
     }
 
 }

@@ -12,6 +12,7 @@ data class ErrResponse(
 
     ) {
     fun isTokenLose(): Boolean {
-        return code == "300002" || code == "300003" || code == "300004"
+        return code == "300002" || code == "300003" || code == "300004" ||code == "300005"
     }
+
 }

@@ -6,6 +6,7 @@ import android.net.http.SslError
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.webkit.CookieManager
 import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -15,20 +16,24 @@ import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.ui.h5.MyJavaScriptInterface
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isDataUrl
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.isProcessing
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link103
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link11
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link13
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link16
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link17
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link5
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link6
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link8
 import com.lelezu.app.xianzhuan.utils.Base64Utils
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 
 class WebViewActivity : BaseActivity() {
@@ -49,7 +54,8 @@ class WebViewActivity : BaseActivity() {
         link = intent.getStringExtra(LINK_KEY)!!
         WebViewSettings.setDefaultWebSettings(wv)
 
-        if (link == link11 || link == link5|| link == link6) {  //link5：发布任务
+
+        if (link == link11 || link == link5 || link == link6 || link == link103) {  //link5：发布任务
             setWebViewTitle()
         }
 
@@ -60,6 +66,8 @@ class WebViewActivity : BaseActivity() {
 
         setupWebView()
         setupBackButtonListener()
+
+
     }
 
     override fun onResume() {
@@ -96,7 +104,10 @@ class WebViewActivity : BaseActivity() {
         if (intent.getBooleanExtra(isDataUrl, false)) {
             //加载富文本
             wv.setInitialScale(200)
-            wv.loadDataWithBaseURL(null, link, "text/html", "utf-8", null);
+//            wv.loadDataWithBaseURL(null, link, "text/html", "utf-8", null)
+//            wv.loadUrl(link)
+
+
         } else {
             wv.setInitialScale(200)
             wv.loadUrl(link)
@@ -109,9 +120,13 @@ class WebViewActivity : BaseActivity() {
         setupWebViewClient()
         registerJavaScriptHandlers()
 
+        if (link == link17) postTaskId()//分享赚页面post任务ID给H5
+        if (link == link103) postAnnounceId()//公告页面post公告ID给H5
     }
 
     private fun registerJavaScriptHandlers() {
+
+
         wv.registerHandler("chooseImage") { _, _ -> openPhoto() }
         wv.registerHandler("backToHome") { fragmentPosition, _ -> backToHome(fragmentPosition) }
 
@@ -128,8 +143,13 @@ class WebViewActivity : BaseActivity() {
         //发布任务页面需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法，然后不论是否都跑原生方法 backOrFinish()
         wv.registerHandler("goBack") { _, _ -> backOrFinish() }
 
+
         //打开公告
         wv.registerHandler("goAnnouncement") { _, _ -> backOrFinish() }
+
+
+        wv.addJavascriptInterface(MyJavaScriptInterface(this), "Android")//注入方法
+
 
     }
 
@@ -162,19 +182,11 @@ class WebViewActivity : BaseActivity() {
             override fun onReceivedSslError(
                 view: WebView?, handler: SslErrorHandler?, error: SslError?
             ) {
-//                super.onReceivedSslError(view, handler, error)
 
                 handler!!.proceed()
 
                 showERRView()
             }
-
-//            override fun onPageFinished(view: WebView?, url: String?) {
-//                super.onPageFinished(view, url)
-//                //页面加载成功
-//                LogUtils.i("webview", "页面加载成功url:$url")
-//                showWebView()
-//            }
 
         }
 
@@ -235,9 +247,11 @@ class WebViewActivity : BaseActivity() {
             if (wv.url == link) finish()
             else {//次级页面
                 //如果是发布任务的次级页面，则需要保存草稿，返回上页面前需要跑一下H5的保存草稿方法 publishTask/index为发布编辑页面url
-                if (wv.url!!.contains("publishTask/index")) {
+                if (wv.url!!.contains("publishTask/index")) {//发布任务页面拦截
 //                    showToast("返回拦截成功，已调用H5弹出窗口方法:showDraftModal")
                     wv.callHandler("showDraftModal", "Android", null)
+                } else if (wv.url!!.contains("balance/transactionStatus/index")) {//支付成功页面拦截
+                    wv.callHandler("goBack", "Android", null)
                 } else {
                     wv.goBack()
                 }
@@ -322,5 +336,47 @@ class WebViewActivity : BaseActivity() {
         }
     }
 
+    private fun openApprentice() {
+        val intent = Intent(this, WebViewActivity::class.java)
+        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link102)
+        intent.putExtra(WebViewSettings.URL_TITLE, "规则说明")
+        startActivity(intent)
+    }
 
+    //  link17  分享赚页面接收收徒id和任务id
+    private fun postTaskId() {
+
+        val taskId = intent.getStringExtra(WebViewSettings.TAG)
+        val cookieManager: CookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)     // 允许接受 Cookie
+        // 跨域cookie读取
+        cookieManager.setAcceptThirdPartyCookies(wv, true)
+
+        // 设置多个 cookie
+        val host1 = WebViewSettings.host
+        val cookie1 = "taskId=$taskId"
+        val cookie2 = "userId=${ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)}"
+        cookieManager.setCookie(host1, cookie1)
+        cookieManager.setCookie(host1, cookie2)
+
+        cookieManager.flush()
+
+    }
+
+    //  link17  设置公告ID
+    private fun postAnnounceId() {
+
+        val announceId = intent.getStringExtra(WebViewSettings.ANNOUNCEID)
+        val cookieManager: CookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)     // 允许接受 Cookie
+        // 跨域cookie读取
+        cookieManager.setAcceptThirdPartyCookies(wv, true)
+
+        // 设置多个 cookie
+        val host1 = WebViewSettings.host
+        val cookie1 = "announceId=$announceId"
+        cookieManager.setCookie(host1, cookie1)
+        cookieManager.flush()
+
+    }
 }

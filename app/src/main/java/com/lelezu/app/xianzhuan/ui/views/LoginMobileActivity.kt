@@ -9,16 +9,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_STATUS
-import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN
-
 class LoginMobileActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var textPwd: EditText

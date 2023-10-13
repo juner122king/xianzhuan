@@ -23,6 +23,7 @@ import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.model.Version
+import com.lelezu.app.xianzhuan.data.model.Vip
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
@@ -252,10 +253,20 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Call<ApiResponse<Config>>
 
+    @GET("/dxz/app/sys/config/ACTIVITY/CAROUSEL")// 首页轮播图
+    fun CAROUSEL(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Config>>
+
 
     @GET("/dxz/app/sys/config/SYSTEM/AD")// 广告配置信息
     fun apiADConfig(
         @Header("Authorization") token: String
     ): Call<ApiResponse<Config>>
+
+    @GET("/dxz/app/user/vip/rest")// 会员过期时间
+    fun vipRest(
+        @Header("Authorization") token: String
+    ): Call<ApiResponse<Vip>>
 
 }

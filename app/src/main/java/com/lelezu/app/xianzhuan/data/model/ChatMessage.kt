@@ -16,9 +16,11 @@ package com.lelezu.app.xianzhuan.data.model
  * @property type 发送的消息类型。 0-文本 ，1-图片，2-任务
  */
 data class ChatMessage(
+
     val contactContent: String,
     val contactRecordId: String,
     val createdDt: String,
+    val taskAppVo:Task,
     val receiverUserAvatar: String,
     val receiverUserId: String,
     val receiverUsername: String,

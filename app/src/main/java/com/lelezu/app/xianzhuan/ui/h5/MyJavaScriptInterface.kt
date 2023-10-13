@@ -1,10 +1,13 @@
 package com.lelezu.app.xianzhuan.ui.h5
 
 import android.app.Activity
+import android.content.Intent
 import android.webkit.JavascriptInterface
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.HomeActivity
+import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 
 /**
@@ -21,7 +24,7 @@ class MyJavaScriptInterface(private val context: Activity) {
                 //获取权限成功
                 // 调用保存图片的方法
                 ToastUtils.show("图片保存成功")
-                (context as HomeActivity).saveImageToSystem(imageUrl,"dxz_share_pic")
+                (context as BaseActivity).saveImageToSystem(imageUrl,"dxz_share_pic")
             }
 
             override fun onDenied(permissions: MutableList<String>, never: Boolean) {
@@ -36,7 +39,7 @@ class MyJavaScriptInterface(private val context: Activity) {
     fun shareFriends(imageUrl: String) {
         MyPermissionUtil.saveImagesAndOpenAlbumApply(context, object : OnPermissionCallback {
             override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) (context as HomeActivity).shareFriends(imageUrl) //获取权限成功
+                if (all) (context as BaseActivity).shareFriends(imageUrl) //获取权限成功
                 else ToastUtils.show("获取部分权限成功，但部分权限未正常授予")
             }
 
@@ -45,11 +48,6 @@ class MyJavaScriptInterface(private val context: Activity) {
                 ToastUtils.show("您已拒绝授权，图片分享失败！")
             }
         })
-    }
-
-    @JavascriptInterface
-    fun openApprenticeRule() {
-        ToastUtils.show("跳转合伙人规则页面")
     }
 
 }

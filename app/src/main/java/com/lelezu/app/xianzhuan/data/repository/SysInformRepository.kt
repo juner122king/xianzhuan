@@ -42,9 +42,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //新版本
     suspend fun detection(): ApiResponse<Version> = withContext(Dispatchers.IO) {
         val call = apiService.detection(
-            ShareUtil.getVersionCode().toString(),
-            ShareUtil.getVersionName(),
-            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+            ShareUtil.getVersionCode().toString(), ShareUtil.getVersionName(), loginToken
         )
         executeApiCall(call)
     }
@@ -79,22 +77,28 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
 
 
     //获取企业微信配置信息
-    suspend fun apiRegistrConfig(): ApiResponse<Config> =
-        withContext(Dispatchers.IO) {
-            val call = apiService.REGISTR_CONFIG(
-                loginToken
-            )
-            executeApiCall(call)
-        }
+    suspend fun apiRegistrConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
+        val call = apiService.REGISTR_CONFIG(
+            loginToken
+        )
+        executeApiCall(call)
+    }
+
+    //首页轮播图
+    suspend fun apiCarouselConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
+        val call = apiService.CAROUSEL(
+            loginToken
+        )
+        executeApiCall(call)
+    }
 
     //获取广告配置信息
-    suspend fun apiADConfig(): ApiResponse<Config> =
-        withContext(Dispatchers.IO) {
-            val call = apiService.apiADConfig(
-                loginToken
-            )
-            executeApiCall(call)
-        }
+    suspend fun apiADConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
+        val call = apiService.apiADConfig(
+            loginToken
+        )
+        executeApiCall(call)
+    }
 
 
     /**

@@ -13,6 +13,7 @@ import com.lelezu.app.xianzhuan.data.model.LoginInfo
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Related
 import com.lelezu.app.xianzhuan.data.model.UserInfo
+import com.lelezu.app.xianzhuan.data.model.Vip
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -50,6 +51,12 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
     //获取收徒收益
     suspend fun apiEarnings(): ApiResponse<Earning> = withContext(Dispatchers.IO) {
         val call = apiService.getEarnings(loginToken)
+        executeApiCall(call)
+    }
+
+    //获取会员过期时间
+    suspend fun vipRest(): ApiResponse<Vip> = withContext(Dispatchers.IO) {
+        val call = apiService.vipRest(loginToken)
         executeApiCall(call)
     }
 

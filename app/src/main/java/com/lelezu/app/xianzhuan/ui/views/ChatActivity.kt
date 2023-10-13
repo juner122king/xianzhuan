@@ -1,13 +1,17 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -18,8 +22,10 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.ChatAdapter
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 class ChatActivity : BaseActivity() {
     //vip头像等级框图片
@@ -27,7 +33,17 @@ class ChatActivity : BaseActivity() {
         1 to R.drawable.icon_head1, 2 to R.drawable.icon_head, 4 to R.drawable.icon_head2
         // 可以继续添加其他映射关系
     )
+    private val statusMap = mapOf(
+        1 to "每日1次",
+        2 to "每人1次",
+        3 to "每人3次",
+        // 可以继续添加其他映射关系
+    )
+
+    private lateinit var dialog: Dialog //风险提示确认窗口
+
     private lateinit var userId: String
+    private var taskId: String? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ChatAdapter
 
@@ -39,18 +55,33 @@ class ChatActivity : BaseActivity() {
     private lateinit var tv_sub: TextView //关注数
     private lateinit var tv_fan: TextView //粉丝数
 
+
+    private lateinit var taskView: View //任务浮窗
+    private lateinit var taskViewClose: View //任务浮窗关闭按钮
+    private lateinit var taskViewSend: View //任务发送按钮
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
         userId = intent.getStringExtra("userId").toString()
+        taskId = intent.getStringExtra("taskId")
 
         initView()
         initObserve()
 
+
     }
 
     private fun initView() {
+        taskView = findViewById(R.id.click_view)
+        taskViewClose = findViewById(R.id.iv_close)
+        taskViewSend = findViewById(R.id.tvv)
+        taskViewClose.visibility = View.VISIBLE
+        taskViewSend.visibility = View.VISIBLE
+
+
 
         findViewById<View>(R.id.tv_user_vip).visibility = View.GONE//隐藏vip等级
         editText = findViewById(R.id.et_s)
@@ -109,7 +140,10 @@ class ChatActivity : BaseActivity() {
 
         }
 
-
+        //弹出风险提示
+        if (!ShareUtil.getBoolean(ShareUtil.CHECKED_FXTS)) {
+            showDialog()
+        }
     }
 
     private fun initObserve() {
@@ -164,9 +198,57 @@ class ChatActivity : BaseActivity() {
             tv_sub.text = "${it.concernCnt}关注"
 
         }
-
-
         loginViewModel.isRecord(userId)//标记消息已读
+
+
+        taskId?.let {
+            homeViewModel.getTaskDetails(it)//获取任务信息
+        }
+        //监听任务信息
+        homeViewModel.task.observe(this) {
+            //初始化页面数据
+            setData(it)
+        }
+
+    }
+
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
+    private fun setData(task: Task) {
+
+        taskView.visibility = View.VISIBLE
+        findViewById<TextView>(R.id.tv_task_title).text = task.taskTitle //任务标题
+        findViewById<TextView>(R.id.tv_taskLabel).text = task.taskTypeTitle //任务标签1
+        findViewById<TextView>(R.id.tv_taskLabel2).text = task.taskLabel //任务标签2
+
+        findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}元"//任务金额
+        findViewById<TextView>(R.id.tv_task_earnedCount).text = "${task.earnedCount}人已赚"//多人已赚
+        findViewById<TextView>(R.id.tv_task_rest).text = "剩余${task.rest}个"//剩余数
+
+        taskViewClose.setOnClickListener {
+            taskView.visibility = View.INVISIBLE
+        }
+        taskViewSend.setOnClickListener {
+            //发送任务信息
+            taskView.visibility = View.INVISIBLE
+
+            loginViewModel.apiSend(userId, taskId.toString(), 2)
+        }
+
+    }
+
+    private fun showDialog() {
+        dialog = Dialog(this)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_fxts)
+
+        val ok: TextView = dialog.findViewById(R.id.ok)
+
+        ok.setOnClickListener {
+            //确定
+            ShareUtil.putBoolean(ShareUtil.CHECKED_FXTS, true)
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
 

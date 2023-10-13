@@ -1,43 +1,59 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.ViewFlipper
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
+import com.lelezu.app.xianzhuan.data.model.ConfValue
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
-import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
+import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.youth.banner.Banner
+import com.youth.banner.adapter.BannerImageAdapter
+import com.youth.banner.holder.BannerImageHolder
+import com.youth.banner.indicator.CircleIndicator
+import com.youth.banner.util.BannerUtils
 import com.zj.zjsdk.ad.ZjAdError
 import com.zj.zjsdk.ad.ZjTaskAd
 import com.zj.zjsdk.ad.ZjTaskAdListener
 
-
 class MainFragment : BaseFragment(), OnClickListener {
+
+
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: MyPagerAdapter
     private lateinit var tabLayout: TabLayout
+    private lateinit var banner: Banner<ConfValue.Pics, BannerImageAdapter<ConfValue.Pics>>
+    private lateinit var banner2: Banner<String, BannerImageAdapter<String>>
+
+    private lateinit var pics: List<ConfValue.Pics>
 
     private lateinit var zjTask: ZjTaskAd
 
@@ -46,12 +62,15 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     // 定义一个包含Tab文字的List
     private var tabTextList = arrayOf<String>()
-
-
+    private var initialX: Float = 0F
+    private var isBannerSet = false // 添加标志变量
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+
+        LogUtils.i("MainFragment", "onCreateView()")
         val view = inflater.inflate(R.layout.fragment_main2, container, false)
+
         viewPager = view.findViewById(R.id.task_vp)
         pagerAdapter = MyPagerAdapter(this)
 
@@ -64,28 +83,74 @@ class MainFragment : BaseFragment(), OnClickListener {
         tabTextList = arrayOf(
             getString(R.string.l_task), getString(R.string.app_task), getString(R.string.game_task)
         )
+
+
         return view
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        LogUtils.i("MainFragment", "onViewCreated()")
 
         view.findViewById<View>(R.id.ll_top_btm1).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm2).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
-//        view.findViewById<View>(R.id.iv_banner_item1).setOnClickListener(this)
-        view.findViewById<View>(R.id.iv_banner_item2).setOnClickListener(this)
-        //Banner图初始化
-        val viewFlipper = view.findViewById<ViewFlipper>(R.id.vp_banner)
-        viewFlipper.startFlipping()
 
+        banner = view.findViewById(R.id.banner)
+        banner2 = view.findViewById(R.id.banner)
 
         initTaskTabLayout()//初始化TabLayout
-
-
         initZjTask()
 
+        // 添加条件来执行 setBanner 仅一次
+        if (!isBannerSet) {
+            //获取首页轮播图
+            sysMessageViewModel.apiCarouselConfig()
+            sysMessageViewModel.bannerconfig.observe(requireActivity()) {
+//                setBanner(it.confValue.pics)
+
+                pics = it.confValue.pics  //需要添加一个对象持久保存图片url
+                setBanner()
+                isBannerSet = true // 标志设置为 true，以后不再执行 setBanner
+            }
+
+        }else{
+            setBanner()
+        }
+
+
+    }
+
+    private fun setBanner() {
+        LogUtils.i("MainFragment", "加载setBanner")
+        banner.apply {
+            addBannerLifecycleObserver(requireActivity())
+            setBannerRound(20f)
+            indicator = CircleIndicator(requireActivity())
+            setAdapter(object : BannerImageAdapter<ConfValue.Pics>(pics) {
+                override fun onBindView(
+                    holder: BannerImageHolder, data: ConfValue.Pics, position: Int, size: Int
+                ) {
+                    ImageViewUtil.loadWH(holder.imageView, data.img)//加载广告图
+
+//                    //图片加载自己实现
+//                    Glide.with(holder.itemView).load(data.img)
+//                        .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
+//                        .into(holder.imageView)
+
+                    if (data.url != "") {//如果URL不为空，则设置点击跳转到WebView
+                        holder.imageView.setOnClickListener {
+                            val intent = Intent(requireContext(), WebViewActivity::class.java)
+                            intent.putExtra(LINK_KEY, HOST + data.url)
+                            intent.putExtra(URL_TITLE, "规则说明")
+                            startActivity(intent)
+                        }
+                    }
+                }
+            })
+
+        }
     }
 
     companion object {
@@ -113,10 +178,6 @@ class MainFragment : BaseFragment(), OnClickListener {
                 intent.putExtra(URL_TITLE, getString(R.string.btm_zq))
             }
 
-            R.id.iv_banner_item2 -> {
-                intent.putExtra(LINK_KEY, link102)
-                intent.putExtra(URL_TITLE, "规则说明")
-            }
         }
         startActivity(intent)
 
@@ -125,9 +186,7 @@ class MainFragment : BaseFragment(), OnClickListener {
     private fun initZjTask() {
 
         if (XXPermissions.isGranted(
-                requireActivity(),
-                Permission.READ_PHONE_STATE,
-                Permission.MANAGE_EXTERNAL_STORAGE
+                requireActivity(), Permission.READ_PHONE_STATE, Permission.MANAGE_EXTERNAL_STORAGE
             )
         ) {
             onInitZjTask()

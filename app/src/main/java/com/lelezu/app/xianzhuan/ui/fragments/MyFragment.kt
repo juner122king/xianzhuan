@@ -1,6 +1,8 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +13,10 @@ import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Announce
-import com.lelezu.app.xianzhuan.data.model.ChatList
 import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.ANNOUNCEID
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link103
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.ChatListActivity
@@ -27,6 +30,7 @@ import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
+
 
 class MyFragment : BaseFragment(), View.OnClickListener {
 
@@ -65,6 +69,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
     private lateinit var vipLevel: ImageView//vip等级icon
 
+
     private lateinit var pb: ProgressBar//经验进度条
     private lateinit var tv_pb: TextView//经验值显示
 
@@ -74,6 +79,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_my, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vipLevel = view.findViewById(R.id.iv_vip_level)
@@ -226,10 +232,10 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 bulletinView.setOnItemClickListener { itemData, _, _ ->
                     val intent = Intent(requireContext(), WebViewActivity::class.java)
                     intent.putExtra(
-                        WebViewSettings.LINK_KEY, (itemData as Announce).announceContent
+                        WebViewSettings.LINK_KEY, link103
                     )
-                    intent.putExtra(WebViewSettings.URL_TITLE, itemData.announceTitle)
-                    intent.putExtra(WebViewSettings.isProcessing, false)
+                    intent.putExtra(WebViewSettings.URL_TITLE, (itemData as Announce).announceTitle)
+                    intent.putExtra(ANNOUNCEID, itemData.announceId)
                     intent.putExtra(WebViewSettings.isDataUrl, true)
                     startActivity(intent)
                 }
@@ -252,6 +258,16 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 //
 //        }
 
+
+        loginViewModel.vip.observe(requireActivity()) {
+
+            if (it.curVipExpireDate != null) {
+
+                view.findViewById<TextView>(R.id.tv_vipcur).text = it.curVipExpireDate + "到期"
+
+            }
+
+        }
     }
 
     override fun onResume() {
@@ -273,6 +289,8 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         sysMessageViewModel.getAnnounce()
 
         loginViewModel.apiEarnings()//获取收徒功能页面数据
+
+        loginViewModel.vipRest()//获取vip信息
     }
 
     companion object {
@@ -308,7 +326,11 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
             R.id.iv_message -> {
                 startActivity(Intent(activity, MessageActivity::class.java))//消息
-
+//                val intent = Intent(
+//                    Intent.ACTION_VIEW,
+//                    Uri.parse("alipays://platformapi/startapp?appId=20170713077xxxxx&page=x/yz&query=xx%3dxx")
+//                )
+//                startActivity(intent)
 
             }
 

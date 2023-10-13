@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.text.Html
 import android.view.View
 import android.view.View.OnClickListener
@@ -15,17 +16,24 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
 import java.text.SimpleDateFormat
 import java.util.Date
 
 class TaskDetailsActivity : BaseActivity(), OnClickListener {
+
+    private lateinit var err_view: View
+    private lateinit var onNetwork_view: View//有网络时显示的页面
+    private lateinit var iv_but_re: View //刷新按钮
 
     private val statusMap = mapOf(
         1 to "每日1次",
@@ -90,15 +98,21 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     override fun onResume() {
         super.onResume()
-
+        checkNetWorkView()
         if (checkMiniSub()) {//是否加载完成任务页面 且该任务是小程序任务 且已经报名 且已关注小程序
             homeViewModel.miniTaskComplete(getTask().applyLogId)//校验小程序任务是否完成
         }
+
 
     }
 
 
     private fun initView() {
+
+        err_view = findViewById(R.id.err_view)
+        iv_but_re = findViewById(R.id.iv_but_re)
+
+        onNetwork_view = findViewById(R.id.ll_on_network)
 
         swiper = findViewById(R.id.swiper)
         swiper.setColorSchemeResources(R.color.colorControlActivated)
@@ -230,7 +244,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         findViewById<TextView>(R.id.tv_info).text = string
 
 
-        adapterDetails.updateData(task.taskStepList,task.auditStatus)
+        adapterDetails.updateData(task.taskStepList, task.auditStatus)
         adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
 
         loginViewModel.getUserInfo(task.userId)//获取商家信息
@@ -427,6 +441,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     else -> {
                         val intent = Intent(this, ChatActivity::class.java)
                         intent.putExtra("userId", getTask().userId)
+                        intent.putExtra("taskId", getTask().taskId)
                         startActivity(intent)
                     }
                 }
@@ -458,7 +473,11 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             }
 
             R.id.tv_user_vip -> {//H5收徒页面
-                backToHome("3")
+                val intent = Intent(this, WebViewActivity::class.java)
+                intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link17)
+                intent.putExtra(WebViewSettings.TAG, getTask().taskId)
+                intent.putExtra(WebViewSettings.URL_TITLE, "接单规则")
+                startActivity(intent)
             }
         }
     }
@@ -545,5 +564,42 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         findViewById<TextView>(R.id.tv_btm2).text = str2
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // 在Activity销毁时停止倒计时，避免内存泄漏
+        if (::countDownTimer.isInitialized) {
+            countDownTimer.cancel()
+        }
+    }
 
+    private fun checkNetWorkView() {
+
+        if (ShareUtil.isConnected()) {//是否有网络
+            showWebView()
+        } else {
+            showERRView()
+        }
+
+
+    }
+
+
+    private fun showERRView() {
+        LogUtils.i("webview", "网页加载失败！")
+        ToastUtils.show("网页加载失败！请检查网络！")
+        err_view.visibility = View.VISIBLE
+        onNetwork_view.visibility = View.GONE
+
+        iv_but_re.setOnClickListener {
+            checkNetWorkView()
+        }
+    }
+
+    private fun showWebView() {
+        err_view.visibility = View.GONE
+        onNetwork_view.visibility = View.VISIBLE
+        //获取上个页面返回的TaskId再请求一次
+        taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
+
+    }
 }

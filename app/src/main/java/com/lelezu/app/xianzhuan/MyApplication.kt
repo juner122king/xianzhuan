@@ -2,11 +2,14 @@ package com.lelezu.app.xianzhuan
 
 import android.app.Application
 import android.content.Context
+import android.provider.Settings
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
+import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 
@@ -40,15 +43,28 @@ class MyApplication : Application() {
     }
 
 
-
     override fun onCreate() {
         super.onCreate()
         context = this
-
+        getDeviceID()
 
         // 初始化 Toast 框架
         ToastUtils.init(this)
+//
+//        val displayMetrics = resources.displayMetrics
+//        val dpi = displayMetrics.densityDpi
+//
+//        ToastUtils.show("手机屏幕：$dpi")
     }
 
+    private fun getDeviceID() {
+        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        LogUtils.i("AndroidId", androidId)
 
+
+        //保存登录androidId
+        ShareUtil.putString(
+            ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID, androidId
+        )
+    }
 }

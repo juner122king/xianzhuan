@@ -14,48 +14,56 @@
         android:textColor="#B3B3B3"
         android:textSize="12sp" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_pic_1"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:visibility="gone" />
-
         <LinearLayout
-            android:id="@+id/ll"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:gravity="end">
-
-            <TextView
-                android:id="@+id/talk_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/chat_item_bg_me"
-                android:padding="10dp"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:visibility="gone" />
+            android:id="@+id/ll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/talk_iv"
-                android:layout_width="150dp"
-                android:layout_height="280dp"
+                android:id="@+id/iv_pic_1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/talk_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/chat_item_bg_me"
+                    android:padding="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/talk_iv"
+                    android:layout_width="150dp"
+                    android:layout_height="280dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_pic_2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iv_pic_2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:visibility="gone" />
-    </LinearLayout>
-
+        <include layout="@layout/chat_task_item_layout" />
+    </FrameLayout>
 </LinearLayout>

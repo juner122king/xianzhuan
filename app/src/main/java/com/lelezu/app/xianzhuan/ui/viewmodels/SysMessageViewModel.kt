@@ -49,6 +49,7 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val rechargeResLiveData: MutableLiveData<RechargeRes> = MutableLiveData()//支付返回
 
     val registrconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
+    val bannerconfig: MutableLiveData<Config> = MutableLiveData()//banner对象
     val adconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
 
 
@@ -100,6 +101,12 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     fun apiRegistrConfig() = viewModelScope.launch {
         val call = sysInformRepository.apiRegistrConfig()
         handleApiResponse(call, registrconfig)
+
+    }
+    //首页轮播图
+    fun apiCarouselConfig() = viewModelScope.launch {
+        val call = sysInformRepository.apiCarouselConfig()
+        handleApiResponse(call, bannerconfig)
 
     }
    //获取广告配置

@@ -1,5 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.DownloadManager
@@ -14,6 +15,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.ContextMenu
 import android.view.View
 import android.view.WindowManager
@@ -63,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
         LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
     }
 
-    protected val homeViewModel: HomeViewModel by viewModels {
+    val homeViewModel: HomeViewModel by viewModels {
         HomeViewModel.ViewFactory((application as MyApplication).taskRepository)
     }
     protected val sysMessageViewModel: SysMessageViewModel by viewModels {
@@ -170,6 +172,8 @@ abstract class BaseActivity : AppCompatActivity() {
             dialog.dismiss()
             //安装apk
             openFileWithFilePath(it)
+            ShareUtil.cleanInfo()
+
         }
     }
 
@@ -366,6 +370,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun showLoading() {
+
         loadingView?.visibility = View.VISIBLE
     }
 
@@ -530,13 +535,59 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun saveImageToSystem(imageUrl: String, imageName: String) {
-
-
         val request = DownloadManager.Request(Uri.parse(imageUrl))
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$imageName.jpg")
 
         val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadManager.enqueue(request)
+    }
+
+    //分享微信
+    fun shareFriends(imageUrl: String) {
+        Log.i("H5分享图片", "imageUrl：${imageUrl}")
+        // 注册广播接收器
+        val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        registerReceiver(downloadReceiver, intentFilter)
+        saveImageToSystem(imageUrl, "dxz_share_pic")
+    }
+
+    private val downloadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
+                // 下载完成时的处理
+                val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                handleDownloadComplete(downloadId)
+            }
+        }
+    }
+    @SuppressLint("Range")
+    private fun handleDownloadComplete(downloadId: Long) {
+        val query = DownloadManager.Query().apply {
+            setFilterById(downloadId)
+        }
+
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val cursor = downloadManager.query(query)
+
+        if (cursor.moveToFirst()) {
+            val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+            if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                // 下载成功的处理
+                val localUri =
+                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+
+                Log.i("下载完成", "imageUrl：${localUri}")
+                WxLogin.localWx(application, localUri)
+            } else {
+                // 下载失败的处理
+                val reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
+                showToast("下载失败，失败原因：$reason")
+            }
+        }
+
+        cursor.close()
+        unregisterReceiver(downloadReceiver)
+
     }
 }

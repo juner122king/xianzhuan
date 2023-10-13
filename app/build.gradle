@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android-extensions'
 }
 
 
@@ -207,4 +208,7 @@ dependencies {
 
     // 日志调试框架：https://github.com/getActivity/Logcat
 //    debugImplementation 'com.github.getActivity:Logcat:11.8'
+
+    //第三方banner https://github.com/youth5201314/banner
+    implementation 'io.github.youth5201314:banner:2.2.2'
 }

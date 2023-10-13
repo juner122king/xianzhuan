@@ -8,6 +8,7 @@ pluginManagement {
         gradlePluginPortal()
         maven { url 'https://repo1.maven.org/maven2/' }
         maven { url "https://jitpack.io" }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
     }
 }
 dependencyResolutionManagement {
@@ -20,6 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url 'https://repo1.maven.org/maven2/' }
         maven { url "https://jitpack.io" }
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         jcenter()
     }
 }

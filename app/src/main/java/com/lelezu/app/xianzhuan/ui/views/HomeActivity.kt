@@ -161,59 +161,6 @@ class HomeActivity : BaseActivity() {
         return false
     }
 
-
-    private val downloadReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
-                // 下载完成时的处理
-                val downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                handleDownloadComplete(downloadId)
-            }
-        }
-    }
-
-    //分享微信
-    fun shareFriends(imageUrl: String) {
-        Log.i("H5分享图片", "imageUrl：${imageUrl}")
-        // 注册广播接收器
-        val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        registerReceiver(downloadReceiver, intentFilter)
-        saveImageToSystem(imageUrl, "dxz_share_pic")
-
-
-    }
-
-    @SuppressLint("Range")
-    private fun handleDownloadComplete(downloadId: Long) {
-        val query = DownloadManager.Query().apply {
-            setFilterById(downloadId)
-        }
-
-        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val cursor = downloadManager.query(query)
-
-        if (cursor.moveToFirst()) {
-            val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-            if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                // 下载成功的处理
-                val localUri =
-                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-
-                Log.i("下载完成", "imageUrl：${localUri}")
-                WxLogin.localWx(application, localUri)
-            } else {
-                // 下载失败的处理
-                val reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
-                showToast("下载失败，失败原因：$reason")
-            }
-        }
-
-        cursor.close()
-        unregisterReceiver(downloadReceiver)
-
-    }
-
-
     private fun checkNewV() {
         if (!ShareUtil.getBoolean(ShareUtil.CHECKED_NEW_VISON)) {//未询问过更新版本
             //检查新版本

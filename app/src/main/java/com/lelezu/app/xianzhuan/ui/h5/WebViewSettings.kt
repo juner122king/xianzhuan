@@ -6,6 +6,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOKEN
 
 
@@ -16,22 +17,28 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_TOK
  *
  */
 object WebViewSettings {
+    var TAG = "TAG"
+
     var LINK_KEY = "URL_LINK"
     var URL_TITLE = "URL_TITLE"
 
     var isProcessing = "isProcessing"
     var isDataUrl = "isDataUrl"//是否富文本
-    private var host = "$HOST/statics/dxz/h5/pages"
+    var ANNOUNCEID = "announceId"//公告id
+     var host = "$HOST/statics/dxz/h5/pages"
 
     var link100 = "$host/agreement/user"//《用户使用协议》
     var link101 = "$host/agreement/privacy"//《隐私政策》
     var link102 = "$host/apprentice/apprenticeRule/index"//合伙人规则页面
+
+    var link103 = "$host/announcement/index"//公告页面
 
     var link14 = "$host/agreement/order" //接单规则
 
     var link1 = "$host/index/dailyRewards/dailyRewards"
     var link2 = "$host/index/newcomerRewards/newcomerRewards"
     var link3 = "$host/apprentice/index"//收徒赚钱
+    var link31 = "$host/apprentice/apprenticePoster/index"//收徒赚钱子页面
     var link4 = "$host/apprentice/apprenticeIncome/index" //我的-收徒收益
     var link5 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务
     var link51 = "$host/publishTask/selectTaskClassification/index" //我的-发布任务-编辑任务
@@ -46,6 +53,8 @@ object WebViewSettings {
     var link13 = "$host/member/index" //开通会员
 
     var link16 = "$host/followGzhOrWechat/index" //新人奖励页面
+    var link17 = "$host/shareToProfit/index" //接单规则2
+
 
     var link15 = "https://beian.miit.gov.cn/" //公安备案网站
 
@@ -83,9 +92,17 @@ object WebViewSettings {
         cookieManager.setAcceptCookie(true)     // 允许接受 Cookie
         // 跨域cookie读取
         cookieManager.setAcceptThirdPartyCookies(webView, true)
-        cookieManager.setCookie(
-            host, ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
-        )
+
+        // 设置多个 cookie
+        val host1 = host
+        val cookie1 = "Token=" + ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
+        val cookie2 = "Device=" + ShareUtil.getString(APP_SHARED_PREFERENCES_DEVICE_ID)
+        cookieManager.setCookie(host1, cookie1)
+        cookieManager.setCookie(host1, cookie2)
+
+
+
+
         cookieManager.flush()
 
 
