@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -67,7 +68,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private var isDoneTask: Boolean = false//是否加载完成任务页面
 
     private lateinit var dialog: AlertDialog//协议弹窗
-    private lateinit var dialog2: AlertDialog//报名成功弹窗
+    private lateinit var dialog2: Dialog//报名成功弹窗
 
     private lateinit var comdown: TextView//任务提交倒计时
 
@@ -500,38 +501,19 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     // 显示报名成功弹窗
 
     private fun showBmDialog(time: String) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_bmcg, null)
+        dialog2 = Dialog(this)
+        dialog2.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog2.setContentView(R.layout.dialog_bmcg)
+        val content: TextView = dialog2.findViewById(R.id.tv_content)
+        val ok: TextView = dialog2.findViewById(R.id.ok)
+        content.text =  "请在${time}小时内完成并提交任务"
 
-        dialogView.findViewById<TextView>(R.id.tv_content).text =
-            "请在${time}内完成任务,提交验收信息,以免超时导致无法提交"
-
-
-        // 创建弹窗
-        val builder = AlertDialog.Builder(this, R.style.backDialog)
-        builder.setView(dialogView)
-        dialog2 = builder.create()
-
+        ok.setOnClickListener {
+            //确定
+            dialog2.dismiss()
+        }
         // 显示弹窗
         dialog2.show()
-
-    }
-
-
-    // 同意按钮点击事件
-    fun onAgreeButtonClick(view: View) {
-        // 在这里处理同意的逻辑
-        // 关闭弹窗
-
-        dialog.dismiss()
-
-    }
-
-    // 同意按钮点击事件
-    fun onButtonClick(view: View) {
-        // 在这里处理同意的逻辑
-        // 关闭弹窗
-        dialog2.dismiss()
-
     }
 
     private fun putTask(t: Task) {

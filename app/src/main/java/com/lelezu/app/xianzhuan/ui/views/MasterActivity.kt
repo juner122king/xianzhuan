@@ -123,7 +123,7 @@ class MasterActivity : BaseActivity() {
     private fun showDialog() {
         dialog = Dialog(this)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.setContentView(R.layout.dialog_sub)
+        dialog.setContentView(R.layout.dialog_sub2)
 
         val cancel: TextView = dialog.findViewById(R.id.cancel)
         val ok: TextView = dialog.findViewById(R.id.ok)

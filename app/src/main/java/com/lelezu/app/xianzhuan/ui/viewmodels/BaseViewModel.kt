@@ -91,7 +91,7 @@ open class BaseViewModel : ViewModel() {
     }
 
 
-    //Token失效
+
     private fun <T> failedResponse(r: ApiResponse<T>, mes: String?) {
 
 

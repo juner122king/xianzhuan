@@ -47,8 +47,6 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     val teamLiveData: MutableLiveData<MutableList<Partner>> = MutableLiveData() //合伙人团队
 
 
-
-
     // 获取任务列表数据 简单查询条件
     fun getTaskList(taskQuery: TaskQuery, isMyTask: Boolean = false) = viewModelScope.launch {
         val apiListResponse = taskRepository.apiGetTaskList(
@@ -121,7 +119,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     // 任务提交
     fun apiTaskSubmit(applyLogId: String?, verify: List<TaskUploadVerify>?) =
         viewModelScope.launch {
-            if (verify == null) {
+            if (verify.isNullOrEmpty()) {
                 errMessage.postValue(ErrResponse(null, "请上传相关验证内容！"))
             } else {
 
@@ -133,7 +131,23 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
                     handleApiResponse(r, isUp)
 
                 } else {
-                    errMessage.postValue(ErrResponse(null, "您未填写信息，请填写后提交"))
+//                    errMessage.postValue(ErrResponse(null, "您未填写信息，请填写后提交"))
+                    val statusMap = mapOf(
+                        1 to "1",
+                        2 to "1、2",
+                        3 to "1、2、3",
+                        4 to "1、2、3、4",
+                        5 to "1、2、3、4、5",
+                        6 to "1、2、3、4、5、6",
+                        7 to "1、2、3、4、5、6、7",
+                        8 to "1、2、3、4、5、6、7、8",
+                        // 可以继续添加其他映射关系
+                    )
+                    errMessage.postValue(
+                        ErrResponse(
+                            null, "请按第${statusMap[verify.size]}项要求完善验证信息后再提交"
+                        )
+                    )
                 }
             }
         }
