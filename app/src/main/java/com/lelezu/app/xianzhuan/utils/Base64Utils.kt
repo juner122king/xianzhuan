@@ -118,37 +118,5 @@ object Base64Utils {
     }
 
 
-    fun compressIfNeeded(imagePath: String): ByteArray {
-        val inputFile = File(imagePath)
-        val maxSizeBytes = 500 * 1024 // 500KB
-        Log.i("zipPic:", "压缩前大小file:${inputFile.length()}")
-
-        if (inputFile.length() > maxSizeBytes) {
-            // 文件大小超过500KB，需要进行压缩
-            val outputStream = ByteArrayOutputStream()
-            val inputStream = inputFile.inputStream()
-            val buffer = ByteArray(4096)
-            var bytesRead: Int
-            var totalBytesRead: Long = 0
-
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                totalBytesRead += bytesRead
-                if (totalBytesRead > maxSizeBytes) {
-                    val remainingBytes = totalBytesRead - maxSizeBytes
-                    val bytesToWrite = bytesRead - remainingBytes.toInt()
-                    outputStream.write(buffer, 0, bytesToWrite)
-                    break
-                }
-                outputStream.write(buffer, 0, bytesRead)
-            }
-            inputStream.close()
-            outputStream.close()
-
-            return outputStream.toByteArray()
-        }
-
-        // 文件大小小于等于500KB，不需要压缩
-        return inputFile.readBytes()
-    }
 
 }

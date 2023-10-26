@@ -88,6 +88,8 @@ class TaskVerifyStepAdapter(
                     ivDialog.setContentView(getImageView(item.useCaseImage))
                     ivDialog.show()
                 }
+
+
                 if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
                     holder.btmUpPic.visibility = View.GONE
                     holder.ivUserPic.visibility = View.GONE
@@ -111,34 +113,43 @@ class TaskVerifyStepAdapter(
                 holder.fCasePic.visibility = View.GONE
                 holder.ivUserPic.visibility = View.GONE
 
-                if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
-                    holder.idEt.isEnabled = false
-                } else {
-                    holder.idEt.isEnabled = true
+                when (this.auditStatus) {
 
-                    holder.idEt.addTextChangedListener(object : TextWatcher {
-                        override fun beforeTextChanged(
-                            s: CharSequence?, start: Int, count: Int, after: Int
-                        ) {
-                            // 在文本改变之前调用
-                        }
+                    0 -> {
+                        holder.idEt.isEnabled = false
+                    }
 
-                        override fun onTextChanged(
-                            s: CharSequence?, start: Int, before: Int, count: Int
-                        ) {
-                            // 在文本改变时调用
-                        }
+                    3 -> {
+                        holder.idEt.isEnabled = false
+                    }
 
-                        override fun afterTextChanged(s: Editable?) {
-                            // 在文本改变之后调用
-                            if (s != null) {
-                                val text = s.toString()
-                                item.uploadValue = text
+                    else -> {
+                        holder.idEt.isEnabled = true
+                        holder.idEt.addTextChangedListener(object : TextWatcher {
+                            override fun beforeTextChanged(
+                                s: CharSequence?, start: Int, count: Int, after: Int
+                            ) {
+                                // 在文本改变之前调用
                             }
-                        }
-                    })
-                }
 
+                            override fun onTextChanged(
+                                s: CharSequence?, start: Int, before: Int, count: Int
+                            ) {
+                                // 在文本改变时调用
+                            }
+
+                            override fun afterTextChanged(s: Editable?) {
+                                // 在文本改变之后调用
+                                if (s != null) {
+                                    val text = s.toString()
+//                                    ToastUtils.show("文本改变")
+                                    item.uploadValue = text //更新用户输入的值
+                                }
+                            }
+                        })
+                    }
+
+                }
             }
 
             0 -> {

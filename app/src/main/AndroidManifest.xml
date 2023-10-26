@@ -189,9 +189,9 @@
             android:name="ScopedStorage"
             android:value="true" />
 
-<!--        <meta-data-->
-<!--            android:name="ZJ_TASK_IS_NESTED_SCROLLING_ENABLED"-->
-<!--            android:value="true"/>-->
+        <meta-data
+            android:name="ZJ_TASK_IS_NESTED_SCROLLING_ENABLED"
+            android:value="false"/>
     </application>
 
 </manifest>

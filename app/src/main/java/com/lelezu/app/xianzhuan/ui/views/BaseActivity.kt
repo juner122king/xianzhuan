@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
+import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
@@ -23,6 +24,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -396,7 +398,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected abstract fun isShowBack(): Boolean
 
 
-    protected open fun showToast(message: String?) {
+     open fun showToast(message: String?) {
         ToastUtils.show(message)
     }
 
@@ -434,6 +436,19 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         }
     }
+
+    //复制内容到剪切板
+    fun plainText(textToCopy:String){
+        val clipboardManager =
+          this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("Label", textToCopy)
+        clipboardManager.setPrimaryClip(clipData)
+
+        // 可以在这里显示一个提示，表示文本已经复制到剪贴板
+        showToast("已复制到剪贴板")
+    }
+
+
 
     override fun onDestroy() {
         super.onDestroy()

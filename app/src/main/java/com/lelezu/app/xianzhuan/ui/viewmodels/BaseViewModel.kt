@@ -91,8 +91,10 @@ open class BaseViewModel : ViewModel() {
     }
 
 
-
     private fun <T> failedResponse(r: ApiResponse<T>, mes: String?) {
+
+
+
 
 
         if (isConnected()) {

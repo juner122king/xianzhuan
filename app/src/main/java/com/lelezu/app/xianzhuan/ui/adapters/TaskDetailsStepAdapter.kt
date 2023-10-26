@@ -1,24 +1,21 @@
 package com.lelezu.app.xianzhuan.ui.adapters
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskStep
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
@@ -32,16 +29,20 @@ import com.lelezu.app.xianzhuan.wxapi.WxLogin
  *
  */
 class TaskDetailsStepAdapter(
-    private var items: List<TaskStep>, private var ivDialog: Dialog, private var activity: Activity
+    private var items: List<TaskStep>,
+    private var ivDialog: Dialog,
+    private var activity: BaseActivity
 ) : RecyclerView.Adapter<TaskDetailsStepAdapter.ItemViewHolder>() {
 
     private var isSignUp: Boolean = false ////根据任务报名与否，区别显示
 
+    private var taskPlatform: Int = 1 //"任务平台 1:APP  2:WX小程序  3:支付宝小程序"
+
     // 更新数据方法
-    fun updateData(newItems: List<TaskStep>, auditStatus: Int) {
+    fun updateData(newItems: List<TaskStep>, auditStatus: Int, tp: Int) {
         items = newItems  //任务步骤集合
         isSignUp = auditStatus != 0
-
+        taskPlatform = tp
         notifyDataSetChanged()
     }
 
@@ -68,7 +69,7 @@ class TaskDetailsStepAdapter(
         val tvGoLink: TextView = itemView.findViewById(R.id.tv_go_link)//
         val tvCopyLink: TextView = itemView.findViewById(R.id.tv_copy_link)
 
-        val tv_mini_p: ImageView = itemView.findViewById(R.id.tv_mini_p)//关联小程序按钮
+        val tv_mini_p: TextView = itemView.findViewById(R.id.tv_mini_p)//关联小程序按钮
         val tv_mini_2: ImageView = itemView.findViewById(R.id.tv_mini_2)// 已关联小程序按钮
 
         val iv_no_sign_up: ImageView = itemView.findViewById(R.id.iv_no_sign_up)// 未报名时显示的图片
@@ -94,6 +95,9 @@ class TaskDetailsStepAdapter(
         holder.step.text = ("${position + 1}").toString()
 
 
+
+
+
         //根据任务报名未报名的情况，区别显示,且只处理第一步骤
         if (!isSignUp && position == 0) {//
             holder.iv_no_sign_up.visibility = View.VISIBLE
@@ -105,7 +109,7 @@ class TaskDetailsStepAdapter(
         } else {
             holder.iv_no_sign_up.visibility = View.GONE
             //根据步骤类型，区别显示
-            when (item.stepType) {
+            when (item.stepType) {  //步骤类型
                 1, 4 -> { //图文步骤
                     holder.viewUrl.visibility = View.GONE
                     holder.llminiP.visibility = View.GONE
@@ -118,6 +122,23 @@ class TaskDetailsStepAdapter(
                             ivDialog.show()
                         }
                     }
+
+                    if(taskPlatform ==2){//WX小程序任务才能点击复制关键词
+                        holder.viewUrl.visibility = View.VISIBLE
+                        holder.tvGoLink.visibility = View.GONE
+                        holder.tvCopyLink.visibility = View.VISIBLE
+
+                        holder.tvCopyLink.text = "点击复制关键词"
+                        holder.tvCopyLink.setOnClickListener{
+                            if (item.searchAppName != "") activity.plainText(item.searchAppName)
+                            else{
+                                activity.showToast("searchAppName字段为空！")
+                            }
+
+                        }
+                    }
+
+
                 }
 
                 2 -> { //链接步骤
@@ -133,15 +154,7 @@ class TaskDetailsStepAdapter(
 
                     }
                     holder.tvCopyLink.setOnClickListener {
-                        val textToCopy = item.webUrl
-
-                        val clipboardManager =
-                            activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clipData = ClipData.newPlainText("Label", textToCopy)
-                        clipboardManager.setPrimaryClip(clipData)
-
-                        // 可以在这里显示一个提示，表示文本已经复制到剪贴板
-                        Toast.makeText(activity, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
+                        activity.plainText(item.webUrl)
                     }
                 }
 
@@ -156,9 +169,22 @@ class TaskDetailsStepAdapter(
                         holder.tv_mini_2.visibility = View.GONE
 
                         holder.tv_mini_p.setOnClickListener {
-                            WxLogin.subscribeMiniProgram(
-                                activity.application, item.webUrl, item.userName
-                            )
+
+                            when (taskPlatform) {
+
+                                2 -> {//跳WX小程序
+                                    WxLogin.subscribeMiniProgram(
+                                        activity.application, item.webUrl, item.userName
+                                    )
+                                }
+
+                                3 -> {//跳支付宝小程序
+                                    val intent = Intent(
+                                        Intent.ACTION_VIEW, Uri.parse(item.webUrl)
+                                    )
+                                    activity.startActivity(intent)
+                                }
+                            }
                         }
                     } else {
                         holder.tv_mini_p.visibility = View.GONE
@@ -166,7 +192,7 @@ class TaskDetailsStepAdapter(
                     }
                 }
 
-                5 -> {
+                5 -> {//搜索应用示例图
                     holder.fCasePic.visibility = View.GONE
                     holder.viewUrl.visibility = View.GONE
                     holder.llminiP.visibility = View.GONE
@@ -174,6 +200,25 @@ class TaskDetailsStepAdapter(
 
                     ImageViewUtil.load(holder.iv_miniapp_pic, item.useCaseImage)
                     holder.tv_miniapp_name.text = item.searchAppName
+
+
+                }
+
+                7 -> {//跳到小程序搜索栏
+                    holder.fCasePic.visibility = View.GONE
+                    holder.llminiP.visibility = View.GONE
+                    holder.viewUrl.visibility = View.VISIBLE
+                    holder.view_type5.visibility = View.GONE
+                    holder.tvGoLink.visibility = View.VISIBLE
+                    holder.tvGoLink.setOnClickListener {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW, Uri.parse(item.webUrl)
+                        )
+                        activity.startActivity(intent)
+
+                    }
+                    holder.tvCopyLink.visibility = View.INVISIBLE
+
                 }
 
             }

@@ -20,6 +20,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property balanceAmount Float 	可用金额
  * @property recommendUserId String  师傅ID
  * @property level String  用户等级
+ * @property avatar String  头像
  * @property taskAward Int 累计任
  * @property hasRewardNewerAward Boolean 是否领取了新人奖励
  * @constructor
@@ -29,6 +30,7 @@ data class UserInfo(
     val wxAccount: String,
     val vipLevel: Int,
     val userId: String,
+    val avatar: String,
     val rechargeAmount: Float,
     val nickname: String,
     val mobilePhone: String,

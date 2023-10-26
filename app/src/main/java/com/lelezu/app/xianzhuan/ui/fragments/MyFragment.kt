@@ -328,7 +328,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 startActivity(Intent(activity, MessageActivity::class.java))//消息
 //                val intent = Intent(
 //                    Intent.ACTION_VIEW,
-//                    Uri.parse("alipays://platformapi/startapp?appId=20170713077xxxxx&page=x/yz&query=xx%3dxx")
+//                    Uri.parse("alipays://platformapi/startapp?appId=20000067&url=https://8q1.cn/8sIj")
 //                )
 //                startActivity(intent)
 

@@ -28,6 +28,7 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
@@ -164,7 +165,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         val intent = Intent(requireContext(), WebViewActivity::class.java)
         when (p0?.id) {
             R.id.ll_top_btm1 -> {
-                intent.putExtra(LINK_KEY, link1)
+                intent.putExtra(LINK_KEY, link102)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_mrjl))
             }
 

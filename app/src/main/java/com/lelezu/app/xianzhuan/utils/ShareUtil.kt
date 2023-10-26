@@ -190,7 +190,7 @@ object ShareUtil {
         val sim = getString(APP_DEVICE_SIM)
         val imsi = getString(APP_DEVICE_IMSI)
         val androidId = getString(APP_DEVICE_MAC)
-        val mac = getString(APP_DEVICE_ANDROIDID)
+        val mac = getString(APP_SHARED_PREFERENCES_DEVICE_ID)
         return Register(
             deviceToken,
             mobileAccessToken,
@@ -204,18 +204,6 @@ object ShareUtil {
         )
     }
 
-
-    @SuppressLint("HardwareIds")
-    fun putAndroidID(context: Context) {
-//        putString(
-//            APP_DEVICE_ANDROIDID,
-//            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-//        )
-
-        putString(
-            APP_DEVICE_ANDROIDID, "222222"
-        )
-    }
 
 
     //同意隐私协议

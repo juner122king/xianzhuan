@@ -57,7 +57,6 @@ class LaunchActivity : BaseActivity() {
         initView()
         initData()
         showLogo()
-        getDeviceID()
 
         //拦截返回键
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -76,7 +75,6 @@ class LaunchActivity : BaseActivity() {
         initUMSDK()//友盟SDK初始化
         initZJSDK()//任务墙SDK 初始化
         //TX审核 去掉
-        ShareUtil.putAndroidID(this) //获取Android ID
 //
 
     }
@@ -99,15 +97,6 @@ class LaunchActivity : BaseActivity() {
 
     }
 
-    private fun getDeviceID() {
-        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
-
-        //保存登录androidId
-        ShareUtil.putString(
-            ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID, androidId
-        )
-    }
 
 
     private fun showLogo() {
@@ -127,7 +116,7 @@ class LaunchActivity : BaseActivity() {
 
     //显示广告页面
     private fun showTaskView() {
-        tvCd.text = "跳过广告 (${cd1 / 1000})"
+        tvCd.text = "跳过${cd1 / 1000}"
         // 开始倒计时
         startCountdown(cd1) // 6秒广告
         findViewById<View>(R.id.fl_launch_view).visibility = View.INVISIBLE
@@ -138,7 +127,7 @@ class LaunchActivity : BaseActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = millisUntilFinished / 1001
                 LogUtils.i("CD", secondsRemaining.toString() + "秒")
-                tvCd.text = "跳过广告 ($secondsRemaining)"
+                tvCd.text = "跳过$secondsRemaining"
             }
 
             override fun onFinish() {

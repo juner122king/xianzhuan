@@ -14,11 +14,11 @@
         android:id="@+id/iv_main_src"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/radius_border_bg_f0f0f0"
+        android:background="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <include layout="@layout/layout_task_pic" />
+        <include layout="@layout/layout_task_pic2" />
     </FrameLayout>
 
     <TextView

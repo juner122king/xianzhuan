@@ -36,6 +36,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property updatedDt String?  	更新时间
  * @property userId String?  	发布者ID
  * @property taskType String?  	任务分类（1：APP端注册用户发布的任务，2：官方任务(小程序任务)）
+ * @property taskPlatform Int  	"任务平台 1:APP  2:WX小程序  3:支付宝小程序"
  * @constructor
  */
 
@@ -67,5 +68,16 @@ data class Task(
     val shareAmount: Float,
     val updatedDt: String?,
     val taskType: String?,
-    val userId: String
-)
+    val taskPlatform: Int,
+    val userId: String,
+    val userInfo: UserInfo,
+) {
+    val _shareAmount: String
+        get() {
+            return if (shareAmount < 0.01) {
+                ""
+            } else {
+                shareAmount.toString()+"元"
+            }
+        }
+}

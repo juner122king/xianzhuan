@@ -168,7 +168,8 @@ class LoginActivity : BaseActivity(), OnClickListener {
 
             override fun onGetTokenError(token: String?, msg: String?) {
 
-                showToast("易盾号码认证Api:一键登录失败：${msg}")
+                LogUtils.i("易盾号码认证Api", "一键登录失败")
+                showToast("网络异常，请切换网络后重试。")
                 QuickLogin.getInstance().quitActivity()
 
             }
@@ -285,8 +286,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
     override fun isShowBack(): Boolean {
         return false
     }
-
-
 
 
 }

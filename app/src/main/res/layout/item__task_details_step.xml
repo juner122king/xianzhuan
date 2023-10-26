@@ -58,6 +58,7 @@
             android:paddingTop="5dp"
             android:paddingEnd="15dp"
             android:paddingBottom="5dp"
+            android:layout_marginBottom="@dimen/dip_10"
             android:text="点击访问链接"
             android:textColor="@color/text_check"
             android:textSize="12sp" />
@@ -88,12 +89,17 @@
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
         app:layout_constraintTop_toBottomOf="@id/tv_step_text">
 
-        <ImageView
+        <TextView
             android:id="@+id/tv_mini_p"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:src="@drawable/icon_mini_1"
+            android:background="@drawable/radius_border_button3"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:layout_marginBottom="@dimen/dip_10"
+            android:text="点我关联"
             android:textColor="@color/text_check"
             android:textSize="12sp"
             android:visibility="gone" />
@@ -120,7 +126,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
-        app:layout_constraintTop_toBottomOf="@id/tv_step_text">
+        app:layout_constraintTop_toBottomOf="@id/tv_web_url">
 
         <ImageView
             android:id="@+id/iv_case_pic"
@@ -196,6 +202,7 @@
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
         app:layout_constraintTop_toBottomOf="@id/tv_step_text">
 
+
         <ImageView
             android:id="@+id/iv_miniapp_pic"
             android:layout_width="50dp"
@@ -223,7 +230,6 @@
             android:text="请记住小程序图标和全称"
             android:textColor="@color/red"
             android:textSize="13sp"
-
             app:layout_constraintBottom_toBottomOf="@id/iv_miniapp_pic"
             app:layout_constraintStart_toStartOf="@id/tv_miniapp_name" />
 

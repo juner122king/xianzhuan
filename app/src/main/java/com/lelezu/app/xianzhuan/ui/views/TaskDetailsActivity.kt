@@ -67,7 +67,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private var isDoneTask: Boolean = false//是否加载完成任务页面
 
-    private lateinit var dialog: AlertDialog//协议弹窗
+    private lateinit var dialog: Dialog//协议弹窗
     private lateinit var dialog2: Dialog//报名成功弹窗
 
     private lateinit var comdown: TextView//任务提交倒计时
@@ -95,15 +95,21 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         initView()
         initObserve()
+
+        checkNetWorkView()
     }
 
     override fun onResume() {
         super.onResume()
-        checkNetWorkView()
+
         if (checkMiniSub()) {//是否加载完成任务页面 且该任务是小程序任务 且已经报名 且已关注小程序
             homeViewModel.miniTaskComplete(getTask().applyLogId)//校验小程序任务是否完成
         }
 
+        if (isDoneTask && getTask().taskType == "2") {//判断是否需要刷新页面，条件为小程序任务
+            //获取上个页面返回的TaskId再请求一次
+            taskDetails(getTask().taskId, getTask().applyLogId)
+        }
 
     }
 
@@ -240,19 +246,19 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}元" //
 
-        findViewById<TextView>(R.id.tv_user_vip).text = "分享赚${task.shareAmount}元" //
+        findViewById<TextView>(R.id.tv_user_vip).text = "分享赚${task._shareAmount}" //
 
         findViewById<TextView>(R.id.tv_info).text = string
 
 
-        adapterDetails.updateData(task.taskStepList, task.auditStatus)
+        adapterDetails.updateData(task.taskStepList, task.auditStatus, task.taskPlatform)
         adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
 
         loginViewModel.getUserInfo(task.userId)//获取商家信息
         loginViewModel.userInfo.observe(this) {
 
             ImageViewUtil.loadCircleCrop(
-                findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String
+                findViewById(R.id.iv_user_pic), it?.headImageUrl ?: String,
             )
 
             findViewById<ImageView>(R.id.iv_user_pic2).background = pic[it.vipLevel]?.let { it1 ->
@@ -275,7 +281,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         }
 
 
-        if (task.operateTime != null && task.operateTime != "null") {
+        if (task.operateTime != null && task.operateTime != "null" && task.auditStatus != 3) { //审核通过就不显示
 
             // 开始定时任务
             startCountdown()
@@ -294,8 +300,11 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //获取关注和粉丝数
         loginViewModel.follows(task.userId)
 
-//        //校验小程序任务是否完成
-//        homeViewModel.miniTaskComplete(getTask().applyLogId)
+
+        if (getTask().taskType == "2" && getTask().auditStatus == 3) {//小程序任务且 任务状态为审核完成
+            ToastUtils.show("任务已完成！")
+        }
+
 
     }
 
@@ -315,6 +324,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         // 创建并启动倒计时
         countDownTimer = object : CountDownTimer(timeDifference, 1000) {
             override fun onTick(millisUntilFinished: Long) {
+
                 //添加完成任务提交验收倒计时
                 comdown.text =
                     "完成任务提交验收剩余：" + calculateRemainingTime(getTask().operateTime.toString())
@@ -344,11 +354,13 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             return "${hours}小时${minutes}分${seconds}秒"
         } else {
+
             return "已过期"
         }
     }
 
     private fun changeView(task: Task) {
+
 
         when (task.auditStatus) {
             //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
@@ -408,6 +420,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
         } else {
             findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
+        }
+
+        if (task.taskPlatform != 1 && task.auditStatus != 0) {//小程序任务不显示底部按钮
+            findViewById<View>(R.id.ll_btm).visibility = View.GONE
+        } else {
+            findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
         }
     }
 
@@ -486,13 +504,16 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     // 显示用户协议弹窗
     private fun showAgreementDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_agreement, null)
 
-        // 创建弹窗
-        val builder = AlertDialog.Builder(this, R.style.backDialog)
-        builder.setView(dialogView)
-        dialog = builder.create()
+        dialog = Dialog(this)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_agreement)
+        val ok: View = dialog.findViewById(R.id.btnAgree)
 
+        ok.setOnClickListener {
+            //确定
+            dialog.dismiss()
+        }
         // 显示弹窗
         dialog.show()
 
@@ -506,7 +527,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         dialog2.setContentView(R.layout.dialog_bmcg)
         val content: TextView = dialog2.findViewById(R.id.tv_content)
         val ok: TextView = dialog2.findViewById(R.id.ok)
-        content.text =  "请在${time}小时内完成并提交任务"
+        content.text = "请在${time}小时内完成并提交任务"
 
         ok.setOnClickListener {
             //确定
@@ -528,8 +549,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     //判断是否已关注小程序
     private fun checkMiniSub(): Boolean {
-        return isDoneTask && getTask().taskType == "2" && getTask().auditStatus != 0 && getTask().taskStepList.any { it.stepType == 3 && it.hasComplete }
-
+        return isDoneTask && getTask().taskType == "2" && (getTask().auditStatus != 0 || getTask().auditStatus != 3) && getTask().taskStepList.any { it.stepType == 3 && it.hasComplete }
 
     }
 
