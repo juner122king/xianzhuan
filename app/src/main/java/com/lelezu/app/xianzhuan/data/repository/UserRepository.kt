@@ -31,7 +31,7 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
     //获取登录信息
     suspend fun apiLogin(loginInfo: LoginInfo): ApiResponse<LoginReP> =
         withContext(Dispatchers.IO) {
-            val call = apiService.getLogin(loginInfo)
+            val call = apiService.getLogin(loginInfo,deviceId)
             executeApiCall(call)
         }
 

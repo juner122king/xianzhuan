@@ -48,7 +48,8 @@ object MyPermissionUtil {
     @SuppressLint("SuspiciousIndentation")
     fun readPhoneStateApply(context: Context, callback: OnPermissionCallback) {
         val permission = Permission.READ_PHONE_STATE
-        val permission2 = Permission.MANAGE_EXTERNAL_STORAGE
+        val permission2 = Permission.WRITE_EXTERNAL_STORAGE
+//        val permission3 = Permission.MANAGE_EXTERNAL_STORAGE
         XXPermissions.with(context).permission(permission,permission2).request(callback)
     }
 

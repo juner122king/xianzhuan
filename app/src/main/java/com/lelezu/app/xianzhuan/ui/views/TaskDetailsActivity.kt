@@ -103,13 +103,14 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         super.onResume()
 
         if (checkMiniSub()) {//是否加载完成任务页面 且该任务是小程序任务 且已经报名 且已关注小程序
+            ToastUtils.show("执行小程序任务校验")
             homeViewModel.miniTaskComplete(getTask().applyLogId)//校验小程序任务是否完成
         }
 
-        if (isDoneTask && getTask().taskType == "2") {//判断是否需要刷新页面，条件为小程序任务
-            //获取上个页面返回的TaskId再请求一次
-            taskDetails(getTask().taskId, getTask().applyLogId)
-        }
+//        if (isDoneTask && getTask().taskType == "2") {//判断是否需要刷新页面，条件为小程序任务
+//            //获取上个页面返回的TaskId再请求一次
+//            taskDetails(getTask().taskId, getTask().applyLogId)
+//        }
 
     }
 
@@ -214,6 +215,15 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             tv_fan.text = "${it.fanCnt}粉丝"
             tv_sub.text = "${it.concernCnt}关注"
 
+        }
+
+        //小程序校验接口监听
+        homeViewModel.isCompleteMini.observe(this) {
+
+            if (it) {
+                //执行完成，刷新详情页面
+                taskDetails(getTask().taskId, getTask().applyLogId)
+            }
         }
     }
 
@@ -549,7 +559,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     //判断是否已关注小程序
     private fun checkMiniSub(): Boolean {
-        return isDoneTask && getTask().taskType == "2" && (getTask().auditStatus != 0 || getTask().auditStatus != 3) && getTask().taskStepList.any { it.stepType == 3 && it.hasComplete }
+        return isDoneTask && getTask().taskType == "2" && getTask().auditStatus == 1 && getTask().taskStepList.any { (it.stepType == 3 && it.hasComplete) || it.stepType == 7 }
 
     }
 

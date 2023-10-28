@@ -15,6 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
+import com.fendasz.moku.planet.utils.thirdparty.baidu.util.DeviceId
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
@@ -25,6 +26,7 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
+import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
@@ -77,6 +79,7 @@ class LaunchActivity : BaseActivity() {
         //TX审核 去掉
 //
 
+
     }
 
     private fun initView() {
@@ -96,7 +99,6 @@ class LaunchActivity : BaseActivity() {
         }
 
     }
-
 
 
     private fun showLogo() {

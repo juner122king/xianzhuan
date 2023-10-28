@@ -45,7 +45,7 @@ interface ApiService {
     fun register(@Query("encryptStr") encryptStr: String): Call<ApiResponse<LoginReP>>
 
     @POST("/dxz/app/user/login")  //用户登录
-    fun getLogin(@Body loginInfo: LoginInfo): Call<ApiResponse<LoginReP>>
+    fun getLogin(@Body loginInfo: LoginInfo,@Header("Device") device: String): Call<ApiResponse<LoginReP>>
 
     @GET("/dxz/app/user/info")  //用户信息
     fun getUserInfo(

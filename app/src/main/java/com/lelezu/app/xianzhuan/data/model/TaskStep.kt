@@ -16,6 +16,7 @@ package com.lelezu.app.xianzhuan.data.model
  * @property hasComplete Boolean	是否已关注小程序
  * @property userName String	小程序原始id
  * @property searchAppName String	小程序名字
+ * @property searchTerms String	搜索关键词
  * @constructor
  */
 data class TaskStep(
@@ -27,4 +28,5 @@ data class TaskStep(
     val hasComplete: Boolean,
     val userName: String,
     val searchAppName: String,
+    val searchTerms: String,
 )

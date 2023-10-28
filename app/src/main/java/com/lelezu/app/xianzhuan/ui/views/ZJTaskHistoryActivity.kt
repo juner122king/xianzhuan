@@ -23,8 +23,10 @@ class ZJTaskHistoryActivity : BaseActivity() {
             object : ZjTaskAdListener {
                 override fun onZjAdLoaded() {
                     hideLoading()
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment, zjTaskAd.loadHistoryFragmentAd()).commit()
+                    if (!supportFragmentManager.isDestroyed) {
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment, zjTaskAd.loadHistoryFragmentAd()).commit()
+                    }
                 }
 
                 override fun onZjAdError(zjAdError: ZjAdError) {
@@ -46,5 +48,10 @@ class ZJTaskHistoryActivity : BaseActivity() {
 
     override fun isShowBack(): Boolean {
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 }

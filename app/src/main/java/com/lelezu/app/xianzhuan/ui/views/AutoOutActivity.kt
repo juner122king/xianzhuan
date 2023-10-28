@@ -12,14 +12,11 @@ import androidx.core.widget.ContentLoadingProgressBar
 import com.hjq.permissions.OnPermissionCallback
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
-import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.utils.ShareUtil.versionCode
-import com.lelezu.app.xianzhuan.utils.ShareUtil.versionName
-import java.io.File
+import com.lelezu.app.xianzhuan.utils.ShareUtil.getVersionName
 
 class AutoOutActivity : BaseActivity(), OnClickListener {
     private lateinit var dialog: Dialog
+    private lateinit var tv_vn: TextView
 
     // 替换为你的 APK 下载链接和文件名
     private lateinit var apkUrl: String
@@ -31,6 +28,8 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
         findViewById<View>(R.id.tv_newVersion).setOnClickListener(this)
         findViewById<View>(R.id.tv_url).setOnClickListener(this)
+        tv_vn = findViewById(R.id.tv_vn)
+        tv_vn.text = "当前版本：${getVersionName()}"
 
 
         sysMessageViewModel.version.observe(this) {

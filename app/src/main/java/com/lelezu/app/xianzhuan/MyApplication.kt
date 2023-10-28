@@ -2,7 +2,11 @@ package com.lelezu.app.xianzhuan
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.provider.Settings
+import android.text.TextUtils
+import cn.hutool.core.util.IdUtil
+import com.fendasz.moku.planet.utils.thirdparty.baidu.util.DeviceId
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
@@ -10,8 +14,10 @@ import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
+import java.util.UUID
 
 
 /**
@@ -46,25 +52,11 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        getDeviceID()
-
+        //获取设备ID
+        UUIDUtils.getDeviceID(this)
         // 初始化 Toast 框架
         ToastUtils.init(this)
-//
-//        val displayMetrics = resources.displayMetrics
-//        val dpi = displayMetrics.densityDpi
-//
-//        ToastUtils.show("手机屏幕：$dpi")
+
     }
 
-    private fun getDeviceID() {
-        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-        LogUtils.i("AndroidId", androidId)
-
-
-        //保存登录androidId
-        ShareUtil.putString(
-            ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID, androidId
-        )
-    }
 }

@@ -21,8 +21,10 @@ abstract class ApiFactory {
 
         fun create(): ApiService {
 
-            val androidId = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID)
-            LogUtils.i("AndroidId", androidId)
+            val deviceId = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID)
+            LogUtils.i(
+                "ApiFactory", "设备ID:${deviceId}"
+            )
 
             //Log查看过滤器，上线版去掉
             val logInterceptor = HttpLoggingInterceptor()
@@ -33,7 +35,7 @@ abstract class ApiFactory {
             val headerInterceptor = Interceptor { chain ->
                 val originalRequest = chain.request()
                 // 构建新的请求，添加请求头
-                val newRequest = originalRequest.newBuilder().addHeader("Device", androidId).build()
+                val newRequest = originalRequest.newBuilder().addHeader("Device", deviceId).build()
                 return@Interceptor chain.proceed(newRequest)
             }
 

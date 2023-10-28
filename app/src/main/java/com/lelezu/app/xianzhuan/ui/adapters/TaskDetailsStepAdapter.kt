@@ -95,9 +95,6 @@ class TaskDetailsStepAdapter(
         holder.step.text = ("${position + 1}").toString()
 
 
-
-
-
         //根据任务报名未报名的情况，区别显示,且只处理第一步骤
         if (!isSignUp && position == 0) {//
             holder.iv_no_sign_up.visibility = View.VISIBLE
@@ -123,16 +120,16 @@ class TaskDetailsStepAdapter(
                         }
                     }
 
-                    if(taskPlatform ==2){//WX小程序任务才能点击复制关键词
+                    if (taskPlatform == 2) {//WX小程序任务才能点击复制关键词
                         holder.viewUrl.visibility = View.VISIBLE
                         holder.tvGoLink.visibility = View.GONE
                         holder.tvCopyLink.visibility = View.VISIBLE
 
                         holder.tvCopyLink.text = "点击复制关键词"
-                        holder.tvCopyLink.setOnClickListener{
-                            if (item.searchAppName != "") activity.plainText(item.searchAppName)
-                            else{
-                                activity.showToast("searchAppName字段为空！")
+                        holder.tvCopyLink.setOnClickListener {
+                            if (item.searchTerms != "") activity.plainText(item.searchTerms)
+                            else {
+                                activity.showToast("searchTerms字段为空！")
                             }
 
                         }
