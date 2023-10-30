@@ -1,15 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
+import android.app.Dialog
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -22,11 +14,12 @@ import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_IS_NEWER
+import com.lelezu.app.xianzhuan.utils.ShareUtil.NEWER_IS_SHOW_DIALOG
 
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
-
+    private lateinit var dialog: Dialog //新人奖窗口
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,6 +39,13 @@ class HomeActivity : BaseActivity() {
     //已领取了新人奖励，直接显示主页面
     private fun showHomeView() {
         initHomeView()
+
+        //添加是否领取新人奖判断 ：新用户登录且未显示过Dialog
+        if (ShareUtil.getBoolean(APP_SHARED_PREFERENCES_IS_NEWER) && !ShareUtil.getBoolean(
+                NEWER_IS_SHOW_DIALOG
+            )
+        ) showDialog()
+
     }
 
     private fun initHomeView() {
@@ -167,4 +167,21 @@ class HomeActivity : BaseActivity() {
             sysMessageViewModel.detection()
         }
     }
+
+    private fun showDialog() {
+        dialog = Dialog(this)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_new_user)
+
+        val ok: View = dialog.findViewById(R.id.ok)
+
+        ok.setOnClickListener {
+            //确定
+            dialog.dismiss()
+            ShareUtil.putBoolean(NEWER_IS_SHOW_DIALOG, true)
+        }
+
+        dialog.show()
+    }
+
 }

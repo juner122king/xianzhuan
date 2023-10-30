@@ -24,7 +24,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -264,7 +263,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun toHome() {
-        val intent = Intent(MyApplication.context, HomeActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

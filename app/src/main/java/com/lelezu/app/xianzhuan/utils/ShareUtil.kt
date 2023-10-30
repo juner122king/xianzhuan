@@ -1,9 +1,7 @@
 package com.lelezu.app.xianzhuan.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.provider.Settings
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Register
@@ -27,9 +25,9 @@ object ShareUtil {
     private const val APP_NETWORK_IS_CONNECTED: String = "IS_CONNECTED"//网络是否连接
 
 
-     const val CHECKED_NEW_VISON: String = "CHECKED_NEW_VISON"//是否询问过更新版本
+    const val CHECKED_NEW_VISON: String = "CHECKED_NEW_VISON"//是否询问过更新版本
 
-     const val CHECKED_FXTS: String = "CHECKED_FXTS"//是否询问过风险提示
+    const val CHECKED_FXTS: String = "CHECKED_FXTS"//是否询问过风险提示
 
 
     const val APP_PRIVACY_AGREEMENT_AGREE: String = "PRIVACY_AGREEMENT"//是否同意隐私协议
@@ -47,9 +45,10 @@ object ShareUtil {
     const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
     const val APP_SHARED_PREFERENCES_DEVICE_ID: String = "deviceId"
-    const val APP_hasRewardNewerAward: Boolean = false
     const val APP_SHARED_PREFERENCES_RECOMMEND_USERID: String = "recommendUserId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
+    const val APP_SHARED_PREFERENCES_IS_NEWER: String = "NEWER"
+    const val NEWER_IS_SHOW_DIALOG: String = "SHOW_NEWER_DIALOG"
 
 
     //网易token
@@ -149,6 +148,11 @@ object ShareUtil {
             APP_SHARED_PREFERENCES_LOGIN_STATUS, false
         )
         else putBoolean(APP_SHARED_PREFERENCES_LOGIN_STATUS, true)
+
+        //是否新用户
+        putBoolean(APP_SHARED_PREFERENCES_IS_NEWER, loginReP.isNewer)
+
+
     }
 
     //清除登录信息
@@ -203,7 +207,6 @@ object ShareUtil {
             mac
         )
     }
-
 
 
     //同意隐私协议
