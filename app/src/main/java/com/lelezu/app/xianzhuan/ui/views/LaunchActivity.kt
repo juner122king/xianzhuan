@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -15,7 +14,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
-import com.fendasz.moku.planet.utils.thirdparty.baidu.util.DeviceId
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
@@ -26,7 +24,6 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
-import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
@@ -47,7 +44,7 @@ class LaunchActivity : BaseActivity() {
     private lateinit var tvCd: TextView//倒计时
 
     private var cd1 = 7000L//广告倒计时
-    private var cd2 = 2000L//logo显示时间
+    private var cd2 = 3000L//logo显示时间
 
     private lateinit var countDownTimer: CountDownTimer
 

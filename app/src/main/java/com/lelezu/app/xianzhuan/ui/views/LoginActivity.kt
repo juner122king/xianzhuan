@@ -111,6 +111,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
         QuickLogin.getInstance().init(this, ApiConstants.DUN_PHONE_BUSINESS_ID)
         QuickLogin.getInstance().setDebugMode(false)
         QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
+
         HTProtect.getTokenAsync(
             3000, ApiConstants.DUN_RISK_BUSINESS_ID
         ) {
@@ -123,9 +124,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
             } else {
                 showToast("您的手机号或设备异常：${it.codeStr}")
                 hideLoading()
-
             }
-
 
         }
 

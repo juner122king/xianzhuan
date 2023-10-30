@@ -1,11 +1,7 @@
 package com.lelezu.app.xianzhuan.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
-import android.provider.Settings
 import android.text.TextUtils
-import cn.hutool.core.util.IdUtil
 import com.fendasz.moku.planet.utils.thirdparty.baidu.util.DeviceId
 import java.util.UUID
 
@@ -22,6 +18,11 @@ object UUIDUtils {
         var deviceId = ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID)
         if (TextUtils.isEmpty(deviceId)) {
             deviceId = DeviceId.getDeviceID(context) //第三方获取
+
+            if (TextUtils.isEmpty(deviceId)) {
+                deviceId = UUID.randomUUID().toString()//调用都会生成一个全新的标识符
+            }
+
             //保存Id
             ShareUtil.putString(
                 ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID, deviceId

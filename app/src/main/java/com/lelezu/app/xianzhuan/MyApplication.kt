@@ -2,22 +2,14 @@ package com.lelezu.app.xianzhuan
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.provider.Settings
-import android.text.TextUtils
-import cn.hutool.core.util.IdUtil
-import com.fendasz.moku.planet.utils.thirdparty.baidu.util.DeviceId
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
-import com.lelezu.app.xianzhuan.utils.LogUtils
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
-import java.util.UUID
 
 
 /**
