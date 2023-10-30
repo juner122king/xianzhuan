@@ -16,6 +16,7 @@ import com.lelezu.app.xianzhuan.dun163api.UiConfigs
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreeAgreement
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreeAgreement
@@ -112,20 +113,25 @@ class LoginActivity : BaseActivity(), OnClickListener {
         QuickLogin.getInstance().setDebugMode(false)
         QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
 
-        HTProtect.getTokenAsync(
-            3000, ApiConstants.DUN_RISK_BUSINESS_ID
-        ) {
-            LogUtils.i("易盾风控引擎Api  code:", it!!.code.toString());
-            if (it.code == AntiCheatResult.OK) {
-                // 调用成功，获取token
-                ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
 
-                initQuickLogin()
-            } else {
-                showToast("您的手机号或设备异常：${it.codeStr}")
-                hideLoading()
+        val code = ShareUtil.getInt(APP_163_INIT_CODE)
+        if (code == 200) {
+            HTProtect.getTokenAsync(
+                3000, ApiConstants.DUN_RISK_BUSINESS_ID
+            ) {
+                LogUtils.i("易盾风控引擎Api  code:", it!!.code.toString())
+                if (it.code == AntiCheatResult.OK) {
+                    // 调用成功，获取token
+                    ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
+
+                    initQuickLogin()
+                } else {
+                    showToast("您的手机号或设备异常：${it.codeStr}")
+                    hideLoading()
+                }
             }
-
+        } else {
+            showToast("易盾风控引擎初始化失败 code:${code}")
         }
 
     }

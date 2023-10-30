@@ -22,6 +22,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
 import com.lelezu.app.xianzhuan.wxapi.WxData
@@ -230,6 +231,8 @@ class LaunchActivity : BaseActivity() {
         val callback = HTPCallback { paramInt, paramString ->
             Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
+
+            ShareUtil.putInt(APP_163_INIT_CODE, paramInt)
         }
         HTProtect.init(this, ApiConstants.DUN_BUSINESS_NO, callback, config)
         //易盾结束
@@ -254,7 +257,7 @@ class LaunchActivity : BaseActivity() {
             UMConfigure.DEVICE_TYPE_PHONE,
             ""
         )
-        UMConfigure.setLogEnabled(true)
+        UMConfigure.setLogEnabled(false)
         //友盟结束
 
     }

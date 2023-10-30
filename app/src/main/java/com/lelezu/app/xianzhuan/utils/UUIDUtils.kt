@@ -20,7 +20,7 @@ object UUIDUtils {
             deviceId = DeviceId.getDeviceID(context) //第三方获取
 
             if (TextUtils.isEmpty(deviceId)) {
-                deviceId = UUID.randomUUID().toString()//调用都会生成一个全新的标识符
+                deviceId = UUID.randomUUID().toString()//每次调用都会生成一个全新的标识符
             }
 
             //保存Id

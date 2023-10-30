@@ -1,6 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -34,6 +35,7 @@ import com.lelezu.app.xianzhuan.wxapi.WxLogin
 
 class MyFragment : BaseFragment(), View.OnClickListener {
 
+    private lateinit var dialog: Dialog //师傅昵称窗口
 
     //vip等级图片
     private var vippic = mapOf(
@@ -198,10 +200,19 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             } else {
 
                 view.findViewById<View>(R.id.ll_l10).setOnClickListener {
-                    showToast("您师傅ID:$materID")
+//                    showToast("您师傅ID:$materID")
+
+                    loginViewModel.getMUserInfo(materID.toString())
+
                 }
             }
         }
+
+        loginViewModel.master_userInfo.observe(requireActivity()) {
+
+            showDialog(it.nickname, it.userId, it.headImageUrl)
+        }
+
 
         loginViewModel.related.observe(requireActivity()) {
             // 停止刷新动画
@@ -404,4 +415,41 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
     }
 
+    private fun showDialog(nikeName: String, materID: String, avatar: String) {
+        dialog = Dialog(requireContext())
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_master)
+
+        val cancel: View = dialog.findViewById(R.id.cancel)
+
+        val name: TextView = dialog.findViewById(R.id.tv_name)
+        val uid: TextView = dialog.findViewById(R.id.tv_id)
+        val iv_head: ImageView = dialog.findViewById(R.id.iv_head)
+
+
+        name.setOnLongClickListener {
+
+            showToast("师傅昵称已复制到剪切板:${nikeName}")
+            copyText(nikeName)
+            false
+        }
+
+        uid.setOnLongClickListener {
+            showToast("师傅ID已复制到剪切板:${materID}")
+            copyText(materID)
+            false
+        }
+
+
+        name.text = nikeName
+        uid.text = "UID:${materID}"
+        ImageViewUtil.loadCircleCrop(iv_head, avatar)
+
+        cancel.setOnClickListener {
+            //确定
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 }

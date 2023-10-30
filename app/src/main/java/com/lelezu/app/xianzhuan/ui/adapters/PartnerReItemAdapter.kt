@@ -3,6 +3,7 @@ package com.lelezu.app.xianzhuan.ui.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Partner
-import com.lelezu.app.xianzhuan.data.model.Task
-import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
-import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
+import com.lelezu.app.xianzhuan.ui.views.ARG_PARAM
+import com.lelezu.app.xianzhuan.ui.views.PartnerCenterItemActivity
 
 /**
  * @author:Administrator
@@ -35,7 +35,7 @@ class PartnerReItemAdapter(
 
     private val colorMap = mapOf(
         0 to R.color.text_check,
-        1 to R.color.line2,
+        1 to R.color.B3B3B3,
         2 to R.color.colorControlActivated,
     )
 
@@ -67,6 +67,7 @@ class PartnerReItemAdapter(
         val tv_price: TextView = itemView.findViewById(R.id.tv_price)
         val tv_time: TextView = itemView.findViewById(R.id.tv_time)
         val tv_status: TextView = itemView.findViewById(R.id.tv_status)
+        val click_view: View = itemView.findViewById(R.id.click_view)
         var c = context
     }
 
@@ -89,13 +90,31 @@ class PartnerReItemAdapter(
         if (holder is ItemViewHolder) {
             val item = items[position]
             holder.tv_price.text = "￥${item.earning}"
-            holder.tv_time.text =  "时间：${item.createdDate}"
+            holder.tv_time.text = "时间：${item.createdDate}"
             holder.tv_status.text = statusMap[item.settlementStatus] ?: "未知状态"
 
             // 设置文本颜色
             val statusColor = colorMap[item.settlementStatus] ?: R.color.colorControlActivated
             val resolvedColor = ContextCompat.getColor(holder.c, statusColor)
             holder.tv_status.setTextColor(resolvedColor)
+            holder.click_view.setOnClickListener {
+
+
+                val intent = Intent(holder.c, PartnerCenterItemActivity::class.java)
+
+                intent.putExtra("T0", item.settlementStatus)
+                intent.putExtra("T1", item.earning)
+                intent.putExtra("T2", item.taskCount)
+                intent.putExtra("T3", item.completeTaskCnt)
+                intent.putExtra("T4", item.teamLevel)
+                intent.putExtra("T5", item.rate)
+                intent.putExtra("T6", item.performance)
+                intent.putExtra("T7", item.reward)
+                intent.putExtra("T8", item.createdDate)
+
+                holder.c.startActivity(intent)
+
+            }
         }
 
     }

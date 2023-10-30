@@ -39,6 +39,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     val loginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
     val registerLoginRePLiveData: MutableLiveData<LoginReP> = MutableLiveData()
     val userInfo: MutableLiveData<UserInfo> = MutableLiveData()
+    val master_userInfo: MutableLiveData<UserInfo> = MutableLiveData()
 
     val earning: MutableLiveData<Earning> = MutableLiveData()
 
@@ -94,6 +95,13 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     fun getUserInfo(userId: String) = viewModelScope.launch {
         val rep = userRepository.apiUserInfo(userId)
         handleApiResponse(rep, userInfo)
+    }
+
+
+    //获取师傅信息
+    fun getMUserInfo(userId: String) = viewModelScope.launch {
+        val rep = userRepository.apiUserInfo(userId)
+        handleApiResponse(rep, master_userInfo)
     }
 
     fun apiEarnings() = viewModelScope.launch {

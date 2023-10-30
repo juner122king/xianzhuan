@@ -1,11 +1,8 @@
 package com.lelezu.app.xianzhuan.ui.viewmodels
 
-import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.ApiEmptyResponse
 import com.lelezu.app.xianzhuan.data.model.ApiErrorResponse
 import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse
@@ -37,7 +34,7 @@ open class BaseViewModel : ViewModel() {
                 // 处理成功的响应
                 Log.i("BaseViewModel:", "ApiSuccessResponse")
                 liveData.postValue(r.data)
-                if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对角为登录回应对象就保存
+                if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对象为登录回应对象就保存
             }
 
             is ApiFailedResponse -> {

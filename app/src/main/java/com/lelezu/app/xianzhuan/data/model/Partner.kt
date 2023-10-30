@@ -39,52 +39,9 @@ data class Partner(
     val teamLevel: String? = "-",
     val teamNewCount: String? = "0",
     val earning: String?,
-
     val performanceId: String?,
-    val avatar: String?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as Int,
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-
-        parcel.readString()
-    )
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(parcel: Parcel, p1: Int) {
-        parcel.writeString(createdDate)
-        parcel.writeValue(nickName)
-        parcel.writeValue(partnerId)
-        parcel.writeValue(performance)
-        parcel.writeValue(settlementStatus)
-        parcel.writeValue(taskCount)
-        parcel.writeString(teamCount)
-        parcel.writeString(teamLevel)
-        parcel.writeString(teamNewCount)
-        parcel.writeString(earning)
-        parcel.writeString(performanceId)
-        parcel.writeString(avatar)
-    }
-
-    companion object CREATOR : Parcelable.Creator<Partner> {
-        override fun createFromParcel(parcel: Parcel): Partner {
-            return Partner(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Partner?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+    val avatar: String?,
+    val rate: String?,
+    val reward: String?,
+    val completeTaskCnt: String?,
+)

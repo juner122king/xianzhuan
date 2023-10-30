@@ -116,7 +116,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                 isBannerSet = true // 标志设置为 true，以后不再执行 setBanner
             }
 
-        }else{
+        } else {
             setBanner()
         }
 
