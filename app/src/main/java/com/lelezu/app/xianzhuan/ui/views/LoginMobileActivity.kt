@@ -2,10 +2,7 @@ package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText

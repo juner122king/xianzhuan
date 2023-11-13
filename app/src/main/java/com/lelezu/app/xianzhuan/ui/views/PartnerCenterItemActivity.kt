@@ -1,14 +1,11 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Partner
 
-const val ARG_PARAM = "Partner"
 
 /**
  *  合伙人业绩-结算明细

@@ -59,10 +59,12 @@
 
     <LinearLayout
         android:id="@+id/ll_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
         android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@id/tv_shang_ji"
         app:layout_constraintStart_toEndOf="@id/iv_main_src"
         app:layout_constraintTop_toTopOf="@id/iv_main_src">
 
@@ -75,10 +77,12 @@
 
         <TextView
             android:id="@+id/tv_task_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black2"
             android:textSize="15dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textStyle="bold" />
 
     </LinearLayout>

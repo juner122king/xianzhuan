@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:orientation="vertical">
 
     <TextView
@@ -59,7 +60,7 @@
             android:paddingEnd="15dp"
             android:paddingBottom="5dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="@dimen/dip_10"
+            android:layout_marginBottom="10dp"
             android:text="点击访问链接"
             android:textColor="@color/text_check"
             android:textSize="12sp" />
@@ -98,7 +99,7 @@
             android:paddingTop="5dp"
             android:paddingEnd="15dp"
             android:paddingBottom="5dp"
-            android:layout_marginBottom="@dimen/dip_10"
+            android:layout_marginBottom="10dp"
             android:text="点我关联"
             android:textColor="@color/text_check"
             android:textSize="12sp"

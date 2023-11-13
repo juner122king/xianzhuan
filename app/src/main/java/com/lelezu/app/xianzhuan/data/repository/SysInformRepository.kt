@@ -25,7 +25,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     suspend fun apiGetList(current: Int, size: Int): ApiResponse<ListData<Message>> =
         withContext(Dispatchers.IO) {
             val call = apiService.getSysMessageList(
-                current, size, loginToken
+                current, size, loginToken, deviceId
             )
             executeApiCall(call)
         }
@@ -34,7 +34,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //公告
     suspend fun apiAnnounce(): ApiResponse<List<Announce>> = withContext(Dispatchers.IO) {
         val call = apiService.getAnnounce(
-            loginToken
+            loginToken, deviceId
         )
         executeApiCall(call)
     }
@@ -42,7 +42,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //新版本
     suspend fun detection(): ApiResponse<Version> = withContext(Dispatchers.IO) {
         val call = apiService.detection(
-            ShareUtil.getVersionCode().toString(), ShareUtil.getVersionName(), loginToken
+            ShareUtil.getVersionCode().toString(), ShareUtil.getVersionName(), loginToken, deviceId
         )
         executeApiCall(call)
     }
@@ -52,7 +52,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     suspend fun markSysMessage(msgIds: List<String>): ApiResponse<Boolean> =
         withContext(Dispatchers.IO) {
             val call = apiService.getMarkSysMessage(
-                msgIds, loginToken
+                msgIds, loginToken, deviceId
             )
             executeApiCall(call)
         }
@@ -61,7 +61,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     suspend fun markLogout(informId: String, status: String): ApiResponse<Boolean> =
         withContext(Dispatchers.IO) {
             val call = apiService.markLogout(
-                informId, status, loginToken
+                informId, status, loginToken, deviceId
             )
             executeApiCall(call)
         }
@@ -70,7 +70,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //获取用户未读信息数量
     suspend fun getSysMessageNum(): ApiResponse<Int> = withContext(Dispatchers.IO) {
         val call = apiService.getSysMessageNum(
-            loginToken
+            loginToken, deviceId
         )
         executeApiCall(call)
     }
@@ -79,7 +79,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //获取企业微信配置信息
     suspend fun apiRegistrConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
         val call = apiService.REGISTR_CONFIG(
-            loginToken
+            loginToken, deviceId
         )
         executeApiCall(call)
     }
@@ -87,7 +87,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //首页轮播图
     suspend fun apiCarouselConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
         val call = apiService.CAROUSEL(
-            loginToken
+            loginToken, deviceId
         )
         executeApiCall(call)
     }
@@ -95,7 +95,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //获取广告配置信息
     suspend fun apiADConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
         val call = apiService.apiADConfig(
-            loginToken
+            loginToken, deviceId
         )
         executeApiCall(call)
     }
@@ -103,7 +103,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
 
     /**
      * 用户充值
-     * @param rechargeAmount String 	充值金额，必须为大于10元的整数，最高限制9999, 单位: 元
+     * @param rechargeAmount String 	充值金额，必须为大于10的整数，最高限制9999, 单位:
      * @param type Int 支付方式，0-微信，1-支付宝，默认：0-微信
      * @param quitUrlType Int 退出返回的页面, 1-充值页面(默认) 2-会员页面
      * @return ApiResponse<Config>
@@ -112,7 +112,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
         rechargeAmount: String, type: Int, quitUrlType: Int
     ): ApiResponse<RechargeRes> = withContext(Dispatchers.IO) {
         val call = apiService.recharge(
-            Recharge(rechargeAmount, quitUrlType, type), loginToken
+            Recharge(rechargeAmount, quitUrlType, type), loginToken, deviceId
         )
         executeApiCall(call)
     }

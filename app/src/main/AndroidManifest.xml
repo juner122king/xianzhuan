@@ -89,12 +89,14 @@
         <activity
             android:name=".ui.views.MyTaskActivity"
             android:exported="false"
+            android:launchMode="singleTask"
             android:label="@string/title_task_my"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.views.TaskDetailsActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_task_details"
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.views.TaskSearchResultActivity"

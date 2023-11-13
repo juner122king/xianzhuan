@@ -3,7 +3,6 @@ package com.lelezu.app.xianzhuan.ui.fragments
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
@@ -36,6 +36,9 @@ import com.lelezu.app.xianzhuan.wxapi.WxLogin
 class MyFragment : BaseFragment(), View.OnClickListener {
 
     private lateinit var dialog: Dialog //师傅昵称窗口
+
+
+    private lateinit var ll_gac: View //游戏记录，收益提现入口
 
     //vip等级图片
     private var vippic = mapOf(
@@ -101,6 +104,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.ll_l7).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l8).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l9).setOnClickListener(this)
+        view.findViewById<View>(R.id.ll_l13).setOnClickListener(this)
 
         view.findViewById<View>(R.id.ll_l11).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_l12).setOnClickListener(this)
@@ -121,6 +125,8 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
         bulletinView = view.findViewById(R.id.bv)
         llNotice = view.findViewById(R.id.ll_notice)
+
+        ll_gac = view.findViewById(R.id.ll_gac)
 
         swiper = view.findViewById(R.id.swiper)
         swiper.setColorSchemeResources(R.color.colorControlActivated)
@@ -237,7 +243,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             //处理公告滚动
             // 停止刷新动画
             swiper.isRefreshing = false
-            if (it.isNotEmpty()) {
+            if (it.isNotEmpty() && !MyApplication.isMarketVersion) {
                 llNotice.visibility = View.VISIBLE
                 bulletinView.setAdapter(ComplexViewAdapter(it))
                 bulletinView.setOnItemClickListener { itemData, _, _ ->
@@ -256,22 +262,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
         }
 
-
-//        loginViewModel.earning.observe(requireActivity()) {
-//
-//            if (it.subCount > 0) {
-//                view.findViewById<View>(R.id.ll_l11).visibility = View.VISIBLE
-//                view.findViewById<View>(R.id.line11).visibility = View.VISIBLE
-//            } else {
-//                view.findViewById<View>(R.id.ll_l11).visibility = View.GONE
-//                view.findViewById<View>(R.id.line11).visibility = View.GONE
-//            }
-//
-//        }
-
-
         loginViewModel.vip.observe(requireActivity()) {
-
             if (it.curVipExpireDate != null) {
 
                 view.findViewById<TextView>(R.id.tv_vipcur).text = it.curVipExpireDate + "到期"
@@ -279,6 +270,32 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             }
 
         }
+
+
+        if (MyApplication.isMarketVersion) {
+            //去掉游戏记录，收益提现入口
+            ll_gac.visibility = View.GONE
+
+            //去掉我的店铺
+            view.findViewById<View>(R.id.ll_l3).visibility = View.INVISIBLE
+            view.findViewById<View>(R.id.ll_l3_t).visibility = View.INVISIBLE
+
+            // 去掉 推广赚 收徒收益 、  合伙人业绩
+            view.findViewById<View>(R.id.ll_tgz).visibility = View.GONE
+
+            //悬赚消息，去掉
+            view.findViewById<View>(R.id.ll_l12).visibility = View.GONE
+            view.findViewById<View>(R.id.ll_l12_t).visibility = View.GONE
+
+            view.findViewById<View>(R.id.ll_l13).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.ll_l13_t).visibility = View.VISIBLE
+
+            view.findViewById<View>(R.id.ll_ll_l9).visibility = View.GONE
+            view.findViewById<View>(R.id.ll_ll_l9t).visibility = View.GONE
+
+
+        }
+
     }
 
     override fun onResume() {
@@ -318,7 +335,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 startActivity(Intent(activity, MyTaskActivity::class.java))
             }
 
-            R.id.ll_l9 -> {
+            R.id.ll_l9, R.id.ll_l13 -> {
                 startActivity(Intent(activity, AutoOutActivity::class.java))//关于我们
             }
 
@@ -337,11 +354,6 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
             R.id.iv_message -> {
                 startActivity(Intent(activity, MessageActivity::class.java))//消息
-//                val intent = Intent(
-//                    Intent.ACTION_VIEW,
-//                    Uri.parse("alipays://platformapi/startapp?appId=20000067&url=https://8q1.cn/8sIj")
-//                )
-//                startActivity(intent)
 
             }
 

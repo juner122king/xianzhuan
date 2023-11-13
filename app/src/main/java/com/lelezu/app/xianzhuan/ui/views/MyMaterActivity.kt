@@ -1,11 +1,9 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.TextView
 import com.lelezu.app.xianzhuan.R
-import com.zj.task.sdk.b.f
 
 class MyMaterActivity : BaseActivity() {
 

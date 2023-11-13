@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -16,6 +17,7 @@ import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.MyApplication
+import com.lelezu.app.xianzhuan.MyApplication.Companion.isMarketVersion
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
@@ -25,12 +27,17 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
+import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.umeng.commonsdk.UMConfigure
 import com.zj.zjsdk.ZjSdk
+import com.zj.zjsdk.api.v2.splash.ZJSplashAd
+import com.zj.zjsdk.api.v2.splash.ZJSplashAdInteractionListener
+import com.zj.zjsdk.api.v2.splash.ZJSplashAdLoadListener
+
 
 /**  APP启动屏
 1.登录/注册判断：在启动app时，直接通过本地存储判断用户是否已登录，处于已登录时调用登录接口判断账号是否正常状态，正常则直接到启动屏后跳转到首页；
@@ -39,7 +46,11 @@ import com.zj.zjsdk.ZjSdk
 4.在校验自动登录没问题后，则跳转到广告页，用户未登录状态下，则需要登录成功后方进行首页数据加载；
 5.广告页：需要在对应的时间内加载首页的数据；*/
 @SuppressLint("CustomSplashScreen")
-class LaunchActivity : BaseActivity() {
+class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInteractionListener {
+
+    private val TAG = "ZJSplashAd"
+
+
     private lateinit var dialog: AlertDialog//协议弹
     private lateinit var aDView: ImageView//协议弹
     private lateinit var tvCd: TextView//倒计时
@@ -50,13 +61,16 @@ class LaunchActivity : BaseActivity() {
     private lateinit var countDownTimer: CountDownTimer
 
     private var LOGTAG: String = "SDK_INIT"
+
+    private lateinit var container: ViewGroup
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideView()
-        initSDK()//初始化第三方SDK
         initView()
         initData()
         showLogo()
+
 
         //拦截返回键
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -66,7 +80,7 @@ class LaunchActivity : BaseActivity() {
         })
     }
 
-
+    //初始化第三方SDK
     private fun initSDK() {
 
         init163SDK()//网易SDK初始化
@@ -74,13 +88,13 @@ class LaunchActivity : BaseActivity() {
         initJPUSHSDK()//极光SDK初始化
         initUMSDK()//友盟SDK初始化
         initZJSDK()//任务墙SDK 初始化
-        //TX审核 去掉
-//
+//        initKsAdSDK()//快手广告SDK
 
 
     }
 
     private fun initView() {
+        container = findViewById(R.id.fl_launch_view)
         aDView = findViewById(R.id.fl_ad_view)
         tvCd = findViewById(R.id.tv_comdown)
         tvCd.setOnClickListener {
@@ -102,7 +116,11 @@ class LaunchActivity : BaseActivity() {
     private fun showLogo() {
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
-                showTaskView()//显示广告
+
+                initSDK()
+//                showAdView()//显示广告
+                showZJAdView()//显示ZJ广告
+//                showKSAdView()//显示快手广告
             } else {
                 //未同意，弹出隐私协议询问窗口
                 showAgreementDialog(
@@ -114,13 +132,121 @@ class LaunchActivity : BaseActivity() {
     }
 
 
-    //显示广告页面
-    private fun showTaskView() {
+    //显示系统广告页面
+    private fun showAdView() {
         tvCd.text = "跳过${cd1 / 1000}"
         // 开始倒计时
         startCountdown(cd1) // 6秒广告
-        findViewById<View>(R.id.fl_launch_view).visibility = View.INVISIBLE
+        container.visibility = View.INVISIBLE
     }
+
+
+    //显示第三方开屏广告页面
+    private fun showZJAdView() {
+        ZJSplashAd.loadAd(this, "J4041323285", this)
+    }
+
+
+    //显示快手开屏广告页面
+//    private fun showKSAdView() {
+//        val builder = KSSdkInitUtil.createKSSceneBuilder(PosId) // 此为测试posId，请联系快手平台申请正式posId
+////        if (!TextUtils.isEmpty(mBidResponse)) {  // 服务端竞价
+////            builder.setBidResponse(mBidResponse)
+////        } else if (!TextUtils.isEmpty(mBidResponseV2)) {
+////            builder.setBidResponseV2(mBidResponseV2)
+////        }
+//        val scene = builder.build()
+//        KsAdSDK.getLoadManager().loadSplashScreenAd(scene, object : SplashScreenAdListener {
+//            override fun onError(code: Int, msg: String) {
+//
+//                showToast("开屏广告请求失败$code$msg")
+//                LogUtils.i("LaunchActivity", "Ks开屏广告请求失败$code$msg")
+//                preloadContent()
+//            }
+//
+//            override fun onRequestResult(adNumber: Int) {
+//                LogUtils.i("LaunchActivity", "Ks开屏广告请求成功，广告填充中")
+//                showToast("开屏广告广告填充$adNumber")
+//            }
+//
+//            override fun onSplashScreenAdLoad(splashScreenAd: KsSplashScreenAd?) {
+//                showToast("开始数据返回成功")
+//                LogUtils.i("LaunchActivity", "Ks开屏广告请求成功")
+//                addView(splashScreenAd!!)
+//            }
+//        })
+//
+//    }
+//
+//    private fun addView(splashScreenAd: KsSplashScreenAd) {
+//        if (isFinishing) {
+//            return
+//        }
+//        val view = splashScreenAd.getView(this, mInteractionListener)
+//        if (view == null) {
+//            preloadContent()
+//        } else {
+//
+//            container.removeAllViews()
+//            view.layoutParams = ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+//            )
+//            container.addView(view)
+//        }
+//    }
+//
+//    private val mInteractionListener: SplashScreenAdInteractionListener =
+//        object : SplashScreenAdInteractionListener {
+//            override fun onAdClicked() {
+//                showToast("开屏广告点击")
+//                LogUtils.i("LaunchActivity", "onAdClicked")
+//                /**
+//                 * 开屏广告点击会吊起h5或应用商店，并回调onAdClick(), mGotoMainActivity控制由h5或应用商店返回后是否直接进入主界面
+//                 */
+////                mGotoMainActivity = mIsResumeGoToMain
+//            }
+//
+//            override fun onAdShowError(code: Int, extra: String) {
+//                showToast("开屏广告显示错误 $code extra $extra")
+//                LogUtils.i("LaunchActivity", "onAdShowError")
+//                //出错不触发显示miniWindow
+//                preloadContent()
+//            }
+//
+//            override fun onAdShowEnd() {
+//                showToast("开屏广告显示结束")
+//                LogUtils.i("LaunchActivity", "onAdShowEnd")
+//                preloadContent()
+//            }
+//
+//            override fun onAdShowStart() {
+//                showToast("开屏广告显示开始")
+//                LogUtils.i("LaunchActivity", "onAdShowStart")
+//
+//            }
+//
+//            override fun onSkippedAd() {
+//                showToast("用户跳过开屏广告")
+//                LogUtils.i("LaunchActivity", "onSkippedAd")
+//                preloadContent()
+//            }
+//
+//            override fun onDownloadTipsDialogShow() {
+//                showToast("开屏广告显示下载合规弹窗")
+//                LogUtils.i("LaunchActivity", "onDownloadTipsDialogShow")
+//            }
+//
+//            override fun onDownloadTipsDialogDismiss() {
+//                showToast("开屏广告关闭下载合规弹窗")
+//                LogUtils.i("LaunchActivity", "onDownloadTipsDialogDismiss")
+//            }
+//
+//            override fun onDownloadTipsDialogCancel() {
+//                showToast("开屏广告取消下载合规弹窗")
+//                LogUtils.i("LaunchActivity", "onDownloadTipsDialogCancel")
+//            }
+//        }
+//
 
     private fun startCountdown(totalMillis: Long) {
         countDownTimer = object : CountDownTimer(totalMillis, 1000) {
@@ -171,6 +297,7 @@ class LaunchActivity : BaseActivity() {
     fun onAgreeButtonClick(view: View) {
         // 处理同意的逻辑
         dialog.dismiss()
+        UUIDUtils.getDeviceID(this)
         agreePrivacy()
         preloadContent()
     }
@@ -275,6 +402,9 @@ class LaunchActivity : BaseActivity() {
 
 
     private fun initZJSDK() {
+
+        if (isMarketVersion) return
+
         LogUtils.i(LOGTAG, "任务墙SDK初始化开始")
         //任务墙SDK 初始化
         ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
@@ -286,8 +416,13 @@ class LaunchActivity : BaseActivity() {
                 Log.i("任务墙SDK", "初始化失败！")
             }
         })
-
     }
+
+//    private fun initKsAdSDK() {
+//        // 建议只在需要的进程初始化SDK即可，如主进程
+//        KSSdkInitUtil.initSDK(this)
+//    }
+
 
     override fun getLayoutId(): Int {
 
@@ -302,12 +437,107 @@ class LaunchActivity : BaseActivity() {
         return false
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         // 在Activity销毁时停止倒计时，避免内存泄漏
         if (::countDownTimer.isInitialized) {
             countDownTimer.cancel()
         }
+
+        dismissDialog()
     }
 
+    private fun dismissDialog() {
+        if (::dialog.isInitialized) {
+            dialog.dismiss()
+        }
+    }
+
+    //==================================================ZJSplashAdLoadListener
+
+    /**
+     * 广告加载成功
+     */
+
+    override fun onAdLoaded(p0: ZJSplashAd) {
+        Log.d(TAG, "onAdLoaded")
+        p0.setAdInteractionListener(this)
+        p0.show(container)
+    }
+
+    /**
+     * 广告加载出错
+     */
+    override fun onError(p0: Int, p1: String) {
+        Log.d(TAG, "onError...code = $p0 & msg = $p1")
+//        showToast("onError...code = $p0 & msg = $p1")
+        //后续跳转处理
+        preloadContent()
+    }
+
+
+    //==================================================ZJSplashAdInteractionListener
+
+    private var isPause = false // 广告被点击后，当前activity是否pause
+
+    private var isAdClicked = false // 广告被点击
+
+    /**
+     * 广告正确展示
+     */
+    override fun onSplashAdShow() {
+
+        Log.d(TAG, "广告正确展示")
+    }
+
+
+    /**
+     * 广告被点击
+     */
+    override fun onSplashAdClick() {
+
+        Log.d(TAG, "广告被点击")
+        isAdClicked = true
+    }
+
+    /**
+     * 广告展示出错
+     */
+    override fun onSplashAdShowError(p0: Int, p1: String) {
+        Log.d(TAG, "onError...code = $p0 & msg = $p1")
+//        showToast("onError...code = $p0 & msg = $p1")
+        preloadContent()
+
+    }
+
+    /**
+     * 广告被关闭
+     */
+    override fun onSplashAdClose() {
+        Log.d(TAG, "广告被关闭")
+        if (!isPause) {
+            preloadContent()
+        }
+    }
+
+    /**
+     * 记录应用pause
+     */
+    override fun onPause() {
+        super.onPause()
+        if (isAdClicked) {
+            isPause = true
+        }
+    }
+
+    /**
+     * 记录应用resume
+     */
+    override fun onResume() {
+        super.onResume()
+        if (isPause) {
+            preloadContent()
+        }
+    }
 }

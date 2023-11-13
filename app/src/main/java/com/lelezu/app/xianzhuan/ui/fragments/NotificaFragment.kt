@@ -10,8 +10,6 @@ import android.view.ViewGroup
 import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient

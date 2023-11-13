@@ -22,6 +22,7 @@ import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
+
 /**
  * @author:Administrator
  * @date:2023/7/27 0027
@@ -115,13 +116,10 @@ class TaskVerifyStepAdapter(
 
                 when (this.auditStatus) {
 
-                    0 -> {
+                    0,3 -> {
                         holder.idEt.isEnabled = false
                     }
 
-                    3 -> {
-                        holder.idEt.isEnabled = false
-                    }
 
                     else -> {
                         holder.idEt.isEnabled = true
@@ -232,5 +230,16 @@ class TaskVerifyStepAdapter(
 
     fun getItems(): List<TaskUploadVerify> {
         return items
+    }
+
+
+    /*
+    * https://www.jianshu.com/p/e334134a4ef7  Edittext 处理长按没有弹出系统上下文菜单
+    * */
+    override fun onViewAttachedToWindow(holder: ItemViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        super.onViewAttachedToWindow(holder);
+        holder.idEt.isEnabled = false
+        holder.idEt.isEnabled = true
     }
 }

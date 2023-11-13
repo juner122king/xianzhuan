@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.content.ClipData
-import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -17,7 +16,6 @@ import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 
 
 /**

@@ -34,7 +34,7 @@ class ZJTaskHistoryActivity : BaseActivity() {
                     showToast("领奖记录加载失败！")
                 }
             })
-
+//
 
     }
 

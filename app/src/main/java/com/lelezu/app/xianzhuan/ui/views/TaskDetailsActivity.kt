@@ -6,18 +6,17 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.text.Html
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hjq.toast.ToastUtils
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
@@ -75,6 +74,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private lateinit var tv_sub: TextView //关注数
     private lateinit var tv_fan: TextView //粉丝数
 
+    private var applyTs: Int = -1//报名时当前任务taskStatus
+
 
     //验证图片选取回调处理
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
@@ -97,6 +98,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         initObserve()
 
         checkNetWorkView()
+
+
     }
 
     override fun onResume() {
@@ -107,10 +110,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             homeViewModel.miniTaskComplete(getTask().applyLogId)//校验小程序任务是否完成
         }
 
-//        if (isDoneTask && getTask().taskType == "2") {//判断是否需要刷新页面，条件为小程序任务
-//            //获取上个页面返回的TaskId再请求一次
-//            taskDetails(getTask().taskId, getTask().applyLogId)
-//        }
 
     }
 
@@ -187,9 +186,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
-                taskDetails(getTask().taskId, getTask().applyLogId)
 
                 showBmDialog("${getTask().deadlineTime}小时")//弹窗显示
+
+                taskDetails(getTask().taskId, getTask().applyLogId)
+
+
             } else showToast("报名失败")
         }
 
@@ -352,6 +354,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     //计算剩余时间
     private fun calculateRemainingTime(targetDateTime: String): String {
+
+
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val currentDate = Date()
         val targetDate = dateFormat.parse(targetDateTime)
@@ -370,62 +374,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     }
 
     private fun changeView(task: Task) {
-
-
-        when (task.auditStatus) {
-            //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
-            0 -> {
-                findViewById<View>(R.id.ll_status).visibility = View.GONE
-                findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-                setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
-            }
-
-            1 -> {
-                findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-                findViewById<View>(R.id.ll_status).visibility = View.GONE
-                setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
-
-            }
-
-            2 -> {
-                findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                setStatusText("状态：审核中")
-                setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
-
-            }
-
-            3 -> {
-                findViewById<View>(R.id.ll_btm).visibility = View.GONE
-                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                setStatusText("状态：审核通过")
-
-
-                val resolvedColor = ContextCompat.getColor(
-                    this, R.color.pass
-                )
-                findViewById<TextView>(R.id.tv_status).setTextColor(resolvedColor)
-            }
-
-            4 -> {
-                setStatusText("状态：审核不通过")
-                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                findViewById<TextView>(R.id.tv_status_text).text = "原因：${task.rejectReason}"
-                findViewById<TextView>(R.id.tv_status_text).visibility = View.VISIBLE
-                setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
-                findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-
-            }
-
-            5 -> {
-                setStatusText("手动取消")
-                setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
-                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-            }
-        }
-
-
         if (isMyTask) {  //接单规则是否显示
             findViewById<View>(R.id.tv_agreement).visibility = View.VISIBLE
         } else {
@@ -434,9 +382,77 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         if (task.taskPlatform != 1 && task.auditStatus != 0) {//小程序任务不显示底部按钮
             findViewById<View>(R.id.ll_btm).visibility = View.GONE
+            findViewById<View>(R.id.ll_status).visibility = View.GONE
         } else {
-            findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+
+            when (task.auditStatus) {
+                //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
+                0 -> {
+                    findViewById<View>(R.id.ll_status).visibility = View.GONE
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                    setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
+                }
+
+                1 -> {
+
+
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                    findViewById<View>(R.id.ll_status).visibility = View.GONE
+                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
+
+                }
+
+                2 -> {
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                    setStatusText("状态：审核中")
+                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
+
+                }
+
+                3 -> {
+                    findViewById<View>(R.id.ll_btm).visibility = View.GONE
+                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                    setStatusText("状态：审核通过")
+
+
+                    val resolvedColor = ContextCompat.getColor(
+                        this, R.color.pass
+                    )
+                    findViewById<TextView>(R.id.tv_status).setTextColor(resolvedColor)
+                }
+
+                4 -> {
+                    setStatusText("状态：审核未通过")
+                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                    findViewById<TextView>(R.id.tv_status_text).text = "原因：${task.rejectReason}"
+                    findViewById<TextView>(R.id.tv_status_text).visibility = View.VISIBLE
+                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+
+                }
+
+                5 -> {
+                    setStatusText("状态：手动取消")
+                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
+                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                }
+
+                6 -> {
+                    setStatusText("状态：超时取消")
+                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_csbm))
+                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                }
+            }
+            if (task.taskStatus == 5) {//任务已结束
+                setStatusText("状态：任务已结束")
+                findViewById<View>(R.id.ll_btm).visibility = View.GONE
+            }
         }
+
+
     }
 
 
@@ -462,26 +478,32 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.tv_btm1 -> {
-                when (getTask().auditStatus) {
+
+                when (getTask().auditStatus) {//换个任务
                     0 -> {
                         showLoading()
                         homeViewModel.getShuffle()
-                    }//换个任务
+                    }
+
                     else -> {
+
                         val intent = Intent(this, ChatActivity::class.java)
                         intent.putExtra("userId", getTask().userId)
                         intent.putExtra("taskId", getTask().taskId)
                         startActivity(intent)
+
+
                     }
                 }
-
             }
 
             R.id.tv_btm2 -> {
                 when (getTask().auditStatus) {
-                    0 -> {
+                    0, 5, 6 -> {
                         showLoading()
+                        applyTs = getTask().auditStatus
                         homeViewModel.apiTaskApply(getTask().taskId)
+
                     }//报名
                     else -> homeViewModel.apiTaskSubmit(
                         getTask().applyLogId, adapterVerify.getItems()
@@ -542,6 +564,18 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         ok.setOnClickListener {
             //确定
             dialog2.dismiss()
+            //超时任务才跳我的任务页面
+            if (applyTs == 6) {
+                applyTs = -1
+                finish()
+                val intent = Intent(this, MyTaskActivity::class.java)
+
+
+                ShareUtil.putBoolean("isroTop",true)//回到我的任务页面后，滚动到顶部
+                startActivity(intent)
+            }
+
+
         }
         // 显示弹窗
         dialog2.show()
@@ -574,6 +608,14 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private fun setBto2Text(str1: String, str2: String) {
         findViewById<TextView>(R.id.tv_btm1).text = str1
         findViewById<TextView>(R.id.tv_btm2).text = str2
+
+        if (MyApplication.isMarketVersion && str1 == getString(R.string.btm_lxgz)) {
+            findViewById<TextView>(R.id.tv_btm1).visibility = View.INVISIBLE
+        } else {
+            findViewById<TextView>(R.id.tv_btm1).visibility = View.VISIBLE
+        }
+
+
     }
 
     override fun onDestroy() {

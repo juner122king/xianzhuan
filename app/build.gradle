@@ -165,25 +165,31 @@ dependencies {
     implementation 'com.github.getActivity:ToastUtils:10.5'
 
 
-    //任务墙sdk 开始
+    //----------------------任务墙sdk 开始
+    // x5内核，需要引入，如已引入，可忽略
+    implementation 'com.tencent.tbs:tbssdk:44286'
     // OAID
     implementation(name: 'oaid_sdk_1.0.25', ext: 'aar')
-
-    implementation(name: 'zj_sdk_2.4.15', ext: 'aar')
-
-    //implementation(name: 'moku-planet-api-native-sdk-release-1.6.2', ext: 'aar')
-
-
     implementation(name: 'moku-planet-api-native-sdk-release-1.7.5', ext: 'aar')
     // 2023/10/30 供应商要求替换掉
     implementation 'com.github.gzu-liyujiang:Android_CN_OAID:4.2.4'// 2023/10/30 供应商要求添加
-
-//    implementation(name: 'zj-tasklibrary-release-1.1.9.0', ext: 'aar')
-
     // 2023/10/27 供应商要求替换掉zj-tasklibrary-release-1.1.9.0
     implementation(name: 'zj-tasklibrary-release-1.1.10.1', ext: 'aar')
-
     implementation(name: 'zj_ywsdk_1.1.7', ext: 'aar')
+    // 2023/11/13 更新2.4原生广告
+//        implementation(name: 'zj_sdk_2.4.15', ext: 'aar')
+    implementation files('./libs/zj_sdk_2.4.16_4.aar')//更新开屏广告
+    implementation files('./libs/zjsdk/kssdk-ct-3.3.53-publishRelease.aar')
+    implementation files('./libs/zjsdk/open_ad_sdk_5.7.0.4.aar')
+    implementation files('./libs/zjsdk/zj_adsdk_gromore_3.9.0.2.aar')
+    implementation files('./libs/zjsdk/zj_adsdk_windmill_2.12.1.aar')
+    implementation files('./libs/zjsdk/beizi_ad_sdk-3.4.20.37.aar')
+    implementation files('./libs/zjsdk/beizi_fusion_sdk-4.90.3.1.aar')
+    implementation files('./libs/zjsdk/novelsdk-6.0.3.6.aar')
+    implementation files('./libs/zjsdk/octopus_ad_sdk_1.5.8.6.aar')
+    implementation files('./libs/zjsdk/octopus_group_sdk_3.2.12.7.aar')
+
+
 //    // AndroidX 工程需要添加
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation "com.google.android.material:material:1.3.0-alpha03"
@@ -208,7 +214,12 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.2'
     implementation 'com.alibaba:fastjson:1.2.68'
     implementation('com.journeyapps:zxing-android-embedded:3.6.0') { transitive = false }
-    //任务墙sdk 结束
+    //----------------------任务墙sdk 结束
+
+    //**********快手Ad
+    // 快⼿SDK aar包，请将提供的aar包拷⻉到libs⽬录下，添加依赖。根据接⼊版本修改SDK包名
+//    implementation files('./libs/kssdk/kssdk-ad-3.3.55.2.aar')
+//    implementation files('./libs/kssdk/kssdk-dev-tools-3.3.55.2.aar')
 
 
     // https://github.com/square/leakcanary  内存泄漏检测的工具

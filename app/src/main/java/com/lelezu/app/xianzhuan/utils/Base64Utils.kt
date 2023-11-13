@@ -7,8 +7,6 @@ import android.util.Base64
 import android.util.Log
 import com.lelezu.app.xianzhuan.MyApplication.Companion.context
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
 
 /**
  * @author:Administrator

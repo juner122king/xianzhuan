@@ -18,6 +18,7 @@ class MyTaskActivity : BaseActivity() {
     // 定义一个包含Tab文字的List
     private var tabTextList = arrayOf<String>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tabTextList = arrayOf(
@@ -29,6 +30,8 @@ class MyTaskActivity : BaseActivity() {
         )
         initView()
         initTaskTabLayout()
+
+
     }
 
     private fun initView() {

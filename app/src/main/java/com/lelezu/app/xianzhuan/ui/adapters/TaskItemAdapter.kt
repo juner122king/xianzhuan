@@ -179,7 +179,12 @@ class TaskItemAdapter(
 
             if (isShowTopView) {
 
-                val statusText = statusMap[item.auditStatus] ?: "未知状态"
+                var statusText = statusMap[item.auditStatus] ?: "未知状态"
+                if(item.taskStatus ==5){
+                    statusText ="任务已结束"
+                }
+
+
                 val statusTimeText = statusTimeMap[item.auditStatus] ?: "未知"
                 // 设置文本颜色
                 val statusColor = colorMap[item.auditStatus] ?: R.color.colorControlActivated
@@ -200,6 +205,9 @@ class TaskItemAdapter(
                 holder.line.visibility = View.GONE
                 holder.doneView.visibility = View.VISIBLE
             }
+
+
+
         }
 
 

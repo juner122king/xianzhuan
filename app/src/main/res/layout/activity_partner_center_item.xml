@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@color/text_check"
             android:gravity="center"
-            android:padding="@dimen/dip_10"
+            android:padding="10dp"
             android:text="结算中状态下数据为系统自动计算，实际以最后到账为准"
             android:textColor="@color/white"
             android:textSize="12sp" />
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -164,7 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -214,7 +214,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dip_10">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"

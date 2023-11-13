@@ -2,7 +2,6 @@ package com.lelezu.app.xianzhuan.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.os.Build
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission

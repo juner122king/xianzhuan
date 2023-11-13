@@ -20,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
@@ -40,11 +39,11 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
         val call = if (isMyTask) {
             apiService.getMyTaskList(
-                query.toMap(), loginToken
+                query.toMap(), loginToken, deviceId
             )
         } else {
             apiService.getTaskList(
-                query.toMap(), loginToken
+                query.toMap(), loginToken, deviceId
             )
         }
         executeApiCall(call)
@@ -52,14 +51,14 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取任务类型列表
     suspend fun apiGetTaskTypeList(): ApiResponse<List<TaskType>> = withContext(Dispatchers.IO) {
-        val call = apiService.getTaskTypeList(loginToken)
+        val call = apiService.getTaskTypeList(loginToken, deviceId)
         executeApiCall(call)
     }
 
     //随机为用户推荐3个任务
     suspend fun apiShuffle(): ApiResponse<MutableList<Task>> = withContext(Dispatchers.IO) {
 
-        val call = apiService.shuffle(loginToken)
+        val call = apiService.shuffle(loginToken, deviceId)
         executeApiCall(call)
     }
 
@@ -68,7 +67,7 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
     suspend fun apiMasterTask(userId: String): ApiResponse<ListData<Task>> =
         withContext(Dispatchers.IO) {
 
-            val call = apiService.masterTask("TOP", "2", userId, loginToken)
+            val call = apiService.masterTask("TOP", "2", userId, loginToken, "", deviceId)
             executeApiCall(call)
         }
 
@@ -76,41 +75,41 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
     //任务详情
     suspend fun apiTaskDetails(taskId: String, applyLogId: String? = null): ApiResponse<Task> =
         withContext(Dispatchers.IO) {
-            val call = apiService.getTaskInfo(taskId, applyLogId, loginToken)
+            val call = apiService.getTaskInfo(taskId, applyLogId, loginToken, deviceId)
             executeApiCall(call)
         }
 
     //任务报名
     suspend fun apiTaskApply(taskId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.taskApply(Req(taskId), loginToken)
+        val call = apiService.taskApply(Req(taskId), loginToken, deviceId)
         executeApiCall(call)
 
     }
 
     //添加我的师傅
     suspend fun apiGetMater(userId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.bindMaster(userId, loginToken)
+        val call = apiService.bindMaster(userId, loginToken, deviceId)
         executeApiCall(call)
 
     }
 
     //合伙人后台
     suspend fun apiPartnerBack(): ApiResponse<Partner> = withContext(Dispatchers.IO) {
-        val call = apiService.partnerBack(loginToken)
+        val call = apiService.partnerBack(loginToken, deviceId)
         executeApiCall(call)
 
     }
 
     //合伙人团队
     suspend fun apiPartnerTeam(): ApiResponse<ListData<Partner>> = withContext(Dispatchers.IO) {
-        val call = apiService.partnerTeamList(loginToken)
+        val call = apiService.partnerTeamList(loginToken, deviceId)
         executeApiCall(call)
 
     }
 
     //合伙人后台结算记录
     suspend fun apiPartnerBackList(): ApiResponse<ListData<Partner>> = withContext(Dispatchers.IO) {
-        val call = apiService.partnerBackList(loginToken)
+        val call = apiService.partnerBackList(loginToken, deviceId)
         executeApiCall(call)
 
     }
@@ -120,7 +119,7 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
         withContext(Dispatchers.IO) {
             LogUtils.i("测试", "修改请求体：$taskSubmit")
             val call = apiService.taskSubmit(
-                taskSubmit, loginToken
+                taskSubmit, loginToken, deviceId
             )
             executeApiCall(call)
         }
@@ -130,7 +129,7 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
         withContext(Dispatchers.IO) {
             LogUtils.i("测试", "小程序任务完成校验：$applyLogId")
             val call = apiService.miniTaskComplete(
-                Complete(applyLogId), loginToken
+                Complete(applyLogId), loginToken, deviceId
             )
             executeApiCall(call)
         }
@@ -145,7 +144,7 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
         val imagePart = createImagePart(uri)
 
         val call = apiService.upload(
-            imagePart, loginToken
+            imagePart, loginToken, deviceId
         )
         executeApiCall(call)
     }
