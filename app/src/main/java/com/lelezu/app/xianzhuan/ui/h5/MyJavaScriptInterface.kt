@@ -1,13 +1,10 @@
 package com.lelezu.app.xianzhuan.ui.h5
 
 import android.app.Activity
-import android.content.Intent
 import android.webkit.JavascriptInterface
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.ui.views.BaseActivity
-import com.lelezu.app.xianzhuan.ui.views.HomeActivity
-import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 
 /**

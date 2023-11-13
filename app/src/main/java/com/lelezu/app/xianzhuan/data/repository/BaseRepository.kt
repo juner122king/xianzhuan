@@ -1,6 +1,5 @@
 package com.lelezu.app.xianzhuan.data.repository
 
-import android.util.Log
 import com.lelezu.app.xianzhuan.data.model.ApiEmptyResponse
 import com.lelezu.app.xianzhuan.data.model.ApiErrorResponse
 import com.lelezu.app.xianzhuan.data.model.ApiFailedResponse

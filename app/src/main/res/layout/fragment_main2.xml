@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/ll_bg"
-                android:paddingTop="@dimen/dip_10"
+                android:paddingTop="10dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <LinearLayout
@@ -36,6 +36,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/ll_top_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/radius_border"
@@ -260,7 +261,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="115dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp" />
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/banner_iv"
+                        android:layout_width="match_parent"
+                        android:layout_height="115dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 

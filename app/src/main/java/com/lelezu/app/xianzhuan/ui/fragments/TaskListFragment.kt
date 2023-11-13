@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lelezu.app.xianzhuan.MyApplication.Companion.isMarketVersion
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
@@ -58,7 +59,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         }
 
 
-        adapter = TaskItemAdapter(mutableListOf(),  isMyTask)
+        adapter = TaskItemAdapter(mutableListOf(), isMyTask)
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
         recyclerView.adapter = adapter
 
@@ -68,9 +69,6 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         recyclerView.setLoadMoreEnable(false)
 
     }
-
-
-    //
 
 
     private fun observeList() {
@@ -104,9 +102,10 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     private fun loadData() {
         onShowSwiperRefreshing()
 
-//        //暂时写死，只获取问卷调查类型的任务
-//        taskQuery.taskTypeId = "1664884054041391104"
-
+        if (isMarketVersion) {
+            //暂时写死，只获取问卷调查类型的任务
+            taskQuery.taskTypeId = "1664884054041391101"
+        }
 
 
         homeViewModel.getTaskList(
@@ -165,8 +164,6 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     override fun onStop() {
         super.onStop()
         LogUtils.i("${taskQuery.taskStatus}onStop")
-
-
 
 
     }

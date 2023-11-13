@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import cn.hutool.core.codec.Base64
 import com.google.gson.Gson
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiConstants.MOBILE_PASSWORD
@@ -72,7 +71,9 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     fun getLoginInfo(mobilePhone: String, encryptPwd: String) =
         viewModelScope.launch(Dispatchers.IO) {
 
-            val o64 = Base64.encode(encryptPwd, "UTF-8")
+            val o64 = android.util.Base64.encodeToString(
+                encryptPwd.toString().toByteArray(), android.util.Base64.NO_WRAP
+            )
             val en64Pwd = AesTool.encryptStr(o64)
 
             val loginReP = userRepository.apiLogin(
@@ -121,24 +122,22 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     }
 
 
-
-
+    /**
+     *
+     * @param userId String 用户iD
+     * @return Job 获取关注与粉丝数
+     */
+    fun follows(userId: String) = viewModelScope.launch {
+        val rep = userRepository.apiFollows(userId)
+        handleApiResponse(rep, follow)
+    }
 
     /**
      *
      * @param userId String 用户iD
      * @return Job 获取关注与粉丝数
      */
-    fun follows(userId:String) = viewModelScope.launch {
-        val rep = userRepository.apiFollows(userId)
-        handleApiResponse(rep, follow)
-    }
-  /**
-     *
-     * @param userId String 用户iD
-     * @return Job 获取关注与粉丝数
-     */
-    fun onFollows(userId:String) = viewModelScope.launch {
+    fun onFollows(userId: String) = viewModelScope.launch {
         val rep = userRepository.onFollows(userId)
         handleApiResponse(rep, isFollow)
     }
@@ -154,13 +153,13 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
         chatMessage.postValue(rep)
     }
 
-  /**
+    /**
      *
      * @return 雇主列表
      */
     fun apiContactors() = viewModelScope.launch {
         val rep = userRepository.apiContactors()
-      handleApiResponse(rep, chatList)
+        handleApiResponse(rep, chatList)
     }
 
 
@@ -201,7 +200,10 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
         Log.i("登录请求体对象", "Register:" + ShareUtil.getRegister().toString())
         val o = Gson().toJson(ShareUtil.getRegister())
-        val o64 = Base64.encode(o, "UTF-8")
+//        val o64 = Base64.encode(o, "UTF-8")
+        val o64 = android.util.Base64.encodeToString(
+            o.toString().toByteArray(), android.util.Base64.NO_WRAP
+        )
         val en64 = AesTool.encryptStr(o64)
 
         val apiListResponse = userRepository.apiRegister(en64)
@@ -210,7 +212,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
 
 
     //获取登录配置，
-    fun getLoginConfig()= viewModelScope.launch {
+    fun getLoginConfig() = viewModelScope.launch {
 
 
         val apiListResponse = userRepository.loginConfig()

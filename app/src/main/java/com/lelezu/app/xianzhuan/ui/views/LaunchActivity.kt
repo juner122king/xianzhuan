@@ -16,6 +16,7 @@ import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.MyApplication
+import com.lelezu.app.xianzhuan.MyApplication.Companion.isMarketVersion
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
@@ -25,12 +26,14 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
+import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.umeng.commonsdk.UMConfigure
 import com.zj.zjsdk.ZjSdk
+
 
 /**  APP启动屏
 1.登录/注册判断：在启动app时，直接通过本地存储判断用户是否已登录，处于已登录时调用登录接口判断账号是否正常状态，正常则直接到启动屏后跳转到首页；
@@ -39,7 +42,7 @@ import com.zj.zjsdk.ZjSdk
 4.在校验自动登录没问题后，则跳转到广告页，用户未登录状态下，则需要登录成功后方进行首页数据加载；
 5.广告页：需要在对应的时间内加载首页的数据；*/
 @SuppressLint("CustomSplashScreen")
-class LaunchActivity : BaseActivity() {
+class LaunchActivity : BaseActivity()  {
     private lateinit var dialog: AlertDialog//协议弹
     private lateinit var aDView: ImageView//协议弹
     private lateinit var tvCd: TextView//倒计时
@@ -53,7 +56,6 @@ class LaunchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideView()
-        initSDK()//初始化第三方SDK
         initView()
         initData()
         showLogo()
@@ -66,7 +68,7 @@ class LaunchActivity : BaseActivity() {
         })
     }
 
-
+    //初始化第三方SDK
     private fun initSDK() {
 
         init163SDK()//网易SDK初始化
@@ -74,8 +76,6 @@ class LaunchActivity : BaseActivity() {
         initJPUSHSDK()//极光SDK初始化
         initUMSDK()//友盟SDK初始化
         initZJSDK()//任务墙SDK 初始化
-        //TX审核 去掉
-//
 
 
     }
@@ -102,7 +102,9 @@ class LaunchActivity : BaseActivity() {
     private fun showLogo() {
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
-                showTaskView()//显示广告
+
+                initSDK()
+                showADView()//显示广告
             } else {
                 //未同意，弹出隐私协议询问窗口
                 showAgreementDialog(
@@ -115,7 +117,7 @@ class LaunchActivity : BaseActivity() {
 
 
     //显示广告页面
-    private fun showTaskView() {
+    private fun showADView() {
         tvCd.text = "跳过${cd1 / 1000}"
         // 开始倒计时
         startCountdown(cd1) // 6秒广告
@@ -171,6 +173,7 @@ class LaunchActivity : BaseActivity() {
     fun onAgreeButtonClick(view: View) {
         // 处理同意的逻辑
         dialog.dismiss()
+        UUIDUtils.getDeviceID(this)
         agreePrivacy()
         preloadContent()
     }
@@ -275,6 +278,9 @@ class LaunchActivity : BaseActivity() {
 
 
     private fun initZJSDK() {
+
+        if (isMarketVersion) return
+
         LogUtils.i(LOGTAG, "任务墙SDK初始化开始")
         //任务墙SDK 初始化
         ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
@@ -308,6 +314,14 @@ class LaunchActivity : BaseActivity() {
         if (::countDownTimer.isInitialized) {
             countDownTimer.cancel()
         }
+
+        dismissDialog()
     }
+    private fun dismissDialog() {
+        if (::dialog.isInitialized) {
+            dialog.dismiss()
+        }
+    }
+
 
 }

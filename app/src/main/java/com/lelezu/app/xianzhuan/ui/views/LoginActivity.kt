@@ -21,7 +21,6 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.agreeAgreement
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreeAgreement
 import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreePrivacy
-import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreeUserAgreementAndPrivacy
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.netease.htprotect.HTProtect
 import com.netease.htprotect.result.AntiCheatResult

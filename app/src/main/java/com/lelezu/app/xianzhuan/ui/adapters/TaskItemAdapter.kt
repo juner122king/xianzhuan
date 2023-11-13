@@ -200,6 +200,9 @@ class TaskItemAdapter(
                 holder.line.visibility = View.GONE
                 holder.doneView.visibility = View.VISIBLE
             }
+
+
+
         }
 
 

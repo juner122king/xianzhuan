@@ -2,8 +2,8 @@ package com.lelezu.app.xianzhuan.data
 
 object ApiConstants {
 
-    const val HOST = "https://test.ipandata.com"
-//    const val HOST = "https://app.zhongshoubang.com" //正式
+//    const val HOST = "https://test.ipandata.com"
+    const val HOST = "https://app.zhongshoubang.com" //正式
     const val LOGIN_METHOD_PHONE = "MOBILE"    //登录方式，MOBILE：手机号，WX：微信授权，
     const val LOGIN_METHOD_WX = "WX"    //登录方式，MOBILE：手机号，WX：微信授权，
     const val MOBILE_PASSWORD = "MOBILE_PASSWORD"    //登录方式，MOBILE：手机号，WX：微信授权，
@@ -17,13 +17,14 @@ object ApiConstants {
     //友盟
     const val UM_BUSINESS_NO = "648282fba1a164591b2e9331" //业务ID
 
+
     //极光
     const val JP_BUSINESS_KEY = "cfd7fe79f57d9ee0e67b2025" //业务ID
 
 
     //任务墙SDK
     const val ZJ_BUSINESS_NO = "Z6269688056" //业务ID
-    const val ZJ_BUSINESS_POS_ID = "J1517087581" //posID
+    const val ZJ_BUSINESS_POS_ID = "J1517087581" //posID 
 
 
 }

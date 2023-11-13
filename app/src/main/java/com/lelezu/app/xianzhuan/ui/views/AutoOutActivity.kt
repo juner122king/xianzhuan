@@ -1,26 +1,20 @@
 package com.lelezu.app.xianzhuan.ui.views
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.FileProvider
-import androidx.core.widget.ContentLoadingProgressBar
-import com.hjq.permissions.OnPermissionCallback
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ShareUtil.getVersionName
 
 class AutoOutActivity : BaseActivity(), OnClickListener {
-    private lateinit var dialog: Dialog
     private lateinit var tv_vn: TextView
 
     // 替换为你的 APK 下载链接和文件名
     private lateinit var apkUrl: String
-    private lateinit var progressBar: ContentLoadingProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +32,15 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
                 findViewById<View>(R.id.tv_newVersion).visibility = View.VISIBLE
                 apkUrl = it.download
             }
+        }
+
+
+        if (MyApplication.isMarketVersion) {
+
+            findViewById<TextView>(R.id.tv2).text = getString(R.string.advertising_words2)
+        } else {
+            findViewById<TextView>(R.id.tv2).text = getString(R.string.advertising_words)
+
         }
     }
 

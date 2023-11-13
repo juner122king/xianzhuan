@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.HomeActivityAdapter
 import com.lelezu.app.xianzhuan.ui.fragments.DashFragment
@@ -14,7 +15,6 @@ import com.lelezu.app.xianzhuan.ui.fragments.MainFragment
 import com.lelezu.app.xianzhuan.ui.fragments.MyFragment
 import com.lelezu.app.xianzhuan.ui.fragments.NotificaFragment
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
-import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_IS_NEWER
 import com.lelezu.app.xianzhuan.utils.ShareUtil.NEWER_IS_SHOW_DIALOG
@@ -26,23 +26,17 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        LogUtils.i(
-            "HomeActivity",
-            "LOGIN_ID:" + ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID)
-        )
-
-
         showHomeView()
 
         //检查新版本
         checkNewV()
+
     }
 
 
     //已领取了新人奖励，直接显示主页面
     private fun showHomeView() {
         initHomeView()
-
         //添加是否领取新人奖判断 ：新用户登录且未显示过Dialog
         if (ShareUtil.getBoolean(APP_SHARED_PREFERENCES_IS_NEWER) && !ShareUtil.getBoolean(
                 NEWER_IS_SHOW_DIALOG
@@ -68,12 +62,15 @@ class HomeActivity : BaseActivity() {
             }
 
             override fun onPageSelected(position: Int) {
+
                 when (position) {
                     0 -> bottomNavigationView.selectedItemId = R.id.navigation_home
                     1 -> bottomNavigationView.selectedItemId = R.id.navigation_dashboard
                     2 -> bottomNavigationView.selectedItemId = R.id.navigation_notifications
                     3 -> bottomNavigationView.selectedItemId = R.id.navigation_my
                 }
+
+
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -84,6 +81,7 @@ class HomeActivity : BaseActivity() {
             hideRightText()
             showView()
             hideBack()
+
             when (item.itemId) {
                 R.id.navigation_home -> {
                     viewPager.setCurrentItem(0, false)
@@ -111,6 +109,8 @@ class HomeActivity : BaseActivity() {
 
                 }
             }
+
+
             true
         }
 
@@ -130,24 +130,35 @@ class HomeActivity : BaseActivity() {
 
         val bottomNavView: View = bottomNavigationView.getChildAt(0)
         bottomNavView.findViewById<View>(R.id.navigation_home).setOnLongClickListener { true }
-        bottomNavView.findViewById<View>(R.id.navigation_dashboard).setOnLongClickListener { true }
-        bottomNavView.findViewById<View>(R.id.navigation_notifications)
-            .setOnLongClickListener { true }
         bottomNavView.findViewById<View>(R.id.navigation_my).setOnLongClickListener { true }
+        if (!MyApplication.isMarketVersion) {
+            bottomNavView.findViewById<View>(R.id.navigation_dashboard)
+                .setOnLongClickListener { true }
+            bottomNavView.findViewById<View>(R.id.navigation_notifications)
+                .setOnLongClickListener { true }
+        }
+
+
     }
 
     private fun initData() {
         val mainFragment = MainFragment.newInstance()
         fragmentList.add(mainFragment)
 
-        val dashFragment = DashFragment.newInstance()
-        fragmentList.add(dashFragment)
 
-        val notificaFragment = NotificaFragment()
-        fragmentList.add(notificaFragment)
+        if (!MyApplication.isMarketVersion) {
+            val dashFragment = DashFragment.newInstance()
+            fragmentList.add(dashFragment)
+
+            val notificaFragment = NotificaFragment()
+            fragmentList.add(notificaFragment)
+        }
+
 
         val myFragment = MyFragment.newInstance()
         fragmentList.add(myFragment)
+
+
     }
 
 
@@ -165,6 +176,8 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun checkNewV() {
+        if (MyApplication.isMarketVersion) return
+
         if (!ShareUtil.getBoolean(ShareUtil.CHECKED_NEW_VISON)) {//未询问过更新版本
             //检查新版本
             sysMessageViewModel.detection()
@@ -172,12 +185,13 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun showDialog() {
+        if (MyApplication.isMarketVersion) return
+
         dialog = Dialog(this)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setContentView(R.layout.dialog_new_user)
 
         val ok: View = dialog.findViewById(R.id.ok)
-
         ok.setOnClickListener {
 
             dialog.dismiss()

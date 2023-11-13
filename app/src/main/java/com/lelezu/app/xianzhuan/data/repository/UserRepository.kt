@@ -44,43 +44,43 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取用户信息
     suspend fun apiUserInfo(userId: String): ApiResponse<UserInfo> = withContext(Dispatchers.IO) {
-        val call = apiService.getUserInfo(userId, loginToken)
+        val call = apiService.getUserInfo(userId, loginToken,deviceId)
         executeApiCall(call)
     }
 
     //获取收徒收益
     suspend fun apiEarnings(): ApiResponse<Earning> = withContext(Dispatchers.IO) {
-        val call = apiService.getEarnings(loginToken)
+        val call = apiService.getEarnings(loginToken,deviceId)
         executeApiCall(call)
     }
 
     //获取会员过期时间
     suspend fun vipRest(): ApiResponse<Vip> = withContext(Dispatchers.IO) {
-        val call = apiService.vipRest(loginToken)
+        val call = apiService.vipRest(loginToken,deviceId)
         executeApiCall(call)
     }
 
     //个人中心任务相关的数据
     suspend fun apiRelated(): ApiResponse<Related> = withContext(Dispatchers.IO) {
-        val call = apiService.getRelated(loginToken)
+        val call = apiService.getRelated(loginToken,deviceId)
         executeApiCall(call)
     }
 
     //关注和粉丝数
     suspend fun apiFollows(userid: String): ApiResponse<Follows> = withContext(Dispatchers.IO) {
-        val call = apiService.follows(userid, loginToken)
+        val call = apiService.follows(userid, loginToken,deviceId)
         executeApiCall(call)
     }
 
     //用户退出登录
     suspend fun logout(): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.logout(loginToken)
+        val call = apiService.logout(loginToken,deviceId)
         executeApiCall(call)
     }
 
     //关注-取关
     suspend fun onFollows(userid: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.onFollows(userid, loginToken)
+        val call = apiService.onFollows(userid, loginToken,deviceId)
         executeApiCall(call)
     }
 
@@ -92,13 +92,13 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取联系人列表
     suspend fun apiContactors(): ApiResponse<List<ChatList>> = withContext(Dispatchers.IO) {
-        val call = apiService.apiContactors(loginToken)
+        val call = apiService.apiContactors(loginToken,deviceId)
         executeApiCall(call)
     }
 
     //消息标记已读
     suspend fun isRecord(senderUserId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
-        val call = apiService.isRecord(senderUserId, loginToken)
+        val call = apiService.isRecord(senderUserId, loginToken,deviceId)
         executeApiCall(call)
     }
 
@@ -106,7 +106,7 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
     suspend fun sendRecord(
         receiveId: String, content: String, type: Int
     ): ApiResponse<ListData<ChatMessage>> = withContext(Dispatchers.IO) {
-        val call = apiService.sendRecord(receiveId, content, type, loginToken)
+        val call = apiService.sendRecord(receiveId, content, type, loginToken,deviceId)
         executeApiCall(call)
     }
 
@@ -119,8 +119,8 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
      */
     suspend fun apiRecord(receiverUserId: String): MutableList<ChatMessage> =
         withContext(Dispatchers.IO) {
-            val call1 = apiService.getRecord(receiverUserId, 999, loginToken)
-            val call2 = apiService.getRecord(loginId, 999, loginToken)
+            val call1 = apiService.getRecord(receiverUserId, 999, loginToken,deviceId)
+            val call2 = apiService.getRecord(loginId, 999, loginToken,deviceId)
 
             val mergedData = mutableListOf<ChatMessage>()
 

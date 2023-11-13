@@ -7,7 +7,6 @@ import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
-import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 
@@ -25,7 +24,7 @@ class MyApplication : Application() {
     companion object {
         lateinit var context: Context
 
-
+        var isMarketVersion = false //设置app是否是市场板，主页面导航xml还需要手动变更
     }
 
     private val apiService by lazy { ApiFactory.create() }
@@ -44,11 +43,9 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        //获取设备ID
-        UUIDUtils.getDeviceID(this)
+
         // 初始化 Toast 框架
         ToastUtils.init(this)
-
     }
 
 }

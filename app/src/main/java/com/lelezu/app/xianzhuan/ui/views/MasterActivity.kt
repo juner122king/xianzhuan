@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.ui.adapters.TaskItemAdapter
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
-import com.zj.task.sdk.b.f
 
 /**
  * 店铺页面

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_DEVICE_ID
@@ -97,8 +98,10 @@ object WebViewSettings {
         val host1 = host
         val cookie1 = "Token=" + ShareUtil.getString(APP_SHARED_PREFERENCES_LOGIN_TOKEN)
         val cookie2 = "Device=" + ShareUtil.getString(APP_SHARED_PREFERENCES_DEVICE_ID)
+        val cookie3 = "isMarket=" + MyApplication.isMarketVersion
         cookieManager.setCookie(host1, cookie1)
         cookieManager.setCookie(host1, cookie2)
+        cookieManager.setCookie(host1, cookie3)
 
 
 

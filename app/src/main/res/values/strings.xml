@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">众手帮</string>
     <string name="advertising_words">一元可提现一起赚赏金</string>
+    <string name="advertising_words2">移动调研 方便快捷</string>
 
 
     <string name="title_login">登录</string>
@@ -64,6 +65,7 @@
 
 
     <string name="l_task">置顶任务</string>
+    <string name="l_task2">推荐</string>
     <string name="app_task">热门任务</string>
     <string name="game_task">游戏试玩</string>
 

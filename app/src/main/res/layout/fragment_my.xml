@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-
     android:orientation="vertical"
     tools:context=".ui.fragments.MyFragment">
 
@@ -57,7 +55,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="#F5F5F5">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -281,6 +279,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/my_bg_vip"
                     android:padding="15dp"
                     android:visibility="visible">
@@ -311,7 +310,7 @@
                     android:id="@+id/ll_notice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/radius_border_sys_notin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -333,11 +332,10 @@
 
 
                 <LinearLayout
+                    android:id="@+id/ll_gac"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
                     android:visibility="visible">
 
                     <ImageView
@@ -362,6 +360,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/radius_border"
                     android:orientation="vertical"
+                    android:layout_marginTop="10dp"
                     android:padding="12dp">
 
                     <TextView
@@ -540,6 +539,7 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/ll_l3_t"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -560,6 +560,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_tgz"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -706,7 +707,17 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:padding="10dp"
+
                             android:src="@drawable/icon_zsxs" />
+
+                        <ImageView
+                            android:id="@+id/ll_l13"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="10dp"
+                            android:src="@drawable/my_icon_list9"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -744,6 +755,8 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/ll_l12_t"
+
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -752,9 +765,22 @@
                             android:textColor="@color/black2"
                             android:textSize="12sp" />
 
+                        <TextView
+                            android:id="@+id/ll_l13_t"
+
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="关于我们"
+                            android:textColor="@color/black2"
+                            android:textSize="12sp"
+                            android:visibility="gone" />
+
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_ll_l9"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -788,6 +814,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_ll_l9t"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"

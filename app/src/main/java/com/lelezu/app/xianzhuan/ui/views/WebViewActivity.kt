@@ -122,6 +122,7 @@ class WebViewActivity : BaseActivity() {
 
         if (link == link17) postTaskId()//分享赚页面post任务ID给H5
         if (link == link103) postAnnounceId()//公告页面post公告ID给H5
+
     }
 
     private fun registerJavaScriptHandlers() {

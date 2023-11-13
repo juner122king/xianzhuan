@@ -6,18 +6,17 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.text.Html
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hjq.toast.ToastUtils
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
@@ -352,6 +351,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     //计算剩余时间
     private fun calculateRemainingTime(targetDateTime: String): String {
+
+
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val currentDate = Date()
         val targetDate = dateFormat.parse(targetDateTime)
@@ -381,6 +382,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             }
 
             1 -> {
+
+
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                 findViewById<View>(R.id.ll_status).visibility = View.GONE
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
@@ -418,7 +421,14 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             }
 
             5 -> {
-                setStatusText("手动取消")
+                setStatusText("状态：手动取消")
+                setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
+                findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+            }
+
+            6 -> {
+                setStatusText("状态：超时取消")
                 setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
                 findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                 findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
@@ -437,6 +447,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         } else {
             findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
         }
+
+
     }
 
 
@@ -462,19 +474,23 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.tv_btm1 -> {
-                when (getTask().auditStatus) {
+
+                when (getTask().auditStatus) {//换个任务
                     0 -> {
                         showLoading()
                         homeViewModel.getShuffle()
-                    }//换个任务
+                    }
+
                     else -> {
+
                         val intent = Intent(this, ChatActivity::class.java)
                         intent.putExtra("userId", getTask().userId)
                         intent.putExtra("taskId", getTask().taskId)
                         startActivity(intent)
+
+
                     }
                 }
-
             }
 
             R.id.tv_btm2 -> {
@@ -574,6 +590,14 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private fun setBto2Text(str1: String, str2: String) {
         findViewById<TextView>(R.id.tv_btm1).text = str1
         findViewById<TextView>(R.id.tv_btm2).text = str2
+
+        if (MyApplication.isMarketVersion && str1 == getString(R.string.btm_lxgz)) {
+            findViewById<TextView>(R.id.tv_btm1).visibility = View.INVISIBLE
+        } else {
+            findViewById<TextView>(R.id.tv_btm1).visibility = View.VISIBLE
+        }
+
+
     }
 
     override fun onDestroy() {

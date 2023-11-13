@@ -1,7 +1,6 @@
 package com.lelezu.app.xianzhuan.ui.fragments
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +10,12 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
@@ -27,7 +24,6 @@ import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
-import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link1
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
@@ -40,7 +36,6 @@ import com.youth.banner.Banner
 import com.youth.banner.adapter.BannerImageAdapter
 import com.youth.banner.holder.BannerImageHolder
 import com.youth.banner.indicator.CircleIndicator
-import com.youth.banner.util.BannerUtils
 import com.zj.zjsdk.ad.ZjAdError
 import com.zj.zjsdk.ad.ZjTaskAd
 import com.zj.zjsdk.ad.ZjTaskAdListener
@@ -52,18 +47,19 @@ class MainFragment : BaseFragment(), OnClickListener {
     private lateinit var pagerAdapter: MyPagerAdapter
     private lateinit var tabLayout: TabLayout
     private lateinit var banner: Banner<ConfValue.Pics, BannerImageAdapter<ConfValue.Pics>>
-    private lateinit var banner2: Banner<String, BannerImageAdapter<String>>
+    private lateinit var banner_iv: ImageView
 
     private lateinit var pics: List<ConfValue.Pics>
 
     private lateinit var zjTask: ZjTaskAd
+
+    private lateinit var ll_top_view: View//需要隐藏的View
 
     private var isZjTaskLoadDone: Boolean = false//任务墙是否加载完成
     private var isZjTaskLoading: Boolean = false//任务墙是否加载中
 
     // 定义一个包含Tab文字的List
     private var tabTextList = arrayOf<String>()
-    private var initialX: Float = 0F
     private var isBannerSet = false // 添加标志变量
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -73,6 +69,7 @@ class MainFragment : BaseFragment(), OnClickListener {
         val view = inflater.inflate(R.layout.fragment_main2, container, false)
 
         viewPager = view.findViewById(R.id.task_vp)
+        ll_top_view = view.findViewById(R.id.ll_top_view)
         pagerAdapter = MyPagerAdapter(this)
 
         viewPager.adapter = pagerAdapter
@@ -80,12 +77,30 @@ class MainFragment : BaseFragment(), OnClickListener {
 
         tabLayout = view.findViewById(R.id.tab_task_list)
 
-        // 定义一个包含Tab文字的List
-        tabTextList = arrayOf(
-            getString(R.string.l_task), getString(R.string.app_task), getString(R.string.game_task)
-        )
 
+        //添加隐藏条件
+        //1去掉新人奖励、收徒赚钱、招募合伙
+        //2去掉热门任务，游戏试玩
+        //3置顶任务改为  推荐，仅显示，问卷调查分类的数据，其他分类的数据不显示
+        //4底部菜单去掉  悬赏大厅  、收徒赚钱
 
+        if (MyApplication.isMarketVersion) {
+            ll_top_view.visibility = View.GONE
+
+            // 定义一个包含Tab文字的List
+            tabTextList = arrayOf(
+                getString(R.string.l_task2)
+            )
+
+        } else {
+            ll_top_view.visibility = View.VISIBLE
+            // 定义一个包含Tab文字的List
+            tabTextList = arrayOf(
+                getString(R.string.l_task),
+                getString(R.string.app_task),
+                getString(R.string.game_task)
+            )
+        }
         return view
     }
 
@@ -99,32 +114,40 @@ class MainFragment : BaseFragment(), OnClickListener {
         view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
 
         banner = view.findViewById(R.id.banner)
-        banner2 = view.findViewById(R.id.banner)
+        banner_iv = view.findViewById(R.id.banner_iv)
 
         initTaskTabLayout()//初始化TabLayout
+
+
         initZjTask()
+        initBanner()
 
-        // 添加条件来执行 setBanner 仅一次
-        if (!isBannerSet) {
-            //获取首页轮播图
-            sysMessageViewModel.apiCarouselConfig()
-            sysMessageViewModel.bannerconfig.observe(requireActivity()) {
-//                setBanner(it.confValue.pics)
+    }
 
-                pics = it.confValue.pics  //需要添加一个对象持久保存图片url
+    private fun initBanner() {
+        if (!MyApplication.isMarketVersion) {
+            banner.visibility = View.VISIBLE
+            // 添加条件来执行 setBanner 仅一次
+            if (!isBannerSet) {
+                //获取首页轮播图
+                sysMessageViewModel.apiCarouselConfig()
+                sysMessageViewModel.bannerconfig.observe(requireActivity()) {
+                    pics = it.confValue.pics  //需要添加一个对象持久保存图片url
+                    setBanner()
+                    isBannerSet = true // 标志设置为 true，以后不再执行 setBanner
+                }
+            } else {
                 setBanner()
-                isBannerSet = true // 标志设置为 true，以后不再执行 setBanner
             }
-
         } else {
-            setBanner()
+            banner_iv.visibility = View.VISIBLE
+            ImageViewUtil.loadWH(banner_iv, R.drawable.icon_h_banner)//加载广告图
         }
-
-
     }
 
     private fun setBanner() {
         LogUtils.i("MainFragment", "加载setBanner")
+
         banner.apply {
             addBannerLifecycleObserver(requireActivity())
             setBannerRound(20f)
@@ -134,11 +157,6 @@ class MainFragment : BaseFragment(), OnClickListener {
                     holder: BannerImageHolder, data: ConfValue.Pics, position: Int, size: Int
                 ) {
                     ImageViewUtil.loadWH(holder.imageView, data.img)//加载广告图
-
-//                    //图片加载自己实现
-//                    Glide.with(holder.itemView).load(data.img)
-//                        .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
-//                        .into(holder.imageView)
 
                     if (data.url != "") {//如果URL不为空，则设置点击跳转到WebView
                         holder.imageView.setOnClickListener {
@@ -185,6 +203,7 @@ class MainFragment : BaseFragment(), OnClickListener {
     }
 
     private fun initZjTask() {
+        if (MyApplication.isMarketVersion) return
 
         if (XXPermissions.isGranted(
                 requireActivity(), Permission.READ_PHONE_STATE, Permission.MANAGE_EXTERNAL_STORAGE
@@ -194,7 +213,6 @@ class MainFragment : BaseFragment(), OnClickListener {
         } else {
             MyPermissionUtil.readPhoneStateApply(requireActivity(), object : OnPermissionCallback {
                 override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-
                     if (all) onInitZjTask()
                     else {
                         showToast("您授权的权限不全，热门任务和游戏试玩将不能加载！")
@@ -281,7 +299,8 @@ class MainFragment : BaseFragment(), OnClickListener {
         private val createdIds = hashSetOf<Long>()
 
         override fun getItemCount(): Int {
-            return 3
+            return if (MyApplication.isMarketVersion) 1
+            else 3
         }
 
         override fun getItemId(position: Int): Long {
@@ -302,7 +321,8 @@ class MainFragment : BaseFragment(), OnClickListener {
                 fid5 -> zjTask.loadCPLFragmentAd()
                 else -> TaskListFragment.newInstance(
                     TaskQuery(
-                        TaskRepository.queryCondTOP
+                        if (MyApplication.isMarketVersion) TaskRepository.queryCondCOMBO
+                        else TaskRepository.queryCondTOP
                     )
                 )
             }
