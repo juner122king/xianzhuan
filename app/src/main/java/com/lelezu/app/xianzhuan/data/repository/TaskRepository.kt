@@ -151,15 +151,29 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
 
     private fun createImagePart(imagePath: Uri): MultipartBody.Part {
+        // 通过 Base64Utils 压缩图片，得到压缩后的图片字节数组
         val compressedImageBytes = Base64Utils.zipPic(imagePath, 100)
 
+        // 根据文件后缀判断图片的类型，构造对应的 MediaType
         val mediaType = when {
             getFilePathFromUri(imagePath).endsWith(".png", true) -> "image/png".toMediaTypeOrNull()
             getFilePathFromUri(imagePath).endsWith(".jpg", true) -> "image/jpeg".toMediaTypeOrNull()
-            else -> throw IllegalArgumentException("Unsupported file format")
+            getFilePathFromUri(imagePath).endsWith(
+                ".jpeg", true
+            ) -> "image/jpeg".toMediaTypeOrNull()
+
+            getFilePathFromUri(imagePath).endsWith(
+                ".webp", true
+            ) -> "image/webp".toMediaTypeOrNull()
+
+            getFilePathFromUri(imagePath).endsWith(".bmp", true) -> "image/bmp".toMediaTypeOrNull()
+            else -> "image/png".toMediaTypeOrNull()
         }
 
+        // 将压缩后的图片字节数组构造成 RequestBody
         val requestBody = compressedImageBytes!!.toRequestBody(mediaType)
+
+        // 创建 MultipartBody.Part 对象，用于上传图片
         return MultipartBody.Part.createFormData(
             "file", File(getFilePathFromUri(imagePath)).name, requestBody
         )

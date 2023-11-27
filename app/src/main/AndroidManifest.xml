@@ -89,15 +89,30 @@
         <activity
             android:name=".ui.views.MyTaskActivity"
             android:exported="false"
-            android:launchMode="singleTask"
             android:label="@string/title_task_my"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.views.TaskDetailsActivity"
             android:exported="true"
             android:label="@string/title_task_details"
-            android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="adjustNothing" >
+            <!--Android 接收外部跳转过滤器-->
+            <!--要想在别的App上能成功调起App，必须添加intent过滤器-->
+            <intent-filter>
+                <!-- 协议部分配置 ,注意需要跟web配置相同-->
+                <!--协议部分，设置 lelezu://zsbapp:8888/task?taskId=  -->
+                <data android:scheme="lelezu"
+                    android:host="zsbapp"
+                    android:path="/task"
+                    android:port="8888"/>
+                <!--下面这几行也必须得设置-->
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.views.TaskSearchResultActivity"
             android:exported="false"
@@ -148,8 +163,18 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+<!--                &lt;!&ndash;下面这几行也必须得设置&ndash;&gt;-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+
+                <!-- 协议部分配置 ,注意需要跟web配置相同-->
+                <!--协议部分，设置 lelezu://zsbapp:8888/main  -->
+<!--                <data android:scheme="lelezu"-->
+<!--                    android:host="zsbapp"-->
+<!--                    android:path="/main"-->
+<!--                    android:port="8888"/>-->
             </intent-filter>
         </activity> <!-- Since JCore2.0.0 Required SDK核心功能 -->
         <!-- 可配置android:process参数将Service放在其他进程中；android:enabled属性不能是false -->
@@ -193,7 +218,7 @@
 
         <meta-data
             android:name="ZJ_TASK_IS_NESTED_SCROLLING_ENABLED"
-            android:value="false"/>
+            android:value="false" />
     </application>
 
 </manifest>

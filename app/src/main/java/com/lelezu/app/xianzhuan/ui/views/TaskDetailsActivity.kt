@@ -154,14 +154,20 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         tv_sub = findViewById(R.id.tv_sub)
         tv_fan = findViewById(R.id.tv_fan)
+        comdown = findViewById(R.id.tv_comdown)
 
-
-        //获取上个页面返回的TaskId再请求一次
-        taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
         isMyTask = intent.getBooleanExtra(TAGMYTASK, false)//是否为我的任务详情，默认不是
 
 
-        comdown = findViewById(R.id.tv_comdown)
+        //从H5唤起
+        var taskIdH5 = getH5Query(intent)
+        if (taskIdH5 != null) {
+            //获取上个页面返回的TaskId请求一次
+            taskDetails(taskIdH5)
+        } else {
+            //获取上个页面返回的TaskId请求一次
+            taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
+        }
 
     }
 
@@ -571,7 +577,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 val intent = Intent(this, MyTaskActivity::class.java)
 
 
-                ShareUtil.putBoolean("isroTop",true)//回到我的任务页面后，滚动到顶部
+                ShareUtil.putBoolean("isroTop", true)//回到我的任务页面后，滚动到顶部
                 startActivity(intent)
             }
 

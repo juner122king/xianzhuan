@@ -118,8 +118,8 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
             if (isAgreePrivacy()) {//是否同意了隐私协议
 
                 initSDK()
-//                showAdView()//显示广告
-                showZJAdView()//显示ZJ广告
+                showAdView()//显示广告
+//                showZJAdView()//显示ZJ广告
 //                showKSAdView()//显示快手广告
             } else {
                 //未同意，弹出隐私协议询问窗口
@@ -147,106 +147,7 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     }
 
 
-    //显示快手开屏广告页面
-//    private fun showKSAdView() {
-//        val builder = KSSdkInitUtil.createKSSceneBuilder(PosId) // 此为测试posId，请联系快手平台申请正式posId
-////        if (!TextUtils.isEmpty(mBidResponse)) {  // 服务端竞价
-////            builder.setBidResponse(mBidResponse)
-////        } else if (!TextUtils.isEmpty(mBidResponseV2)) {
-////            builder.setBidResponseV2(mBidResponseV2)
-////        }
-//        val scene = builder.build()
-//        KsAdSDK.getLoadManager().loadSplashScreenAd(scene, object : SplashScreenAdListener {
-//            override fun onError(code: Int, msg: String) {
-//
-//                showToast("开屏广告请求失败$code$msg")
-//                LogUtils.i("LaunchActivity", "Ks开屏广告请求失败$code$msg")
-//                preloadContent()
-//            }
-//
-//            override fun onRequestResult(adNumber: Int) {
-//                LogUtils.i("LaunchActivity", "Ks开屏广告请求成功，广告填充中")
-//                showToast("开屏广告广告填充$adNumber")
-//            }
-//
-//            override fun onSplashScreenAdLoad(splashScreenAd: KsSplashScreenAd?) {
-//                showToast("开始数据返回成功")
-//                LogUtils.i("LaunchActivity", "Ks开屏广告请求成功")
-//                addView(splashScreenAd!!)
-//            }
-//        })
-//
-//    }
-//
-//    private fun addView(splashScreenAd: KsSplashScreenAd) {
-//        if (isFinishing) {
-//            return
-//        }
-//        val view = splashScreenAd.getView(this, mInteractionListener)
-//        if (view == null) {
-//            preloadContent()
-//        } else {
-//
-//            container.removeAllViews()
-//            view.layoutParams = ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-//            )
-//            container.addView(view)
-//        }
-//    }
-//
-//    private val mInteractionListener: SplashScreenAdInteractionListener =
-//        object : SplashScreenAdInteractionListener {
-//            override fun onAdClicked() {
-//                showToast("开屏广告点击")
-//                LogUtils.i("LaunchActivity", "onAdClicked")
-//                /**
-//                 * 开屏广告点击会吊起h5或应用商店，并回调onAdClick(), mGotoMainActivity控制由h5或应用商店返回后是否直接进入主界面
-//                 */
-////                mGotoMainActivity = mIsResumeGoToMain
-//            }
-//
-//            override fun onAdShowError(code: Int, extra: String) {
-//                showToast("开屏广告显示错误 $code extra $extra")
-//                LogUtils.i("LaunchActivity", "onAdShowError")
-//                //出错不触发显示miniWindow
-//                preloadContent()
-//            }
-//
-//            override fun onAdShowEnd() {
-//                showToast("开屏广告显示结束")
-//                LogUtils.i("LaunchActivity", "onAdShowEnd")
-//                preloadContent()
-//            }
-//
-//            override fun onAdShowStart() {
-//                showToast("开屏广告显示开始")
-//                LogUtils.i("LaunchActivity", "onAdShowStart")
-//
-//            }
-//
-//            override fun onSkippedAd() {
-//                showToast("用户跳过开屏广告")
-//                LogUtils.i("LaunchActivity", "onSkippedAd")
-//                preloadContent()
-//            }
-//
-//            override fun onDownloadTipsDialogShow() {
-//                showToast("开屏广告显示下载合规弹窗")
-//                LogUtils.i("LaunchActivity", "onDownloadTipsDialogShow")
-//            }
-//
-//            override fun onDownloadTipsDialogDismiss() {
-//                showToast("开屏广告关闭下载合规弹窗")
-//                LogUtils.i("LaunchActivity", "onDownloadTipsDialogDismiss")
-//            }
-//
-//            override fun onDownloadTipsDialogCancel() {
-//                showToast("开屏广告取消下载合规弹窗")
-//                LogUtils.i("LaunchActivity", "onDownloadTipsDialogCancel")
-//            }
-//        }
-//
+
 
     private fun startCountdown(totalMillis: Long) {
         countDownTimer = object : CountDownTimer(totalMillis, 1000) {
@@ -358,7 +259,6 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         val callback = HTPCallback { paramInt, paramString ->
             Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
-
             ShareUtil.putInt(APP_163_INIT_CODE, paramInt)
         }
         HTProtect.init(this, ApiConstants.DUN_BUSINESS_NO, callback, config)

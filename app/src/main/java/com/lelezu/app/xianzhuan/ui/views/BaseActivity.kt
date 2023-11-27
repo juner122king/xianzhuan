@@ -397,7 +397,7 @@ abstract class BaseActivity : AppCompatActivity() {
     protected abstract fun isShowBack(): Boolean
 
 
-     open fun showToast(message: String?) {
+    open fun showToast(message: String?) {
         ToastUtils.show(message)
     }
 
@@ -437,16 +437,14 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     //复制内容到剪切板
-    fun plainText(textToCopy:String){
-        val clipboardManager =
-          this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    fun plainText(textToCopy: String) {
+        val clipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("Label", textToCopy)
         clipboardManager.setPrimaryClip(clipData)
 
         // 可以在这里显示一个提示，表示文本已经复制到剪贴板
         showToast("已复制到剪贴板")
     }
-
 
 
     override fun onDestroy() {
@@ -575,6 +573,7 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         }
     }
+
     @SuppressLint("Range")
     private fun handleDownloadComplete(downloadId: Long) {
         val query = DownloadManager.Query().apply {
@@ -604,4 +603,28 @@ abstract class BaseActivity : AppCompatActivity() {
         unregisterReceiver(downloadReceiver)
 
     }
+
+
+    //判断Activity的跳转来源  H5,原生
+    fun getH5Query(intent: Intent?): String? {
+        // 检查 Intent 是否为空和是否为 ACTION_VIEW
+        if (intent?.action == Intent.ACTION_VIEW) {
+            // 获取 Intent 中的数据（URI）
+            val data: Uri? = intent.data
+            // 检查数据是否匹配预期的 URI Scheme
+            if (data != null && isMatchingUriScheme(data)) {
+                // 从 H5 唤起
+                return data.getQueryParameter("taskId")
+            }
+            return null
+        }
+        return null
+    }
+
+    private fun isMatchingUriScheme(data: Uri): Boolean {
+
+        LogUtils.i("H5-data",data.toString())
+        return (data.scheme == "lelezu" && data.host == "zsbapp")
+    }
+
 }

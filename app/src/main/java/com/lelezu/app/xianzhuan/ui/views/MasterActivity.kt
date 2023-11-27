@@ -109,8 +109,6 @@ class MasterActivity : BaseActivity() {
 
         }
         loginViewModel.isFollow.observe(this) {
-
-
             if (it) showToast("关注成功！")
             else showToast("取关成功！")
             loginViewModel.follows(userId)
