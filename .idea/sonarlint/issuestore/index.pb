@@ -138,14 +138,10 @@ w
 Gapp/src/main/java/com/lelezu/app/xianzhuan/ui/fragments/DashFragment.kt,a\5\a5465ad7f2c4fcbbb1f1ea3ddb2ccc095faf9853
 v
 Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/MessageActivity.kt,c\6\c6d158a8913d046d7930f02ba0877a8fb85a08d3
-m
-=app/src/main/java/com/lelezu/app/xianzhuan/data/ApiFactory.kt,2\7\273a62cdcf1a6feac254f4c68d7ab0425a18cbbb
 q
 Aapp/src/main/java/com/lelezu/app/xianzhuan/data/model/TaskStep.kt,4\b\4ba93c54da03fb5c1817bc2e2b5dc29d951e6aca
 p
 @app/src/main/java/com/lelezu/app/xianzhuan/ad/KSSdkInitUtil.java,8\5\8594d4c5ca82c7822d1d94970a2276e7c14a3378
-k
-;app/src/main/java/com/lelezu/app/xianzhuan/MyApplication.kt,3\8\38d9059c3d7dc67ec6a7fcb1792072f8f2379998
 v
 Fapp/src/main/java/com/lelezu/app/xianzhuan/ui/views/AutoOutActivity.kt,5\d\5da8cf7f4f609c5d65b7e54aaacbcbad0f8d6b4e
 q

@@ -45,7 +45,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
         val call = apiService.detection(
             ShareUtil.getVersionCode().toString(), ShareUtil.getVersionName(), loginToken, deviceId
         )
-        executeApiCall(call)
+        executeApiCall(call )
     }
 
 
