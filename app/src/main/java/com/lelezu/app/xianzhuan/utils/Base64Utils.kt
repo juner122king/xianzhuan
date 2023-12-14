@@ -58,7 +58,7 @@ object Base64Utils {
         }
     }
 
-    fun zipPic2(uri: Uri, quality: Int = 100): String? {
+    fun zipPicH5(uri: Uri, quality: Int = 100): String? {
         return try {
             val bitmap = decodeUriToBitmap(uri)
             val byteArrayOutputStream = ByteArrayOutputStream()

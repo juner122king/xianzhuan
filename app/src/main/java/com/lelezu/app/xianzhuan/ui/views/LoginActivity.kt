@@ -122,7 +122,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
                 if (it.code == AntiCheatResult.OK) {
                     // 调用成功，获取token
                     ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
-
                     initQuickLogin()
                 } else {
                     showToast("您的手机号或设备异常：${it.codeStr}")
@@ -132,7 +131,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
         } else {
             showToast("易盾风控引擎初始化失败 code:${code}")
         }
-
     }
 
     private fun initQuickLogin() {

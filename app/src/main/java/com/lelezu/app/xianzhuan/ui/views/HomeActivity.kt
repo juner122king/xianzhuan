@@ -87,12 +87,18 @@ class HomeActivity : BaseActivity() {
                     viewPager.setCurrentItem(0, false)
                     setTitleText(getString(R.string.title_activity_home))
 
+
+
                 }
 
                 R.id.navigation_dashboard -> {
                     viewPager.setCurrentItem(1, false)
                     showRightText(getString(R.string.dashboard_tab5_text))
                     setTitleText(getString(R.string.title_dashboard))
+
+
+                    //弹出浮窗控件
+//                    showFloat()
                 }
 
                 R.id.navigation_notifications -> {

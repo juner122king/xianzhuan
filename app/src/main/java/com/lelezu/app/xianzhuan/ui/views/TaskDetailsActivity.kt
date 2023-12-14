@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.view.View
 import android.view.View.OnClickListener
@@ -81,10 +83,16 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
         if (it != null) {
             // 获取内容URI对应的文件路径
+            // 创建一个 Handler，关联到主线程的 Looper
+            val handler = Handler(Looper.getMainLooper())
+            // 在后台线程中执行上传逻辑
             val thread = Thread {
-
+                handler.post {
+                    // 在主线程中调用 showLoading()
+                    showToast("图片上传中...")
+                    showLoading()
+                }
                 homeViewModel.apiUpload(it)
-
             }
             thread.start()
         }
@@ -213,6 +221,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
         //验证图片选取监听
         homeViewModel.upLink.observe(this) { link ->
+
+            hideLoading()
+            cancelToast()
             showToast("图片上传成功")
             adapterVerify.setLink(link)
         }

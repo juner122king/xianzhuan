@@ -1,6 +1,9 @@
 package com.lelezu.app.xianzhuan.jiguang
 
-import cn.jpush.android.service.JPushMessageReceiver
+import android.content.Context
+import cn.jpush.android.api.CustomMessage
+import cn.jpush.android.service.JPushMessageService
+import com.hjq.toast.ToastUtils
 
 /**
  * @author:Administrator
@@ -8,5 +11,11 @@ import cn.jpush.android.service.JPushMessageReceiver
  * @description:
  *
  */
-class JGuangReceiver: JPushMessageReceiver() {
+class JGuangReceiver : JPushMessageService() {
+
+    override fun onMessage(p0: Context?, p1: CustomMessage?) {
+
+        ToastUtils.show("收到JPush自定义消息:$p1")
+
+    }
 }

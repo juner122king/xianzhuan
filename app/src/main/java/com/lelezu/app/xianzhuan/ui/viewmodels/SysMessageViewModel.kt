@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.Announce
+import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
@@ -49,7 +50,7 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val rechargeResLiveData: MutableLiveData<RechargeRes> = MutableLiveData()//支付返回
 
     val registrconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
-    val bannerconfig: MutableLiveData<Config> = MutableLiveData()//banner对象
+    val bannerconfig: MutableLiveData<List<DBanner>> = MutableLiveData()//banner对象
     val adconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
 
 

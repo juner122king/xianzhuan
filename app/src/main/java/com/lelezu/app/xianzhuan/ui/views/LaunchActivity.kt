@@ -55,7 +55,7 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     private lateinit var aDView: ImageView//协议弹
     private lateinit var tvCd: TextView//倒计时
 
-    private var cd1 = 7000L//广告倒计时
+    private var cd1 = 6000L//广告倒计时
     private var cd2 = 3000L//logo显示时间
 
     private lateinit var countDownTimer: CountDownTimer
@@ -145,8 +145,6 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     private fun showZJAdView() {
         ZJSplashAd.loadAd(this, "J4041323285", this)
     }
-
-
 
 
     private fun startCountdown(totalMillis: Long) {
@@ -251,7 +249,6 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
         LogUtils.i(LOGTAG, "163SDK初始化开始")
 
-
         val config = HTProtectConfig().apply {
             var serverType = 2
             var channel = "testchannel"
@@ -290,10 +287,11 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     }
 
     private fun initJPUSHSDK() {
-
-
         LogUtils.i(LOGTAG, "极光SDK初始化开始")
+
+
         JPushInterface.setDebugMode(false)
+
         JPushInterface.init(this)
         // 调整点二：隐私政策授权获取成功后调用
         JCollectionAuth.setAuth(this, true) //如初始化被拦截过，将重试初始化过程

@@ -3,6 +3,7 @@ package com.lelezu.app.xianzhuan.data.repository
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Message
@@ -85,8 +86,8 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     }
 
     //首页轮播图
-    suspend fun apiCarouselConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
-        val call = apiService.CAROUSEL(
+    suspend fun apiCarouselConfig(): ApiResponse<List<DBanner>> = withContext(Dispatchers.IO) {
+        val call = apiService.getBanner(
             loginToken, deviceId
         )
         executeApiCall(call)

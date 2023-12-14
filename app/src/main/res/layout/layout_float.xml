@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="75dp"
+    android:layout_height="75dp"
+    android:id="@+id/view"
+    android:background="@drawable/radius_border_bg_f0f0f0"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_shang" />
+
+    <TextView
+        android:id="@+id/tv_shang_ji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="666元"
+        android:textColor="@color/colorControlActivated"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:textStyle="bold" />
+
+</LinearLayout>
+

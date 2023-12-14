@@ -20,6 +20,7 @@ import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
 import com.lelezu.app.xianzhuan.data.model.ConfValue
+import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
@@ -46,10 +47,10 @@ class MainFragment : BaseFragment(), OnClickListener {
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: MyPagerAdapter
     private lateinit var tabLayout: TabLayout
-    private lateinit var banner: Banner<ConfValue.Pics, BannerImageAdapter<ConfValue.Pics>>
+    private lateinit var banner: Banner<DBanner, BannerImageAdapter<DBanner>>
     private lateinit var banner_iv: ImageView
 
-    private lateinit var pics: List<ConfValue.Pics>
+    private lateinit var pics: List<DBanner>
 
     private lateinit var zjTask: ZjTaskAd
 
@@ -132,7 +133,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                 //获取首页轮播图
                 sysMessageViewModel.apiCarouselConfig()
                 sysMessageViewModel.bannerconfig.observe(requireActivity()) {
-                    pics = it.confValue.pics  //需要添加一个对象持久保存图片url
+                    pics = it  //需要添加一个对象持久保存图片url
                     setBanner()
                     isBannerSet = true // 标志设置为 true，以后不再执行 setBanner
                 }
@@ -152,16 +153,16 @@ class MainFragment : BaseFragment(), OnClickListener {
             addBannerLifecycleObserver(requireActivity())
             setBannerRound(20f)
             indicator = CircleIndicator(requireActivity())
-            setAdapter(object : BannerImageAdapter<ConfValue.Pics>(pics) {
+            setAdapter(object : BannerImageAdapter<DBanner>(pics) {
                 override fun onBindView(
-                    holder: BannerImageHolder, data: ConfValue.Pics, position: Int, size: Int
+                    holder: BannerImageHolder, data: DBanner, position: Int, size: Int
                 ) {
-                    ImageViewUtil.loadWH(holder.imageView, data.img)//加载广告图
+                    ImageViewUtil.loadWH(holder.imageView, data.bannerImg)//加载广告图
 
-                    if (data.url != "") {//如果URL不为空，则设置点击跳转到WebView
+                    if (data.jumpUrl != "") {//如果URL不为空，则设置点击跳转到WebView
                         holder.imageView.setOnClickListener {
                             val intent = Intent(requireContext(), WebViewActivity::class.java)
-                            intent.putExtra(LINK_KEY, HOST + data.url)
+                            intent.putExtra(LINK_KEY, HOST + data.jumpUrl)
                             intent.putExtra(URL_TITLE, "规则说明")
                             startActivity(intent)
                         }

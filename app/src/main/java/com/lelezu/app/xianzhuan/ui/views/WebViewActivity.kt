@@ -276,7 +276,7 @@ class WebViewActivity : BaseActivity() {
     private val pickImageContract = registerForActivityResult(PickImageContract()) { result ->
         if (result != null) {
             val thread = Thread {
-                val imageData = Base64Utils.zipPic2(result, 100)//
+                val imageData = Base64Utils.zipPicH5(result, 100)//
                 if (imageData == null) {
                     // 如果 imageData 为 null，执行处理空值的操作
                     // 例如，显示一个提示消息或采取其他适当的操作

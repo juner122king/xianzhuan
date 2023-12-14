@@ -56,16 +56,16 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
     //vip等级经验值区间最大值
     private var vipLevel_max_l = mapOf(
-        "V0" to 500,
-        "V1" to 1500,
-        "V2" to 3000,
-        "V3" to 5000,
-        "V4" to 8000,
-        "V5" to 12000,
-        "V6" to 17000,
-        "V7" to 30000,
-        "V8" to 40000,
-        "V9" to 50000,
+        "V0" to 99,
+        "V1" to 199,
+        "V2" to 399,
+        "V3" to 999,
+        "V4" to 2999,
+        "V5" to 5999,
+        "V6" to 11999,
+        "V7" to 29999,
+        "V8" to 39999,
+        "V9" to 49999,
     )
 
 
@@ -148,7 +148,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             view.findViewById<TextView>(R.id.tv_my_text4).text = it.rechargeAmount.toString()
             LogUtils.i("头像LINK:", it.headImageUrl)
             ImageViewUtil.loadCircleCrop(
-                view.findViewById(R.id.iv_user_pic), it.headImageUrl, false
+                view.findViewById(R.id.iv_user_pic), it.headImageUrl
             )
 
 

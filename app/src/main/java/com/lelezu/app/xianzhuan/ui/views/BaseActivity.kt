@@ -15,9 +15,12 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextMenu
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -42,6 +45,8 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
+import com.lzf.easyfloat.EasyFloat
+import com.lzf.easyfloat.anim.DefaultAnimator
 import java.io.File
 
 
@@ -371,7 +376,6 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun showLoading() {
-
         loadingView?.visibility = View.VISIBLE
     }
 
@@ -399,6 +403,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     open fun showToast(message: String?) {
         ToastUtils.show(message)
+    }
+
+    open fun cancelToast() {
+        ToastUtils.cancel()
     }
 
 
@@ -504,7 +512,11 @@ abstract class BaseActivity : AppCompatActivity() {
     //处理选择图片的请求和结果
     inner class PickImageContract : ActivityResultContract<Unit, Uri?>() {
         override fun createIntent(context: Context, input: Unit): Intent {
-            return Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            val imagePickerIntent = Intent(Intent.ACTION_PICK)
+            imagePickerIntent.type = "image/*" // 设置 MIME 类型为图像  //只显示图片
+            return imagePickerIntent
+
+
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
@@ -623,8 +635,37 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun isMatchingUriScheme(data: Uri): Boolean {
 
-        LogUtils.i("H5-data",data.toString())
+        LogUtils.i("H5-data", data.toString())
         return (data.scheme == "lelezu" && data.host == "zsbapp")
     }
 
+
+    //显示悬浮控件
+    protected fun showFloat() {
+        EasyFloat.with(this).setLayout(R.layout.layout_float).setDragEnable(false)
+            .setGravity(Gravity.END, 0, 200).setAnimator(DefaultAnimator()).registerCallback {
+                createResult { isCreated, msg, view -> }
+                show { }
+                hide { }
+                dismiss { }
+                touchEvent { view, motionEvent -> }
+                drag { view, motionEvent -> }
+                dragEnd { }
+            }
+
+            .show()
+
+        //控件自体的动画播放
+
+
+        // 延迟3秒执行hideFloat()
+        Handler(Looper.getMainLooper()).postDelayed({
+            hideFloat()
+        }, 4000)
+    }
+
+    //隐藏悬浮控件
+    protected fun hideFloat() {
+        EasyFloat.dismiss()
+    }
 }

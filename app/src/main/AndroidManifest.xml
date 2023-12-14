@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- 需要确保权限获取后再请求广告 -->
+
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -187,20 +188,22 @@
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
             </intent-filter>
-        </service> <!-- Required since 3.0.7 -->
+        </service>
+
+
+        <!-- Required since 3.0.7 -->
         <!-- 新的 tag/alias 接口结果返回需要开发者配置一个自定的广播 -->
         <!-- 3.3.0开始所有事件将通过该类回调 -->
-        <!-- 该广播需要继承 JPush 提供的 JPushMessageReceiver 类, 并如下新增一个 Intent-Filter -->
-        <receiver
+        <!-- 该广播需要继承 JPush 提供的 JPushMessageService  类, 并如下新增一个 Intent-Filter -->
+        <service
             android:name=".jiguang.JGuangReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-
+                <action android:name="cn.jpush.android.intent.SERVICE_MESSAGE" />
                 <category android:name="com.lelezu.app.xianzhuan" />
             </intent-filter>
-        </receiver>
+        </service>
 
         <provider
             android:name="androidx.core.content.FileProvider"

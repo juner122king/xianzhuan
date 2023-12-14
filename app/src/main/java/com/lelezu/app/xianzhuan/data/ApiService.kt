@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.data
 
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
+import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.ChatList
 import com.lelezu.app.xianzhuan.data.model.ChatMessage
 import com.lelezu.app.xianzhuan.data.model.Complete
@@ -301,6 +302,12 @@ interface ApiService {
     fun CAROUSEL(
         @Header("Authorization") token: String, @Header("Device") device: String
     ): Call<ApiResponse<Config>>
+
+
+    @GET("/dxz/app/sys/banner")// 首页轮播图2  新方法
+    fun getBanner(
+        @Header("Authorization") token: String, @Header("Device") device: String
+    ): Call<ApiResponse<List<DBanner>>>
 
 
     @GET("/dxz/app/sys/config/SYSTEM/AD")// 广告配置信息
