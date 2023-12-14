@@ -55,6 +55,7 @@ object WebViewSettings {
 
     var link16 = "$host/followGzhOrWechat/index" //新人奖励页面
     var link17 = "$host/shareToProfit/index" //接单规则2
+    var link18 = "$host/receiveWelfare/index" //领福利
 
 
     var link15 = "https://beian.miit.gov.cn/" //公安备案网站

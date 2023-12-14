@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
+import com.lelezu.app.xianzhuan.data.model.LongTaskVos
 import com.lelezu.app.xianzhuan.data.model.Partner
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
@@ -40,6 +41,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     val isBind: MutableLiveData<Boolean> = MutableLiveData() //是否绑定师傅成功
 
     val upLink: MutableLiveData<String> = MutableLiveData() //图片上传成功的返回Link
+    val upltLink: MutableLiveData<String> = MutableLiveData() //图片上传成功的返回Link
 
     val partnerLiveData: MutableLiveData<Partner> = MutableLiveData() //合伙人后台
     val partnerListLiveData: MutableLiveData<MutableList<Partner>> = MutableLiveData() //合伙人后台结算记录
@@ -117,45 +119,53 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
 
 
     // 任务提交
-    fun apiTaskSubmit(applyLogId: String?, verify: List<TaskUploadVerify>?) =
-        viewModelScope.launch {
-            if (verify.isNullOrEmpty()) {
-                errMessage.postValue(ErrResponse(null, "请上传相关验证内容！"))
+    fun apiTaskSubmit(
+        applyLogId: String?,
+        verifys: List<TaskUploadVerify>?,
+        isLongTask: Boolean,
+        auditId: String? = null
+    ) = viewModelScope.launch {
+
+        if (verifys.isNullOrEmpty()) {
+            errMessage.postValue(ErrResponse(null, "请上传相关验证内容！"))
+        } else {
+
+            val isUploadValueEmpty = verifys.any { verify ->
+                verify.uploadValue == null
+            }
+            if (!isUploadValueEmpty) {
+                val r = taskRepository.apiTaskSubmit(
+                    TaskSubmit(applyLogId, verifys, auditId), isLongTask
+                )
+                handleApiResponse(r, isUp)
             } else {
-
-                val isUploadValueEmpty = verify.any { verify ->
-                    verify.uploadValue == null
-                }
-                if (!isUploadValueEmpty) {
-                    val r = taskRepository.apiTaskSubmit(TaskSubmit(applyLogId, verify))
-                    handleApiResponse(r, isUp)
-
-                } else {
-//                    errMessage.postValue(ErrResponse(null, "您未填写信息，请填写后提交"))
-                    val statusMap = mapOf(
-                        1 to "1",
-                        2 to "1、2",
-                        3 to "1、2、3",
-                        4 to "1、2、3、4",
-                        5 to "1、2、3、4、5",
-                        6 to "1、2、3、4、5、6",
-                        7 to "1、2、3、4、5、6、7",
-                        8 to "1、2、3、4、5、6、7、8",
-                        // 可以继续添加其他映射关系
+                val statusMap = mapOf(
+                    1 to "1",
+                    2 to "1、2",
+                    3 to "1、2、3",
+                    4 to "1、2、3、4",
+                    5 to "1、2、3、4、5",
+                    6 to "1、2、3、4、5、6",
+                    7 to "1、2、3、4、5、6、7",
+                    8 to "1、2、3、4、5、6、7、8",
+                    // 可以继续添加其他映射关系
+                )
+                errMessage.postValue(
+                    ErrResponse(
+                        null, "请按第${statusMap[verifys.size]}项要求完善验证信息后再提交"
                     )
-                    errMessage.postValue(
-                        ErrResponse(
-                            null, "请按第${statusMap[verify.size]}项要求完善验证信息后再提交"
-                        )
-                    )
-                }
+                )
             }
         }
+    }
+
 
     // 上传图片接口
-    fun apiUpload(uri: Uri) = viewModelScope.launch {
+    fun apiUpload(uri: Uri, isLongTask: Boolean = false) = viewModelScope.launch {
         val r = taskRepository.apiUpload(uri)
-        handleApiResponse(r, upLink)
+        if (isLongTask)
+            handleApiResponse(r, upltLink)
+        else handleApiResponse(r, upLink)
     }
 
 

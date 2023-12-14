@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.views.TaskDetailsActivity">
+
+    <FrameLayout
+        android:id="@+id/ll_on_network"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/line"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="50dp"
+                    android:background="@color/topViewBg"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="vertical">
+
+                        <include
+                            layout="@layout/layout_user_top_view2"
+                            android:visibility="visible" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/radius_border"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/tv_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/red"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_status_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/red"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/bg_taskdetail_shangji"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:id="@+id/tv_shang_ji_fu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:maxLines="1"
+                                android:text="￥"
+                                android:textColor="#EBA279"
+                                android:textSize="20sp"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_shang_ji"
+                                app:layout_constraintEnd_toStartOf="@id/tv_shang_ji"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_shang_ji"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="10.89"
+                                android:textColor="#F9706A"
+                                android:textSize="25sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toEndOf="@id/tv_shang_ji_fu"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_shang_ji_t"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:maxLines="1"
+                                android:text="任务赏金"
+                                android:textColor="#8E8E8E"
+                                android:textSize="14sp"
+                                app:layout_constraintEnd_toEndOf="@id/tv_shang_ji"
+                                app:layout_constraintStart_toStartOf="@id/tv_shang_ji_fu"
+                                app:layout_constraintTop_toBottomOf="@id/tv_shang_ji" />
+
+                            <TextView
+                                android:id="@+id/tv_task_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:text="看视频就拿钱"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_shang_ji"
+                                app:layout_constraintStart_toEndOf="@id/tv_shang_ji"
+                                app:layout_constraintTop_toTopOf="@id/tv_shang_ji" />
+
+                            <TextView
+                                android:id="@+id/tv_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="限时1小时完成"
+                                android:textColor="@color/text_s"
+                                android:textSize="14sp"
+                                app:layout_constraintStart_toStartOf="@id/tv_task_title"
+                                app:layout_constraintTop_toTopOf="@id/tv_shang_ji_t" />
+
+                            <TextView
+                                android:id="@+id/tv_nub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="剩余65单"
+                                android:textColor="@color/text_s"
+                                android:textSize="14sp"
+                                app:layout_constraintStart_toEndOf="@id/tv_time"
+                                app:layout_constraintTop_toTopOf="@id/tv_shang_ji_t" />
+
+                            <View
+                                android:id="@+id/li"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginTop="10dp"
+                                android:background="#F1F1F1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_shang_ji_t" />
+
+                            <TextView
+                                android:id="@+id/tv_info"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="3456人已完成任务    任务可报名3次"
+                                android:textColor="@color/text_s"
+                                android:textSize="14sp"
+                                android:visibility="visible"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/li" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/radius_border_fcfcfc"
+                            android:padding="15dp">
+
+
+                            <ImageView
+                                android:id="@+id/iv_lt_icon"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:paddingEnd="10dp"
+                                android:src="@drawable/icon_lti"
+                                android:visibility="gone"
+                                app:layout_constraintBaseline_toBottomOf="@id/tv_task_des"
+                                app:layout_constraintStart_toStartOf="@id/li2" />
+
+                            <TextView
+                                android:id="@+id/tv_task_des"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="任务说明"
+                                android:textColor="@color/black"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="@id/iv_lt_icon"
+                                app:layout_constraintStart_toEndOf="@id/iv_lt_icon"
+                                app:layout_constraintTop_toTopOf="@id/iv_lt_icon"
+                                app:layout_constraintVertical_bias="1.0" />
+
+                            <View
+                                android:id="@+id/li2"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginTop="15dp"
+                                android:background="#F1F1F1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_task_des" />
+
+
+                            <TextView
+                                android:id="@+id/tv_task_des_c"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="新老用户不限，每月1次，请勿退款，毕竟看视频能够获得19.89的收入【必须使用腾讯APP扫码，用手机流量做单】"
+                                android:textColor="#8E8E8E"
+                                android:textSize="14sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/li2" />
+
+                            <TextView
+                                android:id="@+id/tv_t1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="支持设备: "
+                                android:textColor="#8E8E8E"
+                                android:textSize="14sp"
+                                android:visibility="visible"
+                                app:layout_constraintStart_toStartOf="@id/tv_task_des_c"
+                                app:layout_constraintTop_toBottomOf="@id/tv_task_des_c" />
+
+                            <ImageView
+
+                                android:id="@+id/iv_and"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:src="@drawable/icon_android"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_t1"
+                                app:layout_constraintStart_toEndOf="@id/tv_t1"
+                                app:layout_constraintTop_toTopOf="@id/tv_t1" />
+
+                            <ImageView
+                                android:id="@+id/iv_ios"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:src="@drawable/icon_ios"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_t1"
+                                app:layout_constraintStart_toEndOf="@id/iv_and"
+                                app:layout_constraintTop_toTopOf="@id/tv_t1" />
+
+
+                            <LinearLayout
+                                android:id="@+id/ll_t_1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:background="@drawable/radius_border"
+                                android:orientation="vertical"
+                                android:padding="15dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_t1">
+
+                                <TextView
+                                    android:id="@+id/tv_task_step_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="任务步骤"
+                                    android:textColor="@color/black"
+                                    android:textSize="17sp"
+                                    android:textStyle="bold" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_task_step"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:background="@drawable/radius_border" />
+
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:id="@+id/ll_t_2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:background="@drawable/radius_border"
+                                android:orientation="vertical"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/ll_t_1">
+
+                                <TextView
+                                    android:id="@+id/tv_task_verify_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="15dp"
+                                    android:text="完成任务上传验证"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/ll_t_1" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_task_verify"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="15dp"
+                                    android:background="@drawable/radius_border"
+                                    android:descendantFocusability="beforeDescendants"
+                                    android:visibility="gone"
+                                    app:layout_constraintTop_toBottomOf="@id/tv_task_verify_text" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_task_l_verify"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:background="@drawable/radius_border"
+                                    android:descendantFocusability="beforeDescendants"
+                                    android:visibility="gone"
+                                    app:layout_constraintTop_toBottomOf="@id/tv_task_verify_text" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/ll_t_2">
+
+                                <LinearLayout
+                                    android:id="@+id/tv_agreement"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+
+                                        android:text="我已经阅读并同意"
+                                        android:textColor="@color/text_s"
+                                        android:textSize="@dimen/font_small" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingTop="18px"
+                                        android:paddingBottom="18px"
+                                        android:text="@string/text_agreement3"
+                                        android:textColor="@color/text_check"
+                                        android:textSize="@dimen/font_small" />
+
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/tv_agreement2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="请知晓"
+                                        android:textColor="@color/text_s"
+                                        android:textSize="@dimen/font_small" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingBottom="18px"
+                                        android:text="@string/text_agreement4"
+                                        android:textColor="@color/text_check"
+                                        android:textSize="@dimen/font_small" />
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingBottom="10dp"
+                                    android:text="投资理财有风险，请勿与他人私下交易，谨防上当。"
+                                    android:textColor="@color/text_s"
+                                    android:textSize="@dimen/font_small" />
+
+                                <TextView
+                                    android:id="@+id/tv_comdown"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingBottom="10dp"
+                                    android:textColor="@color/text_s"
+                                    android:textSize="@dimen/font_medium" />
+                            </LinearLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_btm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@null"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/tv_btm1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/radius_border_stroke_selected"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="@string/btm_hgrw"
+                android:textColor="@color/colorControlActivated"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_btm2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/radius_border_button"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="立即报名"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/err_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F7F7F7"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="30dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_http_err" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="当前网络异常，请刷新"
+            android:textColor="@color/black2"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_but_re"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_but_re" />
+    </LinearLayout>
+</FrameLayout>

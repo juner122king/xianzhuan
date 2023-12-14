@@ -115,14 +115,22 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
     }
 
     // 任务提交
-    suspend fun apiTaskSubmit(taskSubmit: TaskSubmit): ApiResponse<Boolean> =
+    suspend fun apiTaskSubmit(taskSubmit: TaskSubmit, isLongTask: Boolean): ApiResponse<Boolean> =
         withContext(Dispatchers.IO) {
-            LogUtils.i("测试", "修改请求体：$taskSubmit")
-            val call = apiService.taskSubmit(
-                taskSubmit, loginToken, deviceId
-            )
+
+            LogUtils.i("任务提交", "taskSubmit$taskSubmit")
+            val call = if (isLongTask) {
+                apiService.longTaskSubmit(
+                    taskSubmit, loginToken, deviceId
+                )
+            } else {
+                apiService.taskSubmit(
+                    taskSubmit, loginToken, deviceId
+                )
+            }
             executeApiCall(call)
         }
+
 
     // 小程序任务完成校验
     suspend fun miniTaskComplete(applyLogId: String): ApiResponse<Boolean> =

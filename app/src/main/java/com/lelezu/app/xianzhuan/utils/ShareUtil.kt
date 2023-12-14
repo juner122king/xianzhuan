@@ -26,6 +26,7 @@ object ShareUtil {
 
 
     const val CHECKED_NEW_VISON: String = "CHECKED_NEW_VISON"//是否询问过更新版本
+    const val CHECKED_NEW_VISON_TIME: String = "CHECKED_NEW_VISON_TIME"//检查更新版本的时间
 
     const val CHECKED_FXTS: String = "CHECKED_FXTS"//是否询问过风险提示
 
@@ -97,7 +98,7 @@ object ShareUtil {
         return ""
     }
 
-    public fun putBoolean(key: String, value: Boolean) {
+     fun putBoolean(key: String, value: Boolean) {
 
         val editor: SharedPreferences.Editor = getSps().edit()
         editor.putBoolean(key, value)
@@ -106,13 +107,43 @@ object ShareUtil {
     }
 
     fun getBoolean(key: String): Boolean {
-
         val sps: SharedPreferences = getSps()
         return sps.getBoolean(key, false)
+    }
+
+    /**
+     *
+     * @param key String
+     * @param expirationTimeMillis Long 过期时间  默认1天      1 * 60 * 60 *24* 1000  1天
+     * @return Boolean
+     */
+    fun getIsCHECKEDNV(expirationTimeMillis: Long = 1 * 60 * 60 * 24 * 1000): Boolean {
+
+        val sps: SharedPreferences = getSps()
+        val storedTime = sps.getLong(CHECKED_NEW_VISON_TIME, 0)
+        val currentTime = System.currentTimeMillis()
+
+        // 检查存储的值是否已过期
+        if (currentTime - storedTime > expirationTimeMillis) {
+            // 值已过期，返回false
+            return false
+        }
+        // 返回存储的布尔值
+        return sps.getBoolean(CHECKED_NEW_VISON, false)
 
     }
 
-     fun getInt(key: String): Int {
+
+    /**
+     * 保存何时检查过版本更新
+     */
+    fun putCHECKEDNVTime() {
+        val editor: SharedPreferences.Editor = getSps().edit()
+        editor.putLong(CHECKED_NEW_VISON_TIME, System.currentTimeMillis())
+        editor.apply()
+    }
+
+    fun getInt(key: String): Int {
 
         val sps: SharedPreferences = getSps()
         return sps.getInt(key, -1)

@@ -26,7 +26,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
         tv_vn.text = "当前版本：${getVersionName()}"
 
 
-        sysMessageViewModel.version.observe(this) {
+        sysMessageViewModel.version2.observe(this) {
             if (it.isNew) {
                 //有新版本
                 findViewById<View>(R.id.tv_newVersion).visibility = View.VISIBLE
@@ -48,7 +48,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
     override fun onStart() {
         super.onStart()
         //检查新版本
-        sysMessageViewModel.detection()
+        sysMessageViewModel.detection(false)
     }
 
     override fun getLayoutId(): Int {

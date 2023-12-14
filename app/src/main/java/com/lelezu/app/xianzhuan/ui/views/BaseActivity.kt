@@ -11,6 +11,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
@@ -24,12 +27,14 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.ContentLoadingProgressBar
 import com.hjq.permissions.OnPermissionCallback
@@ -47,6 +52,7 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.anim.DefaultAnimator
+import ʼ.ᐝ.ᐝ.ʼ.I
 import java.io.File
 
 
@@ -64,6 +70,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private var mTvRight: TextView? = null
     private var mRltBase: RelativeLayout? = null
     private var rootView: View? = null
+    private var icon_back: ImageView? = null  //返回键
 
     private var loadingView: View? = null
 
@@ -115,8 +122,7 @@ abstract class BaseActivity : AppCompatActivity() {
             if (it.isNew) {
                 //有新版本
                 apkUrl = it.download
-
-                showDownDialog()
+                showDownDialog(it.isForce)
             }
 
         }
@@ -127,7 +133,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
-    protected fun showDownDialog() {
+
+    /**
+     *
+     * @param isForce Boolean 是否强制更新
+     */
+    protected fun showDownDialog(isForce: Boolean = false) {
         dialog = Dialog(this)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setContentView(R.layout.dialog_download)
@@ -138,17 +149,29 @@ abstract class BaseActivity : AppCompatActivity() {
 
         btnDownload.setOnClickListener {
             // 在点击下载按钮时执行下载操作
-
             onUpData()
 
         }
-        btnDownloadNo.setOnClickListener {
-            // 在点击下载按钮时执行下载操作
+        btnDownloadNo.setOnClickListener { // 在点击取消
             dialog.dismiss()
-            ShareUtil.putBoolean(ShareUtil.CHECKED_NEW_VISON, true)
-        }
 
+            if (isForce) {//强制更新点击取消直接退出app
+                ShareUtil.putBoolean(ShareUtil.CHECKED_NEW_VISON, false) //
+                finish()
+            } else {
+                ShareUtil.putBoolean(ShareUtil.CHECKED_NEW_VISON, true)
+            }
+        }
         dialog.show()
+
+
+        dialog.setOnDismissListener {
+
+            //点击空白地方也退出app
+
+            if (isForce) finish()
+
+        }
     }
 
     //询问权限
@@ -286,10 +309,14 @@ abstract class BaseActivity : AppCompatActivity() {
 
         loginViewModel.errMessage.observe(this) {
 
-
             onErrMessage(it)
         }
         homeViewModel.errMessage.observe(this) {
+            onErrMessage(it)
+        }
+
+        sysMessageViewModel.errMessage.observe(this) {
+
             onErrMessage(it)
         }
     }
@@ -307,6 +334,7 @@ abstract class BaseActivity : AppCompatActivity() {
         mTvTitle = rootView!!.findViewById<View>(R.id.tv_title) as TextView
         mTvRight = rootView!!.findViewById<View>(R.id.tv_right) as TextView
         mRltBase = rootView!!.findViewById<View>(R.id.rlt_base) as RelativeLayout
+        icon_back = rootView!!.findViewById<View>(R.id.icon_back) as ImageView
         val flContent = rootView!!.findViewById<View>(R.id.fl_content) as FrameLayout
         mTvTitle!!.text = if (getContentTitle() == null) "" else getContentTitle()
 
@@ -490,7 +518,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected lateinit var ivDialog: Dialog
     override fun onCreateContextMenu(
-        menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?
+        menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?,
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
         menu?.add(0, 1, 0, "保存")
@@ -667,5 +695,31 @@ abstract class BaseActivity : AppCompatActivity() {
     //隐藏悬浮控件
     protected fun hideFloat() {
         EasyFloat.dismiss()
+    }
+
+
+    //设置标题文字颜色
+    protected fun titleColor(colorResId: Int) {
+        // 将字符串颜色表示转换为整数值
+        mTvTitle!!.setTextColor(ContextCompat.getColor(this, colorResId))
+    }
+
+    //设置标题栏背景颜色
+    protected fun bgColor(colorResId: Int) {
+        mRltBase!!.setBackgroundColor(ContextCompat.getColor(this, colorResId))
+    }
+
+    // 设置标题栏返回键
+    protected fun setIconBack(colorResId: Int) {
+        // 假设 icon_back 是一个 ImageView
+        icon_back?.setColorFilter(
+            ContextCompat.getColor(this, colorResId), PorterDuff.Mode.SRC_ATOP
+        )
+    }
+
+    protected fun goToMyTask() {
+        val intent = Intent(this, MyTaskActivity::class.java)
+        ShareUtil.putBoolean("isroTop", true)//回到我的任务页面后，滚动到顶部
+        startActivity(intent)
     }
 }

@@ -10,7 +10,7 @@ package com.lelezu.app.xianzhuan.data.model
 /**
  *
  * @property applyLogId String? 任务报名申请ID
- * @property auditStatus Int 用户查看的任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
+ * @property auditStatus Int 用户查看的任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)  7:长单任务 进行中
  * @property createdDt String? 	发布时间
  * @property earnedCount Int 	多少人已赚
  * @property isTop Boolean 是否置顶
@@ -37,6 +37,11 @@ package com.lelezu.app.xianzhuan.data.model
  * @property userId String?  	发布者ID
  * @property taskType String?  	任务分类（1：APP端注册用户发布的任务，2：官方任务(小程序任务)）
  * @property taskPlatform Int  	"任务平台 1:APP  2:WX小程序  3:支付宝小程序"
+ * @property longTaskVos LongTaskVos  	长任务步骤
+ * @property progressNotify 长任务 进度通知  0-无通知  1-审核通过  2-审核不通过
+ *
+ * @property completeStepCnt 长任务步骤完成数
+ * @property stepCnt 长任务步骤总数
  * @constructor
  */
 
@@ -71,13 +76,26 @@ data class Task(
     val taskPlatform: Int,
     val userId: String,
     val userInfo: UserInfo,
+    val longTaskVos: List<LongTaskVos>?,
+    val progressNotify: Int,
+    val completeStepCnt: Int,
+    val stepCnt: Int,
 ) {
     val _shareAmount: String
         get() {
             return if (shareAmount < 0.01) {
                 ""
             } else {
-                shareAmount.toString()+"元"
+                shareAmount.toString() + "元"
+            }
+        }
+
+    val stepCntNo: String
+        get() {
+            return if (stepCnt > 0) {
+                "($completeStepCnt/$stepCnt)"
+            } else {
+                ""
             }
         }
 }

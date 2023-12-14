@@ -45,7 +45,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
         val call = apiService.detection(
             ShareUtil.getVersionCode().toString(), ShareUtil.getVersionName(), loginToken, deviceId
         )
-        executeApiCall(call )
+        executeApiCall(call)
     }
 
 
@@ -110,7 +110,7 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
      * @return ApiResponse<Config>
      */
     suspend fun recharge(
-        rechargeAmount: String, type: Int, quitUrlType: Int
+        rechargeAmount: String, type: Int, quitUrlType: Int,
     ): ApiResponse<RechargeRes> = withContext(Dispatchers.IO) {
         val call = apiService.recharge(
             Recharge(rechargeAmount, quitUrlType, type), loginToken, deviceId
