@@ -18,7 +18,9 @@ import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
 import com.lelezu.app.xianzhuan.ui.views.BaseActivity
+import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 
@@ -32,18 +34,28 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 class TaskVerifyStepAdapter(
     private var items: List<TaskUploadVerify>,
     private var ivDialog: Dialog,
-    private var activity: BaseActivity,
+    private var activity: TaskDetailsActivity,
     private val pickImageContract: ActivityResultLauncher<Unit>,
+    private var longPosition: Int = 0, //长任务专用，短任务默认为0  表示属于长任务的几个Position
+
 ) : RecyclerView.Adapter<TaskVerifyStepAdapter.ItemViewHolder>() {
 
     private var auditStatus = 0//任务状态，用改变UI
 
     private var mPosition: Int = -0 //当前选中的
 
+    private var action: Boolean = true
     // 更新数据方法
-    fun updateData(newItems: List<TaskUploadVerify>, status: Int) {
+    /**
+     *
+     * @param newItems List<TaskUploadVerify> 新数据
+     * @param status Int 我的任务状态
+     * @param isAction Boolean 是否能操作
+     */
+    fun updateData(newItems: List<TaskUploadVerify>, status: Int, isAction: Boolean = true) {
         items = newItems  //任务步骤集合
         this.auditStatus = status
+        action = isAction
         notifyDataSetChanged()
     }
 
@@ -71,6 +83,9 @@ class TaskVerifyStepAdapter(
 
     // 绑定数据到 ItemViewHolder
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+
+        LogUtils.i("长任务debug", "position:$position,action:$action")
+
         holder.tvTr.text = "示例图"
         val item = items[position]
         holder.title.text = item.verifyDesc
@@ -90,20 +105,37 @@ class TaskVerifyStepAdapter(
                     ivDialog.show()
                 }
 
+                holder.btmUpPic.setOnClickListener {
+                    mPosition = holder.adapterPosition
 
-                if (this.auditStatus == 0 || this.auditStatus == 3) {//未报名
-                    holder.btmUpPic.visibility = View.GONE
-                    holder.ivUserPic.visibility = View.GONE
+                    activity.putLongActionStep(longPosition)
+                    onPickImage()
+                }
 
-                } else {
-                    holder.ivUserPic.visibility = View.VISIBLE
-                    holder.btmUpPic.visibility = View.VISIBLE
-                    holder.btmUpPic.setOnClickListener {
-                        mPosition = holder.adapterPosition//保存选中的Position
+                when (this.auditStatus) {
 
-                        onPickImage()
+                    0 -> {
+                        holder.btmUpPic.visibility = View.GONE
+                        holder.ivUserPic.visibility = View.GONE
+                    }
+
+
+                    2, 3, 5, 6, 7 -> {
+                        holder.btmUpPic.visibility = View.GONE
+                        holder.ivUserPic.visibility = View.VISIBLE
+                    }
+
+                    4 -> {//不通
+                        holder.btmUpPic.visibility = View.VISIBLE
+                        holder.ivUserPic.visibility = View.VISIBLE
+                    }
+
+                    1 -> {
+                        holder.ivUserPic.visibility = if (action) View.VISIBLE else View.GONE
+                        holder.btmUpPic.visibility = if (action) View.VISIBLE else View.GONE
 
                     }
+
                 }
             }
 
@@ -113,25 +145,34 @@ class TaskVerifyStepAdapter(
                 holder.idEt.setText(item.uploadValue)
                 holder.fCasePic.visibility = View.GONE
                 holder.ivUserPic.visibility = View.GONE
-
+                holder.btmUpPic.visibility = View.GONE
                 when (this.auditStatus) {
 
-                    0,3 -> {
+                    0, 2, 3, 5, 6, 7 -> {
+                        // 当前为启用状态，禁用它
                         holder.idEt.isEnabled = false
+                        holder.idEt.isFocusable = false
+                        holder.idEt.isFocusableInTouchMode = false
                     }
 
+                    4 -> {
+                        // 当前为启用状态，禁用它
+                        holder.idEt.isEnabled = true
+                        holder.idEt.isFocusable = true
+                        holder.idEt.isFocusableInTouchMode = true
+                    }
 
                     else -> {
-                        holder.idEt.isEnabled = true
+
                         holder.idEt.addTextChangedListener(object : TextWatcher {
                             override fun beforeTextChanged(
-                                s: CharSequence?, start: Int, count: Int, after: Int
+                                s: CharSequence?, start: Int, count: Int, after: Int,
                             ) {
                                 // 在文本改变之前调用
                             }
 
                             override fun onTextChanged(
-                                s: CharSequence?, start: Int, before: Int, count: Int
+                                s: CharSequence?, start: Int, before: Int, count: Int,
                             ) {
                                 // 在文本改变时调用
                             }
@@ -145,6 +186,9 @@ class TaskVerifyStepAdapter(
                                 }
                             }
                         })
+                        holder.idEt.isEnabled = action
+                        holder.idEt.isFocusable = action
+                        holder.idEt.isFocusableInTouchMode = action
                     }
 
                 }
@@ -154,11 +198,13 @@ class TaskVerifyStepAdapter(
                 holder.idEt.visibility = View.GONE
                 holder.fCasePic.visibility = View.GONE
                 holder.ivUserPic.visibility = View.GONE
+                holder.btmUpPic.visibility = View.GONE
             }
         }
 
 
         // 判断是否为整个 RecyclerView 的最后一个项
+
         if (position == itemCount - 1) {
             // 针对最后一个项进行特殊处理
             // 例如，可以设置 line 的可见性为 View.GONE

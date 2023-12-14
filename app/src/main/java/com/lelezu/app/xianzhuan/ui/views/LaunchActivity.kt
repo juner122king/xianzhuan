@@ -257,6 +257,7 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
             Log.d("易盾Test", "code is: $paramInt String is: $paramString")
             // paramInt返回200说明初始化成功
             ShareUtil.putInt(APP_163_INIT_CODE, paramInt)
+
         }
         HTProtect.init(this, ApiConstants.DUN_BUSINESS_NO, callback, config)
         //易盾结束

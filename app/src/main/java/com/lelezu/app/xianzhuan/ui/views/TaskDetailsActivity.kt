@@ -21,7 +21,9 @@ import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Task
+import com.lelezu.app.xianzhuan.ui.StringUtils.statusMap
 import com.lelezu.app.xianzhuan.ui.adapters.TaskDetailsStepAdapter
+import com.lelezu.app.xianzhuan.ui.adapters.TaskLongVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.TaskVerifyStepAdapter
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
@@ -37,7 +39,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private lateinit var onNetwork_view: View//有网络时显示的页面
     private lateinit var iv_but_re: View //刷新按钮
 
-    private val statusMap = mapOf(
+    private val tasklimitTimesMap = mapOf(
         1 to "每日1次",
         2 to "每人1次",
         3 to "每人3次",
@@ -55,9 +57,11 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private lateinit var taskDetailsRV: RecyclerView //步骤列表
     private lateinit var taskVerifyRV: RecyclerView //验证列表
+    private lateinit var taskLVerifyRV: RecyclerView //长任务验证列表
 
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
     private lateinit var adapterVerify: TaskVerifyStepAdapter//验证列表
+    private lateinit var adapterLVerify: TaskLongVerifyStepAdapter//长任务验证列表
 
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
 
@@ -79,6 +83,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private var applyTs: Int = -1//报名时当前任务taskStatus
 
 
+    private var isLongTask: Boolean = false//当前加载的任务是否为长单任务
+    private var longActionStep: Int = -1//当前长单任务操作步骤
+
     //验证图片选取回调处理
     private val pickImageContract = registerForActivityResult(PickImageContract()) {
         if (it != null) {
@@ -92,7 +99,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     showToast("图片上传中...")
                     showLoading()
                 }
-                homeViewModel.apiUpload(it)
+                homeViewModel.apiUpload(it, isLongTask)
             }
             thread.start()
         }
@@ -124,6 +131,10 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun initView() {
 
+        titleColor(R.color.white)
+        bgColor(R.color.topViewBg)
+        setIconBack(R.color.white)
+
         err_view = findViewById(R.id.err_view)
         iv_but_re = findViewById(R.id.iv_but_re)
 
@@ -147,9 +158,21 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         taskVerifyRV = findViewById(R.id.rv_task_verify)
         // 创建适配器，并将其绑定到 RecyclerView 上
         adapterVerify = TaskVerifyStepAdapter(emptyList(), ivDialog, this, pickImageContract)
+
         taskVerifyRV.adapter = adapterVerify
         // 可以在这里设置 RecyclerView 的布局管理器，例如：
         taskVerifyRV.layoutManager = LinearLayoutManager(this)
+
+
+
+
+        taskLVerifyRV = findViewById(R.id.rv_task_l_verify)
+        // 创建适配器，并将其绑定到 RecyclerView 上
+        adapterLVerify = TaskLongVerifyStepAdapter(emptyList(), ivDialog, this, pickImageContract)
+        taskLVerifyRV.adapter = adapterLVerify
+        // 可以在这里设置 RecyclerView 的布局管理器，例如：
+        taskLVerifyRV.layoutManager = LinearLayoutManager(this)
+
 
         //底部两个按键
         findViewById<TextView>(R.id.tv_btm1).setOnClickListener(this)
@@ -182,7 +205,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private fun initObserve() {
         //监听任务信息变化
         homeViewModel.task.observe(this) {
-
+            LogUtils.i("长任务debug", "获取任务详情接口回调")
             // 停止刷新动画
             swiper.isRefreshing = false
             //初始化页面数据
@@ -197,7 +220,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //报名监听
         homeViewModel.isApply.observe(this) {
             hideLoading()
-
+            LogUtils.i("长任务debug", "报名接口回调 it:$it")
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
 
@@ -214,6 +237,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             if (it) {
                 showToast("提交成功，雇主将在24小时内审核。")
                 finish()
+                goToMyTask()
             } else {
                 showToast("提交失败！")
             }
@@ -226,6 +250,15 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             cancelToast()
             showToast("图片上传成功")
             adapterVerify.setLink(link)
+        }
+
+        //长任务验证图片选取监听
+        homeViewModel.upltLink.observe(this) { link ->
+
+            hideLoading()
+            cancelToast()
+            showToast("图片上传成功")
+            adapterLVerify.getAdapterVerify(getLongActionStep()).setLink(link)
         }
 
         loginViewModel.follow.observe(this) {
@@ -251,6 +284,35 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     private fun setData(task: Task) {
 
         putTask(task)
+        //需要作长 短任务区分  以 task.longTaskVos 是否为空作依据  不为空则为长任务
+        task.longTaskVos?.let { longTaskVos ->
+            // 在这里，longTaskVos 不为 null，可以安全地访问它的属性或方法
+            adapterLVerify.updateData(longTaskVos)
+
+
+
+            taskLVerifyRV.visibility = View.VISIBLE
+            taskVerifyRV.visibility = View.GONE
+
+            //显示长单任务icon
+            findViewById<View>(R.id.iv_lt_icon).visibility = View.VISIBLE
+            isLongTask = true
+
+
+        } ?: run {
+            // 在这里，longTaskVos 为 null，执行相应的操作
+            // 例如，可以在这里处理 longTaskVos 为 null 的情况
+            // 或者执行其他操作
+
+            adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
+            taskVerifyRV.visibility = View.VISIBLE
+            taskLVerifyRV.visibility = View.GONE
+
+            //隐藏长单任务icon
+            findViewById<View>(R.id.iv_lt_icon).visibility = View.GONE
+            isLongTask = false
+
+        }
 
         changeView(task)//根据任务状态id改变页面
 
@@ -261,7 +323,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         val text2 =
             "<font color='#999999'>剩余</font><font color='#FF5431'>${task.rest}</font><font color='#999999'>单</font>"
 
-        val string = "${task.earnedCount}人已完成任务，${statusMap[task.limitTimes]}"
+        val string = "${task.earnedCount}人已完成任务，${tasklimitTimesMap[task.limitTimes]}"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             findViewById<TextView>(R.id.tv_time).text =
@@ -273,7 +335,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<TextView>(R.id.tv_nub).text = Html.fromHtml(text2)
         }
 
-        findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}元" //
+        findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}" //
 
         findViewById<TextView>(R.id.tv_user_vip).text = "分享赚${task._shareAmount}" //
 
@@ -281,7 +343,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
         adapterDetails.updateData(task.taskStepList, task.auditStatus, task.taskPlatform)
-        adapterVerify.updateData(task.taskUploadVerifyList, task.auditStatus)
+
+
+
 
         loginViewModel.getUserInfo(task.userId)//获取商家信息
         loginViewModel.userInfo.observe(this) {
@@ -402,6 +466,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             findViewById<View>(R.id.ll_status).visibility = View.GONE
         } else {
 
+            isCanSubmit()
+            val auditStatusString = statusMap[task.auditStatus]
             when (task.auditStatus) {
                 //	任务状态(0-未报名，1-待提交，2-审核中，3-审核通过，4-审核被否，5-已取消，默认：0-未报名)
                 0 -> {
@@ -415,14 +481,19 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                     findViewById<View>(R.id.ll_status).visibility = View.GONE
-                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
-
+                    if (isLongTask) {
+                        setBto2Text(
+                            getString(R.string.btm_lxgz), "完成奖励${getLongActionStep() + 1}提交"
+                        )
+                    } else {
+                        setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
+                    }
                 }
 
                 2 -> {
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                     findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                    setStatusText("状态：审核中")
+                    setStatusText("状态：$auditStatusString")
                     setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
 
                 }
@@ -430,7 +501,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 3 -> {
                     findViewById<View>(R.id.ll_btm).visibility = View.GONE
                     findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                    setStatusText("状态：审核通过")
+                    setStatusText("状态：$auditStatusString")
 
 
                     val resolvedColor = ContextCompat.getColor(
@@ -440,7 +511,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 }
 
                 4 -> {
-                    setStatusText("状态：审核未通过")
+                    setStatusText("状态：$auditStatusString")
                     findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                     findViewById<TextView>(R.id.tv_status_text).text = "原因：${task.rejectReason}"
                     findViewById<TextView>(R.id.tv_status_text).visibility = View.VISIBLE
@@ -449,24 +520,46 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
                 }
 
-                5 -> {
-                    setStatusText("状态：手动取消")
-                    setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_zctj))
-                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
-                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-                }
-
-                6 -> {
-                    setStatusText("状态：超时取消")
+                5, 6 -> {
+                    setStatusText("状态：$auditStatusString")
                     setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_csbm))
                     findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+
+                    if (isLongTask) {//长任务隐藏重新报名
+                        findViewById<View>(R.id.tv_btm2).visibility = View.INVISIBLE
+                    }
+
+                    if (task.taskStatus == 5) {//任务已结束
+                        setStatusText("状态：任务过期")
+                        findViewById<View>(R.id.ll_btm).visibility = View.GONE
+                        val resolvedColor = ContextCompat.getColor(
+                            this, R.color.red
+                        )
+                        findViewById<TextView>(R.id.tv_status).setTextColor(resolvedColor)
+                    }
+
+                }
+
+                7 -> { //长单任务 进行中
+
+                    findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                    findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+                    setStatusText("状态：$auditStatusString")
+
+                    if (getLongActionStep() == -1) {//没有步骤auditStatus等于1
+                        setBto2Text(
+                            getString(R.string.btm_lxgz), "待悬赏主审核"
+                        )
+                    } else {
+                        setBto2Text(
+                            getString(R.string.btm_lxgz), "完成奖励${getLongActionStep() + 1}提交"
+                        )
+                    }
+
                 }
             }
-            if (task.taskStatus == 5) {//任务已结束
-                setStatusText("状态：任务已结束")
-                findViewById<View>(R.id.ll_btm).visibility = View.GONE
-            }
+
         }
 
 
@@ -481,7 +574,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     override fun getLayoutId(): Int {
 
-        return R.layout.activity_task_details
+        return R.layout.activity_task_details2
     }
 
     override fun getContentTitle(): String {
@@ -519,12 +612,22 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     0, 5, 6 -> {
                         showLoading()
                         applyTs = getTask().auditStatus
-                        homeViewModel.apiTaskApply(getTask().taskId)
+                        LogUtils.i("长任务debug", "执行报名接口")
+                        homeViewModel.apiTaskApply(getTask().taskId) //报名
+                    }
 
-                    }//报名
-                    else -> homeViewModel.apiTaskSubmit(
-                        getTask().applyLogId, adapterVerify.getItems()
-                    )//提交
+                    else -> {
+                        //提交
+                        if (isLongTask) {
+                            isCanSubmit()
+                            longTaskReSubmit(getLongActionStep())
+                        } else {
+                            //普通任务
+                            homeViewModel.apiTaskSubmit(
+                                getTask().applyLogId, adapterVerify.getItems(), isLongTask
+                            )
+                        }
+                    }
                 }
             }
 
@@ -585,11 +688,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             if (applyTs == 6) {
                 applyTs = -1
                 finish()
-                val intent = Intent(this, MyTaskActivity::class.java)
-
-
-                ShareUtil.putBoolean("isroTop", true)//回到我的任务页面后，滚动到顶部
-                startActivity(intent)
+                goToMyTask()
             }
 
 
@@ -645,9 +744,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun checkNetWorkView() {
 
-        if (ShareUtil.isConnected()) {//是否有网络
-            showWebView()
-        } else {
+        if (!ShareUtil.isConnected()) {//是否有网络
+
             showERRView()
         }
 
@@ -672,5 +770,41 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //获取上个页面返回的TaskId再请求一次
         taskDetails(intent.getStringExtra("taskId")!!, intent.getStringExtra("applyLogId"))
 
+    }
+
+
+    //是否有长任务步骤可以提交
+    private fun isCanSubmit() {
+        val vos = adapterLVerify.getItems()
+        for (i in vos.indices) {
+            if (vos[i].auditStatus == 1) {
+                //首个待提交的步骤
+                putLongActionStep(i)
+                break
+            }
+        }
+    }
+
+    fun longTaskReSubmit(step: Int) {
+        if (step != -1) {
+            putLongActionStep(step)
+            //长单任务
+            homeViewModel.apiTaskSubmit(
+                getTask().applyLogId,
+                adapterLVerify.getTaskUploadVerifyList(step),
+                isLongTask,
+                adapterLVerify.getItems()[step].completeAuditId
+            )
+        } else {
+//                                showToast("所有步骤已经提交！")
+        }
+    }
+
+    fun putLongActionStep(i: Int) {
+        longActionStep = i
+    }
+
+    private fun getLongActionStep(): Int {
+        return longActionStep
     }
 }

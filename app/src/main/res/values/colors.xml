@@ -8,7 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="black2">#111111</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white2">#FCFCFC</color>
     <color name="red">#FF0000</color>
+    <color name="topViewBg">#508CF7</color>
 
 
     <color name="text_check">#FF3685FE</color>
@@ -16,7 +18,7 @@
     <color name="ll_bg">#FFF8F8F8</color>
     <color name="text_999">#FF999999</color>
 
-    <color name="line">#FFF5F5F5</color>
+    <color name="line">#F7F7F7</color>
     <color name="line2">#F0F0F0</color>
     <color name="B3B3B3">#B3B3B3</color>
 
@@ -24,5 +26,6 @@
 
     <!-- 设置 BottomNavigationView 图标选中状态下的颜色 -->
     <color name="colorControlActivated">#FF5431</color>
+    <color name="colorControlActivated1">#3585FC</color>
     <color name="pass">#14A600</color>
 </resources>

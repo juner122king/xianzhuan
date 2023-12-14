@@ -13,6 +13,8 @@ import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.putCHECKEDNVTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,6 +41,7 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val msgNum: MutableLiveData<Int> = MutableLiveData()
 
     val version: MutableLiveData<Version> = MutableLiveData()
+    val version2: MutableLiveData<Version> = MutableLiveData()
 
     val announce: MutableLiveData<List<Announce>> = MutableLiveData()
 
@@ -56,7 +59,7 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
 
     //获取系统消息列表
     fun recharge(
-        rechargeAmount: String, type: Int, quitUrlType: Int
+        rechargeAmount: String, type: Int, quitUrlType: Int,
     ) = viewModelScope.launch {
         val list = sysInformRepository.recharge(
             rechargeAmount, type, quitUrlType
@@ -98,19 +101,22 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
         handleApiResponse(call, msgNum)
 
     }
+
     //获取用户未读信息数量
     fun apiRegistrConfig() = viewModelScope.launch {
         val call = sysInformRepository.apiRegistrConfig()
         handleApiResponse(call, registrconfig)
 
     }
+
     //首页轮播图
     fun apiCarouselConfig() = viewModelScope.launch {
         val call = sysInformRepository.apiCarouselConfig()
         handleApiResponse(call, bannerconfig)
 
     }
-   //获取广告配置
+
+    //获取广告配置
     fun apiADConfig() = viewModelScope.launch {
         val call = sysInformRepository.apiADConfig()
         handleApiResponse(call, adconfig)
@@ -119,9 +125,18 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
 
 
     //检查新版本
-    fun detection() = viewModelScope.launch {
+    /**
+     *
+     * @param isHome Boolean 是否是主页检查更新
+     * @return Job
+     */
+    fun detection(isHome: Boolean) = viewModelScope.launch {
+
         val call = sysInformRepository.detection()
-        handleApiResponse(call, version)
+        if (isHome) {
+            putCHECKEDNVTime()
+            handleApiResponse(call, version)
+        } else handleApiResponse(call, version2)
     }
 
     //下载apk

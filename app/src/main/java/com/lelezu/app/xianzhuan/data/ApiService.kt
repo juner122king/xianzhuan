@@ -208,6 +208,14 @@ interface ApiService {
         @Header("Device") device: String
     ): Call<ApiResponse<Boolean>>
 
+
+    @POST("/dxz/app/task/submit/long/task")//用户提交长单任务
+    fun longTaskSubmit(
+        @Body taskSubmit: TaskSubmit,
+        @Header("Authorization") token: String,
+        @Header("Device") device: String
+    ): Call<ApiResponse<Boolean>>
+
     @POST("/dxz/app/task/complete")//小程序任务完成校验
     fun miniTaskComplete(
         @Body applyLogId: Complete,
@@ -295,7 +303,9 @@ interface ApiService {
 
     @GET("/dxz/app/sys/config/SYSTEM/REGISTRY_CONCERN_CONFIG")// 关注企业微信配置信息
     fun REGISTR_CONFIG(
-        @Header("Authorization") token: String, @Header("Device") device: String
+        @Header("Authorization") token: String,
+        @Header("Device") device: String,
+
     ): Call<ApiResponse<Config>>
 
     @GET("/dxz/app/sys/config/ACTIVITY/CAROUSEL")// 首页轮播图

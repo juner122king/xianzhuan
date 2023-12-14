@@ -25,8 +25,8 @@ class MyTaskActivity : BaseActivity() {
             "全 部",
             getString(R.string.title_task_my1),
             getString(R.string.title_task_my2),
-            getString(R.string.title_task_my3),
-            getString(R.string.title_task_my4)
+            getString(R.string.title_task_my5),
+            getString(R.string.title_task_my6)
         )
         initView()
         initTaskTabLayout()
@@ -60,7 +60,7 @@ class MyTaskActivity : BaseActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                //	提交完成任务状态(0-未报名 1-待提交 2-审核中 3-审核通过 4-审核被否 5-手动取消 6-超时取消)
+                //	提交完成任务状态(0-未报名 1-待提交 2-审核中 3-不合格 4-已完成 5-手动取消 6-超时取消)
                 1 -> TaskListFragment.newInstance(
                     getTaskQuery(1), true
                 )
@@ -70,11 +70,11 @@ class MyTaskActivity : BaseActivity() {
                 )
 
                 3 -> TaskListFragment.newInstance(
-                    getTaskQuery(3), true
+                    getTaskQuery(4), true
                 )
 
                 4 -> TaskListFragment.newInstance(
-                    getTaskQuery(4), true
+                    getTaskQuery(3), true
                 )
 
                 else -> TaskListFragment.newInstance(
@@ -85,7 +85,7 @@ class MyTaskActivity : BaseActivity() {
 
         private fun getTaskQuery(status: Int?): TaskQuery {
             return TaskQuery(
-                null, 1, null, null, 999, status, null
+                null, 1, null, null, 99, status, null
             )
         }
     }

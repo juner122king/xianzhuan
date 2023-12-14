@@ -72,7 +72,6 @@ object Base64Utils {
                 val compressedByteArray = compressTo2MB(byteArray, quality)
                 if (compressedByteArray != null) {
                     Log.i("zipPic:", "大于500kb压缩50%后的长度:${compressedByteArray.size}")
-
                     Base64.encodeToString(compressedByteArray, Base64.NO_WRAP)
                 } else {
                     null

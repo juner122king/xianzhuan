@@ -28,6 +28,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
+import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
@@ -161,12 +162,47 @@ class MainFragment : BaseFragment(), OnClickListener {
 
                     if (data.jumpUrl != "") {//如果URL不为空，则设置点击跳转到WebView
                         holder.imageView.setOnClickListener {
+                            //判断data.jumpUrl内容去作不同的跳转
                             val intent = Intent(requireContext(), WebViewActivity::class.java)
                             intent.putExtra(LINK_KEY, HOST + data.jumpUrl)
-                            intent.putExtra(URL_TITLE, "规则说明")
+                            intent.putExtra(URL_TITLE, data.bannerName)
                             startActivity(intent)
                         }
                     }
+
+
+
+
+                    if (data.jumpUrl.isNotBlank()) {
+                        holder.imageView.setOnClickListener {
+
+                            if (data.jumpUrl.startsWith("http")) { //外部H5页面
+                                val intent = Intent(requireContext(), WebViewActivity::class.java)
+                                intent.putExtra(LINK_KEY, data.jumpUrl)
+                                intent.putExtra(URL_TITLE, data.bannerName)
+                                startActivity(intent)
+                            } else if (data.jumpUrl.startsWith("activity://TaskDetails")) {//任务详情页面
+                                val taskId = data.jumpUrl.substringAfterLast("=")
+                                val intent = Intent(context, TaskDetailsActivity::class.java)
+                                intent.putExtra("taskId", taskId)
+                                startActivity(intent)
+                            }
+                            else if (data.jumpUrl.startsWith("activity://home")) {
+                                val page = data.jumpUrl.substringAfterLast("=")
+                                showToast("打开个人中心")
+                            }
+                            else { //内部H5页面
+                                //判断data.jumpUrl内容去作不同的跳转
+                                val intent = Intent(requireContext(), WebViewActivity::class.java)
+                                intent.putExtra(LINK_KEY, HOST + data.jumpUrl)
+                                intent.putExtra(URL_TITLE, data.bannerName)
+                                startActivity(intent)
+
+                            }
+                        }
+                    }
+
+
                 }
             })
 

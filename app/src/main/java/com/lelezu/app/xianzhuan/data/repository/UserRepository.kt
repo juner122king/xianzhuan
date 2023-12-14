@@ -119,8 +119,8 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
      */
     suspend fun apiRecord(receiverUserId: String): MutableList<ChatMessage> =
         withContext(Dispatchers.IO) {
-            val call1 = apiService.getRecord(receiverUserId, 999, loginToken,deviceId)
-            val call2 = apiService.getRecord(loginId, 999, loginToken,deviceId)
+            val call1 = apiService.getRecord(receiverUserId, 99, loginToken,deviceId)
+            val call2 = apiService.getRecord(loginId, 99, loginToken,deviceId)
 
             val mergedData = mutableListOf<ChatMessage>()
 

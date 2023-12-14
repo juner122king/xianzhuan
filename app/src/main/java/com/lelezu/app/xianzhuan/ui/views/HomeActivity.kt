@@ -57,7 +57,7 @@ class HomeActivity : BaseActivity() {
         //  页面更改监听
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
-                position: Int, positionOffset: Float, positionOffsetPixels: Int
+                position: Int, positionOffset: Float, positionOffsetPixels: Int,
             ) {
             }
 
@@ -86,7 +86,6 @@ class HomeActivity : BaseActivity() {
                 R.id.navigation_home -> {
                     viewPager.setCurrentItem(0, false)
                     setTitleText(getString(R.string.title_activity_home))
-
 
 
                 }
@@ -184,10 +183,9 @@ class HomeActivity : BaseActivity() {
     private fun checkNewV() {
         if (MyApplication.isMarketVersion) return
 
-        if (!ShareUtil.getBoolean(ShareUtil.CHECKED_NEW_VISON)) {//未询问过更新版本
-            //检查新版本
-            sysMessageViewModel.detection()
-        }
+        //未询问过更新版本
+        if (!ShareUtil.getIsCHECKEDNV()) sysMessageViewModel.detection(true)
+
     }
 
     private fun showDialog() {

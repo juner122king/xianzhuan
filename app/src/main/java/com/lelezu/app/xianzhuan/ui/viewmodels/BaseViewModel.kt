@@ -11,6 +11,7 @@ import com.lelezu.app.xianzhuan.data.model.ApiSuccessResponse
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginReP
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil.cleanInfo
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isConnected
 import com.lelezu.app.xianzhuan.utils.ShareUtil.saveInfo
@@ -32,7 +33,6 @@ open class BaseViewModel : ViewModel() {
         when (r) {
             is ApiSuccessResponse -> {
                 // 处理成功的响应
-                Log.i("BaseViewModel:", "ApiSuccessResponse")
                 liveData.postValue(r.data)
                 if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对象为登录回应对象就保存
             }
@@ -56,7 +56,7 @@ open class BaseViewModel : ViewModel() {
 
     protected fun <T> handleApiListResponse(
         r: ApiResponse<ListData<T>>,
-        liveData: MutableLiveData<MutableList<T>>
+        liveData: MutableLiveData<MutableList<T>>,
     ) {
         when (r) {
             is ApiSuccessResponse -> {
@@ -90,10 +90,7 @@ open class BaseViewModel : ViewModel() {
 
     private fun <T> failedResponse(r: ApiResponse<T>, mes: String?) {
 
-
-
-
-
+        LogUtils.i("333", r.toString())
         if (isConnected()) {
 
             errMessage.postValue(ErrResponse(r.code, mes))//有网络，正常报错
