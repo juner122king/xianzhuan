@@ -234,10 +234,16 @@ class TaskItemAdapter(
                     holder.goneView.visibility = View.INVISIBLE
                 }
 
-                1, 7 -> {
+                1 -> {
                     holder.tvTime.text = "需在:" + item.operateTime + "前完成任务、提交验证信息"
                     holder.tvTime.visibility = View.VISIBLE
                     holder.goneView.visibility = View.VISIBLE
+                }
+
+                7 -> {
+                    holder.tvTime.text = "需在:" + item.operateTime + "前完成任务、提交验证信息"
+                    holder.tvTime.visibility = View.VISIBLE
+                    holder.goneView.visibility = View.GONE
                 }
 
 

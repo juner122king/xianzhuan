@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
+import com.lelezu.app.xianzhuan.data.model.Limit
 import com.lelezu.app.xianzhuan.data.model.LongTaskVos
 import com.lelezu.app.xianzhuan.data.model.Partner
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -34,6 +35,8 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     val task: MutableLiveData<Task> = MutableLiveData() //任务详情类
 
     val isApply: MutableLiveData<Boolean> = MutableLiveData() //是否报名成功
+    val limit: MutableLiveData<Limit> = MutableLiveData() //报名前的验证信息
+    val isReport: MutableLiveData<Boolean> = MutableLiveData() //是否举报成功
     val isCancel: MutableLiveData<Boolean> = MutableLiveData() //是否取消成功
     val isUp: MutableLiveData<Boolean> = MutableLiveData() //是否提交成功
 
@@ -85,6 +88,25 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     fun apiTaskApply(taskId: String) = viewModelScope.launch {
         val r = taskRepository.apiTaskApply(taskId)
         handleApiResponse(r, isApply)
+    }
+
+    // 报名前的验证接口
+    fun limitTask() = viewModelScope.launch {
+        val r = taskRepository.limitTask()
+        handleApiResponse(r, limit,false)
+    }
+
+    // 任务举报
+    fun taskReport(
+        reportContent: String,
+
+        reportedUserId: String,
+        reportedTaskId: String,
+        contactLabel: String="",
+    ) = viewModelScope.launch {
+        val r =
+            taskRepository.taskReport(reportContent, contactLabel, reportedUserId, reportedTaskId)
+        handleApiResponse(r, isReport)
     }
 
     // 任务取消

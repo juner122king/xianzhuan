@@ -60,6 +60,17 @@ class HomeActivity : BaseActivity() {
         createFloat()
 
 
+        //监听发布任务前的验证接口
+        homeViewModel.limit.observe(this) {
+            if (it.isLimit) {
+                val intent = Intent(this, WebViewActivity::class.java)
+                intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
+                intent.putExtra(WebViewSettings.URL_TITLE, "选择任务分类")
+                startActivity(intent)
+            } else {
+                showPostDialog(it.endTime)
+            }
+        }
 
     }
 
@@ -272,5 +283,6 @@ class HomeActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         EasyFloat.dismiss()
+        homeViewModel.limit.removeObservers(this)
     }
 }

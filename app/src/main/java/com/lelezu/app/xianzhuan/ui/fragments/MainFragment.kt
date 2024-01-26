@@ -31,6 +31,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
@@ -144,13 +145,10 @@ class MainFragment : BaseFragment(), OnClickListener {
         //获取公告
         sysMessageViewModel.apiGetUserWithdraw()
         sysMessageViewModel.userWithdrawList.observe(requireActivity()) {
-
-
-
-
             bulletinView.setAdapter(ComplexViewAdapter(it))
 
         }
+
     }
 
     private fun setBanner(pics: List<DBanner>) {
@@ -223,25 +221,29 @@ class MainFragment : BaseFragment(), OnClickListener {
             R.id.ll_top_btm1 -> {
                 intent.putExtra(LINK_KEY, link102)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_mrjl))
+                startActivity(intent)
             }
 
             R.id.ll_top_btm2 -> {
                 intent.putExtra(LINK_KEY, link2)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_xrjl))
+                startActivity(intent)
             }
 
             R.id.ll_top_btm3 -> {
                 intent.putExtra(LINK_KEY, link3)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_zq))
+                startActivity(intent)
+
             }
 
             R.id.tvv -> {//发布任务
-                intent.putExtra(LINK_KEY, WebViewSettings.link5)
-                intent.putExtra(URL_TITLE, "选择任务分类")
+
+                (requireActivity() as BaseActivity).homeViewModel.limitTask()
             }
 
         }
-        startActivity(intent)
+
 
     }
 
@@ -284,7 +286,7 @@ class MainFragment : BaseFragment(), OnClickListener {
                 }
 
                 override fun onZjAdError(zjAdError: ZjAdError) {
-//                    showToast("任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+                    LogUtils.i("ZjAd","任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
                     showToast("游戏任务列表数据加载缓慢")
                 }
             })

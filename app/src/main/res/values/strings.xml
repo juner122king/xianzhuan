@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">众手帮</string>
-    <string name="advertising_words">一元可提现一起赚赏金</string>
+    <string name="advertising_words">一元可提现\t\t一起赚赏金</string>
     <string name="advertising_words2">移动调研 方便快捷</string>
+
+
+    <string name="task_report_content1">未按说明审核任务验证信息</string>
+    <string name="task_report_content2">攻击谩骂等不文明行为</string>
 
 
     <string name="title_login">登录</string>

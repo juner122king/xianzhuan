@@ -11,10 +11,13 @@ import androidx.fragment.app.viewModels
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
+import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
 
 
@@ -25,6 +28,7 @@ import com.lelezu.app.xianzhuan.utils.LogUtils
  *
  */
 open class BaseFragment : Fragment() {
+
 
 
     protected val homeViewModel: HomeViewModel by viewModels {
@@ -48,6 +52,12 @@ open class BaseFragment : Fragment() {
         initViewModel()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        homeViewModel.limit.removeObservers(requireActivity())
+        loginViewModel.errMessage.removeObservers(requireActivity())
+        homeViewModel.errMessage.removeObservers(requireActivity())
+    }
 
     private fun initViewModel() {
 
@@ -59,7 +69,17 @@ open class BaseFragment : Fragment() {
             onErrMessage(it)
         }
 
-
+//        //监听发布任务前的验证接口
+//        homeViewModel.limit.observe(requireActivity()) {
+//            if (it.isLimit) {
+//                val intent = Intent(requireActivity(), WebViewActivity::class.java)
+//                intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
+//                intent.putExtra(WebViewSettings.URL_TITLE, "选择任务分类")
+//                startActivity(intent)
+//            } else {
+//                (requireActivity() as BaseActivity).showPostDialog(it.endTime)
+//            }
+//        }
     }
 
 

@@ -271,6 +271,10 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    protected fun activityFinish(activity: Activity) {
+        activity.finish()
+    }
+
 
     protected fun gotoTaskDetails(taskId: String) {
 
@@ -802,6 +806,57 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
+
+    // 显示禁止报名弹窗
+     fun showPostDialog(time: String) {
+        dialog = Dialog(this)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_post)
+
+        val ok: TextView = dialog.findViewById(R.id.ok)
+
+        val tvtime: TextView = dialog.findViewById(R.id.time)//
+        val but1: TextView = dialog.findViewById(R.id.but1)//
+        val but2: TextView = dialog.findViewById(R.id.but2)//
+        val but3: TextView = dialog.findViewById(R.id.but3)//
+        tvtime.text = time
+
+        but1.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link100)
+            intent.putExtra(WebViewSettings.URL_TITLE, getString(R.string.text_agreement))
+            intent.putExtra(WebViewSettings.isProcessing, false)
+            startActivity(intent)
+
+        }
+        but2.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link19)
+            intent.putExtra(WebViewSettings.URL_TITLE, "任务发布规则")
+            startActivity(intent)
+
+        }
+        but3.setOnClickListener {
+
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link14)
+            intent.putExtra(WebViewSettings.URL_TITLE, "接单规则")
+            startActivity(intent)
+        }
+
+
+
+
+        ok.setOnClickListener {
+            //确定
+            dialog.dismiss()
+
+        }
+
+
+        // 显示弹窗
+        dialog.show()
+    }
 
 
 }

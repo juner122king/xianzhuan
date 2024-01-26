@@ -115,10 +115,13 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
 
     private fun showLogo() {
+
+
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
+                initSDK()//初始化SDK
 
-                initSDK()
+
                 showAdView()//显示广告
 //                showZJAdView()//显示ZJ广告
 //                showKSAdView()//显示快手广告
@@ -195,6 +198,7 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     }
 
     fun onAgreeButtonClick(view: View) {
+        initSDK()//初始化SDK
         // 处理同意的逻辑
         dialog.dismiss()
         UUIDUtils.getDeviceID(this)
@@ -303,17 +307,17 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
     private fun initZJSDK() {
 
-        if (isMarketVersion) return
 
-        LogUtils.i(LOGTAG, "任务墙SDK初始化开始")
+
+        LogUtils.i("ZjAd", "任务墙SDK初始化开始")
         //任务墙SDK 初始化
         ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
             override fun initSuccess() {
-                Log.i("任务墙SDK", "初始化成功！")
+                LogUtils.i("ZjAd", "初始化成功！")
             }
 
             override fun initFail(code: Int, msg: String?) {
-                Log.i("任务墙SDK", "初始化失败！")
+                LogUtils.i("ZjAd", "初始化失败！")
             }
         })
     }

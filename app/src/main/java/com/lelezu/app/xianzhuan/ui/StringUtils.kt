@@ -19,7 +19,7 @@ object StringUtils {
         4 to "审核被否",
         5 to "手动取消",
         6 to "超时取消",
-        7 to "长单任务进行中",
+        7 to "进行中",
         // 可以继续添加其他映射关系
     )
      val statusTimeMap = mapOf(

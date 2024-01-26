@@ -12,6 +12,7 @@ import android.text.Html
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,6 +62,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private lateinit var adapterDetails: TaskDetailsStepAdapter//步骤列表
     private lateinit var adapterVerify: TaskVerifyStepAdapter//验证列表
+
     private lateinit var adapterLVerify: TaskLongVerifyStepAdapter//长任务验证列表
 
     private lateinit var swiper: SwipeRefreshLayout//下拉刷新控件
@@ -74,6 +76,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private lateinit var dialog: Dialog//协议弹窗
     private lateinit var dialog2: Dialog//报名成功弹窗
+    private lateinit var dialog3: Dialog//举报弹窗
+
+    private lateinit var dialog4: Dialog//禁止报名弹窗
 
     private lateinit var comdown: TextView//任务提交倒计时
 
@@ -182,6 +187,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //底部两个按键
         findViewById<TextView>(R.id.tv_btm1).setOnClickListener(this)
         findViewById<TextView>(R.id.tv_btm2).setOnClickListener(this)
+        findViewById<TextView>(R.id.tv_btm3).setOnClickListener(this)//举报按钮
 
         findViewById<View>(R.id.tv_agreement).setOnClickListener(this)
         findViewById<View>(R.id.tv_agreement2).setOnClickListener(this)
@@ -237,6 +243,15 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             } else showToast("报名失败")
         }
 
+        //举报监听
+        homeViewModel.isReport.observe(this) {
+            hideLoading()
+            if (it) {
+                showToast("举报成功")
+
+            } else showToast("举报失败")
+        }
+
         //任务提交监听
         homeViewModel.isUp.observe(this) {
             if (it) {
@@ -282,6 +297,18 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 taskDetails(getTask().taskId, getTask().applyLogId)
             }
         }
+
+        homeViewModel.limit.observe(this) {
+            if (it.isLimit) {
+                applyTs = getTask().auditStatus
+                LogUtils.i("长任务debug", "执行报名接口")
+                homeViewModel.apiTaskApply(getTask().taskId) //报名
+            } else {
+                showPostDialog(it.endTime)
+            }
+        }
+
+
     }
 
 
@@ -508,7 +535,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
 
                     //新逻辑，审核中不能修改提交
-                    findViewById<View>(R.id.tv_btm2).visibility = View.INVISIBLE
+                    findViewById<View>(R.id.tv_btm2).visibility = View.GONE
 
                 }
 
@@ -626,10 +653,9 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             R.id.tv_btm2 -> {
                 when (getTask().auditStatus) {
                     0, 5, 6 -> {
-                        showLoading()
-                        applyTs = getTask().auditStatus
-                        LogUtils.i("长任务debug", "执行报名接口")
-                        homeViewModel.apiTaskApply(getTask().taskId) //报名
+                        //先判断是否可以报名
+                        homeViewModel.limitTask() //报名前的验证接口
+
                     }
 
                     else -> {
@@ -645,6 +671,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                         }
                     }
                 }
+            }
+
+            R.id.tv_btm3 -> {//举报
+
+                showReportDialog(getTask().userId, getTask().taskId)
+
             }
 
             R.id.tv_agreement -> {
@@ -694,6 +726,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         dialog2.setContentView(R.layout.dialog_bmcg)
         val content: TextView = dialog2.findViewById(R.id.tv_content)
         val ok: TextView = dialog2.findViewById(R.id.ok)
+
         content.text = "请在${time}小时内完成并提交任务"
 
         ok.setOnClickListener {
@@ -710,11 +743,49 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 finish()
                 goToMyTask(1)
             }
+        }
+
+
+        // 显示弹窗
+        dialog2.show()
+    }
+
+
+    // 显示举报弹窗
+    private fun showReportDialog(userId: String, taskId: String) {
+        dialog3 = Dialog(this)
+        dialog3.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog3.setContentView(R.layout.dialog_report)
+
+        val ok: TextView = dialog3.findViewById(R.id.ok)
+        val cancel: TextView = dialog3.findViewById(R.id.cancel)
+
+        val tVuserId: TextView = dialog3.findViewById(R.id.tv_content)//
+
+        val rb1: RadioButton = dialog3.findViewById(R.id.rb1)//举报内容1
+        tVuserId.text = "被举报人ID:${userId}"
+
+        ok.setOnClickListener {
+            //确定
+            dialog3.dismiss()
+
+            val reportContent =
+                if (rb1.isChecked) getString(R.string.task_report_content1) else getString(R.string.task_report_content2)
+
+
+            LogUtils.i("TD", "userId:${userId},taskId:${taskId}")
+            homeViewModel.taskReport(reportContent, userId, taskId) //报名
 
 
         }
+        cancel.setOnClickListener {
+            //确定
+            dialog3.dismiss()
+        }
+
+
         // 显示弹窗
-        dialog2.show()
+        dialog3.show()
     }
 
     private fun putTask(t: Task) {

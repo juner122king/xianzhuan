@@ -20,6 +20,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.ANNOUNCEID
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link103
 import com.lelezu.app.xianzhuan.ui.views.AutoOutActivity
+import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.ChatListActivity
 import com.lelezu.app.xianzhuan.ui.views.MessageActivity
@@ -302,6 +303,8 @@ class MyFragment : BaseFragment(), View.OnClickListener {
 
         }
 
+
+
     }
 
     override fun onResume() {
@@ -371,16 +374,16 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 startActivity(Intent(activity, ZJTaskHistoryActivity::class.java))//任务墙领奖记录
             }
 
+            R.id.ll_l1 -> { //发布任务
+
+                (requireActivity() as BaseActivity).homeViewModel.limitTask()
+
+            }
+
 
             else -> {
                 val intent = Intent(requireContext(), WebViewActivity::class.java)
                 when (p0?.id) {
-
-
-                    R.id.ll_l1 -> {
-                        intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link5)
-                        intent.putExtra(WebViewSettings.URL_TITLE, "选择任务分类")
-                    }
 
                     R.id.ll_l2 -> {
                         intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link4)

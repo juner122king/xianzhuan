@@ -29,11 +29,18 @@ open class BaseViewModel : ViewModel() {
 
     val emptyListMessage: MutableLiveData<Boolean> = MutableLiveData() //接口列表数据为空的错误信息
 
-    protected fun <T> handleApiResponse(r: ApiResponse<T>, liveData: MutableLiveData<T>) {
+    protected fun <T> handleApiResponse(
+        r: ApiResponse<T>,
+        liveData: MutableLiveData<T>,
+        isPost: Boolean = true,
+    ) {
         when (r) {
             is ApiSuccessResponse -> {
                 // 处理成功的响应
-                liveData.postValue(r.data)
+                if (isPost)
+                    liveData.postValue(r.data)
+                else
+                    liveData.value = r.data
                 if (r.data is LoginReP) saveInfo(r.data as LoginReP)//如果返回对象为登录回应对象就保存
             }
 

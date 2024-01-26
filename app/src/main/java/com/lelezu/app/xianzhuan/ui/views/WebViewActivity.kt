@@ -129,6 +129,7 @@ class WebViewActivity : BaseActivity() {
 
         wv.registerHandler("chooseImage") { _, _ -> openPhoto() }
         wv.registerHandler("backToHome") { fragmentPosition, _ -> backToHome(fragmentPosition) }
+        wv.registerHandler("activityFinish") { _, _ -> activityFinish(this) }
 
 
         wv.registerHandler("gotoTaskDetails") { taskId, _ -> gotoTaskDetails(taskId) }
@@ -173,14 +174,14 @@ class WebViewActivity : BaseActivity() {
             }
 
             override fun onReceivedError(
-                view: WebView?, errorCode: Int, description: String?, failingUrl: String?
+                view: WebView?, errorCode: Int, description: String?, failingUrl: String?,
             ) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
                 showERRView()
             }
 
             override fun onReceivedSslError(
-                view: WebView?, handler: SslErrorHandler?, error: SslError?
+                view: WebView?, handler: SslErrorHandler?, error: SslError?,
             ) {
 
                 handler!!.proceed()

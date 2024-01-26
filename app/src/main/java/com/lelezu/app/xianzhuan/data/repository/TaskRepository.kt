@@ -7,8 +7,10 @@ import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.ApiService
 import com.lelezu.app.xianzhuan.data.model.ApiResponse
 import com.lelezu.app.xianzhuan.data.model.Complete
+import com.lelezu.app.xianzhuan.data.model.Limit
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Partner
+import com.lelezu.app.xianzhuan.data.model.Report
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Req2
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -83,6 +85,29 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
     //任务报名
     suspend fun apiTaskApply(taskId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
         val call = apiService.taskApply(Req(taskId), loginToken, deviceId)
+        executeApiCall(call)
+
+    }
+
+    //报名前的验证接口
+    suspend fun limitTask(): ApiResponse<Limit> = withContext(Dispatchers.IO) {
+        val call = apiService.limitTask(loginToken, deviceId)
+        executeApiCall(call)
+
+    }
+
+    //任务举报
+    suspend fun taskReport(
+        reportContent: String,
+        contactLabel: String,
+        reportedUserId: String,
+        reportedTaskId: String,
+    ): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        val call = apiService.taskReport(
+            Report(
+                reportContent, contactLabel, reportedUserId, reportedTaskId, listOf()
+            ), loginToken, deviceId
+        )
         executeApiCall(call)
 
     }

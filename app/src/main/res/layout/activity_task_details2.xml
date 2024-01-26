@@ -475,6 +475,20 @@
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tv_btm3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/radius_border_stroke_selected"
+                android:gravity="center"
+                android:padding="7dp"
+                android:text="举报"
+                android:textColor="@color/colorControlActivated"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </FrameLayout>
 

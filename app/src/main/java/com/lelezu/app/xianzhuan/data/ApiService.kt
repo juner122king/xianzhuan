@@ -9,6 +9,7 @@ import com.lelezu.app.xianzhuan.data.model.Complete
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Earning
 import com.lelezu.app.xianzhuan.data.model.Follows
+import com.lelezu.app.xianzhuan.data.model.Limit
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.LoginConfig
 import com.lelezu.app.xianzhuan.data.model.LoginInfo
@@ -19,6 +20,7 @@ import com.lelezu.app.xianzhuan.data.model.Pending
 import com.lelezu.app.xianzhuan.data.model.Recharge
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Related
+import com.lelezu.app.xianzhuan.data.model.Report
 import com.lelezu.app.xianzhuan.data.model.Req
 import com.lelezu.app.xianzhuan.data.model.Req2
 import com.lelezu.app.xianzhuan.data.model.Task
@@ -115,6 +117,15 @@ interface ApiService {
     @POST("/dxz/app/task/user/apply")//任务报名
     fun taskApply(
         @Body req: Req, @Header("Authorization") token: String, @Header("Device") device: String,
+    ): Call<ApiResponse<Boolean>>
+
+    @GET("/dxz/app/user/user/limit/task")//报名前的验证接口
+    fun limitTask( @Header("Authorization") token: String, @Header("Device") device: String,
+    ): Call<ApiResponse<Limit>>
+
+    @POST("/dxz/app/user/report")//任务举报
+    fun taskReport(
+        @Body rep: Report, @Header("Authorization") token: String, @Header("Device") device: String,
     ): Call<ApiResponse<Boolean>>
 
 
