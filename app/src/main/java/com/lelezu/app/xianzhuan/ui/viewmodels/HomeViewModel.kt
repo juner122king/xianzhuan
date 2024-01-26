@@ -34,6 +34,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     val task: MutableLiveData<Task> = MutableLiveData() //任务详情类
 
     val isApply: MutableLiveData<Boolean> = MutableLiveData() //是否报名成功
+    val isCancel: MutableLiveData<Boolean> = MutableLiveData() //是否取消成功
     val isUp: MutableLiveData<Boolean> = MutableLiveData() //是否提交成功
 
     val isCompleteMini: MutableLiveData<Boolean> = MutableLiveData() //是否成功校验小程序
@@ -86,6 +87,12 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
         handleApiResponse(r, isApply)
     }
 
+    // 任务取消
+    fun apiTaskCancel(applyLogId: String) = viewModelScope.launch {
+        val r = taskRepository.apiTaskCancel(applyLogId)
+        handleApiResponse(r, isCancel)
+    }
+
 
     // 添加我的师傅
     fun apiGetMater(userId: String) = viewModelScope.launch {
@@ -123,7 +130,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
         applyLogId: String?,
         verifys: List<TaskUploadVerify>?,
         isLongTask: Boolean,
-        auditId: String? = null
+        auditId: String? = null,
     ) = viewModelScope.launch {
 
         if (verifys.isNullOrEmpty()) {
@@ -163,8 +170,7 @@ class HomeViewModel(private val taskRepository: TaskRepository) : BaseViewModel(
     // 上传图片接口
     fun apiUpload(uri: Uri, isLongTask: Boolean = false) = viewModelScope.launch {
         val r = taskRepository.apiUpload(uri)
-        if (isLongTask)
-            handleApiResponse(r, upltLink)
+        if (isLongTask) handleApiResponse(r, upltLink)
         else handleApiResponse(r, upLink)
     }
 

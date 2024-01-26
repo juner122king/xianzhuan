@@ -360,7 +360,6 @@
                                 app:layout_constraintTop_toBottomOf="@id/ll_t_2">
 
                                 <LinearLayout
-                                    android:id="@+id/tv_agreement"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp">
@@ -368,12 +367,12 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-
-                                        android:text="我已经阅读并同意"
+                                        android:text="报名及提交验证信息，代表您已阅读并同意"
                                         android:textColor="@color/text_s"
                                         android:textSize="@dimen/font_small" />
 
                                     <TextView
+                                        android:id="@+id/tv_agreement"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:paddingTop="18px"
@@ -382,22 +381,21 @@
                                         android:textColor="@color/text_check"
                                         android:textSize="@dimen/font_small" />
 
-
                                 </LinearLayout>
 
                                 <LinearLayout
-                                    android:id="@+id/tv_agreement2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="请知晓"
+                                        android:text="已知悉"
                                         android:textColor="@color/text_s"
                                         android:textSize="@dimen/font_small" />
 
                                     <TextView
+                                        android:id="@+id/tv_agreement2"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:paddingBottom="18px"
@@ -411,7 +409,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:paddingBottom="10dp"
-                                    android:text="投资理财有风险，请勿与他人私下交易，谨防上当。"
+                                    android:text="风险提示：\n
+1.诱导私加、私下交易，发布同类平台任务、违规违法任务，举报有奖；\n
+2.投资理财有风险，请勿与他人私下交易，谨防上当，风险自负；\n
+3.请先报名再做任务，否则无赏金；\n
+4.请勿乱提交验证信息，有封号风险。"
                                     android:textColor="@color/text_s"
                                     android:textSize="@dimen/font_small" />
 

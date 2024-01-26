@@ -8,5 +8,4 @@ package com.lelezu.app.xianzhuan.data.model
  */
 data class Req(
     var taskId: String
-
 )

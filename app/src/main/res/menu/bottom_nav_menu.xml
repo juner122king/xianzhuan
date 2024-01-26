@@ -11,6 +11,11 @@
         android:icon="@drawable/tab2_icon_selector"
         android:visible="true"
         android:title="@string/title_dashboard" />
+    <item
+        android:id="@+id/navigation_lfl"
+        android:icon="@drawable/tab22_icon_selector"
+        android:visible="true"
+        android:title="@string/title_lfl2" />
 
     <item
         android:id="@+id/navigation_notifications"

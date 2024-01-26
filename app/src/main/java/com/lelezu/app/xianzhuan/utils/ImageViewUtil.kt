@@ -20,8 +20,10 @@ import com.lelezu.app.xianzhuan.R
 object ImageViewUtil {
     /**
      * 固定宽高，自动裁剪
+     *
+     * @isWmPic 是否是水印图片
      * */
-    fun load(imageView: ImageView, any: Any?) {
+    fun load(imageView: ImageView, any: Any?, isWmPic: Boolean = false) {
 
         // 添加 ViewTreeObserver，确保在布局完成后获取宽度和高度
         imageView.viewTreeObserver.addOnPreDrawListener(object :
@@ -35,7 +37,14 @@ object ImageViewUtil {
                 val height = imageView.height
 
                 // 使用获取到的宽度和高度替代 h 和 w 变量的值
-                val url = "$any?x-oss-process=image/resize,m_fill,h_$height,w_$width"
+                var url = ""
+
+                url = if (isWmPic) {
+                    "$any/resize,m_fill,h_$height,w_$width"
+                } else {
+                    "$any?x-oss-process=image/resize,m_fill,h_$height,w_$width"
+                }
+
 
                 val roundedCorners =
                     context.resources.getDimensionPixelSize(R.dimen.im_rounded).toFloat()
@@ -57,7 +66,7 @@ object ImageViewUtil {
     }
 
     //任务详情里的全屏图加载
-    fun loadFall(imageView: ImageView, any: Any) {
+    fun loadFall(imageView: ImageView, any: Any?) {
         imageView.load(any) {
             crossfade(true)//淡出淡入
         }
@@ -72,6 +81,9 @@ object ImageViewUtil {
             scale(Scale.FILL)
         }
     }
+
+
+
 
     /**
      *

@@ -19,15 +19,19 @@ import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
+import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.ConfValue
 import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
+import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
+import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link3
+import com.lelezu.app.xianzhuan.ui.views.BulletinView
 import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
@@ -51,7 +55,7 @@ class MainFragment : BaseFragment(), OnClickListener {
     private lateinit var banner: Banner<DBanner, BannerImageAdapter<DBanner>>
     private lateinit var banner_iv: ImageView
 
-    private lateinit var pics: List<DBanner>
+    private lateinit var bulletinView: BulletinView//公告栏View
 
     private lateinit var zjTask: ZjTaskAd
 
@@ -64,7 +68,7 @@ class MainFragment : BaseFragment(), OnClickListener {
     private var tabTextList = arrayOf<String>()
     private var isBannerSet = false // 添加标志变量
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
 
         LogUtils.i("MainFragment", "onCreateView()")
@@ -72,6 +76,8 @@ class MainFragment : BaseFragment(), OnClickListener {
 
         viewPager = view.findViewById(R.id.task_vp)
         ll_top_view = view.findViewById(R.id.ll_top_view)
+
+        bulletinView = view.findViewById(R.id.bv)
         pagerAdapter = MyPagerAdapter(this)
 
         viewPager.adapter = pagerAdapter
@@ -115,6 +121,8 @@ class MainFragment : BaseFragment(), OnClickListener {
         view.findViewById<View>(R.id.ll_top_btm2).setOnClickListener(this)
         view.findViewById<View>(R.id.ll_top_btm3).setOnClickListener(this)
 
+        view.findViewById<View>(R.id.tvv).setOnClickListener(this)
+
         banner = view.findViewById(R.id.banner)
         banner_iv = view.findViewById(R.id.banner_iv)
 
@@ -127,28 +135,26 @@ class MainFragment : BaseFragment(), OnClickListener {
     }
 
     private fun initBanner() {
-        if (!MyApplication.isMarketVersion) {
-            banner.visibility = View.VISIBLE
-            // 添加条件来执行 setBanner 仅一次
-            if (!isBannerSet) {
-                //获取首页轮播图
-                sysMessageViewModel.apiCarouselConfig()
-                sysMessageViewModel.bannerconfig.observe(requireActivity()) {
-                    pics = it  //需要添加一个对象持久保存图片url
-                    setBanner()
-                    isBannerSet = true // 标志设置为 true，以后不再执行 setBanner
-                }
-            } else {
-                setBanner()
-            }
-        } else {
-            banner_iv.visibility = View.VISIBLE
-            ImageViewUtil.loadWH(banner_iv, R.drawable.icon_h_banner)//加载广告图
+        //获取首页轮播图
+        sysMessageViewModel.bannerconfig.observe(requireActivity()) {
+            setBanner(it)
+        }
+
+
+        //获取公告
+        sysMessageViewModel.apiGetUserWithdraw()
+        sysMessageViewModel.userWithdrawList.observe(requireActivity()) {
+
+
+
+
+            bulletinView.setAdapter(ComplexViewAdapter(it))
+
         }
     }
 
-    private fun setBanner() {
-        LogUtils.i("MainFragment", "加载setBanner")
+    private fun setBanner(pics: List<DBanner>) {
+        LogUtils.i("MainFragment", "加载setBanner,pics:$pics")
 
         banner.apply {
             addBannerLifecycleObserver(requireActivity())
@@ -156,10 +162,9 @@ class MainFragment : BaseFragment(), OnClickListener {
             indicator = CircleIndicator(requireActivity())
             setAdapter(object : BannerImageAdapter<DBanner>(pics) {
                 override fun onBindView(
-                    holder: BannerImageHolder, data: DBanner, position: Int, size: Int
+                    holder: BannerImageHolder, data: DBanner, position: Int, size: Int,
                 ) {
                     ImageViewUtil.loadWH(holder.imageView, data.bannerImg)//加载广告图
-
                     if (data.jumpUrl != "") {//如果URL不为空，则设置点击跳转到WebView
                         holder.imageView.setOnClickListener {
                             //判断data.jumpUrl内容去作不同的跳转
@@ -169,10 +174,6 @@ class MainFragment : BaseFragment(), OnClickListener {
                             startActivity(intent)
                         }
                     }
-
-
-
-
                     if (data.jumpUrl.isNotBlank()) {
                         holder.imageView.setOnClickListener {
 
@@ -186,12 +187,10 @@ class MainFragment : BaseFragment(), OnClickListener {
                                 val intent = Intent(context, TaskDetailsActivity::class.java)
                                 intent.putExtra("taskId", taskId)
                                 startActivity(intent)
-                            }
-                            else if (data.jumpUrl.startsWith("activity://home")) {
+                            } else if (data.jumpUrl.startsWith("activity://home")) {
                                 val page = data.jumpUrl.substringAfterLast("=")
                                 showToast("打开个人中心")
-                            }
-                            else { //内部H5页面
+                            } else { //内部H5页面
                                 //判断data.jumpUrl内容去作不同的跳转
                                 val intent = Intent(requireContext(), WebViewActivity::class.java)
                                 intent.putExtra(LINK_KEY, HOST + data.jumpUrl)
@@ -206,7 +205,9 @@ class MainFragment : BaseFragment(), OnClickListener {
                 }
             })
 
+
         }
+
     }
 
     companion object {
@@ -232,6 +233,11 @@ class MainFragment : BaseFragment(), OnClickListener {
             R.id.ll_top_btm3 -> {
                 intent.putExtra(LINK_KEY, link3)
                 intent.putExtra(URL_TITLE, getString(R.string.btm_zq))
+            }
+
+            R.id.tvv -> {//发布任务
+                intent.putExtra(LINK_KEY, WebViewSettings.link5)
+                intent.putExtra(URL_TITLE, "选择任务分类")
             }
 
         }
@@ -368,10 +374,24 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     class EmptyFragment : Fragment() {
         override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
         ): View? {
             return inflater.inflate(R.layout.fragent_empty, container, false)
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        LogUtils.i("MainFragment", "onResume")
+
+        //获取首页轮播图
+        sysMessageViewModel.apiCarouselConfig()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LogUtils.i("MainFragment", "onStart")
+    }
 }

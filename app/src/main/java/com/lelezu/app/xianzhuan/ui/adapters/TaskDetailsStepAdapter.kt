@@ -52,7 +52,6 @@ class TaskDetailsStepAdapter(
         val title: TextView = itemView.findViewById(R.id.tv_step_text)
         val ivCasePic: ImageView = itemView.findViewById(R.id.iv_case_pic)//示例图片
         val fCasePic: View = itemView.findViewById(R.id.f_case_pic)//示例图片区域
-        val ivUserPic: ImageView = itemView.findViewById(R.id.iv_user_up_pic)//用户图片
         val line: View = itemView.findViewById(R.id.line)//垂直线
 
         val tvTr: TextView = itemView.findViewById(R.id.tv_tr)//角标说明
@@ -91,7 +90,6 @@ class TaskDetailsStepAdapter(
         holder.tvTr.text = "说明图"
 
         holder.title.text = item.stepDesc
-        holder.ivUserPic.visibility = View.GONE
         holder.step.text = ("${position + 1}").toString()
 
 

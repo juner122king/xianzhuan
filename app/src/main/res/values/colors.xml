@@ -6,6 +6,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="C7C7C7">#C7C7C7</color>
     <color name="black2">#111111</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white2">#FCFCFC</color>
@@ -15,7 +16,7 @@
 
     <color name="text_check">#FF3685FE</color>
     <color name="text_s">#FF999999</color>
-    <color name="ll_bg">#FFF8F8F8</color>
+    <color name="ll_bg">#F7F7F7</color>
     <color name="text_999">#FF999999</color>
 
     <color name="line">#F7F7F7</color>

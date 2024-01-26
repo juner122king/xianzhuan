@@ -1,11 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ll_bg"
+    android:orientation="vertical"
     tools:context=".ui.fragments.MainFragment">
+
+    <LinearLayout
+        android:id="@+id/ll_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:visibility="visible">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/icon_notice2" />
+
+        <com.lelezu.app.xianzhuan.ui.views.BulletinView
+            android:id="@+id/bv"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tvv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radius_border_button"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:text="发布任务"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -34,6 +76,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/ll_bg"
                     android:orientation="vertical">
+
 
                     <LinearLayout
                         android:id="@+id/ll_top_view"
@@ -262,7 +305,7 @@
                         android:layout_height="115dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/banner_iv"
@@ -300,4 +343,4 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</FrameLayout>
+</LinearLayout>

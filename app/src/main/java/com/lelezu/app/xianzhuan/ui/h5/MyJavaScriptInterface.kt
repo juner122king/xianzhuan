@@ -5,6 +5,7 @@ import android.webkit.JavascriptInterface
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.ui.views.BaseActivity
+import com.lelezu.app.xianzhuan.ui.views.HomeActivity
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 
 /**
@@ -21,7 +22,7 @@ class MyJavaScriptInterface(private val context: Activity) {
                 //获取权限成功
                 // 调用保存图片的方法
                 ToastUtils.show("图片保存成功")
-                (context as BaseActivity).saveImageToSystem(imageUrl,"dxz_share_pic")
+                (context as BaseActivity).saveImageToSystem(imageUrl, "dxz_share_pic")
             }
 
             override fun onDenied(permissions: MutableList<String>, never: Boolean) {
@@ -45,6 +46,17 @@ class MyJavaScriptInterface(private val context: Activity) {
                 ToastUtils.show("您已拒绝授权，图片分享失败！")
             }
         })
+    }
+
+    /**
+     * 福利中心-弹出未看完视频提示弹窗
+     * @param str String 窗口提示信息
+     */
+    @JavascriptInterface
+    fun showFLContinueDialog(str: String) {
+        ToastUtils.show("弹出未看完视频提示弹窗！")
+        (context as HomeActivity).showFLDialog(str)
+
     }
 
 }

@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- 需要确保权限获取后再请求广告 -->
-
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -41,6 +40,18 @@
         android:theme="@style/Theme.MyApplication"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.views.MessageListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ui.views.MessageSysActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ui.views.MessageListActivity2"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ui.views.ChatListActivity"
             android:exported="false"
@@ -86,7 +97,6 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".ui.views.MyTaskActivity"
             android:exported="false"
@@ -98,19 +108,22 @@
             android:exported="true"
             android:label="@string/title_task_details"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustNothing" >
-            <!--Android 接收外部跳转过滤器-->
-            <!--要想在别的App上能成功调起App，必须添加intent过滤器-->
+            android:windowSoftInputMode="adjustNothing">
+
+            <!-- Android 接收外部跳转过滤器 -->
+            <!-- 要想在别的App上能成功调起App，必须添加intent过滤器 -->
             <intent-filter>
-                <!-- 协议部分配置 ,注意需要跟web配置相同-->
-                <!--协议部分，设置 lelezu://zsbapp:8888/task?taskId=  -->
-                <data android:scheme="lelezu"
+
+                <!-- 协议部分配置 ,注意需要跟web配置相同 -->
+                <!-- 协议部分，设置 lelezu://zsbapp/task?taskId= -->
+                <data
                     android:host="zsbapp"
                     android:path="/task"
-                    android:port="8888"/>
-                <!--下面这几行也必须得设置-->
+                    android:scheme="lelezu" />
+                <!-- 下面这几行也必须得设置 -->
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
@@ -124,6 +137,7 @@
             android:exported="false"
             android:label="@string/title_activity_message"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".ui.views.AutoOutActivity"
             android:exported="false"
@@ -164,20 +178,30 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-
-<!--                &lt;!&ndash;下面这几行也必须得设置&ndash;&gt;-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-
-                <!-- 协议部分配置 ,注意需要跟web配置相同-->
-                <!--协议部分，设置 lelezu://zsbapp:8888/main  -->
-<!--                <data android:scheme="lelezu"-->
-<!--                    android:host="zsbapp"-->
-<!--                    android:path="/main"-->
-<!--                    android:port="8888"/>-->
             </intent-filter>
-        </activity> <!-- Since JCore2.0.0 Required SDK核心功能 -->
+
+            <!-- scheme开始 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.APP_BROWSER" />
+
+                <!--协议部分配置 ,注意需要跟web配置相同 -->
+                <!--协议部分，设置 lelezu://zsbapp/main -->
+                <data
+                    android:host="zsbapp"
+                    android:path="/main"
+                    android:scheme="lelezu" />
+            </intent-filter>
+            <!-- scheme结束 -->
+        </activity>
+
+
+        <!-- Since JCore2.0.0 Required SDK核心功能 -->
         <!-- 可配置android:process参数将Service放在其他进程中；android:enabled属性不能是false -->
         <!-- 这个是自定义Service，要继承极光JCommonService，可以在更多手机平台上使得推送通道保持的更稳定 -->
         <service
@@ -188,10 +212,7 @@
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
             </intent-filter>
-        </service>
-
-
-        <!-- Required since 3.0.7 -->
+        </service> <!-- Required since 3.0.7 -->
         <!-- 新的 tag/alias 接口结果返回需要开发者配置一个自定的广播 -->
         <!-- 3.3.0开始所有事件将通过该类回调 -->
         <!-- 该广播需要继承 JPush 提供的 JPushMessageService  类, 并如下新增一个 Intent-Filter -->
@@ -201,6 +222,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.SERVICE_MESSAGE" />
+
                 <category android:name="com.lelezu.app.xianzhuan" />
             </intent-filter>
         </service>
@@ -218,7 +240,6 @@
         <meta-data
             android:name="ScopedStorage"
             android:value="true" />
-
         <meta-data
             android:name="ZJ_TASK_IS_NESTED_SCROLLING_ENABLED"
             android:value="false" />

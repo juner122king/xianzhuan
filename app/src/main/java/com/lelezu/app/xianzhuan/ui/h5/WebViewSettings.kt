@@ -90,6 +90,9 @@ object WebViewSettings {
         webView.settings.blockNetworkImage = false
 
 
+        //媒体播放不需要用户手势（例如点击）即可开始
+        webSettings.mediaPlaybackRequiresUserGesture = false
+
         val cookieManager: CookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)     // 允许接受 Cookie
         // 跨域cookie读取

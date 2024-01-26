@@ -44,7 +44,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.rv_layout, container, false)
     }
@@ -60,7 +60,7 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
         }
 
 
-        adapter = TaskItemAdapter(mutableListOf(), isMyTask)
+        adapter = TaskItemAdapter(mutableListOf(), isMyTask, homeViewModel)
         adapter.setEmptyView(view.findViewById(R.id.recycler_layout))//设置空view
         recyclerView.adapter = adapter
 
@@ -86,6 +86,17 @@ class TaskListFragment : BaseFragment(), RefreshRecycleView.IOnScrollListener {
             //结果返回为空，就设置空
             adapter.setEmpty()
         }
+
+        //取消监听
+        homeViewModel.isCancel.observe(this) {
+            if (it) {
+//                showToast("操作成功！")
+                // 执行刷新操作
+                refresh()
+            } else showToast("取消失败！")
+        }
+
+
     }
 
     private fun loadDone(it: MutableList<Task>) {

@@ -9,6 +9,7 @@ import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.Pending
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
@@ -44,6 +45,7 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val version2: MutableLiveData<Version> = MutableLiveData()
 
     val announce: MutableLiveData<List<Announce>> = MutableLiveData()
+    val userWithdrawList: MutableLiveData<List<String>> = MutableLiveData() //用户提现广播消息
 
     val downloadProgress: MutableLiveData<Int> = MutableLiveData()//apk下载进度
 
@@ -55,6 +57,9 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val registrconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
     val bannerconfig: MutableLiveData<List<DBanner>> = MutableLiveData()//banner对象
     val adconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
+
+
+    val pendingTotal: MutableLiveData<Pending> = MutableLiveData()//待处理消息
 
 
     //获取系统消息列表
@@ -74,9 +79,15 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
         handleApiResponse(list, announce)
     }
 
+    //主页提现公告
+    fun apiGetUserWithdraw() = viewModelScope.launch {
+        val list = sysInformRepository.apiGetUserWithdraw()
+        handleApiResponse(list, userWithdrawList)
+    }
+
     //获取系统消息列表
     fun getMessageList() = viewModelScope.launch {
-        val list = sysInformRepository.apiGetList(1, 100)
+        val list = sysInformRepository.apiGetList(1, 999)
         handleApiListResponse(list, liveData)
     }
 
@@ -120,6 +131,12 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     fun apiADConfig() = viewModelScope.launch {
         val call = sysInformRepository.apiADConfig()
         handleApiResponse(call, adconfig)
+
+    }
+
+    fun pending() = viewModelScope.launch {
+        val call = sysInformRepository.pending()
+        handleApiResponse(call, pendingTotal)
 
     }
 

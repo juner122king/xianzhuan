@@ -81,6 +81,7 @@ data class Task(
     val completeStepCnt: Int,
     val stepCnt: Int,
 ) {
+
     val _shareAmount: String
         get() {
             return if (shareAmount < 0.01) {
@@ -98,4 +99,6 @@ data class Task(
                 ""
             }
         }
+
+
 }

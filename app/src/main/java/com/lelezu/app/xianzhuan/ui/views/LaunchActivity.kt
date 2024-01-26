@@ -20,6 +20,7 @@ import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.MyApplication.Companion.isMarketVersion
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
+import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_AD_POS_OPEN
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
@@ -143,7 +144,7 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
     //显示第三方开屏广告页面
     private fun showZJAdView() {
-        ZJSplashAd.loadAd(this, "J4041323285", this)
+        ZJSplashAd.loadAd(this, ZJ_BUSINESS_AD_POS_OPEN, this)
     }
 
 

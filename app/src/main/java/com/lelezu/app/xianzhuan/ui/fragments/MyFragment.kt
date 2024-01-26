@@ -15,6 +15,7 @@ import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.Announce
 import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
+import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter2
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.ANNOUNCEID
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link103
@@ -79,7 +80,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
     private lateinit var tv_pb: TextView//经验值显示
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_my, container, false)
     }
@@ -168,12 +169,12 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                         .setImageResource(R.drawable.my_icon_get_vip)
                 }   //普通
                 1 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv0)
+                    ImageViewUtil.loadWH(ivVipPic, R.drawable.my_icon_vip_lv0)
                     view.findViewById<ImageView>(R.id.btm_vip)
                         .setImageResource(R.drawable.my_icon_get_vip2)
                 }   //白银
                 2 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv)//
+                    ImageViewUtil.loadWH(ivVipPic, R.drawable.my_icon_vip_lv)//
                     view.findViewById<ImageView>(R.id.btm_vip)
                         .setImageResource(R.drawable.my_icon_get_vip2)
                 }
@@ -181,7 +182,7 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                 3 -> {
                 }   //忽略
                 4 -> {
-                    ImageViewUtil.load(ivVipPic, R.drawable.my_icon_vip_lv1)//钻
+                    ImageViewUtil.loadWH(ivVipPic, R.drawable.my_icon_vip_lv1)//钻
                     view.findViewById<ImageView>(R.id.btm_vip)
                         .setImageResource(R.drawable.my_icon_get_vip2)
 
@@ -243,9 +244,11 @@ class MyFragment : BaseFragment(), View.OnClickListener {
             //处理公告滚动
             // 停止刷新动画
             swiper.isRefreshing = false
-            if (it.isNotEmpty() && !MyApplication.isMarketVersion) {
+
+            if (it.isNotEmpty()) {
                 llNotice.visibility = View.VISIBLE
-                bulletinView.setAdapter(ComplexViewAdapter(it))
+
+                bulletinView.setAdapter(ComplexViewAdapter2(it))
                 bulletinView.setOnItemClickListener { itemData, _, _ ->
                     val intent = Intent(requireContext(), WebViewActivity::class.java)
                     intent.putExtra(
@@ -256,7 +259,10 @@ class MyFragment : BaseFragment(), View.OnClickListener {
                     intent.putExtra(WebViewSettings.isDataUrl, true)
                     startActivity(intent)
                 }
+
+
             } else {
+
                 llNotice.visibility = View.GONE
             }
 

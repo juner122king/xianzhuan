@@ -111,7 +111,6 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
     }
 
     //获取分页聊天信息
-
     /**
      *
      * @param receiverUserId String 	收信人ID
@@ -159,12 +158,15 @@ class UserRepository(private var apiService: ApiService) : BaseRepository() {
         }
 
     private fun putChatMessages(dataList: MutableList<ChatMessage>): MutableList<ChatMessage> {
-        var chatMessages = mutableListOf<ChatMessage>()
+        val chatMessages = mutableListOf<ChatMessage>()
 
         for (message in dataList) {
-            // 根据 senderUserId 是否等于 UserID 设置 isMe 的值
-            message.isMe = message.senderUserId == loginId
-            chatMessages.add(message)
+            // 添加一个空检查
+            if (message != null) {
+                // 根据 senderUserId 是否等于 UserID 设置 isMe 的值
+                message.isMe = message.senderUserId == loginId
+                chatMessages.add(message)
+            }
         }
 
         return chatMessages

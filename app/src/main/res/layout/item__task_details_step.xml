@@ -148,61 +148,118 @@
 
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/iv_user_up_pic"
-        android:layout_width="@dimen/task_step_iv_w"
-        android:layout_height="@dimen/task_step_iv_h"
+
+    <FrameLayout
+        android:id="@+id/f_user_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:background="@drawable/radius_border_bg_f0f0f0"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/f_case_pic"
-        app:layout_constraintTop_toTopOf="@id/f_case_pic" />
+        app:layout_constraintTop_toTopOf="@id/f_case_pic">
 
+        <ImageView
+            android:id="@+id/iv_user_up_pic2"
+            android:layout_width="@dimen/task_step_iv_w"
+            android:layout_height="@dimen/task_step_iv_h"
+            android:background="@drawable/radius_border_bg_f0f0f0" />
 
-    <EditText
-        android:id="@+id/et_id"
-        android:layout_width="250dp"
+        <TextView
+            android:id="@+id/tv_re_up"
+            android:layout_width="@dimen/task_step_iv_w"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/radius_border_re_up"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="重新上传"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </FrameLayout>
+
+    <LinearLayout
+
+        android:id="@+id/llet"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/radius_border_bg_f0f0f0"
-        android:paddingStart="18dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="10dp"
-        android:textSize="13sp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_step_text"
-        app:layout_constraintTop_toBottomOf="@id/tv_step_text"
+        app:layout_constraintTop_toBottomOf="@id/tv_step_text">
 
-        />
 
-    <TextView
-        android:id="@+id/tv_up_pic"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:paddingStart="18dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="10dp"
+            android:text="输入"
+            android:textSize="13sp" />
+
+        <EditText
+            android:id="@+id/et_id"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/radius_border_bg_f0f0f0"
+            android:paddingStart="18dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="10dp"
+            android:textSize="13sp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/tv_up_pic2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/radius_border_button"
-        android:paddingStart="13dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="13dp"
-        android:paddingBottom="8dp"
-        android:text="任务完成上传验证图"
-        android:textColor="@color/white"
-        android:textSize="14sp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/radius_border_5"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="15dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/f_case_pic"
-        app:layout_constraintTop_toBottomOf="@id/iv_user_up_pic" />
+        app:layout_constraintStart_toEndOf="@id/f_case_pic"
+        app:layout_constraintTop_toTopOf="@id/f_case_pic">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_up_pic_i" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:text="添加图片"
+            android:textColor="@color/colorControlActivated"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="按左侧示例图添加"
+            android:textColor="#7A1A1A1A"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_type5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-
         android:layout_marginBottom="10dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/tv_step_text"

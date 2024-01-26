@@ -11,20 +11,18 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
+import android.content.pm.ActivityInfo
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextMenu
 import android.view.Gravity
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -37,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.ContentLoadingProgressBar
+import com.bytedance.pangle.transform.ZeusTransformUtils
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
@@ -52,7 +51,9 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.anim.DefaultAnimator
-import ʼ.ᐝ.ᐝ.ʼ.I
+import com.lzf.easyfloat.enums.SidePattern
+import com.lzf.easyfloat.utils.DisplayUtils
+import kotlinx.android.synthetic.main.layout_float.view
 import java.io.File
 
 
@@ -74,6 +75,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private var loadingView: View? = null
 
+
+    private var masegetv: TextView? = null//悬赏窗消息数量
+
     protected val loginViewModel: LoginViewModel by viewModels {
         LoginViewModel.LoginViewFactory((application as MyApplication).userRepository)
     }
@@ -91,6 +95,9 @@ abstract class BaseActivity : AppCompatActivity() {
     private lateinit var apkUrl: String
     private lateinit var progressBar: ContentLoadingProgressBar
 
+
+    private var isButtonClickable = true //更新按钮是否可点击
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootView = View.inflate(this, R.layout.activity_title, null)
@@ -98,7 +105,6 @@ abstract class BaseActivity : AppCompatActivity() {
         addContent()
         setContentView(rootView)
         initViewModel()
-
         val loadingView = findViewById<View>(R.id.loadingView)
         setLoadingView(loadingView)
 
@@ -131,6 +137,7 @@ abstract class BaseActivity : AppCompatActivity() {
         ShareUtil.putString(ShareUtil.versionName, pInfo.versionName)
         ShareUtil.putInt(ShareUtil.versionCode, pInfo.versionCode)
 
+        showView()
     }
 
 
@@ -148,8 +155,19 @@ abstract class BaseActivity : AppCompatActivity() {
         val btnDownloadNo: TextView = dialog.findViewById(R.id.btnDownloadNo)
 
         btnDownload.setOnClickListener {
-            // 在点击下载按钮时执行下载操作
-            onUpData()
+
+            if (isButtonClickable) {
+                // 执行点击事件的操作
+                // 在点击下载按钮时执行下载操作
+                onUpData()
+                //改变下载按键样式
+                btnDownload.text = "下载中..."
+                btnDownload.setTextColor(ContextCompat.getColor(this, R.color.C7C7C7))
+
+
+                // 设置标志为false，防止再次点击
+                isButtonClickable = false
+            }
 
         }
         btnDownloadNo.setOnClickListener { // 在点击取消
@@ -166,9 +184,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
         dialog.setOnDismissListener {
-
             //点击空白地方也退出app
-
             if (isForce) finish()
 
         }
@@ -190,11 +206,14 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun startDownload() {
+
+
         progressBar.visibility = View.VISIBLE
         sysMessageViewModel.downloadApk(apkUrl)
         sysMessageViewModel.downloadProgress.observe(this) {
             // 更新进度条
             progressBar.progress = it
+
 
         }
         sysMessageViewModel.apkPath.observe(this) {
@@ -265,7 +284,6 @@ abstract class BaseActivity : AppCompatActivity() {
         showLoading()
         //获取 是否需要关注企业微信的配置信息
         sysMessageViewModel.apiRegistrConfig()
-
         sysMessageViewModel.registrconfig.observe(this) {
 
             hideLoading()
@@ -291,10 +309,13 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun toHome() {
+
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+
+
     }
 
 
@@ -354,6 +375,42 @@ abstract class BaseActivity : AppCompatActivity() {
         else mBack!!.visibility = View.GONE
 
 
+        //开启沉浸式状态栏
+        setBarBackGrounds()
+
+        //锁死竖屏
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    // 开启沉浸式状态栏
+    open fun setBarBackGrounds(barColor: Int = R.color.white) {
+        //沉浸式状态栏
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val window: Window = ZeusTransformUtils.getWindow(this, "BaseActivity")
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = ContextCompat.getColor(this, barColor)
+            //这是状态栏文字反色
+            setDarkStatusIcon(true)
+        }
+    }
+
+
+    /**
+     * 设置状态栏反色
+     */
+    private fun setDarkStatusIcon(isDark: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val decorView = window.decorView
+            if (decorView != null) {
+                var vis = decorView.systemUiVisibility
+                vis = if (isDark) {
+                    vis or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    vis and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                }
+                decorView.systemUiVisibility = vis
+            }
+        }
     }
 
     fun showBack() {
@@ -391,6 +448,8 @@ abstract class BaseActivity : AppCompatActivity() {
         mTvTitle!!.text = t
     }
 
+
+    //隐藏APP标题栏
     fun hideView() {
         mRltBase?.visibility = View.GONE
     }
@@ -488,6 +547,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
         // 取消注册广播接收器，以避免内存泄漏
         unregisterReceiver(connectivityReceiver)
+
+//
     }
 
     private lateinit var connectivityReceiver: ConnectivityReceiver
@@ -669,32 +730,38 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     //显示悬浮控件
-    protected fun showFloat() {
-        EasyFloat.with(this).setLayout(R.layout.layout_float).setDragEnable(false)
-            .setGravity(Gravity.END, 0, 200).setAnimator(DefaultAnimator()).registerCallback {
-                createResult { isCreated, msg, view -> }
-                show { }
-                hide { }
-                dismiss { }
-                touchEvent { view, motionEvent -> }
-                drag { view, motionEvent -> }
-                dragEnd { }
+    protected fun createFloat() {
+
+
+        EasyFloat.with(this).setLayout(R.layout.layout_float) {
+            it.findViewById<View>(R.id.view).setOnClickListener {
+                LogUtils.i("motionEvent", "点击了")
+                val intent = Intent(MyApplication.context, MessageListActivity::class.java)
+                startActivity(intent)
             }
+            masegetv = it.findViewById(R.id.iv_count)
+        }.setDragEnable(false)
+            .setGravity(Gravity.END, -50, DisplayUtils.getScreenHeight(this) - 600)
+            .setAnimator(DefaultAnimator())
+            // 设置吸附方式，共15种模式，详情参考SidePattern
+            .setSidePattern(SidePattern.RESULT_HORIZONTAL)
+            // 设置浮窗是否可拖拽
+            .setDragEnable(true).show()
 
-            .show()
+        sysMessageViewModel.pendingTotal.observe(this) {
 
-        //控件自体的动画播放
-
-
-        // 延迟3秒执行hideFloat()
-        Handler(Looper.getMainLooper()).postDelayed({
-            hideFloat()
-        }, 4000)
+            if (masegetv != null) masegetv!!.text = it.total.toString()
+        }
     }
 
     //隐藏悬浮控件
     protected fun hideFloat() {
-        EasyFloat.dismiss()
+        if (EasyFloat.isShow()) EasyFloat.hide()
+    }
+
+    //隐藏悬浮控件
+    protected fun showFloat() {
+        if (!EasyFloat.isShow()) EasyFloat.show()
     }
 
 
@@ -717,9 +784,24 @@ abstract class BaseActivity : AppCompatActivity() {
         )
     }
 
-    protected fun goToMyTask() {
+    protected fun goToMyTask(tabInt: Int = 0) {
         val intent = Intent(this, MyTaskActivity::class.java)
+
+        intent.putExtra("selectedTab", tabInt)//
+
         ShareUtil.putBoolean("isroTop", true)//回到我的任务页面后，滚动到顶部
         startActivity(intent)
     }
+
+
+    //检查新版本
+    protected fun checkNewV() {
+        if (MyApplication.isMarketVersion) return
+        //未询问过更新版本
+        if (!ShareUtil.getIsCHECKEDNV()) sysMessageViewModel.detection(true)
+
+    }
+
+
+
 }

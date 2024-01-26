@@ -21,8 +21,11 @@ class WXEntryActivity : Activity(), IWXAPIEventHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         wxApi = WXAPIFactory.createWXAPI(this, WxData.WEIXIN_APP_ID, true)
         wxApi.handleIntent(intent, this)
+
     }
 
     override fun onNewIntent(intent: Intent) {

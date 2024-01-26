@@ -1,5 +1,7 @@
 package com.lelezu.app.xianzhuan.ui.adapters;
 
+import android.os.Build;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +18,10 @@ import java.util.List;
  * @date:2023/8/17 0017
  * @description:公告TextView，支持滚动
  */
-public class ComplexViewAdapter extends BulletinView.BulletinViewadapter<Announce> {
+public class ComplexViewAdapter extends BulletinView.BulletinViewadapter<String> {
 
 
-    public ComplexViewAdapter(List<Announce> data) {
+    public ComplexViewAdapter(List<String> data) {
         super(data);
     }
 
@@ -29,8 +31,14 @@ public class ComplexViewAdapter extends BulletinView.BulletinViewadapter<Announc
     }
 
     @Override
-    public View onBindViewHolder(View itemView, int position, Announce itemData) {
-        ((TextView) itemView.findViewById(R.id.title)).setText(itemData.getAnnounceTitle());
+    public View onBindViewHolder(View itemView, int position, String itemData) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ((TextView) itemView.findViewById(R.id.title)).setText(Html.fromHtml(itemData, Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            ((TextView) itemView.findViewById(R.id.title)).setText(Html.fromHtml(itemData));
+        }
+
         return itemView;
     }
 

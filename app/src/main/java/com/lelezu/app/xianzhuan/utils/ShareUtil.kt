@@ -49,7 +49,7 @@ object ShareUtil {
     const val APP_SHARED_PREFERENCES_RECOMMEND_USERID: String = "recommendUserId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
     const val APP_SHARED_PREFERENCES_IS_NEWER: String = "NEWER"
-    const val NEWER_IS_SHOW_DIALOG: String = "SHOW_NEWER_DIALOG"
+    const val NEWER_IS_SHOW_DIALOG: String = "SHOW_NEWER_DIALOG"//是否打开过新人奖励窗口
 
 
     //网易token
@@ -98,7 +98,7 @@ object ShareUtil {
         return ""
     }
 
-     fun putBoolean(key: String, value: Boolean) {
+    fun putBoolean(key: String, value: Boolean) {
 
         val editor: SharedPreferences.Editor = getSps().edit()
         editor.putBoolean(key, value)
@@ -187,8 +187,10 @@ object ShareUtil {
 
         if (loginReP.accessToken.isNullOrEmpty())//注册时才判断
         //是否新用户
+        {
             putBoolean(APP_SHARED_PREFERENCES_IS_NEWER, true)
-
+            putBoolean(NEWER_IS_SHOW_DIALOG, false)  //
+        }
     }
 
     //清除登录信息

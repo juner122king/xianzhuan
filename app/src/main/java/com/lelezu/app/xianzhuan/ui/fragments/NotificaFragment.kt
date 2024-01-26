@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.webkit.SslErrorHandler
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
@@ -78,7 +79,6 @@ class NotificaFragment : Fragment() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
-                    LogUtils.i("WebView", "加载100%")
                     //加载100%
                     if (!isWebViewloadError && View.VISIBLE == err_view.visibility) {
                         err_view.visibility = View.GONE//隐藏失败页面
@@ -125,23 +125,23 @@ class NotificaFragment : Fragment() {
 //        }
 //        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 //    }
-
-    fun backOrFinish() {
-        if (wv.canGoBack()) {
-            if (wv.url.equals(link3)) requireActivity().finish()
-            else wv.goBack()
-        } else requireActivity().finish()
-    }
-
-
-    fun onIsShowBack() {
-        try {
-            if (wv.url.equals(link3)) (requireActivity() as HomeActivity).hideBack()
-            else (requireActivity() as HomeActivity).showBack()
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
-    }
+//
+//    fun backOrFinish() {
+//        if (wv.canGoBack()) {
+//            if (wv.url.equals(link3)) requireActivity().finish()
+//            else wv.goBack()
+//        } else requireActivity().finish()
+//    }
+//
+//
+//    fun onIsShowBack() {
+//        try {
+//            if (wv.url.equals(link3)) (requireActivity() as HomeActivity).hideBack()
+//            else (requireActivity() as HomeActivity).showBack()
+//        } catch (e: IllegalStateException) {
+//            e.printStackTrace()
+//        }
+//    }
 
 
 }

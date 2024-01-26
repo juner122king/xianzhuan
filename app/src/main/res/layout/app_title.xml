@@ -3,17 +3,18 @@
     android:id="@+id/rlt_base"
     android:layout_width="match_parent"
     android:layout_height="@dimen/top_bar_h"
+    android:visibility="gone"
     android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/back"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
-        android:paddingRight="12dp">
+        android:paddingRight="12dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/icon_back"
@@ -23,26 +24,16 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="80dp"
-        android:layout_marginRight="80dp">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:lines="1"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-    </RelativeLayout>
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_right"

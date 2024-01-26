@@ -10,6 +10,7 @@ import com.lelezu.app.xianzhuan.data.model.Complete
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Partner
 import com.lelezu.app.xianzhuan.data.model.Req
+import com.lelezu.app.xianzhuan.data.model.Req2
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
@@ -34,7 +35,7 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
 
     //获取任务列表
     suspend fun apiGetTaskList(
-        query: TaskQuery, isMyTask: Boolean = false
+        query: TaskQuery, isMyTask: Boolean = false,
     ): ApiResponse<ListData<Task>> = withContext(Dispatchers.IO) {
 
         val call = if (isMyTask) {
@@ -85,6 +86,14 @@ class TaskRepository(private var apiService: ApiService) : BaseRepository() {
         executeApiCall(call)
 
     }
+
+    //任务取消
+    suspend fun apiTaskCancel(applyLogId: String): ApiResponse<Boolean> =
+        withContext(Dispatchers.IO) {
+            val call = apiService.taskCancel(applyLogId, loginToken, deviceId)
+            executeApiCall(call)
+
+        }
 
     //添加我的师傅
     suspend fun apiGetMater(userId: String): ApiResponse<Boolean> = withContext(Dispatchers.IO) {

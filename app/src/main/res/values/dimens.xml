@@ -21,6 +21,8 @@
 
     <dimen name="tab_h">50dp</dimen>
 
+    <dimen name="b_bar_h">65dp</dimen>
+
     <dimen name="horizontal_margin">50dp</dimen>
     <dimen name="divider_height">0.5dp</dimen>
 

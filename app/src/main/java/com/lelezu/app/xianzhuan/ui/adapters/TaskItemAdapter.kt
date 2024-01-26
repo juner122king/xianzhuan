@@ -15,6 +15,8 @@ import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.ui.StringUtils.colorMap
 import com.lelezu.app.xianzhuan.ui.StringUtils.statusMap
 import com.lelezu.app.xianzhuan.ui.StringUtils.statusTimeMap
+import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
+import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
 import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
@@ -27,6 +29,7 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.TAGMYTASK
  */
 class TaskItemAdapter(
     private var items: MutableList<Task>, private var isShowTopView: Boolean = false,
+    private var homeViewModel: HomeViewModel? = null,
 ) : EmptyAdapter<RecyclerView.ViewHolder>() {
 
 
@@ -51,11 +54,6 @@ class TaskItemAdapter(
         items = mutableListOf()
         notifyDataSetChanged()
 
-    }
-
-    fun addData(newItems: MutableList<Task>) {
-        items.addAll(newItems)
-        notifyDataSetChanged()
     }
 
 
@@ -91,6 +89,7 @@ class TaskItemAdapter(
         val tv_task_step_text: TextView = itemView.findViewById(R.id.tv_task_step_text)//完成步骤数
         val tvTaskStatus: TextView = itemView.findViewById(R.id.tv_task_status)//状态
         val doneView: View = itemView.findViewById(R.id.tvv)//去完成按钮
+        val goneView: View = itemView.findViewById(R.id.gone)//放弃按钮
 
         val iv_user_pic: ImageView = itemView.findViewById(R.id.iv_user_pic)//任务发布人头像
         val iv_ding: View = itemView.findViewById(R.id.iv_ding)//置顶任务icon
@@ -213,6 +212,11 @@ class TaskItemAdapter(
                 holder.c.startActivity(intent)
             }
 
+            //取消按钮
+            holder.goneView.setOnClickListener {
+                homeViewModel!!.apiTaskCancel(item.applyLogId)
+            }
+
             //处理topView显示
             val statusText = statusMap[item.auditStatus] ?: "未知状态"
 
@@ -227,16 +231,21 @@ class TaskItemAdapter(
                     if (item.taskStatus == 5) {
                         holder.tvTime.text = "任务已结束"
                     }
+                    holder.goneView.visibility = View.INVISIBLE
                 }
 
                 1, 7 -> {
                     holder.tvTime.text = "需在:" + item.operateTime + "前完成任务、提交验证信息"
                     holder.tvTime.visibility = View.VISIBLE
+                    holder.goneView.visibility = View.VISIBLE
                 }
+
 
                 else -> {
                     holder.tvTime.visibility = View.VISIBLE
                     holder.tvTime.text = statusTimeText + item.operateTime
+
+                    holder.goneView.visibility = View.INVISIBLE
                 }
             }
             holder.tvTaskStatus.text = statusText

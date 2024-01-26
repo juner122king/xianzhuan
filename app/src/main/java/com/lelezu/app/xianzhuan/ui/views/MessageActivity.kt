@@ -41,7 +41,7 @@ class MessageActivity : BaseActivity() {
 
 
         sysMessageViewModel.isMark.observe(this) {
-            showToast("消息已确认！")
+//            showToast("消息已确认！")
             swiper.isRefreshing = true
             sysMessageViewModel.getMessageList()
         }

@@ -87,7 +87,6 @@ class WebViewActivity : BaseActivity() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
-                    LogUtils.i("WebView", "加载100%")
                     //加载100%
                     if (!isWebViewloadError && View.VISIBLE == err_view.visibility) {
                         err_view.visibility = View.GONE//隐藏失败页面

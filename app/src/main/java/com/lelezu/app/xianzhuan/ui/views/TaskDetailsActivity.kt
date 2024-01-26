@@ -130,6 +130,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
     private fun initView() {
+        setBarBackGrounds(R.color.topViewBg)//设置状态栏颜色
 
         titleColor(R.color.white)
         bgColor(R.color.topViewBg)
@@ -143,8 +144,12 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         swiper = findViewById(R.id.swiper)
         swiper.setColorSchemeResources(R.color.colorControlActivated)
         swiper.setOnRefreshListener {
-            // 执行刷新操作
-            refresh()
+
+            //检查 task 属性是否已初始化
+            if (::task.isInitialized) {
+                refresh()// 执行刷新操作
+            }
+
         }
 
         taskDetailsRV = findViewById(R.id.rv_task_step)
@@ -224,7 +229,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
             if (it) {
                 isMyTask = true//报名成功后，页面UI变化逻辑变为我的任务详情逻辑
 
-                showBmDialog("${getTask().deadlineTime}小时")//弹窗显示
+                showBmDialog("${getTask().deadlineTime}")//弹窗显示
 
                 taskDetails(getTask().taskId, getTask().applyLogId)
 
@@ -402,6 +407,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     }
 
     private fun taskDetails(taskId: String, applyId: String? = null) {
+
+
         homeViewModel.getTaskDetails(taskId, applyId)
     }
 
@@ -474,6 +481,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     findViewById<View>(R.id.ll_status).visibility = View.GONE
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                     setBto2Text(getString(R.string.btm_hgrw), getString(R.string.btm_ljbm))
+                    findViewById<View>(R.id.tv_btm2).visibility = View.VISIBLE
                 }
 
                 1 -> {
@@ -488,13 +496,19 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     } else {
                         setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_ljtj))
                     }
+
+                    findViewById<View>(R.id.tv_btm2).visibility = View.VISIBLE
                 }
 
                 2 -> {
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
                     findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
+
                     setStatusText("状态：$auditStatusString")
                     setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
+
+                    //新逻辑，审核中不能修改提交
+                    findViewById<View>(R.id.tv_btm2).visibility = View.INVISIBLE
 
                 }
 
@@ -517,7 +531,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                     findViewById<TextView>(R.id.tv_status_text).visibility = View.VISIBLE
                     setBto2Text(getString(R.string.btm_lxgz), getString(R.string.btm_xgtj))
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
-
+                    findViewById<View>(R.id.tv_btm2).visibility = View.VISIBLE
                 }
 
                 5, 6 -> {
@@ -528,7 +542,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
                     if (isLongTask) {//长任务隐藏重新报名
                         findViewById<View>(R.id.tv_btm2).visibility = View.INVISIBLE
-                    }
+                    } else findViewById<View>(R.id.tv_btm2).visibility = View.VISIBLE
 
                     if (task.taskStatus == 5) {//任务已结束
                         setStatusText("状态：任务过期")
@@ -544,6 +558,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
                 7 -> { //长单任务 进行中
 
                     findViewById<View>(R.id.ll_btm).visibility = View.VISIBLE
+                    findViewById<View>(R.id.tv_btm2).visibility = View.VISIBLE
                     findViewById<View>(R.id.ll_status).visibility = View.VISIBLE
                     setStatusText("状态：$auditStatusString")
 
@@ -568,6 +583,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
     private fun refresh() {
         //获取上个页面返回的TaskId再请求一次
+
         taskDetails(getTask().taskId, getTask().applyLogId)
     }
 
@@ -672,7 +688,6 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     }
 
     // 显示报名成功弹窗
-
     private fun showBmDialog(time: String) {
         dialog2 = Dialog(this)
         dialog2.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -684,11 +699,16 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         ok.setOnClickListener {
             //确定
             dialog2.dismiss()
-            //超时任务才跳我的任务页面
+            //超时任务才跳我的任务页面   或者为重新报名后
             if (applyTs == 6) {
                 applyTs = -1
                 finish()
                 goToMyTask()
+            }
+            if (getTask().auditStatus == 5 || getTask().auditStatus == 6) {
+
+                finish()
+                goToMyTask(1)
             }
 
 
@@ -703,6 +723,7 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
     }
 
     private fun getTask(): Task {
+
         return task
     }
 

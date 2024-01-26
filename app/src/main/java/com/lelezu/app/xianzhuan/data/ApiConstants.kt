@@ -25,6 +25,7 @@ object ApiConstants {
     //任务墙SDK
     const val ZJ_BUSINESS_NO = "Z6269688056" //业务ID
     const val ZJ_BUSINESS_POS_ID = "J1517087581" //posID 
+    const val ZJ_BUSINESS_AD_POS_OPEN = "J4041323285" //广告位ID-开屏广告
 
 
 }

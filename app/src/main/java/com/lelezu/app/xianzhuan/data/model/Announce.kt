@@ -19,6 +19,17 @@ data class Announce(
     val createdDt: String,
     val filename: String,
     val isEnabled: Boolean,
-    val sortSeq: Int
+    val isRead: Boolean,
+    val sortSeq: Int,
 
-)
+    ) {
+    // 内部方法：获取 announceContent 的前100个字
+    fun getShortContent(): String {
+        val maxLength = 50
+        return if (announceContent.length > maxLength) {
+            announceContent.substring(0, maxLength) + "..."
+        } else {
+            announceContent
+        }
+    }
+}

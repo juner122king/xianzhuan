@@ -23,6 +23,7 @@ import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
+import ᐝ.ᐝ.ͺ.ʾ.ˏ.ͺ.V
 
 
 /**
@@ -64,10 +65,14 @@ class TaskVerifyStepAdapter(
         val title: TextView = itemView.findViewById(R.id.tv_step_text)
         val step: TextView = itemView.findViewById(R.id.tv_step)
         val idEt: EditText = itemView.findViewById(R.id.et_id)
+        val llet: View = itemView.findViewById(R.id.llet)
         val ivCasePic: ImageView = itemView.findViewById(R.id.iv_case_pic)//示例图片
         val fCasePic: View = itemView.findViewById(R.id.f_case_pic)//示例图片区域
-        val ivUserPic: ImageView = itemView.findViewById(R.id.iv_user_up_pic)//用户图片
-        val btmUpPic: View = itemView.findViewById(R.id.tv_up_pic)//上传图片按键
+        val fUserPic: View = itemView.findViewById(R.id.f_user_pic)//用户图片区域
+        val ivUserPic2: ImageView = itemView.findViewById(R.id.iv_user_up_pic2)//用户图片
+        val btmUpPic: View = itemView.findViewById(R.id.tv_up_pic2)//上传图片按键
+        val tv_re_up: View = itemView.findViewById(R.id.tv_re_up)//重新上传图片按键
+
         val line: View = itemView.findViewById(R.id.line)//垂直线
         val tvTr: TextView = itemView.findViewById(R.id.tv_tr)//角标说明
 
@@ -96,18 +101,28 @@ class TaskVerifyStepAdapter(
 
             1 -> {
                 holder.fCasePic.visibility = View.VISIBLE
-                holder.ivUserPic.visibility = View.VISIBLE
-                holder.idEt.visibility = View.GONE
-                ImageViewUtil.load(holder.ivCasePic, item.useCaseImage)
-                ImageViewUtil.load(holder.ivUserPic, item.uploadValue)
+                holder.fUserPic.visibility = View.VISIBLE
+                holder.llet.visibility = View.GONE
+                ImageViewUtil.load(holder.ivCasePic, item.useCaseImage, true)
+                ImageViewUtil.load(holder.ivUserPic2, item.uploadValue)
                 holder.ivCasePic.setOnClickListener {//图片全屏显示
-                    ivDialog.setContentView(getImageView(item.useCaseImage))
+                    ivDialog.setContentView(getImageView(item.useCaseImage, true))
+                    ivDialog.show()
+                }
+                holder.ivUserPic2.setOnClickListener {//图片全屏显示
+                    ivDialog.setContentView(getImageView(item.uploadValue, false))
                     ivDialog.show()
                 }
 
+
+
                 holder.btmUpPic.setOnClickListener {
                     mPosition = holder.adapterPosition
-
+                    activity.putLongActionStep(longPosition)
+                    onPickImage()
+                }
+                holder.tv_re_up.setOnClickListener {
+                    mPosition = holder.adapterPosition
                     activity.putLongActionStep(longPosition)
                     onPickImage()
                 }
@@ -116,23 +131,50 @@ class TaskVerifyStepAdapter(
 
                     0 -> {
                         holder.btmUpPic.visibility = View.GONE
-                        holder.ivUserPic.visibility = View.GONE
+                        holder.fUserPic.visibility = View.GONE
                     }
 
 
-                    2, 3, 5, 6, 7 -> {
+                    3, 7 -> {//任务通过或长单进行中
                         holder.btmUpPic.visibility = View.GONE
-                        holder.ivUserPic.visibility = View.VISIBLE
+                        holder.fUserPic.visibility = View.VISIBLE
+                        holder.tv_re_up.visibility = View.GONE//隐藏重新上传
                     }
 
-                    4 -> {//不通
-                        holder.btmUpPic.visibility = View.VISIBLE
-                        holder.ivUserPic.visibility = View.VISIBLE
+                    5, 6 -> {//取消
+                        holder.btmUpPic.visibility = View.GONE
+
+                        if (item.uploadValue.isNullOrEmpty()) {
+                            holder.fUserPic.visibility = View.GONE
+                        } else {
+                            holder.fUserPic.visibility = View.VISIBLE
+                            holder.tv_re_up.visibility = View.GONE
+                        }
                     }
 
-                    1 -> {
-                        holder.ivUserPic.visibility = if (action) View.VISIBLE else View.GONE
-                        holder.btmUpPic.visibility = if (action) View.VISIBLE else View.GONE
+                    2 -> {//审核中
+                        holder.btmUpPic.visibility = View.GONE
+                        holder.fUserPic.visibility = View.VISIBLE
+                        holder.tv_re_up.visibility = View.GONE
+
+
+                    }
+
+                    4 -> {//不通过
+                        holder.btmUpPic.visibility = View.GONE
+                        holder.fUserPic.visibility = View.VISIBLE
+                        holder.tv_re_up.visibility = View.VISIBLE//隐藏重新上传
+                    }
+
+                    1 -> {//待提交
+                        if (item.uploadValue.isNullOrEmpty()) {
+                            holder.btmUpPic.visibility = if (action) View.VISIBLE else View.GONE
+                            holder.fUserPic.visibility = View.GONE
+                        } else {
+                            holder.fUserPic.visibility = View.VISIBLE
+                            holder.tv_re_up.visibility = View.VISIBLE
+                            holder.btmUpPic.visibility = View.GONE
+                        }
 
                     }
 
@@ -140,13 +182,36 @@ class TaskVerifyStepAdapter(
             }
 
             2 -> {
-                holder.idEt.visibility = View.VISIBLE
+                holder.llet.visibility = View.VISIBLE
                 holder.idEt.hint = item.verifyDesc
                 holder.idEt.setText(item.uploadValue)
                 holder.fCasePic.visibility = View.GONE
-                holder.ivUserPic.visibility = View.GONE
+                holder.fUserPic.visibility = View.GONE
                 holder.btmUpPic.visibility = View.GONE
-                when (this.auditStatus) {
+
+                holder.idEt.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?, start: Int, count: Int, after: Int,
+                    ) {
+                        // 在文本改变之前调用
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence?, start: Int, before: Int, count: Int,
+                    ) {
+                        // 在文本改变时调用
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        // 在文本改变之后调用
+                        if (s != null) {
+                            val text = s.toString()
+//                            ToastUtils.show("文本改变")
+                            item.uploadValue = text //   更新用户输入的值
+                        }
+                    }
+                })
+                when (this.auditStatus) {//用户的任务状态
 
                     0, 2, 3, 5, 6, 7 -> {
                         // 当前为启用状态，禁用它
@@ -155,37 +220,15 @@ class TaskVerifyStepAdapter(
                         holder.idEt.isFocusableInTouchMode = false
                     }
 
-                    4 -> {
-                        // 当前为启用状态，禁用它
+                    4 -> {//审核被否，需要重新开启修改
+
                         holder.idEt.isEnabled = true
                         holder.idEt.isFocusable = true
                         holder.idEt.isFocusableInTouchMode = true
                     }
 
-                    else -> {
+                    1 -> {//根据action去判断是否开启修改模式，同时处理长单任务是否是当前操作步骤
 
-                        holder.idEt.addTextChangedListener(object : TextWatcher {
-                            override fun beforeTextChanged(
-                                s: CharSequence?, start: Int, count: Int, after: Int,
-                            ) {
-                                // 在文本改变之前调用
-                            }
-
-                            override fun onTextChanged(
-                                s: CharSequence?, start: Int, before: Int, count: Int,
-                            ) {
-                                // 在文本改变时调用
-                            }
-
-                            override fun afterTextChanged(s: Editable?) {
-                                // 在文本改变之后调用
-                                if (s != null) {
-                                    val text = s.toString()
-//                                    ToastUtils.show("文本改变")
-                                    item.uploadValue = text //更新用户输入的值
-                                }
-                            }
-                        })
                         holder.idEt.isEnabled = action
                         holder.idEt.isFocusable = action
                         holder.idEt.isFocusableInTouchMode = action
@@ -195,9 +238,9 @@ class TaskVerifyStepAdapter(
             }
 
             0 -> {
-                holder.idEt.visibility = View.GONE
+                holder.llet.visibility = View.GONE
                 holder.fCasePic.visibility = View.GONE
-                holder.ivUserPic.visibility = View.GONE
+                holder.fUserPic.visibility = View.GONE
                 holder.btmUpPic.visibility = View.GONE
             }
         }
@@ -221,6 +264,7 @@ class TaskVerifyStepAdapter(
             holder.line.requestLayout()
         }
 
+
     }
 
     // 返回数据项数量
@@ -228,12 +272,12 @@ class TaskVerifyStepAdapter(
         return items.size
     }
 
-    private fun getImageView(any: Any): ImageView {
+    private fun getImageView(any: String?, isWmPic: Boolean): ImageView {
         val imageView = ImageView(activity)
         imageView.layoutParams = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        ImageViewUtil.loadFall(imageView, any)
+        ImageViewUtil.load(imageView, any, isWmPic)
 
         imageView.setOnClickListener {
             ivDialog.dismiss()

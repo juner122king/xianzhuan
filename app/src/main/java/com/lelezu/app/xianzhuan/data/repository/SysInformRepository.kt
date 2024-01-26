@@ -7,6 +7,7 @@ import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Message
+import com.lelezu.app.xianzhuan.data.model.Pending
 import com.lelezu.app.xianzhuan.data.model.Recharge
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
 import com.lelezu.app.xianzhuan.data.model.Version
@@ -35,6 +36,14 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //公告
     suspend fun apiAnnounce(): ApiResponse<List<Announce>> = withContext(Dispatchers.IO) {
         val call = apiService.getAnnounce(
+            loginToken, deviceId
+        )
+        executeApiCall(call)
+    }
+
+    //主页提现公告
+    suspend fun apiGetUserWithdraw(): ApiResponse<List<String>> = withContext(Dispatchers.IO) {
+        val call = apiService.getUserWithdraw(
             loginToken, deviceId
         )
         executeApiCall(call)
@@ -96,6 +105,14 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
     //获取广告配置信息
     suspend fun apiADConfig(): ApiResponse<Config> = withContext(Dispatchers.IO) {
         val call = apiService.apiADConfig(
+            loginToken, deviceId
+        )
+        executeApiCall(call)
+    }
+
+    //获取待处理消息
+    suspend fun pending(): ApiResponse<Pending> = withContext(Dispatchers.IO) {
+        val call = apiService.apiPending(
             loginToken, deviceId
         )
         executeApiCall(call)
