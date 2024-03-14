@@ -7,7 +7,29 @@
     android:orientation="vertical"
     tools:context=".ui.views.ChatListActivity">
 
+    <LinearLayout
+        android:id="@+id/ll_not_result"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/icon_not_result2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="你暂无数据哟~"
+            android:textColor="#999999"
+            android:textSize="17sp" />
+
+    </LinearLayout>
     <com.lelezu.app.xianzhuan.ui.views.RefreshRecycleView
 
 

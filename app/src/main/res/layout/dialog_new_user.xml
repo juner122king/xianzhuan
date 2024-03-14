@@ -10,13 +10,13 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/icon_nu_bg">
+        android:background="@drawable/icon_nu_bg2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="120dp"
             android:text="0.3"
             android:textColor="#F50A07"
             android:textSize="60sp"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="45dp"
+            android:layout_marginBottom="35dp"
             android:orientation="vertical">
 
             <TextView
@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="还有1元新人奖励待领"
+                android:visibility="invisible"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
 
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
 
-                android:src="@drawable/icon_nu_enter" />
+                android:src="@drawable/icon_nu_enter2" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

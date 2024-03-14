@@ -60,8 +60,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="15dp"
-            android:text="立即更新"
-            android:textColor="#4A92FD"
+            android:text="@string/up_data"
+            android:textColor="@color/text_check"
             android:textSize="17sp" />
 
     </LinearLayout>

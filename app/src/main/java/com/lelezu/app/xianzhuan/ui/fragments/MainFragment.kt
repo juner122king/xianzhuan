@@ -19,13 +19,10 @@ import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants.HOST
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_POS_ID
-import com.lelezu.app.xianzhuan.data.model.Announce
-import com.lelezu.app.xianzhuan.data.model.ConfValue
 import com.lelezu.app.xianzhuan.data.model.DBanner
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
-import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.LINK_KEY
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.URL_TITLE
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings.link102
@@ -48,8 +45,6 @@ import com.zj.zjsdk.ad.ZjTaskAd
 import com.zj.zjsdk.ad.ZjTaskAdListener
 
 class MainFragment : BaseFragment(), OnClickListener {
-
-
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: MyPagerAdapter
     private lateinit var tabLayout: TabLayout
@@ -194,16 +189,11 @@ class MainFragment : BaseFragment(), OnClickListener {
                                 intent.putExtra(LINK_KEY, HOST + data.jumpUrl)
                                 intent.putExtra(URL_TITLE, data.bannerName)
                                 startActivity(intent)
-
                             }
                         }
                     }
-
-
                 }
             })
-
-
         }
 
     }
@@ -240,6 +230,7 @@ class MainFragment : BaseFragment(), OnClickListener {
             R.id.tvv -> {//发布任务
 
                 (requireActivity() as BaseActivity).homeViewModel.limitTask()
+
             }
 
         }
@@ -286,7 +277,9 @@ class MainFragment : BaseFragment(), OnClickListener {
                 }
 
                 override fun onZjAdError(zjAdError: ZjAdError) {
-                    LogUtils.i("ZjAd","任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg)
+                    LogUtils.i(
+                        "ZjAd", "任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg
+                    )
                     showToast("游戏任务列表数据加载缓慢")
                 }
             })

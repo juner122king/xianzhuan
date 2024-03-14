@@ -26,8 +26,10 @@ import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
+import com.lelezu.app.xianzhuan.utils.ShareUtil.DUN_SDK_RISK
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.isAgreePrivacy
+import com.lelezu.app.xianzhuan.utils.ShareUtil.putBoolean
 import com.lelezu.app.xianzhuan.utils.UUIDUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.netease.htprotect.HTProtect
@@ -84,7 +86,10 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     //初始化第三方SDK
     private fun initSDK() {
 
-        init163SDK()//网易SDK初始化
+        if (!ShareUtil.getBoolean(DUN_SDK_RISK))
+            init163SDK()//网易SDK初始化
+
+
         initWx() //微信SDK初始化
         initJPUSHSDK()//极光SDK初始化
         initUMSDK()//友盟SDK初始化
@@ -106,10 +111,21 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
     private fun initData() {
         sysMessageViewModel.apiADConfig()
+
         //加载广告页面
         sysMessageViewModel.adconfig.observe(this) {
             ImageViewUtil.load(aDView, it.confValue.images[0])
         }
+
+
+
+        sysMessageViewModel.apiConfig_YI_DUN()
+        //是否跳过易盾风控SDK检测
+        sysMessageViewModel.ydconfig.observe(this) {
+            //true为跳过
+            putBoolean(DUN_SDK_RISK, it.confValue.isEnabled)
+        }
+
 
     }
 
@@ -120,8 +136,6 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
                 initSDK()//初始化SDK
-
-
                 showAdView()//显示广告
 //                showZJAdView()//显示ZJ广告
 //                showKSAdView()//显示快手广告
@@ -306,7 +320,6 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
 
     private fun initZJSDK() {
-
 
 
         LogUtils.i("ZjAd", "任务墙SDK初始化开始")

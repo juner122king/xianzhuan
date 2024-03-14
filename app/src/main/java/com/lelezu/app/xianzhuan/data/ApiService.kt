@@ -26,6 +26,7 @@ import com.lelezu.app.xianzhuan.data.model.Req2
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit
 import com.lelezu.app.xianzhuan.data.model.TaskType
+import com.lelezu.app.xianzhuan.data.model.Tip
 import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.data.model.Vip
@@ -209,12 +210,10 @@ interface ApiService {
         @Header("Device") device: String,
     ): Call<ApiResponse<Boolean>>
 
-    @GET("/dxz/app/sys/config")//获取系统配置信息
+    @GET("/dxz/app/sys/config/{confType}/{configKey}")//获取系统配置信息
     fun getConfig(
         @Path("confType") confType: String,
-        @Path("configKey") configKey: String,
-        @Header("Authorization") token: String,
-        @Header("Device") device: String,
+        @Path("configKey") configKey: String
     ): Call<ApiResponse<Config>>
 
 
@@ -363,5 +362,15 @@ interface ApiService {
     fun vipRest(
         @Header("Authorization") token: String, @Header("Device") device: String,
     ): Call<ApiResponse<Vip>>
+
+    @POST("/dxz/app/task/award/tip/cache/time")// 赏金强提示, 登录进来时缓存当前时间
+    fun tipCacheTime(
+        @Header("Authorization") token: String, @Header("Device") device: String,
+    ): Call<ApiResponse<Boolean>>
+
+    @GET("/dxz/app/task/award/tip/list")//赏金强提示 列表
+    fun tipList(
+        @Header("Authorization") token: String, @Header("Device") device: String,
+    ): Call<ApiResponse<List<Tip>>>
 
 }

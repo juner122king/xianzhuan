@@ -48,6 +48,15 @@ class MyJavaScriptInterface(private val context: Activity) {
         })
     }
 
+    @JavascriptInterface
+    fun homeCurrentView(item: Int) {
+
+        context.runOnUiThread {
+            (context as HomeActivity).currentViewPager(item)
+        }
+
+    }
+
     /**
      * 福利中心-弹出未看完视频提示弹窗
      * @param str String 窗口提示信息
@@ -55,7 +64,7 @@ class MyJavaScriptInterface(private val context: Activity) {
     @JavascriptInterface
     fun showFLContinueDialog(str: String) {
         ToastUtils.show("弹出未看完视频提示弹窗！")
-        (context as HomeActivity).showFLDialog(str)
+//        (context as HomeActivity).showFLDialog(str)
 
     }
 

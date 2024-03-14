@@ -7,17 +7,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.ErrResponse
-import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.ui.viewmodels.HomeViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.LoginViewModel
 import com.lelezu.app.xianzhuan.ui.viewmodels.SysMessageViewModel
-import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.LoginActivity
-import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.LogUtils
 
 
@@ -35,7 +33,7 @@ open class BaseFragment : Fragment() {
         HomeViewModel.ViewFactory((activity?.application as MyApplication).taskRepository)
     }
 
-    protected val loginViewModel: LoginViewModel by viewModels {
+    protected val loginViewModel: LoginViewModel by activityViewModels {
         LoginViewModel.LoginViewFactory(((activity?.application as MyApplication).userRepository))
     }
 

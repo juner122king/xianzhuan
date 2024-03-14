@@ -53,6 +53,8 @@ object ShareUtil {
 
 
     //网易token
+    const val DUN_SDK_RISK = "DUN_SDK_RISK" //是否开启易盾风控SDK检测
+
     const val APP_163_PHONE_LOGIN_DEVICE_TOKEN: String = "deviceToken"
     const val APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN: String = "mobileAccessToken"
     const val APP_163_PHONE_LOGIN_MOBILE_TOKEN: String = "mobileToken"
@@ -90,10 +92,10 @@ object ShareUtil {
         }
     }
 
-    fun getString(key: String): String {
+    fun getString(key: String,deString:String = ""): String {
         if (key.isNotBlank()) {
             val sps: SharedPreferences = getSps()
-            return sps.getString(key, "").toString()
+            return sps.getString(key,deString).toString()
         }
         return ""
     }
@@ -224,7 +226,7 @@ object ShareUtil {
     fun getRegister(): Register {
 
 
-        val deviceToken = getString(APP_163_PHONE_LOGIN_DEVICE_TOKEN)
+        val deviceToken = getString(APP_163_PHONE_LOGIN_DEVICE_TOKEN,"YI_DUN_Enabled")
         val mobileAccessToken = getString(APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
         val mobileToken = getString(APP_163_PHONE_LOGIN_MOBILE_TOKEN)
         val userId = getString(APP_SHARED_PREFERENCES_LOGIN_ID)

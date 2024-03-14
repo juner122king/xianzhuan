@@ -11,6 +11,7 @@ import com.lelezu.app.xianzhuan.data.model.Config
 import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.Pending
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
+import com.lelezu.app.xianzhuan.data.model.Tip
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.utils.LogUtils
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import ᐝ.ᐝ.ͺ.ʾ.ˏ.ͺ.B
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.roundToInt
@@ -57,9 +59,12 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     val registrconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
     val bannerconfig: MutableLiveData<List<DBanner>> = MutableLiveData()//banner对象
     val adconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象
+    val ydconfig: MutableLiveData<Config> = MutableLiveData()//系统配置对象 易盾风控
 
 
     val pendingTotal: MutableLiveData<Pending> = MutableLiveData()//待处理消息
+    val topList: MutableLiveData<List<Tip>> = MutableLiveData()//赏金强提示列表
+    val cacheTime: MutableLiveData<Boolean> = MutableLiveData()//赏金强提示接口，提交当前是否成功执行
 
 
     //获取系统消息列表
@@ -131,12 +136,30 @@ class SysMessageViewModel(private val sysInformRepository: SysInformRepository) 
     fun apiADConfig() = viewModelScope.launch {
         val call = sysInformRepository.apiADConfig()
         handleApiResponse(call, adconfig)
+    }
 
+
+    //获取是否跳过易盾风控SDK检测
+    fun apiConfig_YI_DUN() = viewModelScope.launch {
+        val call = sysInformRepository.getConfig_YI_DUN()
+        handleApiResponse(call, ydconfig)
     }
 
     fun pending() = viewModelScope.launch {
         val call = sysInformRepository.pending()
         handleApiResponse(call, pendingTotal)
+
+    }
+
+    fun tipCacheTime() = viewModelScope.launch {
+        val call = sysInformRepository.tipCacheTime()
+        handleApiResponse(call, cacheTime)
+
+    }
+
+    fun tipList() = viewModelScope.launch {
+        val call = sysInformRepository.tipList()
+        handleApiResponse(call, topList)
 
     }
 

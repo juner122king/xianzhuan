@@ -17,6 +17,7 @@ import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
+import com.lelezu.app.xianzhuan.utils.ShareUtil.DUN_SDK_RISK
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreeAgreement
 import com.lelezu.app.xianzhuan.utils.ShareUtil.agreePrivacy
 import com.lelezu.app.xianzhuan.utils.ShareUtil.disAgreeAgreement
@@ -38,7 +39,6 @@ class LoginActivity : BaseActivity(), OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         cbAgree = findViewById(R.id.cb_agree_agreement)//是否同意思协议按钮
         findViewById<View>(R.id.bto_phome_login).setOnClickListener(this)//‘使用手机登录’按钮
         findViewById<ImageView>(R.id.bto_wx_login).setOnClickListener(this)//微信登录按钮
@@ -113,24 +113,29 @@ class LoginActivity : BaseActivity(), OnClickListener {
         QuickLogin.getInstance().setUnifyUiConfig(UiConfigs.getDConfig(this))
 
 
-        val code = ShareUtil.getInt(APP_163_INIT_CODE)
-        if (code == 200) {
-            HTProtect.getTokenAsync(
-                3000, ApiConstants.DUN_RISK_BUSINESS_ID
-            ) {
-                LogUtils.i("易盾风控引擎Api  code:", it!!.code.toString())
-                if (it.code == AntiCheatResult.OK) {
-                    // 调用成功，获取token
-                    ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
-                    initQuickLogin()
-                } else {
-                    showToast("您的手机号或设备异常：${it.codeStr}")
-                    hideLoading()
-                }
-            }
+
+        if (ShareUtil.getBoolean(DUN_SDK_RISK)) {//跳过易盾风控SDK检测
+            initQuickLogin()
         } else {
-            showToast("易盾风控引擎初始化失败 code:${code}")
+            if (ShareUtil.getInt(APP_163_INIT_CODE) == 200) {
+                HTProtect.getTokenAsync(
+                    3000, ApiConstants.DUN_RISK_BUSINESS_ID
+                ) {
+                    LogUtils.i("易盾风控引擎Api  code:", it!!.code.toString())
+                    if (it.code == AntiCheatResult.OK) {
+                        // 调用成功，获取token
+                        ShareUtil.putString(ShareUtil.APP_163_PHONE_LOGIN_DEVICE_TOKEN, it.token)
+                        initQuickLogin()
+                    } else {
+                        showToast("您的手机号或设备异常：${it.codeStr}")
+                        hideLoading()
+                    }
+                }
+            } else {
+                showToast("易盾风控引擎初始化失败!${ShareUtil.getInt(APP_163_INIT_CODE)}")
+            }
         }
+
     }
 
     private fun initQuickLogin() {
@@ -147,7 +152,7 @@ class LoginActivity : BaseActivity(), OnClickListener {
             override fun onGetMobileNumberError(token: String, msg: String) {
 
                 LogUtils.i("易盾号码认证Api", "预取号失败：${msg}")
-                showToast("请打开流量联网后重试")
+                showToast(" 请打开手机卡流量联网后重试\n（不要使用物联网卡）")
                 hideLoading()
             }
         })

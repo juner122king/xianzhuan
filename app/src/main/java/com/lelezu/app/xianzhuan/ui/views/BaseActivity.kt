@@ -18,6 +18,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.ContextMenu
 import android.view.Gravity
@@ -51,6 +53,7 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxLogin
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.anim.DefaultAnimator
+import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.enums.SidePattern
 import com.lzf.easyfloat.utils.DisplayUtils
 import kotlinx.android.synthetic.main.layout_float.view
@@ -65,13 +68,15 @@ import java.io.File
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-
     var mBack: LinearLayout? = null
     private var mTvTitle: TextView? = null
     private var mTvRight: TextView? = null
     private var mRltBase: RelativeLayout? = null
     private var rootView: View? = null
     private var icon_back: ImageView? = null  //返回键
+
+
+    protected var MFloat_TAG = "M"
 
     private var loadingView: View? = null
 
@@ -159,14 +164,7 @@ abstract class BaseActivity : AppCompatActivity() {
             if (isButtonClickable) {
                 // 执行点击事件的操作
                 // 在点击下载按钮时执行下载操作
-                onUpData()
-                //改变下载按键样式
-                btnDownload.text = "下载中..."
-                btnDownload.setTextColor(ContextCompat.getColor(this, R.color.C7C7C7))
-
-
-                // 设置标志为false，防止再次点击
-                isButtonClickable = false
+                onUpData(btnDownload, this)
             }
 
         }
@@ -191,22 +189,36 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     //询问权限
-    private fun onUpData() {
+    private fun onUpData(btnDownload: TextView, context: Context) {
         MyPermissionUtil.storageApply(this, object : OnPermissionCallback {
             override fun onGranted(permissions: MutableList<String>, all: Boolean) {
-                if (all) startDownload()
-                else showToast("获取部分权限成功，但部分权限未正常授予")
+                if (all) {
+                    //改变下载按键样式
+                    btnDownload.text = "下载中..."
+                    btnDownload.setTextColor(ContextCompat.getColor(context, R.color.C7C7C7))
+                    startDownload()
+
+
+                } else {
+                    showToast("获取部分权限成功，但部分权限未正常授予")
+                    btnDownload.text = getString(R.string.up_data)
+                    btnDownload.setTextColor(ContextCompat.getColor(context, R.color.text_check))
+                }
             }
 
             override fun onDenied(permissions: MutableList<String>, never: Boolean) {
                 //权限失败
                 showToast("您已拒绝授权，更新失败！")
+                //改变下载按键样式
+                btnDownload.text = getString(R.string.up_data)
+                btnDownload.setTextColor(ContextCompat.getColor(context, R.color.text_check))
             }
         })
     }
 
     private fun startDownload() {
-
+        // 设置标志为false，防止再次点击
+        isButtonClickable = false
 
         progressBar.visibility = View.VISIBLE
         sysMessageViewModel.downloadApk(apkUrl)
@@ -318,8 +330,6 @@ abstract class BaseActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
-
-
     }
 
 
@@ -733,10 +743,8 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 
-    //显示悬浮控件
-    protected fun createFloat() {
-
-
+    //显示消息待处理悬浮控件
+    protected fun createMessageFloat() {
         EasyFloat.with(this).setLayout(R.layout.layout_float) {
             it.findViewById<View>(R.id.view).setOnClickListener {
                 LogUtils.i("motionEvent", "点击了")
@@ -750,7 +758,7 @@ abstract class BaseActivity : AppCompatActivity() {
             // 设置吸附方式，共15种模式，详情参考SidePattern
             .setSidePattern(SidePattern.RESULT_HORIZONTAL)
             // 设置浮窗是否可拖拽
-            .setDragEnable(true).show()
+            .setDragEnable(true).setTag(MFloat_TAG).show()
 
         sysMessageViewModel.pendingTotal.observe(this) {
 
@@ -758,15 +766,24 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    //隐藏悬浮控件
-    protected fun hideFloat() {
-        if (EasyFloat.isShow()) EasyFloat.hide()
+
+
+
+    //隐藏消息悬浮控件
+    protected fun hideMFloat() {
+//        if (EasyFloat.isShow())
+            EasyFloat.hide(MFloat_TAG)
     }
 
-    //隐藏悬浮控件
+
+
+
+    //显示消息悬浮控件
     protected fun showFloat() {
-        if (!EasyFloat.isShow()) EasyFloat.show()
+//        if (!EasyFloat.isShow()) EasyFloat.show(MFloat_TAG)
+        EasyFloat.show(MFloat_TAG)
     }
+
 
 
     //设置标题文字颜色
@@ -808,7 +825,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     // 显示禁止报名弹窗
-     fun showPostDialog(time: String) {
+    fun showPostDialog(time: String) {
         dialog = Dialog(this)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setContentView(R.layout.dialog_post)

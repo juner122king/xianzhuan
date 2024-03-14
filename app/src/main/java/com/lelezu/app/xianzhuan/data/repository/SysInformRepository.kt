@@ -10,6 +10,7 @@ import com.lelezu.app.xianzhuan.data.model.Message
 import com.lelezu.app.xianzhuan.data.model.Pending
 import com.lelezu.app.xianzhuan.data.model.Recharge
 import com.lelezu.app.xianzhuan.data.model.RechargeRes
+import com.lelezu.app.xianzhuan.data.model.Tip
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import kotlinx.coroutines.Dispatchers
@@ -110,9 +111,33 @@ class SysInformRepository(private var apiService: ApiService) : BaseRepository()
         executeApiCall(call)
     }
 
+    //获取系统配置信息
+    suspend fun getConfig_YI_DUN(): ApiResponse<Config> = withContext(Dispatchers.IO) {
+        val call = apiService.getConfig(
+            "YI_DUN", "RISK"
+        )
+        executeApiCall(call)
+    }
+
     //获取待处理消息
     suspend fun pending(): ApiResponse<Pending> = withContext(Dispatchers.IO) {
         val call = apiService.apiPending(
+            loginToken, deviceId
+        )
+        executeApiCall(call)
+    }
+
+    //赏金强提示 时间
+    suspend fun tipCacheTime(): ApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        val call = apiService.tipCacheTime(
+            loginToken, deviceId
+        )
+        executeApiCall(call)
+    }
+
+    //赏金强提示 列表
+    suspend fun tipList(): ApiResponse<List<Tip>> = withContext(Dispatchers.IO) {
+        val call = apiService.tipList(
             loginToken, deviceId
         )
         executeApiCall(call)

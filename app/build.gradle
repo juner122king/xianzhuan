@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android-extensions'
 }
-
+0
 
 android {
     namespace 'com.lelezu.app.xianzhuan'
@@ -12,8 +12,8 @@ android {
         applicationId "com.lelezu.app.xianzhuan"
         minSdk 21
         targetSdk 33
-        versionCode 14
-        versionName "1.1.4"
+        versionCode 17
+        versionName "1.1.7"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86"
         }
@@ -178,8 +178,8 @@ dependencies {
     // 2023/10/27 供应商要求替换掉zj-tasklibrary-release-1.1.9.0
     implementation(name: 'zj-tasklibrary-release-1.1.10.1', ext: 'aar')
     implementation(name: 'zj_ywsdk_1.1.7', ext: 'aar')
+
     // 2023/11/13 更新2.4原生广告
-//        implementation(name: 'zj_sdk_2.4.15', ext: 'aar')
     implementation files('./libs/zj_sdk_2.4.16_4.aar')//更新开屏广告
     implementation files('./libs/zjsdk/kssdk-ct-3.3.53-publishRelease.aar')
     implementation files('./libs/zjsdk/open_ad_sdk_5.7.0.4.aar')
@@ -235,4 +235,9 @@ dependencies {
 
     //第三方浮窗控件 https://github.com/kongxiaojun/EasyFloat
     implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
+//
+//    implementation 'com.github.juner122king:EasyFloat:fix-SNAPSHOT'
+
+
+
 }

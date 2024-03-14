@@ -1,8 +1,14 @@
 package com.lelezu.app.xianzhuan.ui.views
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -10,8 +16,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
-import com.lelezu.app.xianzhuan.data.model.Announce
-import com.lelezu.app.xianzhuan.ui.adapters.ComplexViewAdapter
 import com.lelezu.app.xianzhuan.ui.adapters.HomeActivityAdapter
 import com.lelezu.app.xianzhuan.ui.fragments.DashFragment
 import com.lelezu.app.xianzhuan.ui.fragments.LFLFragment
@@ -25,24 +29,55 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.NEWER_IS_SHOW_DIALOG
 import com.lelezu.app.xianzhuan.utils.ShareUtil.putBoolean
 import com.lzf.easyfloat.EasyFloat
 
+
 class HomeActivity : BaseActivity() {
     private val fragmentList: ArrayList<Fragment> = ArrayList()
     private lateinit var dialog: Dialog //新人奖窗口
-    private lateinit var dialogFL: Dialog //新人奖窗口
+    private lateinit var viewPager: ViewPager2 //新人奖窗口
+
+    private var isAnimationRunning = false
+    private lateinit var floatingControl: View
+    private lateinit var iv_a: TextView
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        postCacheTime()
+
         showHomeView()
         //检查新版本
         checkNewV()
         hideView()
+
+
     }
+
+
+    private fun postCacheTime() {
+        //赏金强提示, 登录进来时缓存当前时间
+        sysMessageViewModel.tipCacheTime()
+        //监听赏金到账对象变化
+        sysMessageViewModel.topList.observe(this) {
+
+            if (it.isNotEmpty()) {
+                //获取最新的到账
+                val award = it[it.size - 1].award
+                showActivityFloat(award)
+            } else {
+//                ToastUtils.show("暂时没有赏金收益")
+
+
+            }
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
         //执行获取待处理消息接口
         sysMessageViewModel.pending()
-
     }
 
 
@@ -57,7 +92,7 @@ class HomeActivity : BaseActivity() {
 
 
         //创建消息浮窗
-        createFloat()
+        createMessageFloat()
 
 
         //监听发布任务前的验证接口
@@ -76,8 +111,9 @@ class HomeActivity : BaseActivity() {
 
     private fun initHomeView() {
 
-
-        val viewPager = findViewById<ViewPager2>(R.id.main_vp)
+        floatingControl = findViewById(R.id.floating_control)
+        iv_a = findViewById(R.id.iv_a)
+        viewPager = findViewById(R.id.main_vp)
         viewPager.isUserInputEnabled = false//禁止滑动
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
         initData()
@@ -92,6 +128,10 @@ class HomeActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
 
+                if (position == 0) {
+                    //执行接口，获取赏金收益列表
+                    sysMessageViewModel.tipList()
+                }
                 when (position) {
                     0 -> bottomNavigationView.selectedItemId = R.id.navigation_home
                     1 -> bottomNavigationView.selectedItemId = R.id.navigation_dashboard
@@ -119,8 +159,6 @@ class HomeActivity : BaseActivity() {
                 false
             } else {
                 hideRightText()
-
-
                 when (itemId) {
                     R.id.navigation_home -> {
                         viewPager.setCurrentItem(0, false)
@@ -134,7 +172,7 @@ class HomeActivity : BaseActivity() {
                         viewPager.setCurrentItem(1, false)
                         showRightText(getString(R.string.dashboard_tab5_text))
                         setTitleText(getString(R.string.title_dashboard))
-                        hideFloat()
+                        hideMFloat()
                         showView()
                         hideBack()
                     }
@@ -142,7 +180,7 @@ class HomeActivity : BaseActivity() {
                     R.id.navigation_lfl -> {
                         viewPager.setCurrentItem(2, false)
                         setTitleText(getString(R.string.title_lfl))
-                        hideFloat()
+                        hideMFloat()
                         showView()
 
                     }
@@ -150,7 +188,7 @@ class HomeActivity : BaseActivity() {
                     R.id.navigation_notifications -> {
                         viewPager.setCurrentItem(3, false)
                         setTitleText(getString(R.string.title_notifications))
-                        hideFloat()
+                        hideMFloat()
                         showView()
                         hideBack()
                     }
@@ -159,7 +197,7 @@ class HomeActivity : BaseActivity() {
                         viewPager.setCurrentItem(4, false)
                         setTitleText(getString(R.string.title_my))
                         hideView()
-                        hideFloat()
+                        hideMFloat()
                         hideBack()
                     }
                 }
@@ -201,7 +239,6 @@ class HomeActivity : BaseActivity() {
         val mainFragment = MainFragment.newInstance()
         fragmentList.add(mainFragment)
 
-
         if (!MyApplication.isMarketVersion) {
             val dashFragment = DashFragment.newInstance()
             fragmentList.add(dashFragment)
@@ -220,6 +257,9 @@ class HomeActivity : BaseActivity() {
 
     }
 
+    fun currentViewPager(item: Int) {
+        viewPager.setCurrentItem(item, false)
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.activity_home
@@ -254,35 +294,70 @@ class HomeActivity : BaseActivity() {
             intent.putExtra(WebViewSettings.LINK_KEY, WebViewSettings.link2)
             intent.putExtra(WebViewSettings.URL_TITLE, getString(R.string.btm_xrjl))
             startActivity(intent)
-
-
         }
-
         dialog.show()
     }
 
+    private fun showActivityFloat(amt: String) {
 
-    // 显示福利中心未看完视频弹窗
-    fun showFLDialog(str: String) {
-        dialogFL = Dialog(MyApplication.context)
-        dialogFL.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialogFL.setContentView(R.layout.dialog_bmcg)
-        val content: TextView = dialogFL.findViewById(R.id.tv_content)
-        val ok: TextView = dialogFL.findViewById(R.id.ok)
+        if (isAnimationRunning) return
 
-        ok.setOnClickListener {
-            //确定
-            dialogFL.dismiss()
+        iv_a.text = "+${amt}元"
 
+        // 初始化动画
+        val animSetIn = AnimatorSet()
+        val animSetOut = AnimatorSet()
+
+        // 从右侧滑出动画
+        val slideInAnimation = ObjectAnimator.ofFloat(
+            floatingControl, View.TRANSLATION_X, floatingControl.width.toFloat(), 0f
+        ).apply {
+            duration = 1000 // 设置动画持续时间
         }
-        // 显示弹窗
-        dialogFL.show()
-    }
 
+        // 回到初始位置并隐藏动画
+        val slideOutAnimation = ObjectAnimator.ofFloat(
+            floatingControl, View.TRANSLATION_X, 0f, floatingControl.width.toFloat()
+        ).apply {
+            duration = 800 // 设置动画持续时间
+        }
+
+
+        // 设置延迟4秒执行
+        animSetIn.playSequentially(slideInAnimation)
+        animSetIn.startDelay = 0
+        // 设置延迟4秒执行
+        animSetOut.playSequentially(slideOutAnimation)
+        animSetOut.startDelay = 0
+
+        // 设置标志变量为true，表示动画正在执行
+        isAnimationRunning = true
+        animSetIn.start()
+        floatingControl.visibility = View.VISIBLE
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            animSetOut.start()
+        }, 4000L)//4秒后隐藏控件
+
+
+        // 监听动画执行完毕事件
+        animSetOut.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                // 将标志变量设置为false，表示动画执行完毕
+                isAnimationRunning = false
+                // 隐藏floatingControl
+                floatingControl.visibility = View.INVISIBLE
+            }
+        })
+
+    }
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.dismiss()
+        EasyFloat.dismiss(MFloat_TAG)
         homeViewModel.limit.removeObservers(this)
     }
+
+
 }

@@ -3,7 +3,8 @@
 
     <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="FullActivity" parent="android:Theme.NoTitleBar.Fullscreen" />
+    <style name="FullActivity2" parent="android:Theme.NoTitleBar.Fullscreen" />
+    <style name="FullActivity" parent="android:Theme.Translucent.NoTitleBar" />
 
     <style name="Theme.MyApplication.NoActionBar">
         <item name="windowActionBar">false</item>

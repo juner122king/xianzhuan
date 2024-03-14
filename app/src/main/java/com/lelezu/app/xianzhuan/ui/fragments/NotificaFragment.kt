@@ -108,40 +108,6 @@ class NotificaFragment : Fragment() {
         wv.visibility = View.VISIBLE
 
     }
-//    override fun onResume() {
-//        super.onResume()
-//        onIsShowBack()
-//        //返回监听
-//        (requireActivity() as HomeActivity).mBack!!.setOnClickListener { backOrFinish() }
-//
-//        // 处理返回键事件
-//        val callback = object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                // 在这里执行你的操作，比如弹出对话框或导航
-//                // 如果你想拦截返回键事件，不执行默认操作，可以不调用super.handleOnBackPressed()
-//                // 如果想执行默认的返回操作（比如退出当前 Fragment），调用super.handleOnBackPressed()
-//                backOrFinish()
-//            }
-//        }
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-//    }
-//
-//    fun backOrFinish() {
-//        if (wv.canGoBack()) {
-//            if (wv.url.equals(link3)) requireActivity().finish()
-//            else wv.goBack()
-//        } else requireActivity().finish()
-//    }
-//
-//
-//    fun onIsShowBack() {
-//        try {
-//            if (wv.url.equals(link3)) (requireActivity() as HomeActivity).hideBack()
-//            else (requireActivity() as HomeActivity).showBack()
-//        } catch (e: IllegalStateException) {
-//            e.printStackTrace()
-//        }
-//    }
 
 
 }
