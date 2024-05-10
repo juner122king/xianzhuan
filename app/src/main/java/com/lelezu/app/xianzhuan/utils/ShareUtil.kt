@@ -53,7 +53,7 @@ object ShareUtil {
 
 
     //网易token
-    const val DUN_SDK_RISK = "DUN_SDK_RISK" //是否开启易盾风控SDK检测
+    const val DUN_SDK_RISK = "DUN_SDK_RISK" //是否跳过易盾风控SDK检测
 
     const val APP_163_PHONE_LOGIN_DEVICE_TOKEN: String = "deviceToken"
     const val APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN: String = "mobileAccessToken"

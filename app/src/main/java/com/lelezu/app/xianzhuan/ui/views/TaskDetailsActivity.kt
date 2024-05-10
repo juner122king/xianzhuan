@@ -14,6 +14,7 @@ import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,6 +50,10 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
 
 
     private lateinit var countDownTimer: CountDownTimer //提交时间倒计时
+
+
+
+
 
     //vip头像等级框图片
     private var pic = mapOf(
@@ -255,7 +260,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         //任务提交监听
         homeViewModel.isUp.observe(this) {
             if (it) {
-                showToast("提交成功，雇主将在24小时内审核。")
+//                showToast("提交成功，雇主将在24小时内审核。")
+                Toast.makeText(this, "提交成功，雇主将在24小时内审核。", Toast.LENGTH_LONG).show()
                 finish()
                 goToMyTask()
             } else {
@@ -368,6 +374,8 @@ class TaskDetailsActivity : BaseActivity(), OnClickListener {
         }
 
         findViewById<TextView>(R.id.tv_shang_ji).text = "${task.unitPrice}" //
+//        findViewById<TextView>(R.id.tv_ac).text = "${task.originalPrice * task.quantity}元" //
+        findViewById<TextView>(R.id.tv_ac).text = "%.2f".format(task.originalPrice * task.quantity)+"元" //
 
         findViewById<TextView>(R.id.tv_user_vip).text = "分享赚${task._shareAmount}" //
 

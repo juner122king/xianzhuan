@@ -113,6 +113,7 @@ class HomeActivity : BaseActivity() {
 
         floatingControl = findViewById(R.id.floating_control)
         iv_a = findViewById(R.id.iv_a)
+
         viewPager = findViewById(R.id.main_vp)
         viewPager.isUserInputEnabled = false//禁止滑动
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bnv)
@@ -258,6 +259,7 @@ class HomeActivity : BaseActivity() {
     }
 
     fun currentViewPager(item: Int) {
+        showView()
         viewPager.setCurrentItem(item, false)
     }
 
