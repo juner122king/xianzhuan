@@ -373,4 +373,10 @@ interface ApiService {
         @Header("Authorization") token: String, @Header("Device") device: String,
     ): Call<ApiResponse<List<Tip>>>
 
+
+    @GET("/dxz/app/task/exposure")//任务曝光
+    fun taskExposure(
+        @Header("Authorization") token: String, @Header("Device") device: String,
+    ): Call<ApiResponse<List<Tip>>>
+
 }

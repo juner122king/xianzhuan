@@ -15,14 +15,12 @@ import com.lelezu.app.xianzhuan.data.model.Tip
 import com.lelezu.app.xianzhuan.data.model.Version
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.utils.LogUtils
-import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.putCHECKEDNVTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import ᐝ.ᐝ.ͺ.ʾ.ˏ.ͺ.B
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.roundToInt

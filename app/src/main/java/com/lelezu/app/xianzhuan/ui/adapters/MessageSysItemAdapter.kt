@@ -46,7 +46,7 @@ class MessageSysItemAdapter(
     // 创建视图，并返回 ItemViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.sys_message2_item_layout, parent, false)
+            .inflate(R.layout.sys_message3_item_layout, parent, false)
         return ItemViewHolder(view)
     }
 

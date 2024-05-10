@@ -220,6 +220,7 @@ class WebViewActivity : BaseActivity() {
             } catch (e: Exception) {
                 showAlipayInstallDialog()
             }
+
         }
     }
 

@@ -16,7 +16,7 @@ class MessageActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        msgIds = listOf()
         val recyclerView = findViewById<RecyclerView>(R.id.rv_message)
         swiper = findViewById(R.id.srf)
         swiper.setColorSchemeResources(R.color.colorControlActivated)

@@ -12,7 +12,6 @@ import com.lelezu.app.xianzhuan.data.model.ListData
 import com.lelezu.app.xianzhuan.data.model.Partner
 import com.lelezu.app.xianzhuan.data.model.Report
 import com.lelezu.app.xianzhuan.data.model.Req
-import com.lelezu.app.xianzhuan.data.model.Req2
 import com.lelezu.app.xianzhuan.data.model.Task
 import com.lelezu.app.xianzhuan.data.model.TaskQuery
 import com.lelezu.app.xianzhuan.data.model.TaskSubmit

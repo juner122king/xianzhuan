@@ -12,12 +12,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
 import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.lelezu.app.xianzhuan.MyApplication
-import com.lelezu.app.xianzhuan.MyApplication.Companion.isMarketVersion
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_AD_POS_OPEN
@@ -36,6 +36,7 @@ import com.netease.htprotect.HTProtect
 import com.netease.htprotect.HTProtectConfig
 import com.netease.htprotect.callback.HTPCallback
 import com.umeng.commonsdk.UMConfigure
+import com.zj.zjsdk.ZJConfig
 import com.zj.zjsdk.ZjSdk
 import com.zj.zjsdk.api.v2.splash.ZJSplashAd
 import com.zj.zjsdk.api.v2.splash.ZJSplashAdInteractionListener
@@ -49,7 +50,7 @@ import com.zj.zjsdk.api.v2.splash.ZJSplashAdLoadListener
 4.在校验自动登录没问题后，则跳转到广告页，用户未登录状态下，则需要登录成功后方进行首页数据加载；
 5.广告页：需要在对应的时间内加载首页的数据；*/
 @SuppressLint("CustomSplashScreen")
-class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInteractionListener {
+class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInteractionListener{
 
     private val TAG = "ZJSplashAd"
 
@@ -69,6 +70,10 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//
+//        //初始化 基于MSA oaid SDK
+//        MdidSdkHelper.InitSdk(applicationContext, false, this)
+
         hideView()
         initView()
         initData()
@@ -323,14 +328,33 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
 
         LogUtils.i("ZjAd", "任务墙SDK初始化开始")
-        //任务墙SDK 初始化
-        ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
-            override fun initSuccess() {
+//        //任务墙SDK 初始化
+//        ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
+//            override fun initSuccess() {
+//                LogUtils.i("ZjAd", "初始化成功！")
+//            }
+//
+//            override fun initFail(code: Int, msg: String?) {
+//                LogUtils.i("ZjAd", "初始化失败！")
+//            }
+//        })
+
+        // 2.4.19版本初始化方式调整，需要使用initWithoutStart方法初始化，并在用户同意隐私协议后调用start方法
+        ZjSdk.initWithoutStart(
+            this,
+            ZJConfig.Builder(ApiConstants.ZJ_BUSINESS_NO)
+                .build()
+        )
+
+        ZjSdk.start(object : ZjSdk.OnStartListener {
+            override fun onStartSuccess() {
                 LogUtils.i("ZjAd", "初始化成功！")
             }
 
-            override fun initFail(code: Int, msg: String?) {
-                LogUtils.i("ZjAd", "初始化失败！")
+            override fun onStartFailed(code: Int, @Nullable msg: String?) {
+                Log.e("MainTest", "isReady = " + ZjSdk.isReady())
+                val text = "ZJSDK初始化失败[$code-$msg]"
+                LogUtils.i("ZjAd", "初始化失败！=${text}")
             }
         })
     }
@@ -456,5 +480,9 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         if (isPause) {
             preloadContent()
         }
+
     }
+
+
+
 }

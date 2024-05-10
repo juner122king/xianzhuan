@@ -17,13 +17,11 @@ import com.hjq.permissions.OnPermissionCallback
 import com.hjq.toast.ToastUtils
 import com.lelezu.app.xianzhuan.R
 import com.lelezu.app.xianzhuan.data.model.TaskUploadVerify
-import com.lelezu.app.xianzhuan.ui.views.BaseActivity
 import com.lelezu.app.xianzhuan.ui.views.TaskDetailsActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil
-import ᐝ.ᐝ.ͺ.ʾ.ˏ.ͺ.V
 
 
 /**

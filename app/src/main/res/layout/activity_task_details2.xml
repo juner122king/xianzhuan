@@ -79,6 +79,59 @@
                             android:background="@drawable/bg_taskdetail_shangji"
                             android:padding="15dp">
 
+                            <ImageView
+                                android:id="@+id/iv_icon_ac"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/icon_ac"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_ac1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="资金已托管 "
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="@id/iv_icon_ac"
+                                app:layout_constraintStart_toEndOf="@id/iv_icon_ac"
+                                app:layout_constraintTop_toTopOf="@id/iv_icon_ac" />
+
+                            <TextView
+                                android:id="@+id/tv_ac"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textColor="#FF4A2B"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="@id/iv_icon_ac"
+                                app:layout_constraintStart_toEndOf="@id/tv_ac1"
+                                app:layout_constraintTop_toTopOf="@id/iv_icon_ac" />
+
+                            <TextView
+                                android:id="@+id/tv_ac2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="，赚钱有保障！"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="@id/iv_icon_ac"
+                                app:layout_constraintStart_toEndOf="@id/tv_ac"
+                                app:layout_constraintTop_toTopOf="@id/iv_icon_ac" />
+
+                            <View
+                                android:id="@+id/liac"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:layout_marginTop="10dp"
+                                android:background="#F1F1F1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_ac1" />
+
+
                             <TextView
                                 android:id="@+id/tv_shang_ji_fu"
                                 android:layout_width="wrap_content"
@@ -96,12 +149,13 @@
                                 android:id="@+id/tv_shang_ji"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
                                 android:text="10.89"
                                 android:textColor="#F9706A"
                                 android:textSize="25sp"
                                 android:textStyle="bold"
                                 app:layout_constraintStart_toEndOf="@id/tv_shang_ji_fu"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="@id/liac" />
 
                             <TextView
                                 android:id="@+id/tv_shang_ji_t"
@@ -109,7 +163,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:maxLines="1"
-                                android:text="任务赏金"
+                                android:text="赏金"
                                 android:textColor="#8E8E8E"
                                 android:textSize="14sp"
                                 app:layout_constraintEnd_toEndOf="@id/tv_shang_ji"
@@ -175,6 +229,25 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:layout_width="17dp"
+                                android:layout_height="17dp"
+                                android:src="@drawable/icon_ts" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="请勿参与投资、赌博、刷单，举报有奖！"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -208,7 +281,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="任务说明"
                                 android:textColor="@color/black"
-                                android:textSize="17sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold"
                                 app:layout_constraintBottom_toBottomOf="@id/iv_lt_icon"
                                 app:layout_constraintStart_toEndOf="@id/iv_lt_icon"
@@ -233,7 +306,7 @@
                                 android:layout_marginTop="10dp"
                                 android:text="新老用户不限，每月1次，请勿退款，毕竟看视频能够获得19.89的收入【必须使用腾讯APP扫码，用手机流量做单】"
                                 android:textColor="#8E8E8E"
-                                android:textSize="14sp"
+                                android:textSize="16sp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/li2" />
 
@@ -291,7 +364,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="任务步骤"
                                     android:textColor="@color/black"
-                                    android:textSize="17sp"
+                                    android:textSize="18sp"
                                     android:textStyle="bold" />
 
                                 <androidx.recyclerview.widget.RecyclerView

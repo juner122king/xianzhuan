@@ -29,7 +29,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:background="@drawable/radius_border_bg_f0f0f0"
-            android:hint="请输入师傅ID"
+            android:hint="请输入师傅UID"
             android:padding="10dp"
             android:textColorHint="#B3B3B3"
             android:textSize="14sp" />

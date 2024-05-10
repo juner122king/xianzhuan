@@ -35,14 +35,14 @@ import com.lelezu.app.xianzhuan.ui.views.WebViewActivity
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.MyPermissionUtil
-import com.lelezu.app.xianzhuan.utils.ShareUtil
+import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID
+import com.lelezu.app.xianzhuan.utils.ShareUtil.getString
 import com.youth.banner.Banner
 import com.youth.banner.adapter.BannerImageAdapter
 import com.youth.banner.holder.BannerImageHolder
 import com.youth.banner.indicator.CircleIndicator
-import com.zj.zjsdk.ad.ZjAdError
-import com.zj.zjsdk.ad.ZjTaskAd
-import com.zj.zjsdk.ad.ZjTaskAdListener
+import com.zj.zjsdk.api.v2.task.ZJTaskAd
+import com.zj.zjsdk.api.v2.task.ZJTaskAdLoadListener
 
 class MainFragment : BaseFragment(), OnClickListener {
     private lateinit var viewPager: ViewPager2
@@ -53,7 +53,6 @@ class MainFragment : BaseFragment(), OnClickListener {
 
     private lateinit var bulletinView: BulletinView//公告栏View
 
-    private lateinit var zjTask: ZjTaskAd
 
     private lateinit var ll_top_view: View//需要隐藏的View
 
@@ -265,24 +264,45 @@ class MainFragment : BaseFragment(), OnClickListener {
     private fun onInitZjTask() {
         isZjTaskLoading = true
         LogUtils.d("任务墙加载中")
-        zjTask = ZjTaskAd(requireActivity(),
+//        zjTask = ZjTaskAd(requireActivity(),
+//            ZJ_BUSINESS_POS_ID,
+//            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID),
+//            object : ZjTaskAdListener {
+//                override fun onZjAdLoaded() {
+//                    LogUtils.d("任务墙加载完成")
+//                    isZjTaskLoadDone = true
+//                    isZjTaskLoading = false
+//                    addZjTaskFragment()
+//                }
+//
+//                override fun onZjAdError(zjAdError: ZjAdError) {
+//                    LogUtils.i(
+//                        "ZjAd", "任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg
+//                    )
+//                    showToast("游戏任务列表数据加载缓慢")
+//                }
+//            })
+
+        ZJTaskAd.loadAd(
             ZJ_BUSINESS_POS_ID,
-            ShareUtil.getString(ShareUtil.APP_SHARED_PREFERENCES_LOGIN_ID),
-            object : ZjTaskAdListener {
-                override fun onZjAdLoaded() {
+            getString(APP_SHARED_PREFERENCES_LOGIN_ID),
+            object : ZJTaskAdLoadListener {
+                override fun onError(code: Int, msg: String) {
+                    LogUtils.i(
+                        "ZjAd", "任务墙加载错误:$code-$msg"
+                    )
+                    showToast("游戏任务列表数据加载缓慢")
+
+                }
+                override fun onAdLoaded(zjTaskAd: ZJTaskAd) {
                     LogUtils.d("任务墙加载完成")
                     isZjTaskLoadDone = true
                     isZjTaskLoading = false
-                    addZjTaskFragment()
-                }
+                    addZjTaskFragment(zjTaskAd)
 
-                override fun onZjAdError(zjAdError: ZjAdError) {
-                    LogUtils.i(
-                        "ZjAd", "任务墙加载错误:" + zjAdError.errorCode + "-" + zjAdError.errorMsg
-                    )
-                    showToast("游戏任务列表数据加载缓慢")
                 }
             })
+
     }
 
 
@@ -296,8 +316,8 @@ class MainFragment : BaseFragment(), OnClickListener {
 
 
     //添加SDK任务列表
-    fun addZjTaskFragment() {
-        pagerAdapter.showZjTask(zjTask)
+    fun addZjTaskFragment(zjTaskAd: ZJTaskAd) {
+        pagerAdapter.showZjTask(zjTaskAd)
 
     }
 
@@ -313,8 +333,8 @@ class MainFragment : BaseFragment(), OnClickListener {
     class MyPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
         private var isShowZjTask: Boolean = false
-        private lateinit var zjTask: ZjTaskAd
-        fun showZjTask(zj: ZjTaskAd) {
+        private lateinit var zjTask: ZJTaskAd
+        fun showZjTask(zj: ZJTaskAd) {
             isShowZjTask = true
             zjTask = zj
             notifyDataSetChanged()
@@ -355,8 +375,8 @@ class MainFragment : BaseFragment(), OnClickListener {
             return when (id) {
                 fid2 -> EmptyFragment()
                 fid3 -> EmptyFragment()
-                fid4 -> zjTask.loadCPAFragmentAd()
-                fid5 -> zjTask.loadCPLFragmentAd()
+                fid4 -> zjTask.loadCPAFragment()!!
+                fid5 -> zjTask.loadCPLFragment()!!
                 else -> TaskListFragment.newInstance(
                     TaskQuery(
                         if (MyApplication.isMarketVersion) TaskRepository.queryCondCOMBO

@@ -70,6 +70,7 @@ data class Task(
     val taskTypeTitle: String?,
     val taskUploadVerifyList: List<TaskUploadVerify>,
     val unitPrice: Float,
+    val originalPrice: Float,
     val shareAmount: Float,
     val updatedDt: String?,
     val taskType: String?,

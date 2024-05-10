@@ -97,7 +97,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private lateinit var dialog: Dialog
 
     // 替换为你的 APK 下载链接和文件名
-    private lateinit var apkUrl: String
+    private  var apkUrl: String = "lelezu.apk"
     private lateinit var progressBar: ContentLoadingProgressBar
 
 
@@ -163,7 +163,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
             if (isButtonClickable) {
                 // 执行点击事件的操作
-                // 在点击下载按钮时执行下载操作
+                // 在点击下载按钮时执行下载操作2
                 onUpData(btnDownload, this)
             }
 
@@ -277,10 +277,18 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun backToHome(position: String) {
 //        ToastUtils.show("页面：$position")
-        val intent = Intent(this, HomeActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("FragmentPosition", position)
-        startActivity(intent)
+        if (position == "5") { //从个人页面进入的
+
+            this.finish()
+
+        } else {
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.putExtra("FragmentPosition", position)
+            startActivity(intent)
+        }
+
+
     }
 
     protected fun activityFinish(activity: Activity) {
@@ -761,21 +769,16 @@ abstract class BaseActivity : AppCompatActivity() {
             .setDragEnable(true).setTag(MFloat_TAG).show()
 
         sysMessageViewModel.pendingTotal.observe(this) {
-
             if (masegetv != null) masegetv!!.text = it.total.toString()
         }
     }
 
 
-
-
     //隐藏消息悬浮控件
     protected fun hideMFloat() {
 //        if (EasyFloat.isShow())
-            EasyFloat.hide(MFloat_TAG)
+        EasyFloat.hide(MFloat_TAG)
     }
-
-
 
 
     //显示消息悬浮控件
@@ -783,7 +786,6 @@ abstract class BaseActivity : AppCompatActivity() {
 //        if (!EasyFloat.isShow()) EasyFloat.show(MFloat_TAG)
         EasyFloat.show(MFloat_TAG)
     }
-
 
 
     //设置标题文字颜色
