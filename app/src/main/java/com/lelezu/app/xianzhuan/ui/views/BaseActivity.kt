@@ -97,7 +97,11 @@ abstract class BaseActivity : AppCompatActivity() {
     private lateinit var dialog: Dialog
 
     // 替换为你的 APK 下载链接和文件名
-    private  var apkUrl: String = "lelezu.apk"
+    private lateinit var apkDownUrl: String //下载地址
+    fun setApkDownUrl(url: String) {
+        apkDownUrl = url
+    }
+
     private lateinit var progressBar: ContentLoadingProgressBar
 
 
@@ -129,14 +133,14 @@ abstract class BaseActivity : AppCompatActivity() {
         ivDialog.window?.attributes = attributes
 
 
-        sysMessageViewModel.version.observe(this) {
-            if (it.isNew) {
-                //有新版本
-                apkUrl = it.download
-                showDownDialog(it.isForce)
-            }
-
-        }
+//        sysMessageViewModel.version.observe(this) {
+//            if (it.isNew) {
+//                //有新版本
+//                apkDownUrl = it.download
+//                showDownDialog(it.isForce)
+//            }
+//
+//        }
 
         val pInfo = packageManager.getPackageInfo(packageName, 0)
         ShareUtil.putString(ShareUtil.versionName, pInfo.versionName)
@@ -221,7 +225,7 @@ abstract class BaseActivity : AppCompatActivity() {
         isButtonClickable = false
 
         progressBar.visibility = View.VISIBLE
-        sysMessageViewModel.downloadApk(apkUrl)
+        sysMessageViewModel.downloadApk(apkDownUrl)
         sysMessageViewModel.downloadProgress.observe(this) {
             // 更新进度条
             progressBar.progress = it
@@ -232,7 +236,7 @@ abstract class BaseActivity : AppCompatActivity() {
             dialog.dismiss()
             //安装apk
             openFileWithFilePath(it)
-            ShareUtil.cleanInfo()
+//            ShareUtil.cleanInfo()
 
         }
     }

@@ -40,8 +40,6 @@ class HomeActivity : BaseActivity() {
     private lateinit var iv_a: TextView
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         postCacheTime()
@@ -67,9 +65,18 @@ class HomeActivity : BaseActivity() {
                 showActivityFloat(award)
             } else {
 //                ToastUtils.show("暂时没有赏金收益")
-
-
             }
+        }
+
+        //版本更新监听
+        sysMessageViewModel.version.observe(this) {
+            if (it.isNew) {
+                //有新版本
+//                apkDownUrl = it.download
+                setApkDownUrl(it.download)
+                showDownDialog(it.isForce)
+            }
+
         }
     }
 

@@ -13,8 +13,6 @@ import com.lelezu.app.xianzhuan.utils.ShareUtil.getVersionName
 class AutoOutActivity : BaseActivity(), OnClickListener {
     private lateinit var tv_vn: TextView
 
-    // 替换为你的 APK 下载链接和文件名
-    private lateinit var apkUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +28,10 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
             if (it.isNew) {
                 //有新版本
                 findViewById<View>(R.id.tv_newVersion).visibility = View.VISIBLE
-                apkUrl = it.download
+//                apkUrl = it.download
+                setApkDownUrl(it.download)
             }
+
         }
 
 
@@ -47,6 +47,12 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
 
     override fun onStart() {
         super.onStart()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         //检查新版本
         sysMessageViewModel.detection(false)
     }
@@ -75,7 +81,7 @@ class AutoOutActivity : BaseActivity(), OnClickListener {
 
             R.id.tv_newVersion -> {
                 //询问权限
-                showDownDialog()
+                showDownDialog(false)
             }
 
             R.id.tv_url -> {
