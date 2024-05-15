@@ -9,6 +9,12 @@ pluginManagement {
         maven { url 'https://repo1.maven.org/maven2/' }
         maven { url "https://jitpack.io" }
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+
+
+        //204/5/14 集成穿山甲 ---> https://www.csjplatform.com/union/media/union/download/detail?id=147&docId=27562&locale=zh-CN&osType=android
+        //mintegral sdk依赖   引入mintegral sdk需要添加此maven
+        maven { url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_support/" }
+        maven { url "https://artifact.bytedance.com/repository/pangle" }
     }
 }
 dependencyResolutionManagement {
@@ -23,6 +29,12 @@ dependencyResolutionManagement {
         maven { url "https://jitpack.io" }
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         jcenter()
+
+
+        //204/5/14 集成穿山甲 ---> https://www.csjplatform.com/union/media/union/download/detail?id=147&docId=27562&locale=zh-CN&osType=android
+        //mintegral sdk依赖   引入mintegral sdk需要添加此maven
+        maven { url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_support/" }
+        maven { url "https://artifact.bytedance.com/repository/pangle" }
     }
 }
 rootProject.name = "My Application"

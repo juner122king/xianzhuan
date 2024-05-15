@@ -55,22 +55,15 @@ class TaskDetailsStepAdapter(
         val line: View = itemView.findViewById(R.id.line)//垂直线
 
         val tvTr: TextView = itemView.findViewById(R.id.tv_tr)//角标说明
-
-
         val viewUrl: View = itemView.findViewById(R.id.tv_web_url)//链接区域
         val llminiP: View = itemView.findViewById(R.id.ll_mini_p)//小程序关联区域
-
         val view_type5: View = itemView.findViewById(R.id.view_type5)//搜索应用示例图区域
-
         val iv_miniapp_pic: ImageView = itemView.findViewById(R.id.iv_miniapp_pic)//搜索应用示例图区域
         val tv_miniapp_name: TextView = itemView.findViewById(R.id.tv_miniapp_name)//搜索应用示例图区域
-
         val tvGoLink: TextView = itemView.findViewById(R.id.tv_go_link)//
         val tvCopyLink: TextView = itemView.findViewById(R.id.tv_copy_link)
-
         val tv_mini_p: TextView = itemView.findViewById(R.id.tv_mini_p)//关联小程序按钮
         val tv_mini_2: ImageView = itemView.findViewById(R.id.tv_mini_2)// 已关联小程序按钮
-
         val iv_no_sign_up: ImageView = itemView.findViewById(R.id.iv_no_sign_up)// 未报名时显示的图片
 
 

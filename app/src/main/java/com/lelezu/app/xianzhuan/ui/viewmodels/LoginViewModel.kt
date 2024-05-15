@@ -85,7 +85,7 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
         }
 
     private fun loginInfo(
-        loginMethod: String, wxCode: String?, mobileToken: String?, mobileAccessToken: String?
+        loginMethod: String, wxCode: String?, mobileToken: String?, mobileAccessToken: String?,
     ): LoginInfo {
         return LoginInfo(
             WxData.WEIXIN_APP_ID, loginMethod, mobileToken, mobileAccessToken, wxCode
@@ -198,9 +198,9 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     //注册
     fun getRegister() = viewModelScope.launch {
 
-        Log.i("登录请求体对象", "Register:" + ShareUtil.getRegister().toString())
-        val o = Gson().toJson(ShareUtil.getRegister())
-//        val o64 = Base64.encode(o, "UTF-8")
+        var register = ShareUtil.getRegister()
+        Log.i("登录请求体对象", "Register:$register")
+        val o = Gson().toJson(register)
         val o64 = android.util.Base64.encodeToString(
             o.toString().toByteArray(), android.util.Base64.NO_WRAP
         )

@@ -55,3 +55,8 @@
 #-keepclassmembers class com.lelezu.app.xianzhuan.ui.views.WebViewActivity{
 #  public *;
 #}
+
+
+#鲸鸿动能SDK https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/identifier-service-integrating-sdk-0000001056460552#section187948541792
+#-keep class com.huawei.hms.ads.** {*; }
+#-keep interface com.huawei.hms.ads.** {*; }

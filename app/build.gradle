@@ -12,8 +12,8 @@ android {
         applicationId "com.lelezu.app.xianzhuan"
         minSdk 21
         targetSdk 33
-        versionCode 21
-        versionName "1.1.11"
+        versionCode 23
+        versionName "1.1.13"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86"
         }
@@ -172,7 +172,9 @@ dependencies {
     implementation 'com.tencent.tbs:tbssdk:44286'
 
     // OAID，建议引入，提高收益
-    implementation files('./libs/zjsdk/oaid_sdk_1.0.25.aar')
+    implementation files('./libs/oaid_sdk_1.0.25.aar')
+    implementation(name: 'monitorsdk-1.0.15', ext: 'aar')//快手OAID包
+
 
     // 微信 OpenSdk ，建议引入，提高收益
 //    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
@@ -195,14 +197,14 @@ dependencies {
 
     implementation files('./libs/zjsdk/kssdk-ct-3.3.61.1-publishRelease.aar')
     implementation "com.tanx:TanxUISDK:3.3.0"
-    implementation files('./libs/zjsdk/open_ad_sdk_5.9.2.9.aar')
+//    implementation files('./libs/zjsdk/open_ad_sdk_5.9.2.9.aar')
     implementation files('./libs/zjsdk/pangle_mediation_adapter_5.9.2.9.aar')
     implementation files('./libs/zjsdk/beizi_ad_sdk-3.5.0.5.aar')
     implementation files('./libs/zjsdk/beizi_fusion_sdk-4.90.4.5.aar')
     implementation files('./libs/zjsdk/octopus_ad_sdk_1.5.9.1.aar')
     implementation files('./libs/zjsdk/octopus_group_sdk_3.2.13.0.aar')
     implementation files('./libs/zjsdk/zj_adsdk_windmill-sdk-3.3.0.aar')
-//    implementation files('./libs/zjsdk/novelsdk-6.0.3.6.aar') 小说相关
+
 
 
     //如果您的项目中没有用到约束布局，需要添加该依赖
@@ -235,19 +237,18 @@ dependencies {
     //----------------------任务墙sdk 结束
 
 
-    // https://github.com/square/leakcanary  内存泄漏检测的工具
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
-
-    // 日志调试框架：https://github.com/getActivity/Logcat
-//    debugImplementation 'com.github.getActivity:Logcat:11.8'
-
     //第三方banner https://github.com/youth5201314/banner
     implementation 'io.github.youth5201314:banner:2.2.2'
 
     //第三方浮窗控件 https://github.com/kongxiaojun/EasyFloat
     implementation 'com.github.kongxiaojun:EasyFloat:3.0.1'
-//
-//    implementation 'com.github.juner122king:EasyFloat:fix-SNAPSHOT'
 
+
+    /******************** 204/5/14 集成穿山甲---> https://www.csjplatform.com/union/media/union/download/detail?id=147&docId=27562&locale=zh-CN&osType=android * ********************/
+    implementation "com.pangle.cn:mediation-sdk:6.1.0.4"  //融合SDK
+
+
+    //快手分包SDK https://docs.qingque.cn/d/home/eZQD2frJ_lFAEq1dxZ4zcxIlF?identityId=1weidtLQshH#section=h.2glkekjuhtb1
+    implementation files('./libs/channelsdk-0.2.3.aar')
 
 }

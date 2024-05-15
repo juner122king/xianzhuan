@@ -46,6 +46,8 @@ object ShareUtil {
     const val APP_SHARED_PREFERENCES_LOGIN_TOKEN: String = "LoginToken"
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
     const val APP_SHARED_PREFERENCES_DEVICE_ID: String = "deviceId"
+    const val APP_SHARED_PREFERENCES_OA_ID: String = "oAId"
+    const val APP_SHARED_KS_CHANNEL: String = "channel"
     const val APP_SHARED_PREFERENCES_RECOMMEND_USERID: String = "recommendUserId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
     const val APP_SHARED_PREFERENCES_IS_NEWER: String = "NEWER"
@@ -92,10 +94,10 @@ object ShareUtil {
         }
     }
 
-    fun getString(key: String,deString:String = ""): String {
+    fun getString(key: String, deString: String = ""): String {
         if (key.isNotBlank()) {
             val sps: SharedPreferences = getSps()
-            return sps.getString(key,deString).toString()
+            return sps.getString(key, deString).toString()
         }
         return ""
     }
@@ -226,7 +228,7 @@ object ShareUtil {
     fun getRegister(): Register {
 
 
-        val deviceToken = getString(APP_163_PHONE_LOGIN_DEVICE_TOKEN,"YI_DUN_Enabled")
+        val deviceToken = getString(APP_163_PHONE_LOGIN_DEVICE_TOKEN, "YI_DUN_Enabled")
         val mobileAccessToken = getString(APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
         val mobileToken = getString(APP_163_PHONE_LOGIN_MOBILE_TOKEN)
         val userId = getString(APP_SHARED_PREFERENCES_LOGIN_ID)
@@ -235,6 +237,9 @@ object ShareUtil {
         val imsi = getString(APP_DEVICE_IMSI)
         val androidId = getString(APP_DEVICE_MAC)
         val mac = getString(APP_SHARED_PREFERENCES_DEVICE_ID)
+        val oAid = getString(APP_SHARED_PREFERENCES_OA_ID)//目前传的是MD5后的OAID
+
+        val channel = getString(APP_SHARED_KS_CHANNEL,"默认")//快手渠道分发channel
         return Register(
             deviceToken,
             mobileAccessToken,
@@ -244,7 +249,9 @@ object ShareUtil {
             sim,
             imsi,
             androidId,
-            mac
+            mac,
+            oAid,
+            channel
         )
     }
 

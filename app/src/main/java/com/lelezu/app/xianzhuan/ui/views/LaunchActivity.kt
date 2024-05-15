@@ -1,6 +1,8 @@
 package com.lelezu.app.xianzhuan.ui.views
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -9,21 +11,38 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import cn.jiguang.api.utils.JCollectionAuth
 import cn.jpush.android.api.JPushInterface
+import com.bytedance.sdk.openadsdk.AdSlot
+import com.bytedance.sdk.openadsdk.CSJAdError
+import com.bytedance.sdk.openadsdk.CSJSplashAd
+import com.bytedance.sdk.openadsdk.CSJSplashCloseType
+import com.bytedance.sdk.openadsdk.TTAdNative
+import com.bytedance.sdk.openadsdk.TTAdSdk
+import com.bytedance.sdk.openadsdk.mediation.MediationConstant
+import com.bytedance.sdk.openadsdk.mediation.ad.MediationAdSlot
+import com.bytedance.sdk.openadsdk.mediation.ad.MediationSplashRequestInfo
 import com.github.lzyzsd.jsbridge.BridgeWebView
+import com.kwai.monitor.log.TurboAgent
+import com.kwai.monitor.payload.TurboHelper
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.R
+import com.lelezu.app.xianzhuan.ad.MediationKotlinSplashActivity
+import com.lelezu.app.xianzhuan.ad.MyCSJAdConfig
+import com.lelezu.app.xianzhuan.ad.TTAdManagerHolder
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiConstants.ZJ_BUSINESS_AD_POS_OPEN
 import com.lelezu.app.xianzhuan.ui.h5.WebViewSettings
 import com.lelezu.app.xianzhuan.utils.ImageViewUtil
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.MD5Tool.md5
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.utils.ShareUtil.APP_163_INIT_CODE
 import com.lelezu.app.xianzhuan.utils.ShareUtil.DUN_SDK_RISK
@@ -50,14 +69,17 @@ import com.zj.zjsdk.api.v2.splash.ZJSplashAdLoadListener
 4.在校验自动登录没问题后，则跳转到广告页，用户未登录状态下，则需要登录成功后方进行首页数据加载；
 5.广告页：需要在对应的时间内加载首页的数据；*/
 @SuppressLint("CustomSplashScreen")
-class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInteractionListener{
+class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInteractionListener {
 
     private val TAG = "ZJSplashAd"
 
-
+    private val TTAd_TAG = "TTAdManagerHolder"
     private lateinit var dialog: AlertDialog//协议弹
     private lateinit var aDView: ImageView//协议弹
     private lateinit var tvCd: TextView//倒计时
+
+    private var CSJADContent: FrameLayout? = null//穿山甲开屏广告位
+//    private var ZJADContent: FrameLayout? = null//穿山甲开屏广告位
 
     private var cd1 = 6000L//广告倒计时
     private var cd2 = 3000L//logo显示时间
@@ -70,9 +92,8 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//
-//        //初始化 基于MSA oaid SDK
-//        MdidSdkHelper.InitSdk(applicationContext, false, this)
+        //集成快手获取OAID功能
+        getOAid()
 
         hideView()
         initView()
@@ -88,12 +109,24 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         })
     }
 
+    private fun getOAid() {
+
+        //1.广告主可以调用此方法注册，监听获取oaid，只支持部分厂商，其他厂商媒体需要自行获取
+        TurboAgent.registerOAIDListener(this) { oAid -> //2.OnOAIDValid可能在任意线程返回，请勿做磁盘缓存
+            Handler(Looper.getMainLooper()).post {
+                LogUtils.i("LaunchActivity:", "OAID=${oAid} OAID-MD5=${md5(oAid)} ")
+                ShareUtil.putString(ShareUtil.APP_SHARED_PREFERENCES_OA_ID, md5(oAid))
+            }
+        }
+    }
+
     //初始化第三方SDK
     private fun initSDK() {
 
-        if (!ShareUtil.getBoolean(DUN_SDK_RISK))
-            init163SDK()//网易SDK初始化
+        if (!ShareUtil.getBoolean(DUN_SDK_RISK)) init163SDK()//网易SDK初始化
 
+
+        initCSJADK()//集成穿山甲
 
         initWx() //微信SDK初始化
         initJPUSHSDK()//极光SDK初始化
@@ -101,13 +134,22 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         initZJSDK()//任务墙SDK 初始化
 //        initKsAdSDK()//快手广告SDK
 
+        //快手分包SDK
+        val channel: String = TurboHelper.getChannel(MyApplication.context)
+        ShareUtil.putString(ShareUtil.APP_SHARED_KS_CHANNEL, channel)
+        LogUtils.i(TTAd_TAG, "快手分包渠道名称$channel")
+    }
 
+    private fun initCSJADK() {
+        //setp1.1：初始化SDK
+        TTAdSdk.init(this, MyCSJAdConfig.buildConfig(this))
     }
 
     private fun initView() {
         container = findViewById(R.id.fl_launch_view)
         aDView = findViewById(R.id.fl_ad_view)
         tvCd = findViewById(R.id.tv_comdown)
+        CSJADContent = findViewById(R.id.csj_ad_content)
         tvCd.setOnClickListener {
             preloadContent()//点击跳过广告
         }
@@ -136,12 +178,11 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
 
     private fun showLogo() {
-
-
         Handler(Looper.getMainLooper()).postDelayed({
             if (isAgreePrivacy()) {//是否同意了隐私协议
                 initSDK()//初始化SDK
-                showAdView()//显示广告
+//                showAdView()//显示系统广告
+                showCSJView()//显示穿山甲开屏广告
 //                showZJAdView()//显示ZJ广告
 //                showKSAdView()//显示快手广告
             } else {
@@ -163,9 +204,25 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         container.visibility = View.INVISIBLE
     }
 
+    //显示穿山甲开屏广告
+    private fun showCSJView() {
+        TTAdSdk.start(object : TTAdSdk.Callback {
+            override fun success() {
+                Log.i(TTAd_TAG, "success: " + TTAdSdk.isSdkReady())
+                loadAd()
+            }
+
+            override fun fail(code: Int, msg: String) {
+                Log.i(TTAd_TAG, "fail:  code = $code msg = $msg")
+                preloadContent()
+            }
+        })
+    }
+
 
     //显示第三方开屏广告页面
     private fun showZJAdView() {
+        LogUtils.i(TTAd_TAG, "开始加载任务墙开屏广告")
         ZJSplashAd.loadAd(this, ZJ_BUSINESS_AD_POS_OPEN, this)
     }
 
@@ -328,22 +385,10 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
 
         LogUtils.i("ZjAd", "任务墙SDK初始化开始")
-//        //任务墙SDK 初始化
-//        ZjSdk.init(this, ApiConstants.ZJ_BUSINESS_NO, object : ZjSdk.ZjSdkInitListener {
-//            override fun initSuccess() {
-//                LogUtils.i("ZjAd", "初始化成功！")
-//            }
-//
-//            override fun initFail(code: Int, msg: String?) {
-//                LogUtils.i("ZjAd", "初始化失败！")
-//            }
-//        })
 
         // 2.4.19版本初始化方式调整，需要使用initWithoutStart方法初始化，并在用户同意隐私协议后调用start方法
         ZjSdk.initWithoutStart(
-            this,
-            ZJConfig.Builder(ApiConstants.ZJ_BUSINESS_NO)
-                .build()
+            this, ZJConfig.Builder(ApiConstants.ZJ_BUSINESS_NO).build()
         )
 
         ZjSdk.start(object : ZjSdk.OnStartListener {
@@ -381,6 +426,9 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
     override fun onDestroy() {
         super.onDestroy()
+        /** 6、在onDestroy中销毁广告  */
+        csjSplashAd?.mediationManager?.destroy()
+
         // 在Activity销毁时停止倒计时，避免内存泄漏
         if (::countDownTimer.isInitialized) {
             countDownTimer.cancel()
@@ -484,5 +532,136 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
     }
 
 
+    //@[classname]
+    private var csjSplashAdListener: TTAdNative.CSJSplashAdListener? = null
+
+    //@[classname]
+    private var splashAdListener: CSJSplashAd.SplashAdListener? = null
+
+    //@[classname]
+    private var csjSplashAd: CSJSplashAd? = null
+
+    fun loadAd() {
+        /** 1、创建AdSlot对象 */
+        //@[classname]
+        val adslot = AdSlot.Builder().setCodeId("102875246")//开屏广告位id位
+            .setImageAcceptedSize(getScreenWidthInPx(this), getScreenHeightInPx(this))
+            .setMediationAdSlot(
+                MediationAdSlot.Builder()
+                    //设置兜底代码位，当开屏设置穿山甲为自定义兜底代码位时应用ID需和初始化应用ID保持一致
+                    .setMediationSplashRequestInfo(object : MediationSplashRequestInfo(
+                        MediationConstant.ADN_PANGLE,
+                        "889269694",
+                        "5445700",
+                        ""
+                    ) {})
+                    .build()
+            )
+
+            .build()
+
+        /** 2、创建TTAdNative对象 */
+        //@[classname]//@[methodname]
+        val adNativeLoader =
+            TTAdSdk.getAdManager().createAdNative(this)
+
+        /** 3、创建加载、展示监听器 */
+        initListeners()
+
+        /** 4、加载广告  */
+        adNativeLoader.loadSplashAd(adslot, csjSplashAdListener, 3500)
+    }
+
+    //@[classname]
+    fun showAd(csjSplashAd: CSJSplashAd?) {
+        /** 5、渲染成功后，展示广告 */
+        this.csjSplashAd = csjSplashAd
+        csjSplashAd?.setSplashAdListener(splashAdListener)
+        csjSplashAd?.let {
+            it.splashView?.let { splashView ->
+                CSJADContent!!.visibility = View.VISIBLE
+                container.visibility = View.INVISIBLE
+                CSJADContent?.addView(splashView)
+            }
+        }
+    }
+
+    private fun initListeners() {
+        // 广告加载监听器
+        //@[classname]
+        csjSplashAdListener = object : TTAdNative.CSJSplashAdListener {
+            //@[classname]
+            override fun onSplashLoadSuccess(ad: CSJSplashAd?) {
+                LogUtils.i(TTAd_TAG, "onSplashAdLoad")
+            }
+
+            //@[classname]
+            override fun onSplashLoadFail(error: CSJAdError?) {
+                LogUtils.i(TTAd_TAG, "onSplashLoadFail-onError code = ${error?.code} msg = ${error?.msg}")
+//                preloadContent()
+
+                //如果CSJ广告载失败就加载任务墙开屏广告
+                showZJAdView()
+
+            }
+
+            //@[classname]
+            override fun onSplashRenderSuccess(ad: CSJSplashAd?) {
+                LogUtils.i(TTAd_TAG, "onSplashRenderSuccess")
+                showAd(ad)
+            }
+
+            //@[classname]
+            override fun onSplashRenderFail(ad: CSJSplashAd?, error: CSJAdError?) {
+                LogUtils.i(TTAd_TAG, "onSplashRenderFail-onError code = ${error?.code} msg = ${error?.msg}")
+//                preloadContent()
+            }
+        }
+        //@[classname]
+        splashAdListener = object : CSJSplashAd.SplashAdListener {
+            //@[classname]
+            override fun onSplashAdShow(p0: CSJSplashAd?) {
+                LogUtils.i(TTAd_TAG, "onSplashAdShow")
+            }
+
+            //@[classname]
+            override fun onSplashAdClick(p0: CSJSplashAd?) {
+                LogUtils.i(TTAd_TAG, "onSplashAdClick")
+            }
+
+            //@[classname]
+            override fun onSplashAdClose(p0: CSJSplashAd?, closeType: Int) {
+                //@[classname]
+                when (closeType) {
+                    CSJSplashCloseType.CLICK_SKIP -> {
+                        LogUtils.i(TTAd_TAG, "开屏广告点击跳过")
+                        //@[classname]
+                    }
+
+                    CSJSplashCloseType.COUNT_DOWN_OVER -> {
+                        LogUtils.i(TTAd_TAG, "开屏广告点击倒计时结束")
+                        //@[classname]
+                    }
+
+                    CSJSplashCloseType.CLICK_JUMP -> {
+                        LogUtils.i(TTAd_TAG, "点击跳转")
+                    }
+                }
+
+                preloadContent()
+            }
+        }
+    }
+
+
+    private fun getScreenWidthInPx(context: Context): Int {
+        val dm = context.applicationContext.resources.displayMetrics
+        return dm.widthPixels
+    }
+
+    private fun getScreenHeightInPx(context: Context): Int {
+        val dm = context.applicationContext.resources.displayMetrics
+        return dm.heightPixels
+    }
 
 }

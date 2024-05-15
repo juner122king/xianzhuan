@@ -14,6 +14,8 @@ package com.lelezu.app.xianzhuan.data.model
  * @property imsi_num String?
  * @property mac String?
  * @property android_id String?
+ * @property oAid String? 加密字段
+ * @property channel String? channel
  * @constructor
  */
 data class Register(
@@ -26,6 +28,8 @@ data class Register(
     var simNum: String="",
     var imsiNum: String="",
     var mac: String="",
-    var androidId: String=""
+    var androidId: String="",
+    var oAid: String="",
+    var channel: String
 
 )

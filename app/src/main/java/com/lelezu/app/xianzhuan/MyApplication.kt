@@ -2,16 +2,13 @@ package com.lelezu.app.xianzhuan
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.view.Window
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
-import com.bytedance.pangle.transform.ZeusTransformUtils.getWindow
 import com.hjq.toast.ToastUtils
+import com.kwai.monitor.payload.TurboHelper
 import com.lelezu.app.xianzhuan.data.ApiFactory
 import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 
@@ -51,6 +48,8 @@ class MyApplication : Application() {
 
         // 初始化 Toast 框架
         ToastUtils.init(this)
+
+
 
     }
 

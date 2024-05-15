@@ -57,6 +57,9 @@
             android:name=".ui.views.ChatListActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
+
         <activity
             android:name=".ui.views.PartnerTeamActivity"
             android:exported="false"
@@ -173,6 +176,12 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".ad.MediationKotlinSplashActivity"
+            android:configChanges="keyboard|orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.views.LaunchActivity"
             android:exported="true"
@@ -241,6 +250,24 @@
         <meta-data
             android:name="ScopedStorage"
             android:value="true" />
+
+
+        <!-- 穿山甲 start================== -->
+        <provider
+            android:name="com.bytedance.sdk.openadsdk.TTFileProvider"
+            android:authorities="${applicationId}.TTFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/pangle_file_paths" />
+        </provider>
+
+        <provider
+            android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
+            android:authorities="${applicationId}.TTMultiProvider"
+            android:exported="false" />
+        <!-- 穿山甲 end================== -->
     </application>
 
 </manifest>

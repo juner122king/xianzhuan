@@ -75,7 +75,7 @@ object MyPermissionUtil {
 
         return if (activity.isFinishing || activity.isDestroyed) {
             //Activity状态不正常，不进行权限申请
-            ToastUtils.show("Activity状态不正常，权限申请失败")
+//            ToastUtils.show("Activity状态不正常，权限申请失败")
             true
         } else false
 
