@@ -9,6 +9,7 @@ import com.lelezu.app.xianzhuan.data.repository.SysInformRepository
 import com.lelezu.app.xianzhuan.data.repository.TaskRepository
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.utils.LogUtils
+import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 
@@ -48,8 +49,6 @@ class MyApplication : Application() {
 
         // 初始化 Toast 框架
         ToastUtils.init(this)
-
-
 
     }
 

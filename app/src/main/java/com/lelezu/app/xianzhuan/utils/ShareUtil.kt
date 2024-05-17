@@ -2,6 +2,7 @@ package com.lelezu.app.xianzhuan.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.kwai.monitor.payload.TurboHelper
 import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.model.LoginReP
 import com.lelezu.app.xianzhuan.data.model.Register
@@ -47,7 +48,7 @@ object ShareUtil {
     const val APP_SHARED_PREFERENCES_LOGIN_ID: String = "LoginId"
     const val APP_SHARED_PREFERENCES_DEVICE_ID: String = "deviceId"
     const val APP_SHARED_PREFERENCES_OA_ID: String = "oAId"
-    const val APP_SHARED_KS_CHANNEL: String = "channel"
+    const val APP_SHARED_KS_CHANNEL: String = "APP_SHARED_KS_CHANNEL"
     const val APP_SHARED_PREFERENCES_RECOMMEND_USERID: String = "recommendUserId"
     const val APP_SHARED_PREFERENCES_LOGIN_STATUS: String = "LoginStatus"
     const val APP_SHARED_PREFERENCES_IS_NEWER: String = "NEWER"
@@ -99,7 +100,7 @@ object ShareUtil {
             val sps: SharedPreferences = getSps()
             return sps.getString(key, deString).toString()
         }
-        return ""
+        return deString
     }
 
     fun putBoolean(key: String, value: Boolean) {
@@ -227,7 +228,6 @@ object ShareUtil {
     //获取注册请求体对象
     fun getRegister(): Register {
 
-
         val deviceToken = getString(APP_163_PHONE_LOGIN_DEVICE_TOKEN, "YI_DUN_Enabled")
         val mobileAccessToken = getString(APP_163_PHONE_LOGIN_MOBILE_ACCESS_TOKEN)
         val mobileToken = getString(APP_163_PHONE_LOGIN_MOBILE_TOKEN)
@@ -239,7 +239,9 @@ object ShareUtil {
         val mac = getString(APP_SHARED_PREFERENCES_DEVICE_ID)
         val oAid = getString(APP_SHARED_PREFERENCES_OA_ID)//目前传的是MD5后的OAID
 
-        val channel = getString(APP_SHARED_KS_CHANNEL,"默认")//快手渠道分发channel
+        //快手分包SDK
+        val channel: String = TurboHelper.getChannel(applicationContext)
+        LogUtils.i("TTAdManagerHolder", "快手分包渠道名称->$channel")
         return Register(
             deviceToken,
             mobileAccessToken,

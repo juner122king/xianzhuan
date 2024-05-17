@@ -134,10 +134,7 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
         initZJSDK()//任务墙SDK 初始化
 //        initKsAdSDK()//快手广告SDK
 
-        //快手分包SDK
-        val channel: String = TurboHelper.getChannel(MyApplication.context)
-        ShareUtil.putString(ShareUtil.APP_SHARED_KS_CHANNEL, channel)
-        LogUtils.i(TTAd_TAG, "快手分包渠道名称$channel")
+
     }
 
     private fun initCSJADK() {
@@ -550,20 +547,15 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
                 MediationAdSlot.Builder()
                     //设置兜底代码位，当开屏设置穿山甲为自定义兜底代码位时应用ID需和初始化应用ID保持一致
                     .setMediationSplashRequestInfo(object : MediationSplashRequestInfo(
-                        MediationConstant.ADN_PANGLE,
-                        "889269694",
-                        "5445700",
-                        ""
-                    ) {})
-                    .build()
+                        MediationConstant.ADN_PANGLE, "889269694", "5445700", ""
+                    ) {}).build()
             )
 
             .build()
 
         /** 2、创建TTAdNative对象 */
         //@[classname]//@[methodname]
-        val adNativeLoader =
-            TTAdSdk.getAdManager().createAdNative(this)
+        val adNativeLoader = TTAdSdk.getAdManager().createAdNative(this)
 
         /** 3、创建加载、展示监听器 */
         initListeners()
@@ -597,7 +589,9 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
             //@[classname]
             override fun onSplashLoadFail(error: CSJAdError?) {
-                LogUtils.i(TTAd_TAG, "onSplashLoadFail-onError code = ${error?.code} msg = ${error?.msg}")
+                LogUtils.i(
+                    TTAd_TAG, "onSplashLoadFail-onError code = ${error?.code} msg = ${error?.msg}"
+                )
 //                preloadContent()
 
                 //如果CSJ广告载失败就加载任务墙开屏广告
@@ -613,7 +607,9 @@ class LaunchActivity : BaseActivity(), ZJSplashAdLoadListener, ZJSplashAdInterac
 
             //@[classname]
             override fun onSplashRenderFail(ad: CSJSplashAd?, error: CSJAdError?) {
-                LogUtils.i(TTAd_TAG, "onSplashRenderFail-onError code = ${error?.code} msg = ${error?.msg}")
+                LogUtils.i(
+                    TTAd_TAG, "onSplashRenderFail-onError code = ${error?.code} msg = ${error?.msg}"
+                )
 //                preloadContent()
             }
         }

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.kwai.monitor.payload.TurboHelper
+import com.lelezu.app.xianzhuan.MyApplication
 import com.lelezu.app.xianzhuan.data.ApiConstants
 import com.lelezu.app.xianzhuan.data.ApiConstants.MOBILE_PASSWORD
 import com.lelezu.app.xianzhuan.data.model.ChatList
@@ -20,6 +22,7 @@ import com.lelezu.app.xianzhuan.data.model.UserInfo
 import com.lelezu.app.xianzhuan.data.model.Vip
 import com.lelezu.app.xianzhuan.data.repository.UserRepository
 import com.lelezu.app.xianzhuan.utils.AesTool
+import com.lelezu.app.xianzhuan.utils.LogUtils
 import com.lelezu.app.xianzhuan.utils.ShareUtil
 import com.lelezu.app.xianzhuan.wxapi.WxData
 import kotlinx.coroutines.Dispatchers
@@ -198,8 +201,9 @@ class LoginViewModel(private val userRepository: UserRepository) : BaseViewModel
     //注册
     fun getRegister() = viewModelScope.launch {
 
-        var register = ShareUtil.getRegister()
-        Log.i("登录请求体对象", "Register:$register")
+
+        val register = ShareUtil.getRegister()
+        LogUtils.i("TTAdManagerHolder", "请求体-注册:$register")
         val o = Gson().toJson(register)
         val o64 = android.util.Base64.encodeToString(
             o.toString().toByteArray(), android.util.Base64.NO_WRAP
